@@ -1,0 +1,7 @@
+<Ui xmlns="http://www.runewaker.com/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.runewaker.com/ ../../worldxml/ui.xsd">
+	<Frame name="CPStorage" parent="UIParent" hidden="true">
+		<Scripts>
+			<OnUpdate>CP.Storage.OnUpdate(elapsedTime)</OnUpdate>
+		</Scripts>
+	</Frame>
+</Ui>

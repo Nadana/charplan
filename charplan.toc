@@ -1,3 +1,14 @@
+libs/LibStub.lua
+libs/Nyx.lua
 
 charplan.lua
+cp_calc.lua
+cp_db.lua
+cp_pimpme.lua
+cp_search.lua
+cp_storage.lua
+
+cp_pimpme.xml
+cp_search.xml
+cp_storage.xml
 charplan.xml

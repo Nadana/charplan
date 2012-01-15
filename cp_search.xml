@@ -1,0 +1,96 @@
+<Ui xmlns="http://www.runewaker.com/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.runewaker.com/ ../../worldxml/ui.xsd">
+	<Frame name="CPSearchItemTemplate" virtual="true">
+		<Size>
+			<AbsDimension x="300" y="32" />
+		</Size>
+		<Layers>
+			<Layer>
+			<FontString name="$parentName" inherits="GameFontLabel" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="96" y="14"/>
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT">
+							<Offset>
+								<AbsDimension x="40" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>			
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentItem" inherits="ItemButtonTemplate">
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset><AbsDimension x="0" y="0" /></Offset>
+						</Anchor>
+					</Anchors>
+			</Button>
+		</Frames>
+	</Frame>
+
+	<Frame name="CPSearch" parent="UIParent"  inherits="UICommonFrameTemplate">
+		<Size>
+			<AbsDimension x="600" y="450"/>
+		</Size>
+		<Frames>
+			<Frame name="CPSearchItem1" inherits="CPSearchItemTemplate" id="1">
+				<Anchors>
+					<Anchor point="TOPLEFT"><Offset><AbsDimension x="10" y="40" /></Offset></Anchor>
+				</Anchors>
+			</Frame>
+			<Frame name="CPSearchItem2" inherits="CPSearchItemTemplate" id="2">
+				<Anchors><Anchor point="TOPLEFT" relativeTo="CPSearchItem1" relativePoint="BOTTOMLEFT"/></Anchors>
+			</Frame>
+			<Frame name="CPSearchItem3" inherits="CPSearchItemTemplate" id="3">
+				<Anchors><Anchor point="TOPLEFT" relativeTo="CPSearchItem2" relativePoint="BOTTOMLEFT"/></Anchors>
+			</Frame>
+			<Frame name="CPSearchItem4" inherits="CPSearchItemTemplate" id="4">
+				<Anchors><Anchor point="TOPLEFT" relativeTo="CPSearchItem3" relativePoint="BOTTOMLEFT"/></Anchors>
+			</Frame>
+			<Frame name="CPSearchItem5" inherits="CPSearchItemTemplate" id="5">
+				<Anchors><Anchor point="TOPLEFT" relativeTo="CPSearchItem4" relativePoint="BOTTOMLEFT"/></Anchors>
+			</Frame>
+			<Frame name="CPSearchItem6" inherits="CPSearchItemTemplate" id="6">
+				<Anchors><Anchor point="TOPLEFT" relativeTo="CPSearchItem5" relativePoint="BOTTOMLEFT"/></Anchors>
+			</Frame>
+			<Frame name="CPSearchItem7" inherits="CPSearchItemTemplate" id="7">
+				<Anchors><Anchor point="TOPLEFT" relativeTo="CPSearchItem6" relativePoint="BOTTOMLEFT"/></Anchors>
+			</Frame>
+			<Frame name="CPSearchItem8" inherits="CPSearchItemTemplate" id="8">
+				<Anchors><Anchor point="TOPLEFT" relativeTo="CPSearchItem7" relativePoint="BOTTOMLEFT"/></Anchors>
+			</Frame>
+			<Frame name="CPSearchItem9" inherits="CPSearchItemTemplate" id="9">
+				<Anchors><Anchor point="TOPLEFT" relativeTo="CPSearchItem8" relativePoint="BOTTOMLEFT"/></Anchors>
+			</Frame>
+			<Frame name="CPSearchItem10" inherits="CPSearchItemTemplate" id="10">
+				<Anchors><Anchor point="TOPLEFT" relativeTo="CPSearchItem9" relativePoint="BOTTOMLEFT"/></Anchors>
+			</Frame>
+			<Button name="CPSearchTakeIt" inherits="UIPanelButtonTemplate">
+				<Size>
+					<AbsDimension x="100" y="24"></AbsDimension>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOM"><Offset>
+						<AbsDimension x="-100" y="-30"></AbsDimension>
+					</Offset></Anchor>
+				</Anchors>
+			</Button>
+			<Button name="CPSearchCancel" inherits="UIPanelButtonTemplate" text="CANCEL">
+				<Size>
+					<AbsDimension x="100" y="24"></AbsDimension>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOM"><Offset>
+						<AbsDimension x="100" y="-30"></AbsDimension>
+					</Offset></Anchor>
+				</Anchors>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnShow>CP.Search.OnShow()</OnShow>
+			<OnHide>CP.Search.OnHide()</OnHide>
+		</Scripts>
+	</Frame>
+</Ui>
