@@ -1,0 +1,753 @@
+<Ui xmlns="http://www.runewaker.com/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.runewaker.com/ ../../worldxml/ui.xsd">
+
+	<Button name="CPEquipItemButtonTemplate" inherits="ItemButtonTemplate" virtual="true">
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentQuality" file="Interface\Buttons\QuickSlot-QualityBorder01" hidden="true" alphaMode="ADD">
+					<Size>
+						<AbsDimension x="64" y="64"/>
+					</Size>
+					<Anchors>
+						<Anchor point="CENTER"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<Texture name="$parentInvalid" file="Interface\Buttons\QuickSlot-Red" hidden="true"/>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentCooldown" inherits="CooldownFrameTemplate">
+				<Size>
+					<AbsDimension x="32" y="32"/>
+				</Size>
+				<Anchors>
+					<Anchor point="CENTER"/>
+				</Anchors>
+			</Frame>
+			<Button name="$parentCoolSuitColorPickerMain" inherits="CoolSuitColorPickerTemplate" hidden="true" id="1">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativePoint="TOPRIGHT"/>
+				</Anchors>
+			</Button>
+			<Button name="$parentCoolSuitColorPickerSub" inherits="CoolSuitColorPickerTemplate" hidden="true" id="2">
+				<Anchors>
+					<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT"/>
+				</Anchors>
+			</Button>
+			<CheckButton name="$parentShowCheckButton" hidden="true">
+				<Size>
+					<AbsDimension x="24" y="24"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="2" y="-2"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<HitRectInsets>
+					<AbsInset top="0" left="8" bottom="8" right="0"/>
+				</HitRectInsets>
+				<Scripts>
+					<OnClick>
+						EquipItemShowCheckButton_OnClick(this);
+					</OnClick>
+				</Scripts>
+				<NormalTexture file="Interface\Buttons\CheckBox-Normal2"/>
+				<PushedTexture file="Interface\Buttons\CheckBox-Depress2"/>
+				<HighlightTexture file="Interface\Buttons\CheckBox-Highlight" alphaMode="ADD"/>
+				<CheckedTexture file="Interface\Buttons\CheckBox-Checked"/>
+				<DisabledCheckedTexture file="Interface\Buttons\CheckBox-Checked-Disabled"/>
+			</CheckButton>
+		</Frames>
+		<Scripts>
+			<OnLoad>
+				--EquipItemButton_OnLoad(this);
+			</OnLoad>
+			<OnShow>
+				--EquipItemButton_OnShow(this);
+			</OnShow>
+			<OnEvent>
+				EquipItemButton_OnEvent(this, event, arg1, arg2);
+			</OnEvent>
+			<OnClick>
+				EquipItemButton_OnClick(this, key);
+			</OnClick>
+			<OnDragStart>
+				EquipItemButton_OnClick(this, "LBUTTON", 1);
+			</OnDragStart>
+			<OnReceiveDrag>
+				EquipItemButton_OnClick(this, "LBUTTON", 1);
+			</OnReceiveDrag>
+			<!--
+			<OnUpdate>
+				EquipmentItemSlotButton_Update(this, elapsedTime);
+			</OnUpdate>
+			-->
+			<OnEnter>
+				EquipItemButton_OnEnter( this );
+			</OnEnter>
+			<OnLeave>
+				EquipItemButton_OnLeave( this );
+			</OnLeave>
+		</Scripts>
+	</Button>
+
+
+	<Frame name="CPFrame" parent="UIParent" enableMouse="true" hidden="true">
+		<Size>
+			<AbsDimension x="486" y="433"/>
+		</Size>
+		<Anchors>
+			<Anchor point="LEFT">
+				<Offset>
+					<AbsDimension x="10" y="-20"/>
+				</Offset>
+			</Anchor>
+		</Anchors>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture file="Interface\CharacterFrame\CharacterFrame-Border">
+					<Size>
+						<AbsDimension x="512" y="512"/>
+					</Size>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString name="$parentTitle" inherits="GameTitleFont">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="12" y="8"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentTitelFrame" inherits="UIPanelTitleFrameTemplate">
+				<Size>
+					<AbsDimension x="462" y="29"/>
+				</Size>
+			</Frame>
+			<Frame name="CPAttributeFrame">
+				<Size>
+					<AbsDimension x="150" y="398"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="8" y="32"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture file="Interface\Common\PanelSeparate-HorizontalLine">
+							<Size>
+								<AbsDimension x="142" y="4"/>
+							</Size>
+							<Anchors>
+								<Anchor point="TOP">
+									<Offset>
+										<AbsDimension x="2" y="24"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+						</Texture>
+						<Texture file="Interface\Common\PanelSeparate-HorizontalLine">
+							<Size>
+								<AbsDimension x="142" y="4"/>
+							</Size>
+							<Anchors>
+								<Anchor point="TOP">
+									<Offset>
+										<AbsDimension x="2" y="108"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+						</Texture>
+						<Texture file="Interface\Common\PanelSeparate-HorizontalLine">
+							<Size>
+								<AbsDimension x="142" y="4"/>
+							</Size>
+							<Anchors>
+								<Anchor point="TOP">
+									<Offset>
+										<AbsDimension x="2" y="162"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+						</Texture>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Frame name="$parentPlayerTitleFrame" enableMouse="true">
+						<Size>
+							<AbsDimension x="144" y="18"/>
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset>
+									<AbsDimension x="6" y="6"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Layers>
+							<Layer>
+								<FontString name="$parentPlayerTitle" inherits="GameFontLabelYellow">
+									<Size>
+										<AbsDimension x="144" y="18"/>
+									</Size>
+								</FontString>
+							</Layer>
+						</Layers>
+					</Frame>
+					<Frame name="$parentSTRPointFrame" inherits="AttributePointFrameTemplate" id="1">
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset>
+									<AbsDimension x="9" y="30"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentAGIPointFrame" inherits="AttributePointFrameTemplate" id="2">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="STRPointFrame" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentSTAPointFrame" inherits="AttributePointFrameTemplate" id="3">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="AGIPointFrame" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentINTPointFrame" inherits="AttributePointFrameTemplate" id="4">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="STAPointFrame" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentMNDPointFrame" inherits="AttributePointFrameTemplate" id="5">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="INTPointFrame" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentGoodEvilPointFrame" inherits="AttributeFrameTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset>
+									<AbsDimension x="9" y="114"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentHonorPointFrame" inherits="AttributeFrameTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="GoodEvilPointFrame" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentPlayerValueTypeDropDown" inherits="UIDropDownMenuTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset>
+									<AbsDimension x="6" y="165"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentPlayerValueFrame1" inherits="AttributeFrameTemplate" id="1">
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset>
+									<AbsDimension x="9" y="192"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentPlayerValueFrame2" inherits="AttributeFrameTemplate" id="2">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="PlayerValueFrame1" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentPlayerValueFrame3" inherits="AttributeFrameTemplate" id="3">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="PlayerValueFrame2" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentPlayerValueFrame4" inherits="AttributeFrameTemplate" id="4">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="PlayerValueFrame3" relativePoint="BOTTOMLEFT"/>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentPlayerValueFrame5" inherits="AttributeFrameTemplate" id="5">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="PlayerValueFrame4" relativePoint="BOTTOMLEFT"/>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentPlayerValueFrame6" inherits="AttributeFrameTemplate" id="6">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="PlayerValueFrame5" relativePoint="BOTTOMLEFT"/>
+						</Anchors>
+					</Frame>
+					<StatusBar name="$parentEarthResistanceFrame" inherits="AttributeFrameTemplate">
+						<Anchors>
+							<Anchor point="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="9" y="-96"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</StatusBar>
+					<StatusBar name="$parentWaterResistanceFrame" inherits="AttributeFrameTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="EarthResistanceFrame" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</StatusBar>
+					<StatusBar name="$parentFireResistanceFrame" inherits="AttributeFrameTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="WaterResistanceFrame" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</StatusBar>
+					<StatusBar name="$parentWindResistanceFrame" inherits="AttributeFrameTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="FireResistanceFrame" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</StatusBar>
+					<StatusBar name="$parentLightResistanceFrame" inherits="AttributeFrameTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="WindResistanceFrame" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</StatusBar>
+					<StatusBar name="$parentDarkResistanceFrame" inherits="AttributeFrameTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="LightResistanceFrame" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</StatusBar>
+				</Frames>
+			</Frame>
+			<Frame name="$parentEquipmentFrame" id="1">
+				<Size>
+					<AbsDimension x="290" y="390"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="168" y="32"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Frames>
+					<Frame name="$parentEquipmentMainClassFrame" inherits="CharacterClassFrameTempate" frameStrata="BACKGROUND" frameLevel="-100">
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset>
+									<AbsDimension x="8" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentEquipmentDeputyClassFrame" inherits="CharacterClassFrameTempate" frameStrata="BACKGROUND" frameLevel="-100">
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset>
+									<AbsDimension x="150" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentEquipmentPeperdollFrame" frameStrata="BACKGROUND" frameLevel="1">
+						<Size>
+							<AbsDimension x="191" y="238"/>
+						</Size>
+						<Anchors>
+							<Anchor point="BOTTOM" relativePoint="TOPLEFT">
+								<Offset>
+									<AbsDimension x="138" y="310"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Backdrop edgeFile="Interface\CharacterFrame\Peperdoll-Backdrop-Border" bgFile="interface\CharacterFrame\Peperdoll-Backdrop-Background">
+							<EdgeSize>
+								<AbsValue val="64"/>
+							</EdgeSize>
+							<TileSize>
+								<AbsValue val="16"/>
+							</TileSize>
+						</Backdrop>
+					</Frame>
+					<Model name="$parentEquipmentModel" inherits="CommonModelTemplate" frameStrata="BACKGROUND" frameLevel="2">
+						<Size>
+							<AbsDimension x="180" y="220"/>
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentEquipmentPeperdollFrame">
+								<Offset>
+									<AbsDimension x="4" y="4"/>
+								</Offset>
+							</Anchor>
+							<Anchor point="BOTTOMRIGHT" relativeTo="$parentEquipmentPeperdollFrame">
+								<Offset>
+									<AbsDimension x="-2" y="-2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>
+								CommonModel_OnLoad(this);
+
+								this.top = "p_top";
+								this.bottom = "p_down";
+								this.bias_default   = 0.5;
+								this.scale_default  = 0.44;
+
+								this.bias_max       = 1.50;
+								this.bias_min       = -0.50;
+
+							</OnLoad>
+						</Scripts>
+					</Model>
+					<Button name="$parentEquipRing0Slot" inherits="CPEquipItemButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset>
+									<AbsDimension x="40" y="32"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="$parentEquipRing1Slot" inherits="CPEquipItemButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentEquipRing0Slot" relativePoint="TOPRIGHT">
+								<Offset>
+									<AbsDimension x="4" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="$parentEquipEarring0Slot" inherits="CPEquipItemButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentEquipRing1Slot" relativePoint="TOPRIGHT">
+								<Offset>
+									<AbsDimension x="4" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="$parentEquipEarring1Slot" inherits="CPEquipItemButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentEquipEarring0Slot" relativePoint="TOPRIGHT">
+								<Offset>
+									<AbsDimension x="4" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="$parentEquipNecklaceSlot" inherits="CPEquipItemButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentEquipEarring1Slot" relativePoint="TOPRIGHT">
+								<Offset>
+									<AbsDimension x="4" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="$parentEquipTalisman0Slot" inherits="CPEquipItemButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPRIGHT" relativeTo="$parentEquipNecklaceSlot" relativePoint="BOTTOMRIGHT">
+								<Offset>
+									<AbsDimension x="-6" y="7"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="$parentEquipTalisman1Slot" inherits="CPEquipItemButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentEquipTalisman0Slot" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="$parentEquipTalisman2Slot" inherits="CPEquipItemButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentEquipTalisman1Slot" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="$parentEquipHeadSlot" inherits="CPEquipItemButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset>
+									<AbsDimension x="2" y="76"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="$parentEquipChestSlot" inherits="CPEquipItemButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentEquipHeadSlot" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="$parentEquipWaistSlot" inherits="CPEquipItemButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentEquipChestSlot" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="$parentEquipLegsSlot" inherits="CPEquipItemButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentEquipWaistSlot" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="$parentEquipMainHandSlot" inherits="CPEquipItemButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentEquipLegsSlot" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="$parentEquipRangedSlot" inherits="CPEquipItemButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentEquipMainHandSlot" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="$parentEquipShoulderSlot" inherits="CPEquipItemButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPRIGHT">
+								<Offset>
+									<AbsDimension x="-16" y="76"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="$parentEquipHandsSlot" inherits="CPEquipItemButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentEquipShoulderSlot" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="$parentEquipFeetSlot" inherits="CPEquipItemButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentEquipHandsSlot" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="$parentEquipBackSlot" inherits="CPEquipItemButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentEquipFeetSlot" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="$parentEquipSecondaryHandSlot" inherits="CPEquipItemButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentEquipBackSlot" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="$parentEquipAdornmentSlot" inherits="CPEquipItemButtonTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentEquipSecondaryHandSlot" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="4"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="$parentEquipAmmoSlot" frameLevel="1">
+						<Size>
+							<AbsDimension x="32" y="32"/>
+						</Size>
+						<Anchors>
+							<Anchor point="BOTTOMLEFT" relativeTo="$parentEquipRangedSlot" relativePoint="BOTTOMRIGHT">
+								<Offset>
+									<AbsDimension x="4" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Layers>
+							<Layer level="BACKGROUND">
+								<Texture file="Interface\CharacterFrame\Equipment-AmmoSlot-Normal"/>
+								<Texture name="$parentQuality" file="Interface\Buttons\QuickSlot-QualityBorder01" hidden="true" alphaMode="ADD">
+									<Size>
+										<AbsDimension x="64" y="64"/>
+									</Size>
+									<Anchors>
+										<Anchor point="CENTER"/>
+									</Anchors>
+								</Texture>
+							</Layer>
+							<Layer level="BORDER">
+								<Texture name="$parentIcon">
+									<Size>
+										<AbsDimension x="26" y="26"/>
+									</Size>
+									<Anchors>
+										<Anchor point="CENTER"/>
+									</Anchors>
+								</Texture>
+							</Layer>
+							<Layer level="ARTWORK">
+								<Texture file="Interface\CharacterFrame\Equipment-AmmoSlot-Arrow">
+									<Size>
+										<AbsDimension x="16" y="16"/>
+									</Size>
+									<Anchors>
+										<Anchor point="LEFT">
+											<Offset>
+												<AbsDimension x="-10" y="0"/>
+											</Offset>
+										</Anchor>
+									</Anchors>
+								</Texture>
+								<FontString name="$parentCount" inherits="NumberFontNormal" justifyH="RIGHT" hidden="true">
+									<Anchors>
+										<Anchor point="BOTTOMRIGHT">
+											<Offset>
+												<AbsDimension x="-5" y="-2"/>
+											</Offset>
+										</Anchor>
+									</Anchors>
+								</FontString>
+								<FontString name="$parentStock" inherits="NumberFontNormalYellow" justifyH="LEFT" hidden="true">
+									<Anchors>
+										<Anchor point="TOPLEFT">
+											<Offset>
+												<AbsDimension x="2" y="2"/>
+											</Offset>
+										</Anchor>
+									</Anchors>
+								</FontString>
+							</Layer>
+							<Layer level="OVERLAY">
+								<Texture name="$parentInvalid" file="Interface\Buttons\QuickSlot-Red" hidden="true"/>
+							</Layer>
+						</Layers>
+						<HighlightTexture file="Interface\Buttons\QuickSlot-Highlight" alphaMode="ADD"/>
+					</Button>
+					<Frame name="$parentIntroductionFrame" frameStrata="BACKGROUND" frameLevel="-2">
+						<Size>
+							<AbsDimension x="278" y="79"/>
+						</Size>
+						<Anchors>
+							<Anchor point="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Backdrop edgeFile="Interface\Tooltips\Tooltip-border" bgFile="Interface\Tooltips\Tooltip-background">
+							<BackgroundInsets>
+								<AbsInset top="6" left="6" bottom="6" right="6"/>
+							</BackgroundInsets>
+							<EdgeSize>
+								<AbsValue val="16"/>
+							</EdgeSize>
+							<TileSize>
+								<AbsValue val="16"/>
+							</TileSize>
+						</Backdrop>
+						<Layers>
+							<Layer>
+								<FontString name="$parentText" inherits="GameFontNormal" justifyH="LEFT" justifyV="TOP">
+									<Size>
+										<AbsDimension x="262" y="65"/>
+									</Size>
+									<Anchors>
+										<Anchor point="TOPLEFT">
+											<Offset>
+												<AbsDimension x="8" y="8"/>
+											</Offset>
+										</Anchor>
+									</Anchors>
+								</FontString>
+							</Layer>
+						</Layers>
+					</Frame>
+				</Frames>
+			</Frame>
+		</Frames>
+	</Frame>
+</Ui>
