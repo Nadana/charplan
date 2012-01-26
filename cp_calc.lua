@@ -61,7 +61,7 @@ function Calc.GetCardBonus()
         local count = LuaFunc_GetCardMaxCount(i)
         for j =0, count do
             local id, own = LuaFunc_GetCardInfo(i , j)
-            if own then
+            if (own or 0)>0 then
                 local effect, effvalues  = CP.DB.GetCardEffect(id)
                 for i, ef in ipairs(effect or {}) do
                     Calc.CardsBonus[ef] = (Calc.CardsBonus[ef] or 0) + effvalues[i]
@@ -133,7 +133,7 @@ function Calc.Bases()
 end
 
 function Calc.Cards()
-    for id, val in pairs(CP.CardsBonus or {}) do
+    for id, val in pairs(Calc.CardsBonus or {}) do
         AddValue(id, val, CP.L.BY_CARD)
     end
 end
