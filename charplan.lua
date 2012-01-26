@@ -215,6 +215,40 @@ end
 
 
 
+
+function CP.PimpStart(slot)
+    local data = CP.Items[CPEquipButtonMenu.Slot]
+    assert(data)
+    CP.Pimp.PimpItem( data )
+end
+
+function CP.PimpFinished()
+    CP.UpdatePoints()
+end
+
+function CP.PimpUpdate()
+
+    local new_vals = {}
+    local temp_desc = {}
+
+    CP.Calc.RecalcPoints(new_vals, temp_desc)
+
+
+    local att=CP.Calc.STATS
+
+    for id,frame in pairs(CP.AttributeFields) do
+        ctrl = _G[frame:GetName().."Value"]
+
+        local old, new = CP.Stats[att[id]] , new_vals[att[id]]
+        if old > new then
+            ctrl:SetText("|cffff2020"..math.floor(new))
+        elseif old < new then
+            ctrl:SetText("|cff20ff20"..math.floor(new))
+        else
+            ctrl:SetText(math.floor(new))
+        end
+    end
+end
 -----------------------------------
 -- Menu
 function CP.OnMenuLoad(this)
@@ -383,7 +417,7 @@ function CP.EquipItem_ShowMenu( this )
         local data = CP.Items[CPEquipButtonMenu.Slot]
         if data then
             info.text = string.format(CP.L.CONTEXT_PIMPME,data.name)
-            info.func = function() CP.Pimp.PimpItem( data ) end
+            info.func = function() CP.PimpStart(CPEquipButtonMenu.Slot) end
             UIDropDownMenu_AddButton(info)
         end
 

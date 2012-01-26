@@ -87,6 +87,7 @@ end
 
 function Pimp.PimpItem(item_data)
     Pimp.data = item_data
+    Pimp.data_backup = table.copy(item_data)
 
     Pimp.FillFields()
     CPPimpMe:Show()
@@ -99,26 +100,29 @@ function Pimp.FillFields()
     SetItemButtonTexture(CPPimpMeItem, data.icon)
 
     UIDropDownMenu_SetSelectedValue(CPPimpMeAttrPlus, data.plus)
-    CPPimpMeAttrPlusText:SetText(data.plus)
+    CPPimpMeAttrPlusText:SetText("+"..tostring(data.plus))
     UIDropDownMenu_SetSelectedValue(CPPimpMeAttrTier, data.tier)
     CPPimpMeAttrTierText:SetText(data.tier)
 
-    CPPimpMeAttrStat1:SetText(Pimp.StatName(data.stats[1]))
-    CPPimpMeAttrStat2:SetText(Pimp.StatName(data.stats[2]))
-    CPPimpMeAttrStat3:SetText(Pimp.StatName(data.stats[3]))
-    CPPimpMeAttrStat4:SetText(Pimp.StatName(data.stats[4]))
-    CPPimpMeAttrStat5:SetText(Pimp.StatName(data.stats[5]))
-    CPPimpMeAttrStat6:SetText(Pimp.StatName(data.stats[6]))
-    CPPimpMeAttrRune1:SetText(Pimp.StatName(data.runes[1]))
-    CPPimpMeAttrRune2:SetText(Pimp.StatName(data.runes[2]))
-    CPPimpMeAttrRune3:SetText(Pimp.StatName(data.runes[3]))
-    CPPimpMeAttrRune4:SetText(Pimp.StatName(data.runes[4]))
+    Pimp.OnStatCtrlSetValue(CPPimpMeAttrStat1, data.stats[1])
+    Pimp.OnStatCtrlSetValue(CPPimpMeAttrStat2, data.stats[2])
+    Pimp.OnStatCtrlSetValue(CPPimpMeAttrStat3, data.stats[3])
+    Pimp.OnStatCtrlSetValue(CPPimpMeAttrStat4, data.stats[4])
+    Pimp.OnStatCtrlSetValue(CPPimpMeAttrStat5, data.stats[5])
+    Pimp.OnStatCtrlSetValue(CPPimpMeAttrStat6, data.stats[6])
+
+    Pimp.OnStatCtrlSetValue(CPPimpMeAttrRune1, data.runes[1])
+    Pimp.OnStatCtrlSetValue(CPPimpMeAttrRune2, data.runes[2])
+    Pimp.OnStatCtrlSetValue(CPPimpMeAttrRune3, data.runes[3])
+    Pimp.OnStatCtrlSetValue(CPPimpMeAttrRune4, data.runes[4])
+
 
     Pimp.UpdateInfo()
 end
 
 function Pimp.UpdateInfo()
     Pimp.SetHyperLink( Pimp.GenerateLink(Pimp.data) )
+    CP.PimpUpdate()
 end
 
 function Pimp.StatName(id)
@@ -132,8 +136,30 @@ end
 
 
 function Pimp.OnShow(this)
-    CPPimpMeTitle:SetText("Pimp Me")
+    this:ResetFrameOrder()
+
+    CPPimpMeAttrDuraLabel:SetText(CP.L.PIMP_DURA)
 end
+
+function Pimp.OnHide(this)
+    Pimp.data = nil
+    Pimp.data_backup = nil
+    CP.PimpFinished()
+end
+
+function Pimp.OnOK(this)
+    CPPimpMe:Hide()
+end
+
+function Pimp.OnCancel(this)
+    if Pimp.data_backup then
+        table.copy(Pimp.data, Pimp.data_backup)
+    end
+    CPPimpMe:Hide()
+end
+
+
+
 
 function Pimp.OnCtrlLoad(this)
 
@@ -143,8 +169,11 @@ function Pimp.OnCtrlLoad(this)
     UIDropDownMenu_Initialize(this, Pimp["OnCtrlShow_"..name])
     this.attribute = name
 
-    -- TODO: localize
-    _G[this:GetName().."Label"]:SetText(name)
+    if name=="Plus" then
+        _G[this:GetName().."Label"]:SetText(CP.L.PIMP_PLUS)
+    else
+        _G[this:GetName().."Label"]:SetText(CP.L.PIMP_TIER)
+    end
 end
 
 function Pimp.OnCtrlShow_Plus(button)
@@ -152,6 +181,7 @@ function Pimp.OnCtrlShow_Plus(button)
     for i=0,16 do
         info.text = "+"..i
         info.value = i
+        info.notCheckable=1
         info.func = Pimp.OnCtrlClicked_Plus
         UIDropDownMenu_AddButton(info)
     end
@@ -168,6 +198,7 @@ function Pimp.OnCtrlShow_Tier(button)
     for i=0,10 do
         info.text = i
         info.value = i
+        info.notCheckable=1
         info.func = Pimp.OnCtrlClicked_Tier
         UIDropDownMenu_AddButton(info)
     end
@@ -177,6 +208,35 @@ function Pimp.OnCtrlClicked_Tier(button)
     UIDropDownMenu_SetSelectedValue(CPPimpMeAttrTier, button.value)
     Pimp.data.tier = button.value
     Pimp.UpdateInfo()
+end
+
+
+function Pimp.OnStatCtrlLoad(this)
+    local id = this:GetID()
+    if id<7 then
+        _G[this:GetName().."Label"]:SetText( string.format(CP.L.PIMP_STAT,id))
+    else
+        _G[this:GetName().."Label"]:SetText( string.format(CP.L.PIMP_RUNE,id-6))
+    end
+
+    UIDropDownMenu_SetWidth(_G[this:GetName().."Tier"], 30)
+end
+
+function Pimp.OnStatCtrlSetValue(button, id)
+    local namebtn = _G[button:GetName().."Name"]
+    local tierbtn = _G[button:GetName().."Tier"]
+    if id>0 then
+        namebtn:SetText(TEXT(string.format("Sys%06i_name",id)))
+    else
+        namebtn:SetText("")
+    end
+
+end
+
+function Pimp.OnStatSelSearch(this)
+    CPStatSearch:ClearAllAnchors()
+    CPStatSearch:SetAnchor("TOPLEFT", "TOPLEFT", this, 16, 16 )
+    CPStatSearch:Show()
 end
 
 -----------------------------------

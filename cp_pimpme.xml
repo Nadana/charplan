@@ -1,16 +1,125 @@
 <Ui xmlns="http://www.runewaker.com/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.runewaker.com/ ../../worldxml/ui.xsd">
 
+	<!-- Stat Search Dialog!-->
+	<Frame name="CPStatSearchItemTemplate" virtual="true">
+		<Size><AbsDimension x="300" y="50"></AbsDimension></Size>
+		<Layers>
+			<Layer>
+				<FontString name="$parentName" inherits="GameFontNormal">
+					<Size>
+						<AbsDimension x="90" y="14"></AbsDimension>
+					</Size>
+				</FontString>
+				<FontString name="$parentValue" inherits="GameFontNormal">
+					<Size>
+						<AbsDimension x="90" y="14"></AbsDimension>
+					</Size>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentName" relativePoint="RIGHT"></Anchor>
+				</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>
+	<Frame name="CPStatSearch" hidden="true">
+		<Size><AbsDimension x="400" y="600"></AbsDimension></Size>
+		<HitRectInsets>
+			<AbsInset left="0" right="47" top="0" bottom="80"/>
+		</HitRectInsets>
+		<Layers>
+			<Layer level="BACKGROUND">
+				<Texture name="$parentTopLeft" file="Interface\Common\PanelNoTabFrame-TopLeft">
+					<Size>
+						<AbsDimension x="256" y="256"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentTopRight" file="Interface\Common\PanelNoTabFrame-TopRight">
+					<Size>
+						<AbsDimension x="128" y="256"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPRIGHT"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBotLeft" file="Interface\Common\PanelShortFrame-BotLeft">
+					<Size>
+						<AbsDimension x="256" y="256"/>
+					</Size>
+					<Anchors>
+						<Anchor point="BOTTOMLEFT"/>
+					</Anchors>
+				</Texture>
+				<Texture name="$parentBotRight" file="Interface\Common\PanelShortFrame-BotRight">
+					<Size>
+						<AbsDimension x="128" y="256"/>
+					</Size>
+					<Anchors>
+						<Anchor point="BOTTOMRIGHT"/>
+					</Anchors>
+				</Texture>
+			</Layer>
+			<Layer level="ARTWORK">
+				<FontString name="$parentTitleText" inherits="GameTitleFont">
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="-21" y="8"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parentTitleFrame" inherits="UIPanelTitleFrameTemplate" frameStrata="HIGH">
+				<Size>
+					<AbsDimension x="314" y="29"/>
+				</Size>
+			</Frame>
+			<Frame name="$parentItem1" inherits="CPStatSearchItemTemplate">
+				<Anchors><Anchor point="TOPLEFT"><Offset><AbsDimension x="10" y="60"></AbsDimension></Offset></Anchor>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentItem2" inherits="CPStatSearchItemTemplate">
+				<Anchors><Anchor point="TOPLEFT" relativeTo="$parentItem1" relativePoint="BOTTOMLEFT" /></Anchors>
+			</Frame>
+			<Frame name="$parentItem3" inherits="CPStatSearchItemTemplate">
+				<Anchors><Anchor point="TOPLEFT" relativeTo="$parentItem2" relativePoint="BOTTOMLEFT" /></Anchors>
+			</Frame>
+			<Frame name="$parentItem4" inherits="CPStatSearchItemTemplate">
+				<Anchors><Anchor point="TOPLEFT" relativeTo="$parentItem3" relativePoint="BOTTOMLEFT" /></Anchors>
+			</Frame>
+			<Frame name="$parentItem5" inherits="CPStatSearchItemTemplate">
+				<Anchors><Anchor point="TOPLEFT" relativeTo="$parentItem4" relativePoint="BOTTOMLEFT" /></Anchors>
+			</Frame>
+			<Frame name="$parentItem6" inherits="CPStatSearchItemTemplate">
+				<Anchors><Anchor point="TOPLEFT" relativeTo="$parentItem5" relativePoint="BOTTOMLEFT" /></Anchors>
+			</Frame>
+		</Frames>
+		<Scripts>
+			<OnLoad>UIPanelFrame_Initialize(this, nil, nil)</OnLoad>
+		</Scripts>
+		
+	</Frame>
+	
+	<!-- Main Dialog!-->
 	<Frame name="CPPimpDropDown" inherits="UIDropDownMenuTemplate" virtual="true">
 		<Size>
-			<AbsDimension x="40" y="24"/>
+			<AbsDimension x="40" y="25"/>
 		</Size>
 		<Layers>
 			<Layer>
 				<FontString name="$parentLabel" inherits="GameFontHighlight">
+					<Size>
+						<AbsDimension x="50" y="16"></AbsDimension>
+					</Size>
 					<Anchors>
 						<Anchor point="LEFT">
 							<Offset>
-								<AbsDimension x="-50" y="1"/>
+								<AbsDimension x="-40" y="1"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -21,11 +130,57 @@
 			<OnLoad>CP.Pimp.OnCtrlLoad(this)</OnLoad>
 		</Scripts>
 	</Frame>
+	<Frame name="CPStatSelectionTemplate" virtual="true">
+		<Size><AbsDimension x="160" y="24"></AbsDimension></Size>
+		<Layers>
+			<Layer>
+				<FontString name="$parentLabel" inherits="GameFontHighlight"  justifyH="LEFT" text="Rune X">
+					<Size><AbsDimension x="46" y="16"></AbsDimension></Size>
+					<Anchors><Anchor point="LEFT"></Anchor></Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<EditBox name="$parentName" inherits="UIPanelEditBoxTemplate">
+				<Size><AbsDimension x="100" y="22"></AbsDimension></Size>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentLabel" relativePoint="RIGHT"></Anchor>
+				</Anchors>
+				<FontString inherits="GameFontNormalSmall" />
+				<TextInsets><AbsInset top="5" right="3" left="3" bottom="0"></AbsInset></TextInsets>
+			</EditBox>
+			<Frame name="$parentTier" inherits="UIDropDownMenuTemplate">
+				<Size><AbsDimension x="40" y="20"></AbsDimension></Size>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentName" relativePoint="RIGHT"></Anchor>
+				</Anchors>
+			</Frame>
+			<Button name="$parentSearch" inherits="UIPanelButtonTemplate" text="....">
+				<Size><AbsDimension x="25" y="24"></AbsDimension></Size>
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentTier" relativePoint="RIGHT"></Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>CP.Pimp.OnStatSelSearch(this:GetParent())</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>CP.Pimp.OnStatCtrlLoad(this)</OnLoad>
+		</Scripts>
+	</Frame>
 
-	<Frame name="CPPimpMe" parent="UIParent"  inherits="UICommonFrameTemplate">
+	<Frame name="CPPimpMe" parent="CPFrame" inherits="UICommonFrameTemplate">
 		<Size>
-			<AbsDimension x="600" y="450"/>
+			<AbsDimension x="654" y="450"/>
 		</Size>
+		<Anchors>
+			<Anchor point="TOPLEFT" relativePoint="TOP" relativeTo="CPFrame">
+				<Offset>
+					<AbsDimension x="0" y="-10"/>
+				</Offset>								
+			</Anchor>			
+		</Anchors>		
 		<Frames>
 			<GameTooltip name="$parentToolTip" inherits="GameTooltipTemplate">
 				<Anchors>
@@ -37,17 +192,10 @@
 					</Anchor>
 				</Anchors>
 			</GameTooltip>
-			<Button name="$parentItem" inherits="ItemButtonTemplate">
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset><AbsDimension x="430" y="40" /></Offset>
-						</Anchor>
-					</Anchors>
-			</Button>
 			<Frame name="CPPimpMeAttr">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentItem" relativePoint="BOTTOMLEFT">
-						<Offset><AbsDimension x="0" y="10" /></Offset>
+					<Anchor point="TOPLEFT">
+						<Offset><AbsDimension x="415" y="36" /></Offset>
 					</Anchor>
 					<Anchor point="BOTTOMRIGHT">
 						<Offset><AbsDimension x="-10" y="-10" /></Offset>
@@ -62,7 +210,7 @@
 							<Anchors>
 								<Anchor point="TOP">
 									<Offset>
-										<AbsDimension x="2" y="48"/>
+										<AbsDimension x="2" y="80"/>
 									</Offset>
 								</Anchor>
 							</Anchors>
@@ -74,172 +222,102 @@
 							<Anchors>
 								<Anchor point="TOP">
 									<Offset>
-										<AbsDimension x="2" y="108"/>
+										<AbsDimension x="2" y="235"/>
 									</Offset>
 								</Anchor>
 							</Anchors>
 						</Texture>
-						<Texture file="Interface\Common\PanelSeparate-HorizontalLine">
-							<Size>
-								<AbsDimension x="142" y="4"/>
-							</Size>
-							<Anchors>
-								<Anchor point="TOP">
-									<Offset>
-										<AbsDimension x="2" y="162"/>
-									</Offset>
-								</Anchor>
-							</Anchors>
-						</Texture>
-					</Layer>
-					<Layer>
-						<FontString name="$parentStat1" inherits="GameFontNormal">
-							<Size>
-								<AbsDimension x="150" y="20"/>
-							</Size>
+						<FontString name="$parentDuraLabel" inherits="GameFontHighlight">
+							<Size><AbsDimension x="50" y="16"></AbsDimension></Size>
 							<Anchors>
 								<Anchor point="TOPLEFT">
-									<Offset>
-										<AbsDimension x="10" y="90"/>
-									</Offset>
-								</Anchor>
-							</Anchors>
-						</FontString>
-						<FontString name="$parentStat2" inherits="GameFontNormal">
-							<Size>
-								<AbsDimension x="150" y="20"/>
-							</Size>
-							<Anchors>
-								<Anchor point="TOPLEFT">
-									<Offset>
-										<AbsDimension x="10" y="110"/>
-									</Offset>
-								</Anchor>
-							</Anchors>
-						</FontString>
-						<FontString name="$parentStat3" inherits="GameFontNormal">
-							<Size>
-								<AbsDimension x="150" y="20"/>
-							</Size>
-							<Anchors>
-								<Anchor point="TOPLEFT">
-									<Offset>
-										<AbsDimension x="10" y="140"/>
-									</Offset>
-								</Anchor>
-							</Anchors>
-						</FontString>
-						<FontString name="$parentStat4" inherits="GameFontNormal">
-							<Size>
-								<AbsDimension x="150" y="20"/>
-							</Size>
-							<Anchors>
-								<Anchor point="TOPLEFT">
-									<Offset>
-										<AbsDimension x="10" y="170"/>
-									</Offset>
-								</Anchor>
-							</Anchors>
-						</FontString>
-						<FontString name="$parentStat5" inherits="GameFontNormal">
-							<Size>
-								<AbsDimension x="150" y="20"/>
-							</Size>
-							<Anchors>
-								<Anchor point="TOPLEFT">
-									<Offset>
-										<AbsDimension x="10" y="200"/>
-									</Offset>
-								</Anchor>
-							</Anchors>
-						</FontString>
-						<FontString name="$parentStat6" inherits="GameFontNormal">
-							<Size>
-								<AbsDimension x="150" y="20"/>
-							</Size>
-							<Anchors>
-								<Anchor point="TOPLEFT">
-									<Offset>
-										<AbsDimension x="10" y="230"/>
-									</Offset>
-								</Anchor>
-							</Anchors>
-						</FontString>
-						<FontString name="$parentRune1" inherits="GameFontNormal">
-							<Size>
-								<AbsDimension x="150" y="20"/>
-							</Size>
-							<Anchors>
-								<Anchor point="TOPLEFT">
-									<Offset>
-										<AbsDimension x="10" y="260"/>
-									</Offset>
-								</Anchor>
-							</Anchors>
-						</FontString>
-						<FontString name="$parentRune2" inherits="GameFontNormal">
-							<Size>
-								<AbsDimension x="150" y="20"/>
-							</Size>
-							<Anchors>
-								<Anchor point="TOPLEFT">
-									<Offset>
-										<AbsDimension x="10" y="290"/>
-									</Offset>
-								</Anchor>
-							</Anchors>
-						</FontString>
-						<FontString name="$parentRune3" inherits="GameFontNormal">
-							<Size>
-								<AbsDimension x="150" y="20"/>
-							</Size>
-							<Anchors>
-								<Anchor point="TOPLEFT">
-									<Offset>
-										<AbsDimension x="10" y="320"/>
-									</Offset>
-								</Anchor>
-							</Anchors>
-						</FontString>
-						<FontString name="$parentRune4" inherits="GameFontNormal">
-							<Size>
-								<AbsDimension x="150" y="20"/>
-							</Size>
-							<Anchors>
-								<Anchor point="TOPLEFT">
-									<Offset>
-										<AbsDimension x="10" y="350"/>
-									</Offset>
+									<Offset><AbsDimension x="40" y="50"/></Offset>
 								</Anchor>
 							</Anchors>
 						</FontString>
 					</Layer>
 				</Layers>
 				<Frames>
+					<Button name="CPPimpMeItem" inherits="ItemButtonTemplate">
+							<Anchors><Anchor point="TOPLEFT" /></Anchors>
+					</Button>
 					<Frame name="$parentPlus" inherits="CPPimpDropDown">
 						<Anchors>
-							<Anchor point="TOPLEFT"><Offset><AbsDimension x="50" y="0"/></Offset></Anchor>
+							<Anchor point="TOPLEFT"><Offset><AbsDimension x="100" y="7"/></Offset></Anchor>
 						</Anchors>
 					</Frame>
 					<Frame name="$parentTier" inherits="CPPimpDropDown">
 						<Anchors>
-							<Anchor point="TOPLEFT"><Offset><AbsDimension x="50" y="35"/></Offset></Anchor>
+							<Anchor point="TOPLEFT" relativeTo="$parentPlus" relativePoint="BOTTOMLEFT"/>
 						</Anchors>
 					</Frame>
 					<EditBox name="$parentDura" inherits="UIPanelEditBoxTemplate" numeric="true">
 						<Size>
-							<AbsDimension x="50" y="20"/>
+							<AbsDimension x="40" y="22"/>
 						</Size>
 						<Anchors>
-							<Anchor point="TOPLEFT"><Offset><AbsDimension x="50" y="70"/></Offset>
+							<Anchor point="TOPLEFT" relativeTo="$parentTier" relativePoint="BOTTOMLEFT"><Offset><AbsDimension x="5" y="3"/></Offset>
 							</Anchor>
 						</Anchors>
-					</EditBox>					
+					</EditBox>
+					<Frame name="$parentStat1" inherits="CPStatSelectionTemplate" id="1">
+						<Anchors>
+							<Anchor point="TOPLEFT"><Offset><AbsDimension x="0" y="85"/></Offset></Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentStat2" inherits="CPStatSelectionTemplate" id="2">
+						<Anchors><Anchor point="TOPLEFT" relativeTo="$parentStat1" relativePoint="BOTTOMLEFT" /></Anchors>
+					</Frame>
+					<Frame name="$parentStat3" inherits="CPStatSelectionTemplate" id="3">
+						<Anchors><Anchor point="TOPLEFT" relativeTo="$parentStat2" relativePoint="BOTTOMLEFT" /></Anchors>
+					</Frame>
+					<Frame name="$parentStat4" inherits="CPStatSelectionTemplate" id="4">
+						<Anchors><Anchor point="TOPLEFT" relativeTo="$parentStat3" relativePoint="BOTTOMLEFT" /></Anchors>
+					</Frame>
+					<Frame name="$parentStat5" inherits="CPStatSelectionTemplate" id="5">
+						<Anchors><Anchor point="TOPLEFT" relativeTo="$parentStat4" relativePoint="BOTTOMLEFT" /></Anchors>
+					</Frame>
+					<Frame name="$parentStat6" inherits="CPStatSelectionTemplate" id="6">
+						<Anchors><Anchor point="TOPLEFT" relativeTo="$parentStat5" relativePoint="BOTTOMLEFT" /></Anchors>
+					</Frame>
+					<Frame name="$parentRune1" inherits="CPStatSelectionTemplate" id="7">
+						<Anchors>
+							<Anchor point="TOPLEFT"><Offset><AbsDimension x="0" y="245"/></Offset></Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentRune2" inherits="CPStatSelectionTemplate" id="8">
+						<Anchors><Anchor point="TOPLEFT" relativeTo="$parentRune1" relativePoint="BOTTOMLEFT" /></Anchors>
+					</Frame>
+					<Frame name="$parentRune3" inherits="CPStatSelectionTemplate" id="9">
+						<Anchors><Anchor point="TOPLEFT" relativeTo="$parentRune2" relativePoint="BOTTOMLEFT" /></Anchors>
+					</Frame>
+					<Frame name="$parentRune4" inherits="CPStatSelectionTemplate" id="10">
+						<Anchors><Anchor point="TOPLEFT" relativeTo="$parentRune3" relativePoint="BOTTOMLEFT" /></Anchors>
+					</Frame>
+					<Button name="$parentBtnOK" inherits="UIPanelButtonTemplate" text="OK">
+						<Size><AbsDimension x="60" y="24"></AbsDimension></Size>
+						<Anchors>
+							<Anchor point="BOTTOM"><Offset><AbsDimension x="-45" y="-10"></AbsDimension></Offset></Anchor>
+						</Anchors>
+						<Scripts>
+							<OnClick>CP.Pimp.OnOK(this)</OnClick>
+						</Scripts>
+					</Button>
+					<Button name="$parentBtnCancel" inherits="UIPanelButtonTemplate" text="CANCEL">
+						<Size><AbsDimension x="60" y="24"></AbsDimension></Size>
+						<Anchors>
+							<Anchor point="BOTTOM"><Offset><AbsDimension x="55" y="-10"></AbsDimension></Offset></Anchor>
+						</Anchors>
+						<Scripts>
+							<OnClick>CP.Pimp.OnCancel(this)</OnClick>
+						</Scripts>
+					</Button>
 				</Frames>
 			</Frame>
 		</Frames>
 		<Scripts>
 			<OnShow>CP.Pimp.OnShow(this)</OnShow>
+			<OnHide>CP.Pimp.OnHide(this)</OnHide>
 		</Scripts>
 	</Frame>
 </Ui>

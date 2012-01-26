@@ -21,6 +21,12 @@ CP.L ={
     ERROR_NOSLOT = "A free Bag Slot is needed to import your current equipment",
     ERROR_PICKEDUPITEM = "There was a problem while scanning equipment! Check your current equipment!",
 
+    PIMP_STAT = "Stat %i",
+    PIMP_RUNE = "Rune %i",
+    PIMP_DURA = "Dura",
+    PIMP_PLUS = "Plus",
+    PIMP_TIER = "Tier",
+
     BY_CARD = "Monstercards",
 
     STAT_NAMES= {
