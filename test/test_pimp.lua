@@ -11,8 +11,8 @@ end
 
 function TestPimpMe:ExtractLink(itemlink)
 
-    local item_data = Pimp.ExtractLink(itemlink)
-    local test = Pimp.GenerateLink(item_data)
+    local item_data = CP.Pimp.ExtractLink(itemlink)
+    local test = CP.Pimp.GenerateLink(item_data)
 
     assertEquals(test,itemlink)
 

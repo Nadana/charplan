@@ -122,6 +122,10 @@ function CP.VARIABLES_LOADED()
     Hyperlink_Assign = CP.Hooked_Hyperlink_Assign
 
     CP.Storage.Init()
+
+    --@do-not-package@
+    SlashCmdList["charplan"](nil,"test")
+    --@end-do-not-package@
 end
 
 
