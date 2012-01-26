@@ -116,7 +116,12 @@ end
 function DB.GetItemIcon(item_id)
     local item = FindItem(item_id)
     if item then
-        return DB.images[ item.icon ]
+        local icon = DB.images[ item.icon ]
+        if icon then
+            return "interface/icons/" .. icon
+        else
+            CP.Debug("Not Icon: "..item.icon.." for Item: "..item_id)
+        end
     else
         CP.Debug("Item not in DB: "..item_id)
     end

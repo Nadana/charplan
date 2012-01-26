@@ -323,7 +323,6 @@ function CP.Hooked_Hyperlink_Assign(link, key)
 		info.func = function()
             CP.DB.Load()
 			CP.ApplyLinkItem(link)
-            CP.Debug("step 5")
             CP.DB.Release()
 		end
 		UIDropDownMenu_AddButton(info, 1)
