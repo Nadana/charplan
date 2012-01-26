@@ -30,6 +30,14 @@ _G.CP = CP
 
 CP_Storage={}
 
+
+CP.version       = "@project-version@"
+--@do-not-package@
+CP.version       = "v1.0 (alpha)"
+--@end-do-not-package@
+
+
+------------------------------
 SLASH_charplan1="/cp"
 SLASH_charplan2="/charplan"
 SlashCmdList["charplan"] = function(_,msg)
@@ -51,6 +59,8 @@ SlashCmdList["charplan"] = function(_,msg)
 
     ToggleUIFrame(CPFrame)
 end
+
+
 
 
 local Nyx = LibStub("Nyx")
@@ -90,7 +100,7 @@ end
 
 function CP.UpdateTitle()
     local stored = CP.Storage.GetLoadedName()
-    local name = CP.L.TITLE.." - " .. (stored or CP.L.TITLE_EMPTY)
+    local name = CP.L.TITLE.." "..CP.version.." - " .. (stored or CP.L.TITLE_EMPTY)
 
     CPFrameTitle:SetText(name)
 end
@@ -252,9 +262,9 @@ function CP.OnMenuShow(this)
             info.text = name
 
             if UIDROPDOWNMENU_MENU_VALUE=="load" then
-                info.func = function() CP.Storage.LoadItems(name) end
+                info.func = function() CP.Storage.LoadItems(name) CloseDropDownMenus() end
             elseif UIDROPDOWNMENU_MENU_VALUE=="del" then
-                info.func = function() CP.Storage.DeleteItems(name) end
+                info.func = function() CP.Storage.DeleteItems(name) CloseDropDownMenus() end
             end
 
             UIDropDownMenu_AddButton( info, 2 )

@@ -149,6 +149,8 @@ end
 
 
 
+--------
+-- item search
 function DB.GetItemForSlot(pos)
 
     local res={}

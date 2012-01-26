@@ -13,7 +13,7 @@ CP.L ={
     DLG_SAVENAME= "Enter Name",
     ENUMERATE_CANCELED = "Enumeration canceled",
 
-    CONTEXT_MENU = "|cffb0b030[CharPlan]|rAdd to plan",
+    CONTEXT_MENU = "|cffb0b030[CharPlan]|r Add to plan",
     CONTEXT_PIMPME= "Pimp: %s",
     CONTEXT_SEARCH= "Search",
     CONTEXT_CLEAR = "Clear",
