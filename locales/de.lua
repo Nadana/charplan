@@ -34,7 +34,9 @@ CP.L ={
         BASE = "Base",
         BASE2= "Base2",
         PHY= "Physical",
-        MAGIC="Magie",
+        MAGIC = MAGIC,
+		--MELEE = MELEE -- Nahkampf
+		--RANGE = RANGE -- Fernkampf
 
         STR = C_STR,
         DEX = C_AGI,
@@ -42,8 +44,8 @@ CP.L ={
         INT = C_INT,
         WIS = C_MND,
 
-        HP = "Hitpoints",
-        MANA = "Mana",
+        HP = SYS_HEALTH,
+        MANA = SYS_MANA,
 
         PDEF = C_PHYSICAL_DEFENCE,
         PARRY = C_PHYSICAL_PARRY,
@@ -51,11 +53,11 @@ CP.L ={
         PACC = "Accuracy",
 
         MDEF = C_MAGIC_DEFENCE,
-        MRES = "Magic resistance",
+        MRES = SYS_WEAREQTYPE_196,
         MDMG = C_MAGIC_DAMAGE,
         MATK = C_MAGIC_ATTACK,
         MCRIT = C_MAGIC_CRITICAL,
         MHEAL = C_MAGIC_HEAL_POINT,
-        MACC = "Magic accuracy",
+        MACC = _glossary_00755 ,
     },
 }
