@@ -28,6 +28,7 @@ function DB.Load()
     DB.armor = LoadTable("armor")
     DB.weapons = LoadTable("weapons")
     DB.bonus = LoadTable("addpower")
+    DB.runebonus = LoadTable("runes")
     DB.refines = LoadTable("refines")
     DB.cards = LoadTable("cards")
 end
@@ -43,6 +44,7 @@ function DB.Release()
             DB.armor = nil
             DB.weapons = nil
             DB.bonus = nil
+            DB.runebonus = nil
             DB.refines = nil
             DB.cards = nil
         collectgarbage("collect")
@@ -84,6 +86,14 @@ function DB.GetBonusEffect(boni_id)
         return DB.bonus[boni_id].efftype, DB.bonus[boni_id].effvalue
     else
         CP.Debug("Bonus not in DB: "..boni_id)
+    end
+end
+
+function DB.GetRunesEffect(rune_id)
+    if DB.runebonus[rune_id] then
+        return DB.runebonus[rune_id].efftype, DB.runebonus[rune_id].effvalue
+    else
+        CP.Debug("Rune not in DB: "..rune_id)
     end
 end
 

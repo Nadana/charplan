@@ -339,7 +339,13 @@ class BonusStuff
         return  @eqtypes.size>0
     end
 
-     def WriteLUAData(outf)
+    def SameEffects?(bonus)
+        @eqtypes.each { |v| return false unless bonus.eqtypes.find_index(v)}
+        bonus.eqtypes.each { |v| return false unless @eqtypes.find_index(v)}
+        return true
+    end
+
+    def WriteLUAData(outf)
         if @eqtypes.size>0 then
             outf << "efftype={#{@eqtypes.join(",")}},"
             outf << "effvalue={#{@eqvalues.join(",")}}"
@@ -357,7 +363,7 @@ class Table
     end
 
     def Table.Load(filename=nil)
-        items = Hash.new()
+        items=Hash.new
         filename = self::FILENAME if filename.nil?
 
         base_dir = $temp_path+"data\\"
@@ -370,8 +376,15 @@ class Table
             next if r.SkipThisItem?
             items[r.id]= r
         }
+
+        AfterLoad(items)
+
         return items
     end
+
+    def Table.AfterLoad(db)
+    end
+
 
     def Table.Export(filename, db)
         File.open(filename, 'wt') { |outf|
@@ -568,13 +581,77 @@ class WeaponEntry < ItemEntry
 end
 
 
-class PowerEntry < Table
+class AddPowerEntry < Table
 
+    FILENAME = "addpowerobject"
     attr_accessor :bonus
+    attr_accessor :group, :level
 
     def initialize(csv_row)
         super(csv_row)
         @bonus = BonusStuff.new(csv_row)
+
+        raise "unknown bonus stat" if @bonus.HasInvalidStat?
+    end
+
+    def SkipThisItem?
+        return @bonus.HasInvalidStat? || (not @bonus.HasStats?)
+    end
+
+    def AddPowerEntry.AfterLoad(db)
+        #~ groups = Set.new
+        #~ db.each { |id,r|
+                #~ name = $de.get_value("\"Sys#{id}_name\"")
+                #~ next if name.nil? or name =~/^Sys\d{6}_name$/
+                #~ count += 1
+                #~ matchdata = /^(.+)\s+\w+$/.match(name)
+                #~ if matchdata then
+                    #~ n = matchdata[1].strip
+                    #~ bonis.add(n)
+                #~ else
+                    #~ bonis.add(name)
+                #~ end
+            #~ }
+
+        #~ #bonis.each { |v| p v }
+        #~ p "#{count}->#{bonis.size}"
+
+
+#~ s = Set.new
+#~ s.add("aber")
+#~ s.add("dann")
+#~ p s.to_a
+#~ p s.to_a.index("aber")
+#~ p s.to_a.index("dann")
+#~ raise "stop"
+
+
+
+    end
+
+    def WriteLUAData(outf)
+        @bonus.WriteLUAData(outf)
+    end
+
+    def WriteLUA(outf)
+        outf.write( "  [%i]={" % id)
+        WriteLUAData(outf)
+        outf.write( "},\n")
+    end
+end
+
+class RunesEntry < Table
+
+    FILENAME = "runeobject"
+    attr_accessor :bonus
+    attr_accessor :level, :runegroup
+
+    def initialize(csv_row)
+        super(csv_row)
+        @bonus = BonusStuff.new(csv_row)
+        @level = csv_row['level'].to_i
+        @group = csv_row['runegroup'].to_i
+
         raise "unknown bonus stat" if @bonus.HasInvalidStat?
     end
 
@@ -583,6 +660,7 @@ class PowerEntry < Table
     end
 
     def WriteLUAData(outf)
+        outf.write( "grp=%i,lvl=%i," % [@group, @level])
         @bonus.WriteLUAData(outf)
     end
 
@@ -724,6 +802,7 @@ class FullDB
     attr_accessor :refines, :cards
 
     def Load
+
         p "Load Strings"
         $de = GetStringList("de")
 
@@ -738,12 +817,8 @@ class FullDB
         @weapons= WeaponEntry.Load()
 
         p "Load Bonuses"
-        @addpower= PowerEntry.Load("addpowerobject")
-        @runes= PowerEntry.Load("runeobject")
-        #~ Dump_Bonis(@addpower)
-        #~ Dump_Bonis(@runes)
-        #~ raise "stop"
-
+        @addpower= AddPowerEntry.Load()
+        @runes = RunesEntry.Load()
 
         p "Load Sets"
         @suits = SuitEntry.Load()
@@ -756,24 +831,6 @@ class FullDB
 
     end
 
-    def Dump_Bonis(db)
-        bonis = Set.new
-        db.each { |id,r|
-                name = $de.get_value("\"Sys#{id}_name\"")
-                p name
-                next
-                next if name.nil? or name =~/^Sys\d{6}_name$/
-                key=nil
-                if name =~ /^(?<key>.+)\s+\w+$/ then
-                    bonis.add(key)
-                else
-                    bonis.add(name)
-                end
-            }
-
-        bonis.each { |v| p v }
-    end
-
     def Export
         p "writting"
         File.open("../item_data/images.lua", 'wt') {|outf| @images.WriteLUATable(outf) }
@@ -781,13 +838,8 @@ class FullDB
         Table.Export("../item_data/sets.lua", @suits)
         Table.Export("../item_data/refines.lua", @refines)
         Table.Export("../item_data/cards.lua", @cards)
-
-        File.open("../item_data/addpower.lua", 'wt') { |outf|
-            outf.write("return {\n")
-            @addpower.each { |id, data| data.WriteLUA(outf)  }
-            @runes.each { |id, data| data.WriteLUA(outf)  }
-            outf.write("}\n")
-        }
+        Table.Export("../item_data/addpower.lua", @addpower)
+        Table.Export("../item_data/runes.lua", @runes)
 
         #ArmorEntry.TestWrite(armor)
         ArmorEntry.ExportLUA("../item_data/armor.lua", @armor)
