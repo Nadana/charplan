@@ -8,6 +8,7 @@ CP.L ={
     MENU_SAVE= "Save Items",
     MENU_SAVEAS= "Save Items as ...",
     MENU_DEL= "delete saved",
+	MENU_CLEARALL = "Clear Virtual-Slots",
 
     DLG_WAIT_INV= "Please wait while we enumerate you equipment",
     DLG_SAVENAME= "Enter Name",

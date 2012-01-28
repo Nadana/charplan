@@ -292,6 +292,15 @@ function CP.OnMenuShow(this)
             info.value="del"
             UIDropDownMenu_AddButton( info, 1 )
         end
+		info = {notCheckable = 1}
+		info.text = CP.L.MENU_CLEARALL
+		info.func = function() 
+			for id=1,16  do
+				CP.Items[id]=nil
+			end  
+			CP.UpdateEquipment() 
+			end
+		UIDropDownMenu_AddButton( info, 1 )
 
     elseif( UIDROPDOWNMENU_MENU_LEVEL == 2 ) then
 
@@ -303,13 +312,11 @@ function CP.OnMenuShow(this)
                 info.func = function() CP.Storage.LoadItems(name) CloseDropDownMenus() end
             elseif UIDROPDOWNMENU_MENU_VALUE=="del" then
                 info.func = function() CP.Storage.DeleteItems(name) CloseDropDownMenus() end
-            end
-
+            end               
             UIDropDownMenu_AddButton( info, 2 )
         end
     end
 end
-
 
 function CP.Hooked_Hyperlink_Assign(link, key)
 	CP.ori_Hyperlink_Assign(link, key)
