@@ -295,7 +295,7 @@ function CP.OnMenuShow(this)
 		info = {notCheckable = 1}
 		info.text = CP.L.MENU_CLEARALL
 		info.func = function() 
-			for id=1,16  do
+			for id=0,21  do
 				CP.Items[id]=nil
 			end  
 			CP.UpdateEquipment() 

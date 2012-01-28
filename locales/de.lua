@@ -32,9 +32,8 @@ CP.L ={
 
     STAT_NAMES= {
         -- categories
-        BASE = "Base",
-        BASE2= "Base2",
-        PHY= "Physical",
+        BASE = TEXT("TOOLTIPS_LIMIT_ATTR"),
+        BASE2= "Base2",        
         MAGIC = MAGIC,
 		MELEE = TEXT("MELEE"), -- Nahkampf
 		RANGE = RANGE, -- Fernkampf
