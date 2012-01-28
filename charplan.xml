@@ -122,11 +122,29 @@
 					</Layer>
         		</Layers>
 				<Frames>
-					<Frame name="CPAttributeTitleBASE" inherits="CPAttributeTitleTemplate">
+					<Frame name="CPAttributeFrameValueHP" inherits="CPAttributeFrameTemplate">
 						<Anchors>
 							<Anchor point="TOPLEFT">
 								<Offset>
 									<AbsDimension x="6" y="6"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="CPAttributeFrameValueMANA" inherits="CPAttributeFrameTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset>
+									<AbsDimension x="150" y="6"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="CPAttributeTitleBASE" inherits="CPAttributeTitleTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset>
+									<AbsDimension x="6" y="30"/>
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -176,61 +194,16 @@
 							</Anchor>
 						</Anchors>
 					</Frame>
-					<Frame name="CPAttributeTitlePHY" inherits="CPAttributeTitleTemplate">
-						<Anchors>
-							<Anchor point="TOPLEFT">
-								<Offset>
-									<AbsDimension x="6" y="140"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Frame>
-					<Frame name="CPAttributeFrameValuePDEF" inherits="CPAttributeFrameTemplate">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="CPAttributeTitlePHY" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Frame>
-					<Frame name="CPAttributeFrameValuePARRY" inherits="CPAttributeFrameTemplate">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValuePDEF" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Frame>
-					<Frame name="CPAttributeFrameValueEVADE" inherits="CPAttributeFrameTemplate">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValuePARRY" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Frame>
-					<Frame name="CPAttributeFrameValuePACC" inherits="CPAttributeFrameTemplate">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValueEVADE" relativePoint="BOTTOMLEFT">
-								<Offset>
-									<AbsDimension x="0" y="2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Frame>
 					<Frame name="CPAttributeTitleMAGIC" inherits="CPAttributeTitleTemplate">
 						<Anchors>
 							<Anchor point="TOPLEFT">
 								<Offset>
-									<AbsDimension x="150" y="140"/>
+									<AbsDimension x="150" y="30"/>
 								</Offset>
 							</Anchor>
 						</Anchors>
 					</Frame>
-					<Frame name="CPAttributeFrameValueMDEF" inherits="CPAttributeFrameTemplate">
+					<Frame name="CPAttributeFrameValueMDMG" inherits="CPAttributeFrameTemplate">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="CPAttributeTitleMAGIC" relativePoint="BOTTOMLEFT" >
 								<Offset>
@@ -239,37 +212,174 @@
 							</Anchor>
 						</Anchors>
 					</Frame>
-					<Frame name="CPAttributeFrameValueMRES" inherits="CPAttributeFrameTemplate">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValueMDEF" relativePoint="BOTTOMLEFT" />
-						</Anchors>
-					</Frame>
-					<Frame name="CPAttributeFrameValueMDMG" inherits="CPAttributeFrameTemplate">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValueMRES" relativePoint="BOTTOMLEFT"/>
-						</Anchors>
-					</Frame>
 					<Frame name="CPAttributeFrameValueMATK" inherits="CPAttributeFrameTemplate">
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValueMDMG" relativePoint="BOTTOMLEFT"/>
+							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValueMDMG" relativePoint="BOTTOMLEFT" />
+							<Offset>
+								<AbsDimension x="0" y="2"/>
+							</Offset>
 						</Anchors>
 					</Frame>
 					<Frame name="CPAttributeFrameValueMCRIT" inherits="CPAttributeFrameTemplate">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValueMATK" relativePoint="BOTTOMLEFT"/>
+								<Offset>
+									<AbsDimension x="0" y="2"/>
+								</Offset>
 						</Anchors>
-					</Frame>
+					</Frame>						
 					<Frame name="CPAttributeFrameValueMHEAL" inherits="CPAttributeFrameTemplate">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValueMCRIT" relativePoint="BOTTOMLEFT"/>
+								<Offset>
+									<AbsDimension x="0" y="2"/>
+								</Offset>
 						</Anchors>
 					</Frame>
 					<Frame name="CPAttributeFrameValueMACC" inherits="CPAttributeFrameTemplate">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValueMHEAL" relativePoint="BOTTOMLEFT"/>
+								<Offset>
+									<AbsDimension x="0" y="2"/>
+								</Offset>
 						</Anchors>
 					</Frame>
-					<Frame name="CPAttributeTitleBASE2" inherits="CPAttributeTitleTemplate">
+					<Frame name="CPAttributeTitleMELEE" inherits="CPAttributeTitleTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset>
+									<AbsDimension x="6" y="140"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="CPAttributeFrameValuePDMG" inherits="CPAttributeFrameTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="CPAttributeTitleMELEE" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="CPAttributeFrameValuePATK" inherits="CPAttributeFrameTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValuePDMG" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="2"/>
+								</Offset>								
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="CPAttributeFrameValuePCRIT" inherits="CPAttributeFrameTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValuePATK" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="2"/>
+								</Offset>								
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="CPAttributeFrameValuePACC" inherits="CPAttributeFrameTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValuePCRIT" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="CPAttributeTitleRANGE" inherits="CPAttributeTitleTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset>
+									<AbsDimension x="150" y="140"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>					
+					<Frame name="CPAttributeTitlePHYSICALDEFENCE" inherits="CPAttributeTitleTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset>
+									<AbsDimension x="6" y="233"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="CPAttributeFrameValuePDEF" inherits="CPAttributeFrameTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="CPAttributeTitlePHYSICALDEFENCE" relativePoint="BOTTOMLEFT" >
+								<Offset>
+									<AbsDimension x="0" y="2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="CPAttributeFrameValuePARRY" inherits="CPAttributeFrameTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValuePDEF" relativePoint="BOTTOMLEFT" >
+								<Offset>
+									<AbsDimension x="0" y="2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="CPAttributeFrameValueEVADE" inherits="CPAttributeFrameTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValuePARRY" relativePoint="BOTTOMLEFT" >
+								<Offset>
+									<AbsDimension x="0" y="2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="CPAttributeTitleMAGICDEFENCE" inherits="CPAttributeTitleTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset>
+									<AbsDimension x="150" y="233"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="CPAttributeFrameValueMDEF" inherits="CPAttributeFrameTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="CPAttributeTitleMAGICDEFENCE" relativePoint="BOTTOMLEFT" >
+								<Offset>
+									<AbsDimension x="0" y="2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="CPAttributeFrameValueMRES" inherits="CPAttributeFrameTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValueMDEF" relativePoint="BOTTOMLEFT" >
+								<Offset>
+									<AbsDimension x="0" y="2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="CPAttributeFrameValuePCRITDMG" inherits="CPAttributeFrameTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset>
+									<AbsDimension x="6" y="310"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="CPAttributeFrameValueMCRITDMG" inherits="CPAttributeFrameTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset>
+									<AbsDimension x="150" y="310"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<!--Frame name="CPAttributeTitleBASE2" inherits="CPAttributeTitleTemplate">
 						<Anchors>
 							<Anchor point="TOPLEFT">
 								<Offset>
@@ -277,25 +387,7 @@
 								</Offset>
 							</Anchor>
 						</Anchors>
-					</Frame>
-					<Frame name="CPAttributeFrameValueHP" inherits="CPAttributeFrameTemplate">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="CPAttributeTitleBASE2" relativePoint="BOTTOMLEFT" >
-								<Offset>
-									<AbsDimension x="0" y="2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Frame>
-					<Frame name="CPAttributeFrameValueMANA" inherits="CPAttributeFrameTemplate">
-						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValueHP" relativePoint="BOTTOMLEFT" >
-								<Offset>
-									<AbsDimension x="0" y="2"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</Frame>
+					</Frame!-->					
 				</Frames>
 			</Frame>
 			<Frame name="CPEquipmentFrame" enableMouse="true">

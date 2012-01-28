@@ -21,21 +21,31 @@ Calc.STATS={
     HP = 8,
     MANA = 9,
 
-    -- phy
-    EVADE = 17,
-    PARRY = 22,
-    PATK = 12,
-    PDEF = 13,
-    PACC = 16,
+    -- pdef
+	PDEF = 13, 	
+    PARRY = 22,       
+	EVADE = 17,
 
-    -- magic
-    MDEF = 14,
-    MATK = 15,
-    MDMG = 25,
-    MCRIT = 20,
-    MRES = 196,
+	-- melee/range
+	PDMG = 25, 	
+	PATK = 12, 
+	PCRIT = 18,
+	PACC = 16,	
+	
+	--mdef
+	MDEF = 14,
+	MRES = 196,
+	
+    -- magic   
+	MDMG = 191,  
+    MATK = 15,    
+    MCRIT = 20,    
     MHEAL = 150,
     MACC = 195,
+	
+	PCRITDMG = 19,
+	MCRITDMG = 21,
+	
 }
 
 function Calc.ID2StatName(id)

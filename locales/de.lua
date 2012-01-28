@@ -27,7 +27,7 @@ CP.L ={
     PIMP_PLUS = "Plus",
     PIMP_TIER = TEXT("_glossary_00703"),
 
-    BY_CARD = "Monstercards",
+    BY_CARD = TEXT("AC_ITEMTYPENAME_6"),  
 
     STAT_NAMES= {
         -- categories
@@ -35,10 +35,10 @@ CP.L ={
         BASE2= "Base2",
         PHY= "Physical",
         MAGIC = MAGIC,
-		--MELEE = MELEE -- Nahkampf
-		--RANGE = RANGE -- Fernkampf
-		--MAGIC_DEFENCE = TEXT("MAGIC_DEFENCE"),
-		--PHYSICAL_DEFENCE = TEXT("PHYSICAL_DEFENCE"),
+		MELEE = TEXT("MELEE"), -- Nahkampf
+		RANGE = RANGE, -- Fernkampf
+		MAGICDEFENCE = TEXT("MAGIC_DEFENCE"),
+		PHYSICALDEFENCE = TEXT("PHYSICAL_DEFENCE"),
 
         STR = C_STR,
         DEX = C_AGI,
@@ -52,14 +52,28 @@ CP.L ={
         PDEF = C_PHYSICAL_DEFENCE,
         PARRY = C_PHYSICAL_PARRY,
         EVADE = C_PHYSICAL_DODGE,
-        PACC = TEXT("_glossary_00147"),
-
-        MDEF = C_MAGIC_DEFENCE,
-        MRES = TEXT("SYS_WEAREQTYPE_196"),
+        PACC = C_PHYSICAL_HIT,
+		
+		PDMG = C_PHYSICAL_DAMAGE,
+		PATK = C_PHYSICAL_ATTACK,
+		PCRIT = C_PHYSICAL_CRITICAL,
+		
+		--[[		
+		PDMGMD = C_PHYSICAL_MAIN_DAMAGE,
+        PDMGOD = C_PHYSICAL_OFF_DAMAGE,	
+		PDMGRD = C_PHYSICAL_DAMAGE,
+		]]--
+		PCRITDMG = TEXT("SYS_WEAREQTYPE_19"),
+		MCRITDMG = TEXT("SYS_WEAREQTYPE_21"),
+		
+		
+		
+		MDEF = C_MAGIC_DEFENCE,
+        MRES = C_MAGIC_DODGE,
         MDMG = C_MAGIC_DAMAGE,
         MATK = C_MAGIC_ATTACK,
         MCRIT = C_MAGIC_CRITICAL,
         MHEAL = C_MAGIC_HEAL_POINT,
-        MACC = TEXT("_glossary_00147") ,
+        MACC = C_MAGIC_HIT ,
     },
 }
