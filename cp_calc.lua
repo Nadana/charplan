@@ -211,7 +211,7 @@ function Calc.ItemRunes(item)
 
     for i=1,4 do
         if item.runes[i]>0 then
-                local effect, effvalues  = CP.DB.GetRunesEffect(item.runes[i])
+                local effect, effvalues  = CP.DB.GetBonusEffect(item.runes[i])
             AddBonusEffect(effect, effvalues, "R "..name)
         end
     end

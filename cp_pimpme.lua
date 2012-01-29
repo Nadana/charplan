@@ -37,6 +37,8 @@ CP.Pimp = Pimp
 
 local Nyx = LibStub("Nyx")
 
+local STATSEARCH_FIELD=13
+
 
 function Pimp.PimpItemLink(itemlink)
 
@@ -79,8 +81,8 @@ function Pimp.SetHyperLink(itemlink)
     end
 
     CPPimpMeToolTip:SetScale(1)
-    if lines>28 then
-        CPPimpMeToolTip:SetScale(28/lines)
+    if lines>35 then
+        CPPimpMeToolTip:SetScale(35/lines)
     end
 end
 
@@ -97,12 +99,17 @@ end
 function Pimp.FillFields()
     local data = Pimp.data
 
+    CPPimpMeTitle:SetText(data.name)
+
     SetItemButtonTexture(CPPimpMeItem, data.icon)
 
     UIDropDownMenu_SetSelectedValue(CPPimpMeAttrPlus, data.plus)
     CPPimpMeAttrPlusText:SetText("+"..tostring(data.plus))
+
     UIDropDownMenu_SetSelectedValue(CPPimpMeAttrTier, data.tier)
     CPPimpMeAttrTierText:SetText(data.tier)
+
+    CPPimpMeAttrDura:SetText(data.max_dura)
 
     Pimp.OnStatCtrlSetValue(CPPimpMeAttrStat1, data.stats[1])
     Pimp.OnStatCtrlSetValue(CPPimpMeAttrStat2, data.stats[2])
@@ -210,33 +217,178 @@ function Pimp.OnCtrlClicked_Tier(button)
     Pimp.UpdateInfo()
 end
 
+function Pimp.SetStat(nr, id)
+    assert(nr<11)
+    if nr<7 then
+        if Pimp.data.stats[nr] ~= id then
+            Pimp.data.stats[nr] = id
+            Pimp.OnStatCtrlSetValue(_G["CPPimpMeAttrStat"..nr], id)
+        end
+    else
+        if Pimp.data.runes[nr-6] ~= id then
+            Pimp.data.runes[nr-6] = id
+            Pimp.OnStatCtrlSetValue(_G["CPPimpMeAttrRune"..(nr-6)], id)
+        end
+    end
+    Pimp.UpdateInfo()
+end
 
+-----------------------------------
 function Pimp.OnStatCtrlLoad(this)
     local id = this:GetID()
     if id<7 then
+        this.isRune=false
         _G[this:GetName().."Label"]:SetText( string.format(CP.L.PIMP_STAT,id))
     else
+        this.isRune=true
         _G[this:GetName().."Label"]:SetText( string.format(CP.L.PIMP_RUNE,id-6))
     end
 
-    UIDropDownMenu_SetWidth(_G[this:GetName().."Tier"], 30)
+    UIDropDownMenu_SetWidth(_G[this:GetName().."Tier"], 40)
+    UIDropDownMenu_Initialize(_G[this:GetName().."Tier"], Pimp.OnStatCtrlTierShow)
 end
 
 function Pimp.OnStatCtrlSetValue(button, id)
     local namebtn = _G[button:GetName().."Name"]
     local tierbtn = _G[button:GetName().."Tier"]
+
     if id>0 then
-        namebtn:SetText(TEXT(string.format("Sys%06i_name",id)))
+        local name,level, grp = CP.DB.GetBonusInfo(id)
+        assert( grp and (CP.DB.IsRuneGroup(grp) == button.isRune))
+
+        tierbtn.levels = CP.DB.GetBonusGroupLevels(grp)
+
+        namebtn:SetText(name)
+        UIDropDownMenu_SetText(tierbtn, level)
     else
         namebtn:SetText("")
+        UIDropDownMenu_SetText(tierbtn, "")
+    end
+end
+
+
+function Pimp.StatName_Changed(this)
+    local text = this:GetText()
+    if not text or text=="" then return end
+
+    local isrune = (this:GetParent():GetID()>6)
+    local name,level, bestmatch = CP.DB.FindBonus(text, is_rune)
+
+    CP.Debug("Match: "..tostring(name).." "..tostring(level).." id:"..tostring(bestmatch))
+end
+
+
+function Pimp.StatName_Finished(this)
+    local text = this:GetText()
+    if not text or text=="" then
+        Pimp.SetStat(this:GetParent():GetID(),0)
+        return
     end
 
+    local isrune = (this:GetParent():GetID()>6)
+    local _,_, bestmatch = CP.DB.FindBonus(text, is_rune)
+    --Pimp.SetStat(this:GetParent():GetID(), bestmatch or 0)
+end
+
+
+
+function Pimp.OnStatCtrlTierShow(this)
+    local info={
+        notCheckable = 1,
+        func = function(this) Pimp.SetStat(this:Parent():GetID(), this.value) end,
+    }
+
+    for _,data in pairs(this.levels or {}) do
+		info.text = data[1]
+        info.value = data[2]
+		UIDropDownMenu_AddButton( info, 1 )
+    end
 end
 
 function Pimp.OnStatSelSearch(this)
+    CPStatSearch.slot = this:GetID()
     CPStatSearch:ClearAllAnchors()
-    CPStatSearch:SetAnchor("TOPLEFT", "TOPLEFT", this, 16, 16 )
+    CPStatSearch:SetAnchor("TOPRIGHT", "TOPRIGHT", this, 10, 18 )
     CPStatSearch:Show()
+end
+
+function Pimp.StatSearch_OnShow(this)
+    Pimp.Selection = nil
+
+    CPStatSearchSearchBox:SetText("")
+    CPStatSearchSearchBoxBack:SetText(CP.L.PIMP_FILTER)
+    CP.Pimp.StatSearch_UpdateList()
+end
+
+
+function Pimp.StatSearch_UpdateList()
+    local text = CPStatSearchSearchBox:GetText()
+    if text=="" then  text=nil end
+
+    local isrune = (CPStatSearch.slot>6)
+    Pimp.Stats = CP.DB.GetBonusGroupList(isrune, text)
+
+    CPStatSearchItemSB:SetValueStepMode("INT")
+    CPStatSearchItemSB:SetMinMaxValues(0,(#Pimp.Stats)-STATSEARCH_FIELD)
+    if CPStatSearchItemSB:GetValue() > (#Pimp.Stats)-STATSEARCH_FIELD then
+        CPStatSearchItemSB:SetValue(0)
+    end
+
+    Pimp.StatSearch_ListUpdate()
+end
+
+function Pimp.StatSearch_FilterFocus(this, got_focus)
+    _G[this:GetName().."Back"]:Hide()
+    if not got_focus and this:GetText()=="" then
+        _G[this:GetName().."Back"]:Show()
+    end
+end
+
+function Pimp.StatSearch_ListUpdate()
+
+     for i=1,STATSEARCH_FIELD do
+        local d = Pimp.Stats[i + CPStatSearchItemSB:GetValue()]
+        local line = "CPStatSearchItem"..i
+        if d then
+
+            _G[line.."Name"]:SetText(d[2])
+            _G[line.."Value"]:SetText(table.concat(d[3],", "))
+            _G[line]:Show()
+            _G[line]:SetID(d[1])
+            if Pimp.Selection == d[1] then
+                _G[line.."Highlight"]:Show()
+            else
+                _G[line.."Highlight"]:Hide()
+            end
+        else
+            _G[line]:Hide()
+        end
+    end
+end
+
+function Pimp.StatSearch_OnHide(this)
+
+    if Pimp.Selection then
+        Pimp.SetStat(CPStatSearch.slot, Pimp.Selection)
+        Pimp.Selection = nil
+    end
+
+    Pimp.Stats = nil
+end
+
+function Pimp.StatSearch_ItemClicked(this,key)
+    Pimp.Selection = this:GetID()
+    Pimp.StatSearch_ListUpdate()
+end
+
+
+function Pimp.StatSearch_Close()
+    CPStatSearch:Hide()
+end
+
+function Pimp.StatSearch_Cancel()
+    Pimp.Selection = nil
+    CPStatSearch:Hide()
 end
 
 -----------------------------------
@@ -274,7 +426,7 @@ function Pimp.GenerateLink(item_data)
         item_data.runes[2],
         item_data.runes[3],
         item_data.runes[4],
-        item_data.dura
+        item_data.dura*10
     }
 
     data[12] = Pimp.CalculateItemLinkHash(data)
@@ -288,6 +440,12 @@ function Pimp.GenerateLink(item_data)
     return link
 end
 
+function Pimp.GenerateLinkByID(id)
+
+    local link = string.format("|Hitem:%x |h[b]|r|h",id)
+
+    return link
+end
 
 
 -- TEMP HELPER
@@ -330,7 +488,7 @@ function Pimp.ExtractLink(itemlink)
 
     item_data.unk1 = tonumber( string.sub(data[3],-8,-7) , 16) or 0
     item_data.max_dura = tonumber( string.sub(data[3],-2,-1), 16)
-    item_data.dura = tonumber( data[11], 16)
+    item_data.dura = tonumber( data[11], 16) / 10
 
     local runesPlus = tonumber( string.sub(data[3],-6,-5) , 16) or 0
     local tier_rar = tonumber( string.sub(data[3],-4,-3), 16) or 0

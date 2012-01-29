@@ -28,7 +28,6 @@ function DB.Load()
     DB.armor = LoadTable("armor")
     DB.weapons = LoadTable("weapons")
     DB.bonus = LoadTable("addpower")
-    DB.runebonus = LoadTable("runes")
     DB.refines = LoadTable("refines")
     DB.cards = LoadTable("cards")
 end
@@ -44,7 +43,6 @@ function DB.Release()
             DB.armor = nil
             DB.weapons = nil
             DB.bonus = nil
-            DB.runebonus = nil
             DB.refines = nil
             DB.cards = nil
         collectgarbage("collect")
@@ -86,14 +84,6 @@ function DB.GetBonusEffect(boni_id)
         return DB.bonus[boni_id].efftype, DB.bonus[boni_id].effvalue
     else
         CP.Debug("Bonus not in DB: "..boni_id)
-    end
-end
-
-function DB.GetRunesEffect(rune_id)
-    if DB.runebonus[rune_id] then
-        return DB.runebonus[rune_id].efftype, DB.runebonus[rune_id].effvalue
-    else
-        CP.Debug("Rune not in DB: "..rune_id)
     end
 end
 
@@ -165,6 +155,162 @@ end
 
 
 --------
+-- stat search
+function DB.GetBonusGroupList(runes, filter)
+
+    runes = runes and true or false
+
+    local done={}
+    local res={}
+    for id,rdata in pairs(DB.bonus) do
+        if rdata.grp then
+            if not done[rdata.grp] then
+
+                if DB.IsRuneGroup(rdata.grp)==runes then
+                    local name = TEXT("Sys"..id.."_name")
+                    name = string.match(name,"^(.-)%s*%w*$") or name
+
+                    local filter_found = true
+                    if filter then
+                        filter_found = string.find(name,filter)
+                    end
+
+                    eff = {}
+                    for i, ef in ipairs(rdata.efftype or {}) do
+                        local n = TEXT("SYS_WEAREQTYPE_"..ef)
+                        if n then
+                            table.insert(eff,n)
+                            if not filter_found and filter then
+                                filter_found = string.find(name,n)
+                            end
+                        end
+                    end
+
+                    if filter_found then
+                        table.insert(res,{id,name,eff})
+                    end
+                end
+
+                done[rdata.grp]=1
+            end
+        end
+    end
+
+    table.sort(res, function (a,b) return a[2]<b[2] end)
+
+    return res
+end
+
+
+
+function DB.GetBonusGroupLevels(grp)
+    local res={}
+    for id,rdata in pairs(DB.bonus) do
+
+        if rdata.grp==grp then
+            local name = TEXT("Sys"..id.."_name")
+            local gname, lvl = string.match(name,"^(.-)%s*(%w*)$")
+            if not gname then
+                gname = name
+                lvl = ""
+            end
+
+            table.insert(res,{lvl,id})
+        end
+    end
+
+    table.sort(res, function (a,b) return DB.RomanToNum(a)<DB.RomanToNum(b) end)
+
+    return res
+end
+
+function DB.GetBonusInfo(id)
+
+    local name = TEXT("Sys"..id.."_name")
+    local gname, lvl = string.match(name,"^(.-)%s*(%w*)$")
+    if not gname then
+        gname = name
+        lvl = ""
+    end
+
+    return gname, lvl, (DB.bonus[id] and DB.bonus[id].grp)
+end
+
+function DB.FindBonus(text, is_rune)
+
+    local iname, ilvl = string.match(text,"^(.-)%s*(%w*)$")
+    if not iname then
+        iname = name
+        ilvl = ""
+    end
+
+    local good_match = nil
+    for id,rdata in pairs(DB.bonus) do
+        if rdata.grp and DB.IsRuneGroup(rdata.grp)==is_rune then
+
+            local name = TEXT("Sys"..id.."_name")
+            local gname, lvl = string.match(name,"^(.-)%s*(%w*)$")
+            if not gname then
+                gname = name
+                lvl = ""
+            end
+
+            if iname==name then
+                if ilvl==lvl then
+                    return iname,ilvl,id
+                else
+                    good_match = id
+                end
+            elseif string.find(gname, "^"..iname) then
+                return gname,nil,id
+            end
+        end
+    end
+
+    return iname,ilvl,good_match
+end
+
+function DB.IsRuneGroup(id)
+    return id>10000
+end
+
+function DB.ToRoman(num)
+    local letters={"M","CM","D","CD","C","XC","L","XL","X", "IX", "V", "IV", "I"}
+    local numbers={1000,900,500,400,100,90,50,40,10,9,5,4,1}
+
+    local result=""
+    for i,val in ipairs(numbers) do
+        while num >= val do
+            num = num-val
+            result = result .. letters[i]
+        end
+    end
+    return result
+end
+
+function DB.RomanToNum( roman )
+    local Num = { ["M"] = 1000, ["D"] = 500, ["C"] = 100, ["L"] = 50, ["X"] = 10, ["V"] = 5, ["I"] = 1 }
+    local numeral = 0
+
+    local i = 1
+    local strlen = string.len(roman)
+    while i < strlen do
+        local z1, z2 = Num[ string.sub(roman,i,i) ], Num[ string.sub(roman,i+1,i+1) ]
+        if z1 < z2 then
+            numeral = numeral + ( z2 - z1 )
+            i = i + 2
+        else
+            numeral = numeral + z1
+            i = i + 1
+        end
+    end
+
+    if i <= strlen then numeral = numeral + Num[ string.sub(roman,i,i) ] end
+
+    return numeral
+end
+
+--------
 -- item search
 function DB.GetItemForSlot(pos)
 
@@ -181,3 +327,7 @@ function DB.GetItemForSlot(pos)
 
     return res
 end
+
+
+
+

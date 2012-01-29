@@ -27,6 +27,7 @@ CP.L ={
     PIMP_DURA = "Dura",   --TEXT("_glossary_01188"),  -- Haltbarkeit
     PIMP_PLUS = "Plus",
     PIMP_TIER = TEXT("_glossary_00703"),
+    PIMP_FILTER = "<filter>",
 
     BY_CARD = TEXT("AC_ITEMTYPENAME_6"),
 

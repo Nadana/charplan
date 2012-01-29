@@ -234,6 +234,34 @@ $STATLIST={# SYS_WEAREQTYPE_xxx
 }
 
 
+
+def NameIsInvalid?(id)
+    return GetName(id).nil?
+end
+
+def GetName(id)
+    name = $de.get_value("\"Sys#{id}_name\"")
+    return nil if (name.nil? or name =~/^Sys\d{6}_name$/)
+    return name
+end
+
+def to_roman(num)
+    numbers ={
+                "M"=>1000,"CM"=>900, "D"=>500,"CD"=>400,
+                "C"=>100,"XC"=>90,   "L"=>50, "XL"=>40,
+                "X"=>10, "IX"=>9, "V"=>5,"IV"=>4, "I"=>1,
+    }
+
+    result=""
+    numbers.each { |txt,val|
+        while num >= val do
+            num -=val
+            result += txt
+        end
+    }
+    return result
+end
+
 class Images
 
     # Options
@@ -585,13 +613,14 @@ class AddPowerEntry < Table
 
     FILENAME = "addpowerobject"
     attr_accessor :bonus
-    attr_accessor :group, :level
+    attr_accessor :group
 
     def initialize(csv_row)
         super(csv_row)
         @bonus = BonusStuff.new(csv_row)
 
         raise "unknown bonus stat" if @bonus.HasInvalidStat?
+        $log.info("addpower #{@id} has no name") if NameIsInvalid?(@id)
     end
 
     def SkipThisItem?
@@ -599,37 +628,38 @@ class AddPowerEntry < Table
     end
 
     def AddPowerEntry.AfterLoad(db)
-        #~ groups = Set.new
-        #~ db.each { |id,r|
-                #~ name = $de.get_value("\"Sys#{id}_name\"")
-                #~ next if name.nil? or name =~/^Sys\d{6}_name$/
-                #~ count += 1
-                #~ matchdata = /^(.+)\s+\w+$/.match(name)
-                #~ if matchdata then
-                    #~ n = matchdata[1].strip
-                    #~ bonis.add(n)
-                #~ else
-                    #~ bonis.add(name)
-                #~ end
-            #~ }
 
-        #~ #bonis.each { |v| p v }
-        #~ p "#{count}->#{bonis.size}"
+        groups = Hash.new
+        grp_idx = 1
+        db.each { |id,r|
 
+            name = GetName(id)
+            next if name.nil?
+            matchdata = /^(.+)\s+(\w+)$/.match(name)
+            name = matchdata[1] if not matchdata.nil?
 
-#~ s = Set.new
-#~ s.add("aber")
-#~ s.add("dann")
-#~ p s.to_a
-#~ p s.to_a.index("aber")
-#~ p s.to_a.index("dann")
-#~ raise "stop"
-
-
-
+            if groups.key?(name) then
+                found = nil
+                groups[name].each { |gid,boni|
+                    found = gid if boni.SameEffects?(r.bonus)
+                }
+                if found then
+                    r.group = found
+                else
+                    groups[name][grp_idx] = r.bonus
+                    r.group = grp_idx
+                    grp_idx += 1
+                end
+            else
+                groups[name] = {[grp_idx] => r.bonus}
+                r.group = grp_idx
+                grp_idx += 1
+            end
+        }
     end
 
     def WriteLUAData(outf)
+        outf.write( "grp=%i," % @group) if @group
         @bonus.WriteLUAData(outf)
     end
 
@@ -644,23 +674,41 @@ class RunesEntry < Table
 
     FILENAME = "runeobject"
     attr_accessor :bonus
-    attr_accessor :level, :runegroup
+    attr_accessor :level, :group
 
     def initialize(csv_row)
         super(csv_row)
         @bonus = BonusStuff.new(csv_row)
-        @level = csv_row['level'].to_i
-        @group = csv_row['runegroup'].to_i
+        @group = 10000+csv_row['runegroup'].to_i
 
         raise "unknown bonus stat" if @bonus.HasInvalidStat?
+        $log.info("rune #{@id} has no name") if NameIsInvalid?(@id)
     end
 
+   def RunesEntry.AfterLoad(db)
+
+        groups = Hash.new
+        db.each { |id,r|
+
+            name = GetName(id)
+            matchdata = /^(.+)\s+(\w+)$/.match(name)
+
+            if groups.key?(r.group) then
+                raise "differnt bonis" unless r.bonus.SameEffects?(groups[r.group][:boni])
+                raise "name differs" if matchdata[1] != groups[r.group][:name]
+            else
+                groups[r.group] ={:boni => r.bonus, :name=>matchdata[1] }
+            end
+        }
+    end
+
+
     def SkipThisItem?
-        return @bonus.HasInvalidStat? || (not @bonus.HasStats?)
+        return @bonus.HasInvalidStat? || (not @bonus.HasStats?) || (NameIsInvalid?(@id))
     end
 
     def WriteLUAData(outf)
-        outf.write( "grp=%i,lvl=%i," % [@group, @level])
+        outf.write( "grp=%i," % @group)
         @bonus.WriteLUAData(outf)
     end
 
@@ -819,6 +867,7 @@ class FullDB
         p "Load Bonuses"
         @addpower= AddPowerEntry.Load()
         @runes = RunesEntry.Load()
+        @addpower.merge!(@runes)
 
         p "Load Sets"
         @suits = SuitEntry.Load()
@@ -839,7 +888,7 @@ class FullDB
         Table.Export("../item_data/refines.lua", @refines)
         Table.Export("../item_data/cards.lua", @cards)
         Table.Export("../item_data/addpower.lua", @addpower)
-        Table.Export("../item_data/runes.lua", @runes)
+        #Table.Export("../item_data/runes.lua", @runes)
 
         #ArmorEntry.TestWrite(armor)
         ArmorEntry.ExportLUA("../item_data/armor.lua", @armor)
