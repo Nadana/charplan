@@ -123,9 +123,28 @@ function CP.VARIABLES_LOADED()
 
     CP.Storage.Init()
 
+    CP.Register3rdParty()
+
     --@do-not-package@
     SlashCmdList["charplan"](nil,"test")
     --@end-do-not-package@
+end
+
+function CP.Register3rdParty()
+    if AddonManager then
+        local addon = {
+            name         = "CharPlan",
+            description  = "Plan you Detailed information for daily-quest items.",
+            author       = "McBen, 19Lestat11",
+            icon         = "interface/AddOns/charplan/icon.dds",
+            category     = "Inventory",
+            slashCommand = "/cp",
+            version      = CP.version,
+            configFrame  = CPFrame,
+            miniButton   = CharplanMiniButton,
+        }
+        AddonManager.RegisterAddonTable(addon)
+    end
 end
 
 

@@ -699,4 +699,17 @@
 			<OnHide>CP.OnHide()</OnHide>
 		</Scripts>
 	</Frame>
+
+	<!-- Addon Manager Button -->
+	<Button name="CharplanMiniButton" hidden="true" inherits="UIPanelButtonTemplate" parent="AddonManagerMiniFrame">
+		<Size>
+			<AbsDimension y="24" x="24"/>
+		</Size>
+		<Scripts>
+			<OnClick>ToggleUIFrame(CPFrame)</OnClick>
+		</Scripts>
+		<NormalTexture file="interface/AddOns/charplan/icon.dds"/>
+		<PushedTexture file="interface/AddOns/charplan/icon.dds"/>
+		<HighlightTexture file="Interface\Buttons\PanelSmallButtonHighlight" alphaMode="ADD"/>
+	</Button>
 </Ui>
