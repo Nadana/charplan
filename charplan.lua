@@ -43,15 +43,12 @@ SLASH_charplan2="/charplan"
 SlashCmdList["charplan"] = function(_,msg)
     if msg~="" then
         local base = "interface/addons/charplan/"
+
         if string.find(msg,"^t") then
             dofile(base.."test/test.lua")
+
         elseif string.find(msg,"^r") then
-            dofile(base.."charplan.lua")
-            dofile(base.."cp_calc.lua")
-            dofile(base.."cp_db.lua")
-            dofile(base.."cp_pimpme.lua")
-            dofile(base.."cp_search.lua")
-            dofile(base.."sp_storage.lua")
+            CP.SlashCMD_Reload()
         end
 
         return
@@ -60,7 +57,19 @@ SlashCmdList["charplan"] = function(_,msg)
     ToggleUIFrame(CPFrame)
 end
 
+function CP.SlashCMD_Reload()
+    local temp = CP_Storage
 
+    local base = "interface/addons/charplan/"
+    dofile(base.."charplan.lua")
+    dofile(base.."cp_calc.lua")
+    dofile(base.."cp_db.lua")
+    dofile(base.."cp_pimpme.lua")
+    dofile(base.."cp_search.lua")
+    dofile(base.."cp_storage.lua")
+
+    CP_Storage = temp
+end
 
 
 local Nyx = LibStub("Nyx")
