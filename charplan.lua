@@ -42,10 +42,12 @@ SLASH_charplan1="/cp"
 SLASH_charplan2="/charplan"
 SlashCmdList["charplan"] = function(_,msg)
     if msg~="" then
-        local base = "interface/addons/charplan/"
-
         if string.find(msg,"^t") then
-            dofile(base.."test/test.lua")
+            if not UnitResult then
+                dofile("interface/addons/charplan/test/luaunit.lua")
+            end
+            UnitResult.verbosity=1
+            dofile("interface/addons/charplan/test/test.lua")
 
         elseif string.find(msg,"^r") then
             CP.SlashCMD_Reload()
@@ -59,7 +61,7 @@ end
 
 function CP.SlashCMD_Reload()
     local temp = CP_Storage
-
+    CPFrame:Hide()
     local base = "interface/addons/charplan/"
     dofile(base.."charplan.lua")
     dofile(base.."cp_calc.lua")
@@ -70,6 +72,7 @@ function CP.SlashCMD_Reload()
 
     CP_Storage = temp
 end
+------------------------------
 
 
 local Nyx = LibStub("Nyx")
@@ -135,7 +138,8 @@ function CP.VARIABLES_LOADED()
     CP.Register3rdParty()
 
     --@do-not-package@
-    SlashCmdList["charplan"](nil,"test")
+    dofile("interface/addons/charplan/test/luaunit.lua")
+    dofile("interface/addons/charplan/test/test.lua")
     --@end-do-not-package@
 end
 
@@ -334,6 +338,7 @@ function CP.OnMenuShow(this)
         info.disabled = (#save_list==0)
         info.value="del"
         UIDropDownMenu_AddButton( info, 1 )
+
 		info = {notCheckable = 1}
 		info.text = CP.L.MENU_CLEARALL
         info.disabled = is_empty
@@ -355,7 +360,7 @@ function CP.OnMenuShow(this)
                 info.func = function() CP.Storage.LoadItems(name) CloseDropDownMenus() end
             elseif UIDROPDOWNMENU_MENU_VALUE=="del" then
                 info.func = function() CP.Storage.DeleteItems(name) CloseDropDownMenus() end
-            end               
+            end
             UIDropDownMenu_AddButton( info, 2 )
         end
     end

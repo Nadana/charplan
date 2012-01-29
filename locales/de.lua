@@ -7,8 +7,8 @@ CP.L ={
     MENU_LOAD= "Load Items",
     MENU_SAVE= "Save Items",
     MENU_SAVEAS= "Save Items as ...",
-    MENU_DEL= "delete saved",
-	MENU_CLEARALL = "Clear Virtual-Slots",
+    MENU_DEL= "Delete saved",
+	MENU_CLEARALL = "Clear Items",
 
     DLG_WAIT_INV= "Please wait while we enumerate you equipment",
     DLG_SAVENAME= "Enter Name",
@@ -34,7 +34,7 @@ CP.L ={
     STAT_NAMES= {
         -- categories
         BASE = TEXT("TOOLTIPS_LIMIT_ATTR"),
-        BASE2= "Base2",        
+        BASE2= "Base2",
         MAGIC = MAGIC,
 		MELEE = TEXT("MELEE"), -- Nahkampf
 		RANGE = RANGE, -- Fernkampf
