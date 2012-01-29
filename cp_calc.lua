@@ -181,8 +181,7 @@ function Calc.Item(item)
 
     local effect, effvalues  = CP.DB.GetItemEffect(item.id)
     for i, ef in ipairs(effect or {}) do
-            AddValue(ef, effvalues[i], "B "..name)
-            -- AddValue(ef, effvalues[i]*(1+item.tier/10), "B "..name)
+            AddValue(ef, effvalues[i]*(1+item.tier/10), "B "..name)
     end
 
     if item.plus>0 then
