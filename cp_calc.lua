@@ -120,7 +120,7 @@ function Calc.RecalcPoints(values, descriptions)
 
         if slot==10 or slot==15 or slot==16 then
             Calc.values[s.PDMG] = 0
-            Calc.desc[s.PDMG] = 0
+            Calc.desc[s.PDMG] = nil
         end
 
         Calc.Item(item)
@@ -204,7 +204,7 @@ function Calc.ItemStats(item)
     end
 end
 
-function Calc.ItemsRunes(item)
+function Calc.ItemRunes(item)
    local s = Calc.STATS
 
     local name = TEXT("Sys"..item.id.."_name")
