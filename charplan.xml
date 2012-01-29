@@ -214,34 +214,30 @@
 					</Frame>
 					<Frame name="CPAttributeFrameValueMATK" inherits="CPAttributeFrameTemplate">
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValueMDMG" relativePoint="BOTTOMLEFT" />
-							<Offset>
-								<AbsDimension x="0" y="2"/>
-							</Offset>
+							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValueMDMG" relativePoint="BOTTOMLEFT">
+								<Offset><AbsDimension x="0" y="2"/></Offset>
+							</Anchor>
 						</Anchors>
 					</Frame>
 					<Frame name="CPAttributeFrameValueMCRIT" inherits="CPAttributeFrameTemplate">
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValueMATK" relativePoint="BOTTOMLEFT"/>
-								<Offset>
-									<AbsDimension x="0" y="2"/>
-								</Offset>
+							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValueMATK" relativePoint="BOTTOMLEFT">
+								<Offset><AbsDimension x="0" y="2"/></Offset>
+							</Anchor>
 						</Anchors>
 					</Frame>						
 					<Frame name="CPAttributeFrameValueMHEAL" inherits="CPAttributeFrameTemplate">
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValueMCRIT" relativePoint="BOTTOMLEFT"/>
-								<Offset>
-									<AbsDimension x="0" y="2"/>
-								</Offset>
+							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValueMCRIT" relativePoint="BOTTOMLEFT">
+								<Offset><AbsDimension x="0" y="2"/></Offset>
+							</Anchor>
 						</Anchors>
 					</Frame>
 					<Frame name="CPAttributeFrameValueMACC" inherits="CPAttributeFrameTemplate">
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValueMHEAL" relativePoint="BOTTOMLEFT"/>
-								<Offset>
-									<AbsDimension x="0" y="2"/>
-								</Offset>
+							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValueMHEAL" relativePoint="BOTTOMLEFT">
+								<Offset><AbsDimension x="0" y="2"/></Offset>
+							</Anchor>
 						</Anchors>
 					</Frame>
 					<Frame name="CPAttributeTitleMELEE" inherits="CPAttributeTitleTemplate">
