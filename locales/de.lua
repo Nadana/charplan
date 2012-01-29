@@ -31,6 +31,8 @@ CP.L ={
 
     BY_CARD = TEXT("AC_ITEMTYPENAME_6"),
 
+    STAT_SHORTS = {"PDMG","PDEF","MDEF","MDMG"},
+
     STAT_NAMES= {
         -- categories
         BASE = TEXT("TOOLTIPS_LIMIT_ATTR"),

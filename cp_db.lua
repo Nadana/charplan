@@ -172,8 +172,29 @@ function DB.IsWeapon2Hand(item_id)
     end
 end
 
+function DB.IsSlotType(slot_id)
+    local slots={
+    [0]=1, -- Head
+    [1]=1, -- Hands
+    [2]=1, -- Feets
+    [3]=1, -- Body
+    [4]=1, -- Legs
+    [5]=2, -- Cloak
+    [6]=1, -- Wraist
+    [7]=1, -- Shoulders
+    [8]=3, -- Necklace
+    [10]=6, -- Ranges Weapon
+    [11]=3, -- Ring
+    [12]=3, -- Ring
+    [13]=3, -- Earring
+    [14]=3, -- Earring
+    [15]=4, -- Primary Weapon
+    [16]=5, -- Secondary Weapon
+    [21]=7, -- Back
+    }
 
-
+    return  slots[slot_id]
+end
 
 
 
