@@ -206,9 +206,7 @@
 					<Frame name="CPAttributeFrameValueMDMG" inherits="CPAttributeFrameTemplate">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="CPAttributeTitleMAGIC" relativePoint="BOTTOMLEFT" >
-								<Offset>
-									<AbsDimension x="0" y="2"/>
-								</Offset>
+								<Offset><AbsDimension x="0" y="2"/></Offset>
 							</Anchor>
 						</Anchors>
 					</Frame>

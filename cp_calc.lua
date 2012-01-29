@@ -28,6 +28,10 @@ Calc.STATS={
 
 	-- melee/range
 	PDMG = 25,
+	PDMG1 = 400,
+	PDMG2 = 401,
+	PDMG3 = 402,
+
 	PATK = 12,
 	PCRIT = 18,
 	PACC = 16,
@@ -102,6 +106,7 @@ local function AddBonusEffect(effect, effvalues, text)
 end
 
 function Calc.RecalcPoints(values, descriptions)
+    local s = Calc.STATS
 
     Calc.values = values
     Calc.desc = descriptions
@@ -110,9 +115,30 @@ function Calc.RecalcPoints(values, descriptions)
 
     Calc.Bases()
     Calc.Cards()
-    Calc.Items()
-    Calc.ItemsStats()
-    Calc.ItemsRunes()
+
+    for slot, item in pairs(CP.Items) do
+
+        if slot==10 or slot==15 or slot==16 then
+            Calc.values[s.PDMG] = 0
+            Calc.desc[s.PDMG] = 0
+        end
+
+        Calc.Item(item)
+        Calc.ItemStats(item)
+        Calc.ItemRunes(item)
+
+        if slot==10 then
+            Calc.values[s.PDMG1] = Calc.values[s.PDMG]
+            Calc.desc[s.PDMG1] = Calc.desc[s.PDMG]
+        elseif slot==15 then
+            Calc.values[s.PDMG2] = Calc.values[s.PDMG]
+            Calc.desc[s.PDMG2] = Calc.desc[s.PDMG]
+        elseif slot==16 then
+            Calc.values[s.PDMG3] = Calc.values[s.PDMG]
+            Calc.desc[s.PDMG3] = Calc.desc[s.PDMG]
+        end
+    end
+
     CP.Calc.ALL_ATTRIBUTES()
 
     Calc.CharIndepended()
@@ -148,51 +174,45 @@ function Calc.Cards()
     end
 end
 
-function Calc.Items()
+function Calc.Item(item)
     local s = Calc.STATS
 
-    for _,item in pairs(CP.Items) do
-        local name = TEXT("Sys"..item.id.."_name")
+    local name = TEXT("Sys"..item.id.."_name")
 
-        local effect, effvalues  = CP.DB.GetItemEffect(item.id)
-        for i, ef in ipairs(effect or {}) do
+    local effect, effvalues  = CP.DB.GetItemEffect(item.id)
+    for i, ef in ipairs(effect or {}) do
             AddValue(ef, effvalues[i], "B "..name)
             -- AddValue(ef, effvalues[i]*(1+item.tier/10), "B "..name)
-        end
+    end
 
-        if item.plus>0 then
-            effect, effvalues  = CP.DB.GetPlusEffect(item.id, item.plus)
-            AddBonusEffect(effect, effvalues, "P "..name)
-        end
+    if item.plus>0 then
+        effect, effvalues  = CP.DB.GetPlusEffect(item.id, item.plus)
+        AddBonusEffect(effect, effvalues, "P "..name)
     end
 end
 
-function Calc.ItemsStats(values, desc)
+function Calc.ItemStats(item)
     local s = Calc.STATS
 
-    for _,item in pairs(CP.Items) do
-        local name = TEXT("Sys"..item.id.."_name")
+    local name = TEXT("Sys"..item.id.."_name")
 
-        for i=1,6 do
-            if item.stats[i]>0 then
-                local effect, effvalues  = CP.DB.GetBonusEffect(item.stats[i])
-                AddBonusEffect(effect, effvalues, "S "..name)
-            end
+    for i=1,6 do
+        if item.stats[i]>0 then
+            local effect, effvalues  = CP.DB.GetBonusEffect(item.stats[i])
+            AddBonusEffect(effect, effvalues, "S "..name)
         end
     end
 end
 
-function Calc.ItemsRunes(values, desc)
+function Calc.ItemsRunes(item)
    local s = Calc.STATS
 
-    for _,item in pairs(CP.Items) do
-        local name = TEXT("Sys"..item.id.."_name")
+    local name = TEXT("Sys"..item.id.."_name")
 
-        for i=1,4 do
-            if item.runes[i]>0 then
+    for i=1,4 do
+        if item.runes[i]>0 then
                 local effect, effvalues  = CP.DB.GetRunesEffect(item.runes[i])
-                AddBonusEffect(effect, effvalues, "R "..name)
-            end
+            AddBonusEffect(effect, effvalues, "R "..name)
         end
     end
 end
