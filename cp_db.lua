@@ -215,11 +215,11 @@ function DB.GetBonusGroupLevels(grp)
                 lvl = ""
             end
 
-            table.insert(res,{lvl,id})
+            table.insert(res,{lvl or "",id})
         end
     end
 
-    table.sort(res, function (a,b) return DB.RomanToNum(a)<DB.RomanToNum(b) end)
+    table.sort(res, function (a,b) return DB.RomanToNum(a[1])<DB.RomanToNum(b[1]) end)
 
     return res
 end
