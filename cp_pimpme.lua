@@ -96,6 +96,10 @@ function Pimp.PimpItem(item_data)
 end
 
 
+function Pimp.OnItemClicked()
+    ChatEdit_AddItemLink( Pimp.GenerateLink(Pimp.data, "IP: ") )
+end
+
 function Pimp.FillFields()
     local data = Pimp.data
 
@@ -228,6 +232,11 @@ function Pimp.SetStat(nr, id)
         if Pimp.data.runes[nr-6] ~= id then
             Pimp.data.runes[nr-6] = id
             Pimp.OnStatCtrlSetValue(_G["CPPimpMeAttrRune"..(nr-6)], id)
+
+            local used_slots = Pimp.UsedRunes(Pimp.data)
+            if used_slots > Pimp.data.rune_slots then
+                Pimp.data.rune_slots = used_slots
+            end
         end
     end
 
@@ -402,14 +411,18 @@ end
 
 -----------------------------------
 -- Item Link
-function Pimp.GenerateLink(item_data)
+function Pimp.UsedRunes(item_data)
+    return   ( item_data.runes[1]~=0 and 1 or 0)
+           + ( item_data.runes[2]~=0 and 1 or 0)
+           + ( item_data.runes[3]~=0 and 1 or 0)
+           + ( item_data.runes[4]~=0 and 1 or 0)
 
-    local free_slots = item_data.rune_slots
-            - ( item_data.runes[1]~=0 and 1 or 0)
-            - ( item_data.runes[2]~=0 and 1 or 0)
-            - ( item_data.runes[3]~=0 and 1 or 0)
-            - ( item_data.runes[4]~=0 and 1 or 0)
+end
 
+function Pimp.GenerateLink(item_data, prefix)
+
+    local free_slots = item_data.rune_slots - Pimp.UsedRunes(item_data)
+    assert(free_slots>=0 and item_data.rune_slots<5)
 
     local temphex= string.format("%x%02x%02x%02x",
         item_data.unk1,
@@ -440,9 +453,10 @@ function Pimp.GenerateLink(item_data)
 
     data[12] = Pimp.CalculateItemLinkHash(data)
 
-    local link = string.format("|Hitem:%x %x %x %x %x %x %x %x %x %x %x %x|h|c%s[%s]|r|h",
+    local link = string.format("|Hitem:%x %x %x %x %x %x %x %x %x %x %x %x|h|c%s[%s%s]|r|h",
         data[1], data[2], data[3], data[4],data[5], data[6], data[7], data[8],data[9], data[10], data[11], data[12],
         item_data.color,
+        prefix or "",
         item_data.name
         )
 
@@ -525,11 +539,7 @@ function Pimp.ExtractLink(itemlink)
             tonumber( data[ 9], 16) or 0,
             tonumber( data[10], 16) or 0 }
 
-    item_data.rune_slots = free_slots
-            + ( item_data.runes[1]~=0 and 1 or 0)
-            + ( item_data.runes[2]~=0 and 1 or 0)
-            + ( item_data.runes[3]~=0 and 1 or 0)
-            + ( item_data.runes[4]~=0 and 1 or 0)
+    item_data.rune_slots = free_slots + Pimp.UsedRunes(item_data)
 
     return item_data
 end
