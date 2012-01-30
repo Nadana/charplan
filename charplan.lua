@@ -200,6 +200,21 @@ function CP.ApplyItem(item_data, inv_slot, hidden)
     end
 end
 
+function CP.ClearItem(inv_slot, hidden)
+    CP.Items[inv_slot]=nil
+
+    if not hidden then
+        CP.UpdateEquipment()
+    end
+end
+
+function CP.HasItems()
+    for slot=0,21  do
+        if CP.Items[slot] then return true end
+    end
+end
+
+
 
 function CP.FindSlotForItem(item_id)
     local s1,s2, force1 = CP.DB.GetItemPositions(item_id)
@@ -287,6 +302,7 @@ function CP.OnMenuShow(this)
 	local info
     local save_list = CP.Storage.GetSavedList()
     local loaded_name = CP.Storage.GetLoadedName()
+    local is_empty = not CP.HasItems()
 
 	if( UIDROPDOWNMENU_MENU_LEVEL == 1 ) then
 
@@ -295,38 +311,37 @@ function CP.OnMenuShow(this)
         info.func = function() CP.Storage.LoadCurrentEquipment() end
 		UIDropDownMenu_AddButton( info, 1 )
 
-        if #save_list>0 then
-            info = {notCheckable = 1, hasArrow = 1}
-            info.text = CP.L.MENU_LOAD
-            info.value="load"
-            UIDropDownMenu_AddButton( info, 1 )
-        end
+        info = {notCheckable = 1, hasArrow = 1}
+        info.text = CP.L.MENU_LOAD
+        info.disabled = (#save_list==0)
+        info.value="load"
+        UIDropDownMenu_AddButton( info, 1 )
 
         info = {notCheckable = 1}
         info.text = CP.L.MENU_SAVE
+        info.disabled = is_empty
         info.func = function() CP.Storage.SaveItems(loaded_name) end
         UIDropDownMenu_AddButton( info, 1 )
 
-        if loaded_name then
-            info = {notCheckable = 1}
-            info.text = CP.L.MENU_SAVEAS
-            info.func = function() CP.Storage.SaveItems() end
-            UIDropDownMenu_AddButton( info, 1 )
-        end
+        info = {notCheckable = 1}
+        info.text = CP.L.MENU_SAVEAS
+        info.disabled = (is_empty or loaded_name==nil)
+        info.func = function() CP.Storage.SaveItems() end
+        UIDropDownMenu_AddButton( info, 1 )
 
-        if #save_list>0 then
-            info = {notCheckable = 1, hasArrow = 1}
-            info.text = CP.L.MENU_DEL
-            info.value="del"
-            UIDropDownMenu_AddButton( info, 1 )
-        end
+        info = {notCheckable = 1, hasArrow = 1}
+        info.text = CP.L.MENU_DEL
+        info.disabled = (#save_list==0)
+        info.value="del"
+        UIDropDownMenu_AddButton( info, 1 )
 		info = {notCheckable = 1}
 		info.text = CP.L.MENU_CLEARALL
-		info.func = function() 
-			for id=0,21  do
-				CP.Items[id]=nil
-			end  
-			CP.UpdateEquipment() 
+        info.disabled = is_empty
+		info.func = function()
+                for id=0,21  do
+                    CP.ClearItem(id,true)
+                end
+                CP.UpdateEquipment()
 			end
 		UIDropDownMenu_AddButton( info, 1 )
 
@@ -461,8 +476,7 @@ function CP.EquipItem_ShowMenu( this )
 
         info.text = CP.L.CONTEXT_CLEAR
         info.func = function()
-                CP.Items[CPEquipButtonMenu.Slot]=nil
-                CP.UpdateEquipment()
+                CP.ClearItem(CPEquipButtonMenu.Slot)
             end
         UIDropDownMenu_AddButton(info)
     end
