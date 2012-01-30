@@ -780,7 +780,14 @@ class SuitEntry < Table
     end
 
     def WriteLUAData(outf)
-        #@bonus.WriteLUAData(outf)
+        for b in 1..9
+            if @bonis[b][:eff].size>0 then
+                outf.write( "[%i]={" % b)
+                outf << "efftype={#{@bonis[b][:eff].join(",")}},"
+                outf << "effvalue={#{@bonis[b][:value].join(",")}}"
+                outf.write( "}, ")
+            end
+        end
     end
 
     def WriteLUA(outf)
