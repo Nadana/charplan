@@ -109,7 +109,7 @@ function Pimp.FillFields()
     UIDropDownMenu_SetSelectedValue(CPPimpMeAttrTier, data.tier)
     CPPimpMeAttrTierText:SetText(data.tier)
 
-    CPPimpMeAttrDura:SetText(data.max_dura)
+    CPPimpMeAttrDura:SetText(math.floor(data.dura))
 
     Pimp.OnStatCtrlSetValue(CPPimpMeAttrStat1, data.stats[1])
     Pimp.OnStatCtrlSetValue(CPPimpMeAttrStat2, data.stats[2])
@@ -230,6 +230,15 @@ function Pimp.SetStat(nr, id)
             Pimp.OnStatCtrlSetValue(_G["CPPimpMeAttrRune"..(nr-6)], id)
         end
     end
+
+    Pimp.UpdateInfo()
+end
+
+function Pimp.OnDura_Changed(this)
+    local text = this:GetText()
+    if not text or text=="" then return end
+
+    Pimp.data.dura=tonumber(text) or (Pimp.data.max_dura)
     Pimp.UpdateInfo()
 end
 
@@ -426,7 +435,7 @@ function Pimp.GenerateLink(item_data)
         item_data.runes[2],
         item_data.runes[3],
         item_data.runes[4],
-        item_data.dura*10
+        item_data.dura*100
     }
 
     data[12] = Pimp.CalculateItemLinkHash(data)
@@ -488,7 +497,7 @@ function Pimp.ExtractLink(itemlink)
 
     item_data.unk1 = tonumber( string.sub(data[3],-8,-7) , 16) or 0
     item_data.max_dura = tonumber( string.sub(data[3],-2,-1), 16)
-    item_data.dura = tonumber( data[11], 16) / 10
+    item_data.dura = tonumber( data[11], 16) / 100
 
     local runesPlus = tonumber( string.sub(data[3],-6,-5) , 16) or 0
     local tier_rar = tonumber( string.sub(data[3],-4,-3), 16) or 0

@@ -159,6 +159,9 @@
 							<Anchor point="TOPLEFT" relativeTo="$parentTier" relativePoint="BOTTOMLEFT"><Offset><AbsDimension x="5" y="3"/></Offset>
 							</Anchor>
 						</Anchors>
+						<Scripts>
+							<OnTextChanged>CP.Pimp.OnDura_Changed(this)</OnTextChanged>
+						</Scripts>						
 						<TextInsets><AbsInset top="8" right="4" left="4" bottom="0"></AbsInset></TextInsets>
 					</EditBox>
 					<Frame name="$parentStat1" inherits="CPStatSelectionTemplate" id="1">
@@ -374,5 +377,4 @@
 		</Scripts>
 		
 	</Frame>
-	
 </Ui>
