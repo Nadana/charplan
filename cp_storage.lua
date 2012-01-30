@@ -129,8 +129,8 @@ function Storage.LoadCurrentEquipment()
     StaticPopupDialogs["CP_LOADS_INV"] = {
 	    text = CP.L.DLG_WAIT_INV,
         button1 = TEXT("CANCEL"),
-        OnCancel = function(this)
-            CP.Storage.InventoryStopStrip(CP.L.ENUMERATE_CANCELED)
+        OnAccept = function(this)
+            CP.Storage.InvGetCancel = true
         end,
         exclusive = 1,
 	    hideOnEscape = 1,
@@ -167,6 +167,7 @@ function Storage.InventoryStopStrip(msg)
     Storage.InvGetPhase=nil
     Storage.StripSlot=nil
     Storage.InvLastItem=nil
+    Storage.InvGetCancel=nil
 
     CP.UpdateEquipment()
 end
@@ -193,6 +194,12 @@ end
 
 function Storage.InvPickInv()
     if CursorHasItem() then return end
+
+    if Storage.InvGetCancel then
+        Storage.InventoryStopStrip(CP.L.ENUMERATE_CANCELED)
+        return
+    end
+
 
     Storage.InvLastItem = Storage.InvLastItem+1
     while not CP.EquipButtons[Storage.InvLastItem] or
