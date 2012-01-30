@@ -252,15 +252,18 @@ function Pimp.OnDura_Changed(this)
 end
 
 -----------------------------------
+function Pimp.GetStatLable(id)
+    if id<7 then
+        return string.format(CP.L.PIMP_STAT,id)
+    else
+        return string.format(CP.L.PIMP_RUNE,id-6)
+    end
+end
+
 function Pimp.OnStatCtrlLoad(this)
     local id = this:GetID()
-    if id<7 then
-        this.isRune=false
-        _G[this:GetName().."Label"]:SetText( string.format(CP.L.PIMP_STAT,id))
-    else
-        this.isRune=true
-        _G[this:GetName().."Label"]:SetText( string.format(CP.L.PIMP_RUNE,id-6))
-    end
+    this.isRune= (id>6)
+    _G[this:GetName().."Label"]:SetText(Pimp.GetStatLable(id))
 
     UIDropDownMenu_SetWidth(_G[this:GetName().."Tier"], 40)
     UIDropDownMenu_Initialize(_G[this:GetName().."Tier"], Pimp.OnStatCtrlTierShow)
@@ -278,9 +281,15 @@ function Pimp.OnStatCtrlSetValue(button, id)
 
         namebtn:SetText(name)
         UIDropDownMenu_SetText(tierbtn, level)
+        if #tierbtn.levels<2 then
+            UIDropDownMenuButton_Disable(tierbtn)
+        else
+            UIDropDownMenuButton_Enable(tierbtn)
+        end
     else
         namebtn:SetText("")
         UIDropDownMenu_SetText(tierbtn, "")
+        UIDropDownMenuButton_Disable(tierbtn)
     end
 end
 
@@ -289,10 +298,10 @@ function Pimp.StatName_Changed(this)
     local text = this:GetText()
     if not text or text=="" then return end
 
-    local isrune = (this:GetParent():GetID()>6)
+    local is_rune = (this:GetParent():GetID()>6)
     local name,level, bestmatch = CP.DB.FindBonus(text, is_rune)
 
-    CP.Debug("Match: "..tostring(name).." "..tostring(level).." id:"..tostring(bestmatch))
+--    CP.Debug("Match: '"..tostring(name).."' L:"..tostring(level).." id:"..tostring(bestmatch))
 end
 
 
@@ -303,35 +312,47 @@ function Pimp.StatName_Finished(this)
         return
     end
 
-    local isrune = (this:GetParent():GetID()>6)
+    local is_rune = (this:GetParent():GetID()>6)
     local _,_, bestmatch = CP.DB.FindBonus(text, is_rune)
-    --Pimp.SetStat(this:GetParent():GetID(), bestmatch or 0)
+    Pimp.SetStat(this:GetParent():GetID(), bestmatch or 0)
 end
 
 
 
 function Pimp.OnStatCtrlTierShow(this)
-    local info={
-        notCheckable = 1,
-        func = function(this) Pimp.SetStat(this:Parent():GetID(), this.value) end,
-    }
 
-    for _,data in pairs(this.levels or {}) do
+    local slot = this:GetParent():GetID()
+    local info={ notCheckable = 1 }
+
+    for i,data in pairs(this.levels or {}) do
 		info.text = data[1]
         info.value = data[2]
+        info.func = function(this)
+            Pimp.SetStat(slot, this.value)
+            end
 		UIDropDownMenu_AddButton( info, 1 )
     end
 end
 
 function Pimp.OnStatSelSearch(this)
-    CPStatSearch.slot = this:GetID()
-    CPStatSearch:ClearAllAnchors()
-    CPStatSearch:SetAnchor("TOPRIGHT", "TOPRIGHT", this, 10, 18 )
+    Pimp.DoStatSearch(this:GetID(), this)
+end
+
+
+function Pimp.DoStatSearch(slot_id, parent)
+    CPStatSearch.slot = slot_id
+    if parent then
+        CPStatSearch:ClearAllAnchors()
+        CPStatSearch:SetAnchor("TOPRIGHT", "TOPRIGHT", parent, 10, 18 )
+    end
     CPStatSearch:Show()
 end
 
+
 function Pimp.StatSearch_OnShow(this)
     Pimp.Selection = nil
+
+    CPStatSearchTitle:SetText(Pimp.GetStatLable(this.slot))
 
     CPStatSearchSearchBox:SetText("")
     CPStatSearchSearchBoxBack:SetText(CP.L.PIMP_FILTER)
@@ -347,10 +368,10 @@ function Pimp.StatSearch_UpdateList()
     Pimp.Stats = CP.DB.GetBonusGroupList(isrune, text)
 
     CPStatSearchItemSB:SetValueStepMode("INT")
-    CPStatSearchItemSB:SetMinMaxValues(0,(#Pimp.Stats)-STATSEARCH_FIELD)
-    if CPStatSearchItemSB:GetValue() > (#Pimp.Stats)-STATSEARCH_FIELD then
-        CPStatSearchItemSB:SetValue(0)
-    end
+    CPStatSearchItemSB:SetMinMaxValues(0,math.max(0,(#Pimp.Stats)-STATSEARCH_FIELD))
+    --if CPStatSearchItemSB:GetValue() > (#Pimp.Stats)-STATSEARCH_FIELD then
+    --    CPStatSearchItemSB:SetValue(0)
+    --end
 
     Pimp.StatSearch_ListUpdate()
 end
@@ -408,6 +429,42 @@ function Pimp.StatSearch_Cancel()
     Pimp.Selection = nil
     CPStatSearch:Hide()
 end
+
+function Pimp.StatSearch_ItemOnEnter(this)
+    GameTooltip:SetOwner(this, "ANCHOR_TOPRIGHT", -10, 0)
+
+    local name,lvl,grp = CP.DB.GetBonusInfo(this:GetID())
+    GameTooltip:SetText(name)
+
+
+    local ids = {{lvl,this:GetID()}}
+    if grp then
+        ids = CP.DB.GetBonusGroupLevels(grp)
+    end
+
+    for _,d in ipairs(ids) do
+
+        local effect, effval = CP.DB.GetBonusEffect(d[2])
+        if #effect>0 then
+            GameTooltip:AddLine(d[1],1,0.82,0)
+            local left={}
+            local right={}
+            for i, ef in ipairs(effect or {}) do
+                table.insert(left, TEXT("SYS_WEAREQTYPE_"..ef))
+                table.insert(right,effval[i])
+            end
+            GameTooltip:AddDoubleLine(" "..table.concat(left,"/"), table.concat(right,"/"))
+        end
+    end
+
+    GameTooltip:Show()
+end
+
+function Pimp.StatSearch_ItemOnLeave()
+    GameTooltip:Hide()
+end
+
+
 
 -----------------------------------
 -- Item Link

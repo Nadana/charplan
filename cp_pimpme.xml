@@ -71,12 +71,12 @@
 
 	<Frame name="CPPimpMe" parent="CPFrame" inherits="UICommonFrameTemplate">
 		<Size>
-			<AbsDimension x="654" y="550"/>
+			<AbsDimension x="656" y="550"/>
 		</Size>
 		<Anchors>
-			<Anchor point="TOPLEFT" relativePoint="TOP" relativeTo="CPFrame">
+			<Anchor point="TOPLEFT" relativePoint="TOP" >
 				<Offset>
-					<AbsDimension x="0" y="-10"/>
+					<AbsDimension x="0" y="-60"/>
 				</Offset>								
 			</Anchor>			
 		</Anchors>		
@@ -104,24 +104,24 @@
 					<Layer level="BACKGROUND">
 						<Texture file="Interface\Common\PanelSeparate-HorizontalLine">
 							<Size>
-								<AbsDimension x="142" y="4"/>
+								<AbsDimension x="160" y="4"/>
 							</Size>
 							<Anchors>
 								<Anchor point="TOP">
 									<Offset>
-										<AbsDimension x="2" y="95"/>
+										<AbsDimension x="2" y="98"/>
 									</Offset>
 								</Anchor>
 							</Anchors>
 						</Texture>
 						<Texture file="Interface\Common\PanelSeparate-HorizontalLine">
 							<Size>
-								<AbsDimension x="142" y="4"/>
+								<AbsDimension x="160" y="4"/>
 							</Size>
 							<Anchors>
 								<Anchor point="TOP">
 									<Offset>
-										<AbsDimension x="2" y="255"/>
+										<AbsDimension x="2" y="268"/>
 									</Offset>
 								</Anchor>
 							</Anchors>
@@ -139,6 +139,9 @@
 				<Frames>
 					<Button name="CPPimpMeItem" inherits="ItemButtonTemplate">
 							<Anchors><Anchor point="TOPLEFT" /></Anchors>
+							<Scripts>
+								<OnClick>CP.Pimp.OnItemClicked()</OnClick>
+							</Scripts>
 					</Button>
 					<Frame name="$parentPlus" inherits="CPPimpDropDown">
 						<Anchors>
@@ -166,7 +169,7 @@
 					</EditBox>
 					<Frame name="$parentStat1" inherits="CPStatSelectionTemplate" id="1">
 						<Anchors>
-							<Anchor point="TOPLEFT"><Offset><AbsDimension x="0" y="100"/></Offset></Anchor>
+							<Anchor point="TOPLEFT"><Offset><AbsDimension x="0" y="107"/></Offset></Anchor>
 						</Anchors>
 					</Frame>
 					<Frame name="$parentStat2" inherits="CPStatSelectionTemplate" id="2">
@@ -186,7 +189,7 @@
 					</Frame>
 					<Frame name="$parentRune1" inherits="CPStatSelectionTemplate" id="7">
 						<Anchors>
-							<Anchor point="TOPLEFT"><Offset><AbsDimension x="0" y="260"/></Offset></Anchor>
+							<Anchor point="TOPLEFT"><Offset><AbsDimension x="0" y="280"/></Offset></Anchor>
 						</Anchors>
 					</Frame>
 					<Frame name="$parentRune2" inherits="CPStatSelectionTemplate" id="8">
@@ -257,7 +260,13 @@
 					CP.Pimp.StatSearch_ItemClicked(this,key)
 					CP.Pimp.StatSearch_Close()
 			</OnDoubleClick>
-			<OnMouseWheel>UIPanelScrollBar_OnMouseWheel(CPStatSearchItemSB, delta)</OnMouseWheel>
+			<OnMouseWheel>
+				CP.Pimp.StatSearch_ItemOnLeave()
+				UIPanelScrollBar_OnMouseWheel(CPStatSearchItemSB, delta)
+				CP.Pimp.StatSearch_ItemOnEnter(this)
+			</OnMouseWheel>
+			<OnEnter>CP.Pimp.StatSearch_ItemOnEnter(this)</OnEnter>
+			<OnLeave>CP.Pimp.StatSearch_ItemOnLeave()</OnLeave>
 		</Scripts>
 	</Frame>
 	<Frame name="CPStatSearch" hidden="true" parent="CPPimpMe" inherits="UICommonFrameTemplate" frameStrata="TOOLTIP" frameLevel="1000">
@@ -280,7 +289,7 @@
 				</Layers>
 				<Scripts>
 					<OnEditFocusGained>CP.Pimp.StatSearch_FilterFocus(this,true)</OnEditFocusGained>
-					<OnEditFocusLost>CP.Pimp.StatSearch_FilterUpdate(this,false)</OnEditFocusLost>
+					<OnEditFocusLost>CP.Pimp.StatSearch_FilterFocus(this,false)</OnEditFocusLost>
 					<OnTextChanged>CP.Pimp.StatSearch_UpdateList(this)</OnTextChanged>
 				</Scripts>	
 			</EditBox>

@@ -156,9 +156,22 @@ end
 
 --------
 -- stat search
+local function GetBonusName(id)
+    local name = TEXT("Sys"..id.."_name")
+    local gname, lvl = string.match(name,"^(.-)%s+(%w+)$")
+    if not gname then
+        return name, ""
+    end
+    return gname, lvl
+end
+
 function DB.GetBonusGroupList(runes, filter)
 
     runes = runes and true or false
+
+    if filter then
+        filter = filter:lower()
+    end
 
     local done={}
     local res={}
@@ -167,21 +180,17 @@ function DB.GetBonusGroupList(runes, filter)
             if not done[rdata.grp] then
 
                 if DB.IsRuneGroup(rdata.grp)==runes then
-                    local name = TEXT("Sys"..id.."_name")
-                    name = string.match(name,"^(.-)%s*%w*$") or name
+                    local name = GetBonusName(id)
 
-                    local filter_found = true
-                    if filter then
-                        filter_found = string.find(name,filter)
-                    end
+                    local filter_found = (not filter) or string.find(name:lower(),filter)
 
                     eff = {}
                     for i, ef in ipairs(rdata.efftype or {}) do
                         local n = TEXT("SYS_WEAREQTYPE_"..ef)
                         if n then
                             table.insert(eff,n)
-                            if not filter_found and filter then
-                                filter_found = string.find(name,n)
+                            if not filter_found then
+                                filter_found = string.find(n:lower(),filter)
                             end
                         end
                     end
@@ -208,14 +217,8 @@ function DB.GetBonusGroupLevels(grp)
     for id,rdata in pairs(DB.bonus) do
 
         if rdata.grp==grp then
-            local name = TEXT("Sys"..id.."_name")
-            local gname, lvl = string.match(name,"^(.-)%s*(%w*)$")
-            if not gname then
-                gname = name
-                lvl = ""
-            end
-
-            table.insert(res,{lvl or "",id})
+            local name, lvl = GetBonusName(id)
+            table.insert(res,{lvl,id})
         end
     end
 
@@ -225,22 +228,15 @@ function DB.GetBonusGroupLevels(grp)
 end
 
 function DB.GetBonusInfo(id)
-
-    local name = TEXT("Sys"..id.."_name")
-    local gname, lvl = string.match(name,"^(.-)%s*(%w*)$")
-    if not gname then
-        gname = name
-        lvl = ""
-    end
-
-    return gname, lvl, (DB.bonus[id] and DB.bonus[id].grp)
+    local name, lvl = GetBonusName(id)
+    return name, lvl, (DB.bonus[id] and DB.bonus[id].grp)
 end
 
 function DB.FindBonus(text, is_rune)
 
-    local iname, ilvl = string.match(text,"^(.-)%s*(%w*)$")
+    local iname, ilvl = string.match(text,"^%s*(.-)%s+(%w+)%s*$")
     if not iname then
-        iname = name
+        iname = text
         ilvl = ""
     end
 
@@ -248,12 +244,7 @@ function DB.FindBonus(text, is_rune)
     for id,rdata in pairs(DB.bonus) do
         if rdata.grp and DB.IsRuneGroup(rdata.grp)==is_rune then
 
-            local name = TEXT("Sys"..id.."_name")
-            local gname, lvl = string.match(name,"^(.-)%s*(%w*)$")
-            if not gname then
-                gname = name
-                lvl = ""
-            end
+            local name, lvl = GetBonusName(id)
 
             if iname==name then
                 if ilvl==lvl then
@@ -261,8 +252,8 @@ function DB.FindBonus(text, is_rune)
                 else
                     good_match = id
                 end
-            elseif string.find(gname, "^"..iname) then
-                return gname,nil,id
+            elseif string.find(name, "^"..iname) then
+                return name,nil,id
             end
         end
     end
