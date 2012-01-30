@@ -117,27 +117,28 @@ function Calc.RecalcPoints(values, descriptions)
     Calc.Cards()
 
     for slot, item in pairs(CP.Items) do
-
-        if slot==10 or slot==15 or slot==16 then
-            Calc.values[s.PDMG] = 0
-            Calc.desc[s.PDMG] = nil
+		local temp_dmg = 0 
+        if slot==10 or slot==15 or slot==16 then		
+			temp_dmg = Calc.values[s.PDMG]	            
         end
-
-        Calc.Item(item)
-        Calc.ItemStats(item)
+		
+		Calc.Item(item)	
+        if slot==10 then 
+			Calc.values[s.PDMG1] = Calc.values[s.PDMG]			
+			Calc.values[s.PDMG] = temp_dmg
+			
+		end
+		if slot==15 then 
+			Calc.values[s.PDMG2] = Calc.values[s.PDMG] 			
+			Calc.values[s.PDMG] = temp_dmg 			
+		end
+		if slot==16 then 
+			Calc.values[s.PDMG3] = Calc.values[s.PDMG] 			
+			Calc.values[s.PDMG] = temp_dmg 	
+		end
+		Calc.ItemStats(item)
         Calc.ItemRunes(item)
-
-        if slot==10 then
-            Calc.values[s.PDMG1] = Calc.values[s.PDMG]
-            Calc.desc[s.PDMG1] = Calc.desc[s.PDMG]
-        elseif slot==15 then
-            Calc.values[s.PDMG2] = Calc.values[s.PDMG]
-            Calc.desc[s.PDMG2] = Calc.desc[s.PDMG]
-        elseif slot==16 then
-            Calc.values[s.PDMG3] = Calc.values[s.PDMG]
-            Calc.desc[s.PDMG3] = Calc.desc[s.PDMG]
-        end
-    end
+    end	
 
     CP.Calc.ALL_ATTRIBUTES()
 
