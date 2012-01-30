@@ -179,9 +179,16 @@ function Calc.Item(item)
 
     local name = TEXT("Sys"..item.id.."_name")
 
+    local factor = 1+item.tier*0.1
+    if item.dura>item.max_dura then
+        factor = factor + 0.2
+    elseif item.dura < item.max_dura/2 then
+        factor = factor - 0.2
+    end
+
     local effect, effvalues  = CP.DB.GetItemEffect(item.id)
     for i, ef in ipairs(effect or {}) do
-            AddValue(ef, effvalues[i]*(1+item.tier/10), "B "..name)
+            AddValue(ef, effvalues[i]*factor, "B "..name)
     end
 
     if item.plus>0 then
