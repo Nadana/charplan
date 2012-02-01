@@ -72,11 +72,21 @@ function Pimp.SetHyperLink(itemlink)
     -- scale tooltip
     local lines=1
     for i = 1, 60 do
-		textL = getglobal("CPPimpMeToolTipTextLeft" .. i);
-		textR = getglobal("CPPimpMeToolTipTextRight" .. i);
+		textL = getglobal("CPPimpMeToolTipTextLeft" .. i)
+		textR = getglobal("CPPimpMeToolTipTextRight" .. i)
 
         if textL:IsVisible() or textR:IsVisible() then
             lines=i
+
+            -- force right border
+            textR:ClearAllAnchors();
+		    textR:SetAnchor("TOPRIGHT", "TOPLEFT", textL:GetName(), 372, 0);
+
+            -- minimize DPS
+            local t = textL:GetText()
+            if string.find(t,TEXT("SYS_WEAPON_DPS")) then
+                textL:SetText(string.gsub(t,TEXT("SYS_WEAPON_DPS"),"dps"))
+            end
         end
     end
 
@@ -369,9 +379,6 @@ function Pimp.StatSearch_UpdateList()
 
     CPStatSearchItemSB:SetValueStepMode("INT")
     CPStatSearchItemSB:SetMinMaxValues(0,math.max(0,(#Pimp.Stats)-STATSEARCH_FIELD))
-    --if CPStatSearchItemSB:GetValue() > (#Pimp.Stats)-STATSEARCH_FIELD then
-    --    CPStatSearchItemSB:SetValue(0)
-    --end
 
     Pimp.StatSearch_ListUpdate()
 end
