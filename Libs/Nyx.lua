@@ -8,7 +8,7 @@
 --  License: MIT/X
 -----------------------------------------------------------------------------
 
-local Nyx = LibStub:NewLibrary("Nyx", 7)
+local Nyx = LibStub:NewLibrary("Nyx", 8)
 if not Nyx then return end
 
 ------------------------------
@@ -71,11 +71,11 @@ function Nyx.GetItemID( itemLk )
 end
 
 
-function Nyx.CreateItemLink( item_id, quality )
-  assert(type(item_id)=="number")
+function Nyx.CreateItemLink( item_id )
+    assert(type(item_id)=="number")
 
-  local r,g,b = GetItemQualityColor(quality or 1)
-  return string.format('|Hitem:%6x|h|cff%2x%2x%2x[dummy]|r|h',item_id,r*255,g*255,b*255)
+    local r,g,b = GetItemQualityColor(GetQualityByGUID( item_id ))
+    return string.format('|Hitem:%6x|h|cff%02x%02x%02x[dummy]|r|h',item_id,r*256,g*256,b*256)
 end
 
 function Nyx.FindBagIndex(m_name,m_icon)
