@@ -10,6 +10,22 @@ local CP = _G.CP
 CP.DB = DB
 
 
+--[[
+    DB-File Description:
+
+    items.lua
+        slot -> Inventory type (0=Head,...  10=RangedWeapon, 15=Weapon)
+        type -> Armor: cloth,leather,plate,... Weapon= 0-Haupthand; 1-Nebenhand; 2-Einhand; 3-Zweihand
+        min_level->
+        icon->
+        refine->
+        efftype->
+        effvalue->
+        basestats->
+        wtype-> (Weapons only) 0-20 -> 0-munition?; 1-Schwert; 2-Dolch; 6-Zweihandschwert; 11-Bogen
+]]
+
+
 local function LoadTable(fname)
     local fn, err = loadfile("interface/addons/charplan/item_data/"..fname..".lua")
     assert(fn,err)
@@ -25,8 +41,7 @@ function DB.Load()
     DB.LoadCount = 1
 
     DB.images = LoadTable("images")
-    DB.armor = LoadTable("armor")
-    DB.weapons = LoadTable("weapons")
+    DB.items = LoadTable("items")
     DB.bonus = LoadTable("addpower")
     DB.refines = LoadTable("refines")
     DB.cards = LoadTable("cards")
@@ -40,25 +55,13 @@ function DB.Release()
         local mem1 = collectgarbage("count")
             DB.LoadCount = nil
             DB.images = nil
-            DB.armor = nil
-            DB.weapons = nil
+            DB.items = nil
             DB.bonus = nil
             DB.refines = nil
             DB.cards = nil
         collectgarbage("collect")
         local mem2 = collectgarbage("count")
         CP.Debug("DB Released. Freed memory: "..(math.floor(mem1-mem2)/1000).."mb")
-    end
-end
-
-local function FindItem(item_id)
-    if DB.weapons[item_id] then
-        return DB.weapons[item_id],15
-    end
-    for slot,data in pairs(DB.armor) do
-        if data[item_id] then
-            return data[item_id],slot
-        end
     end
 end
 
@@ -71,9 +74,30 @@ function DB.GetCardEffect(card_id)
 end
 
 function DB.GetItemEffect(item_id)
-    local item = FindItem(item_id)
+    local item = DB.items[item_id]
     if item then
         return item.efftype, item.effvalue
+    else
+        CP.Debug("Item not in DB: "..item_id)
+    end
+end
+
+function DB.GetItemUsualDropEffects(item_id)
+    local item = DB.items[item_id]
+    if item then
+        if item.basestats then
+
+            local all_effects={}
+            local all_values={}
+            for _,stats in ipairs(item.basestats) do
+                local ea,ev = DB.GetBonusEffect(stats)
+                for i,effect in ipairs(ea or {}) do
+                    table.insert(all_effects,effect)
+                    table.insert(all_values,ev[i])
+                end
+            end
+            return all_effects, all_values
+        end
     else
         CP.Debug("Item not in DB: "..item_id)
     end
@@ -90,7 +114,7 @@ end
 function DB.GetPlusEffect(item_id, plus)
     assert(plus>0 and plus<21)
 
-    local item = FindItem(item_id)
+    local item = DB.items[item_id]
     if item then
         local eff = DB.refines[item.refine+plus-1]
         if eff then
@@ -104,13 +128,13 @@ function DB.GetPlusEffect(item_id, plus)
 end
 
 function DB.GetItemIcon(item_id)
-    local item = FindItem(item_id)
+    local item = DB.items[item_id]
     if item then
         local icon = DB.images[ item.icon ]
         if icon then
             return "interface/icons/" .. icon
         else
-            CP.Debug("Not Icon: "..item.icon.." for Item: "..item_id)
+            CP.Debug("No Icon: "..item.icon.." for Item "..item_id)
         end
     else
         CP.Debug("Item not in DB: "..item_id)
@@ -126,26 +150,25 @@ end
 
 
 function DB.GetItemPositions(item_id)
-    local item,slot = FindItem(item_id)
+    local item = DB.items[item_id]
 
-    if slot == 15 then
-        if item.weaponpos == 0 then return 15 end -- Haupthand
-        if item.weaponpos == 1 then return 16 end -- Nebenhand
-        if item.weaponpos == 2 then return 15,16 end -- Einhand
-        if item.weaponpos == 3 then return 15,16,true end -- Zweihand
-        if item.weaponpos == 5 then return 10 end -- Fernkampf
+    if item.slot == 15 then
+        if item.type == 0 then return 15 end -- Haupthand
+        if item.type == 1 then return 16 end -- Nebenhand
+        if item.type == 2 then return 15,16 end -- Einhand
+        if item.type == 3 then return 15,16,true end -- Zweihand
     else
-        if slot==11 or slot==12 then return 11,12 end
-        if slot==13 or slot==14 then return 13,14 end
-        return slot
+        if item.slot==11 or item.slot==12 then return 11,12 end
+        if item.slot==13 or item.slot==14 then return 13,14 end
+        return item.slot
     end
 end
 
 
 function DB.IsWeapon2Hand(item_id)
-    local item = DB.weapons[item_id]
+    local item = DB.items[item_id]
     if item then
-        return item.weaponpos == 3
+        return (item.slot == 15 and item.type == 3)
     end
 end
 
@@ -303,15 +326,11 @@ end
 
 --------
 -- item search
-function DB.GetItemForSlot(pos)
+function DB.FindItems(filter_function)
 
     local res={}
-    if pos==15 or pos==16  or pos==10 then
-        for id,_ in pairs(DB.weapons) do
-            table.insert(res,id) -- TODO: need better filter
-        end
-    else
-        for id,_ in pairs(DB.armor[pos]) do
+    for id,data in pairs(DB.items) do
+        if filter_function(id,data) then
             table.insert(res,id)
         end
     end
@@ -320,5 +339,10 @@ function DB.GetItemForSlot(pos)
 end
 
 
+function DB.GetItemInfo(item_id)
+    local item = DB.items[item_id]
+    if not item then return end
 
-
+    return  item.min_level,
+            (item.set and TEXT("Sys"..(item.set).."_name"))
+end

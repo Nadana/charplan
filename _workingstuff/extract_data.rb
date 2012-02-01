@@ -15,7 +15,7 @@ $log.formatter = proc { |severity, datetime, progname, msg|  "#{severity}: #{msg
 $temp_path="e:/Temp/ro/"  # will be deleted !
 
 MAX_LEVEL = 70
-
+$log.info("max level is: #{MAX_LEVEL}")
 
 $STATLIST={# SYS_WEAREQTYPE_xxx
     0 => "Keine Wirkung.",
@@ -245,22 +245,6 @@ def GetName(id)
     return name
 end
 
-def to_roman(num)
-    numbers ={
-                "M"=>1000,"CM"=>900, "D"=>500,"CD"=>400,
-                "C"=>100,"XC"=>90,   "L"=>50, "XL"=>40,
-                "X"=>10, "IX"=>9, "V"=>5,"IV"=>4, "I"=>1,
-    }
-
-    result=""
-    numbers.each { |txt,val|
-        while num >= val do
-            num -=val
-            result += txt
-        end
-    }
-    return result
-end
 
 class Images
 
@@ -350,7 +334,7 @@ class BonusStuff
             type = csv_row['eqtype'+i.to_s].to_i
             value = csv_row['eqtypevalue'+i.to_s].to_i
 
-            if type>0 and value>0 then
+            if type>0 and (i<3 or value!=0) then
                 @eqtypes.push(type)
                 @eqvalues.push(value)
 
@@ -373,14 +357,52 @@ class BonusStuff
         return true
     end
 
-    def WriteLUAData(outf)
+    def ExportData(data)
         if @eqtypes.size>0 then
-            outf << "efftype={#{@eqtypes.join(",")}},"
-            outf << "effvalue={#{@eqvalues.join(",")}}"
+            data.push("efftype={#{@eqtypes.join(",")}}")
+            data.push("effvalue={#{@eqvalues.join(",")}}")
         end
     end
 
 end
+
+
+class StatsStuff
+    attr_accessor :stats
+    attr_accessor :has_randoms
+
+    def initialize(csv_row)
+        @stats=[]
+        for i in 1..6
+
+            type = csv_row['dropability'+i.to_s].to_i
+            value = csv_row['dropabilityrate'+i.to_s].to_i / 1000
+
+            if value>=100then
+                if type > 599999 then
+                    @has_randoms = true
+                else
+                    @stats.push(type)
+                end
+            end
+        end
+    end
+
+    def HasStats?
+        return  ((@stats.size>0) or (@has_randoms))
+    end
+
+    def ExportData(data)
+        if @stats.size>0 then
+            data.push("basestats={#{@stats.join(",")}}")
+        end
+        if @has_randoms then
+            # data.push("hasrandoms=1")
+        end
+    end
+
+end
+
 
 
 class Table
@@ -413,11 +435,14 @@ class Table
     def Table.AfterLoad(db)
     end
 
-
     def Table.Export(filename, db)
         File.open(filename, 'wt') { |outf|
             outf.write("return {\n")
-            db.each { |id, data| data.WriteLUA(outf)  }
+            db.each { |id, data|
+                line_data = []
+                data.ExportData(line_data)
+                outf.write( "  [%i]={%s},\n" % [id, line_data.join(",")])
+                }
             outf.write("}\n")
         }
     end
@@ -427,17 +452,19 @@ class ItemEntry < Table
 
     attr_accessor :image_id, :min_level, :set
     attr_accessor :bonus
+    attr_accessor :base_stats
     attr_accessor :refineid
 
     def initialize(csv_row)
         super(csv_row)
         @id = csv_row['guid'].to_i
         @image_id = csv_row['imageid'].to_i
-        @min_level = csv_row['limitlv'].to_i
+        @level = csv_row['limitlv'].to_i
         @set = csv_row['suitid'].to_i
         @refineid = csv_row['refinetableid'].to_i
 
         @bonus = BonusStuff.new(csv_row)
+        @base_stats = StatsStuff.new(csv_row)
     end
 
     def SkipThisItem?
@@ -446,8 +473,8 @@ class ItemEntry < Table
             return true
         end
 
-        if @min_level>MAX_LEVEL then
-            $log.info("Item #{@id}: is above max level #{@min_level}")
+        if @level>MAX_LEVEL then
+            $log.info("Item #{@id}: is above max level #{@level}")
             return true
         end
 
@@ -460,22 +487,15 @@ class ItemEntry < Table
         return false
     end
 
-    def WriteLUAData(outf)
-        outf.write( "min_level=%i" % @min_level)
-        outf.write( ",icon=%i" % @image_id)
-        outf.write( ",refine=%i" % @refineid)
-        outf.write( ",set=%i" % @set) if @set>0
-        if @bonus.HasStats? then
-            outf << ","
-            bonus.WriteLUAData(outf)
-        end
+    def ExportData(data)
+        data.push( "level=%i" % @level)
+        data.push( "icon=%i" % @image_id)
+        data.push( "refine=%i" % @refineid)
+        data.push( "set=%i" % @set) if @set>0
+        bonus.ExportData(data)
+        base_stats.ExportData(data)
     end
 
-    def WriteLUA(outf)
-        outf.write( "  [%i]={" % id)
-        WriteLUAData(outf)
-        outf.write( "},\n")
-    end
 end
 
 class ArmorEntry < ItemEntry
@@ -498,11 +518,8 @@ class ArmorEntry < ItemEntry
         @unk2 = csv_row['unk128'].to_i
 
         raise "illegal pos:"+@inv_pos.to_s if @inv_pos>21
-    end
 
-    def WriteLUAData(outf)
-        super(outf)
-        #outf.write( ",pos=%i" % [inv_pos])
+        #raise "stop2: #{@id}" if @bonus.eqtypes.size()>1 and (@bonus.eqtypes[1]!=13 or @bonus.eqtypes[2]!=14)
     end
 
     def SkipThisItem?
@@ -510,22 +527,10 @@ class ArmorEntry < ItemEntry
         return res || @inv_pos==12
     end
 
-    def ArmorEntry.ExportLUA(filename, db)
-
-        File.open(filename, 'wt') { |outf|
-            outf.write("return {\n")
-
-            for pos in 0..21
-                outf.write("[%i]={\n" % pos)
-                db.each { |id, data|
-                    raise "stop" if id==220738
-                    data.WriteLUA(outf)  if data.inv_pos==pos
-                    }
-                outf.write("},\n")
-            end
-
-            outf.write("}\n")
-        }
+   def ExportData(data)
+        data.push("slot=%i" % [@inv_pos])
+        data.push("type=%i" % [@armror_typ])
+        super(data)
     end
 
     def ArmorEntry.TestWrite(db)
@@ -584,6 +589,8 @@ class WeaponEntry < ItemEntry
         @weapontype = csv_row['weapontype'].to_i # 0-20 -> 0-munition?; 1-Schwert; 2-Dolch; 6-Zweihandschwert; 11-Bogen
 
         raise "unkown weapon_pos:"+@weaponpos.to_s if @weaponpos<0 || @weaponpos>6
+
+        #raise "stop2" if @bonus.eqtypes[1]!=25
     end
 
     def SkipThisItem?
@@ -592,18 +599,15 @@ class WeaponEntry < ItemEntry
     end
 
 
-    def WriteLUAData(outf)
-        super(outf)
-        outf.write( ",weaponpos=%i" % [@weaponpos])
-        outf.write( ",weapontype=%i" % [@weapontype])
-    end
-
-    def WeaponEntry.ExportLUA(filename, db)
-        File.open(filename, 'wt') { |outf|
-            outf.write("return {\n")
-            db.each { |id, data| data.WriteLUA(outf)  }
-            outf.write("}\n")
-        }
+   def ExportData(data)
+        if @weaponpos==5 then
+            data.push("slot=10")
+        else
+            data.push("slot=15")
+        end
+        data.push("type=%i" % [@weaponpos])
+        super(data)
+        data.push("wtype=%i" % [@weapontype])
     end
 
 end
@@ -658,15 +662,9 @@ class AddPowerEntry < Table
         }
     end
 
-    def WriteLUAData(outf)
-        outf.write( "grp=%i," % @group) if @group
-        @bonus.WriteLUAData(outf)
-    end
-
-    def WriteLUA(outf)
-        outf.write( "  [%i]={" % id)
-        WriteLUAData(outf)
-        outf.write( "},\n")
+    def ExportData(data)
+        data.push("grp=%i" % @group) if @group
+        @bonus.ExportData(data)
     end
 end
 
@@ -707,15 +705,9 @@ class RunesEntry < Table
         return @bonus.HasInvalidStat? || (not @bonus.HasStats?) || (NameIsInvalid?(@id))
     end
 
-    def WriteLUAData(outf)
-        outf.write( "grp=%i," % @group)
-        @bonus.WriteLUAData(outf)
-    end
-
-    def WriteLUA(outf)
-        outf.write( "  [%i]={" % id)
-        WriteLUAData(outf)
-        outf.write( "},\n")
+    def ExportData(data)
+        data.push("grp=%i" % @group) if @group
+        @bonus.ExportData(data)
     end
 end
 
@@ -779,22 +771,14 @@ class SuitEntry < Table
                 (name=="" or name==nil or name=~/^Sys\d+_name$/) )
     end
 
-    def WriteLUAData(outf)
+    def ExportData(data)
         for b in 1..9
             if @bonis[b][:eff].size>0 then
-                outf.write( "[%i]={" % b)
-                outf << "efftype={#{@bonis[b][:eff].join(",")}},"
-                outf << "effvalue={#{@bonis[b][:value].join(",")}}"
-                outf.write( "}, ")
+                data.push("[%i]={efftype={%s},effvalue={%s}}" % [b, @bonis[b][:eff].join(","), @bonis[b][:value].join(",")] )
             end
         end
     end
 
-    def WriteLUA(outf)
-        outf.write( "  [%i]={" % id)
-        WriteLUAData(outf)
-        outf.write( "},\n")
-    end
 end
 
 
@@ -812,14 +796,8 @@ class RefineEntry < Table
         return false
     end
 
-    def WriteLUAData(outf)
-        @bonus.WriteLUAData(outf)
-    end
-
-    def WriteLUA(outf)
-        outf.write( "  [%i]={" % id)
-        WriteLUAData(outf)
-        outf.write( "},\n")
+    def ExportData(data)
+        @bonus.ExportData(data)
     end
 end
 
@@ -845,15 +823,26 @@ class CardEntry < Table
     end
 
     def WriteLUA(outf)
-        outf.write( "  [%i]=%i,\n" % [id, @cardaddpower])
+
     end
+
+    def CardEntry.Export(filename, db)
+        File.open(filename, 'wt') { |outf|
+            outf.write("return {\n")
+            db.each { |id, data|
+                outf.write( "  [%i]=%i,\n" % [id, data.cardaddpower])
+                }
+            outf.write("}\n")
+        }
+    end
+
 end
 
 class FullDB
 
     attr_accessor :images
-    attr_accessor :armor , :weapons
-    attr_accessor :addpower, :runes, :suits
+    attr_accessor :items
+    attr_accessor :addpower, :suits
     attr_accessor :refines, :cards
 
     def Load
@@ -866,15 +855,16 @@ class FullDB
         @images.Load()
 
         p "Load Armor"
-        @armor = ArmorEntry.Load()
+        @items = ArmorEntry.Load()
 
         p "Load Weapons"
-        @weapons= WeaponEntry.Load()
+        weapons= WeaponEntry.Load()
+        @items.merge!(weapons)
 
         p "Load Bonuses"
         @addpower= AddPowerEntry.Load()
-        @runes = RunesEntry.Load()
-        @addpower.merge!(@runes)
+        runes = RunesEntry.Load()
+        @addpower.merge!(runes)
 
         p "Load Sets"
         @suits = SuitEntry.Load()
@@ -893,21 +883,18 @@ class FullDB
 
         Table.Export("../item_data/sets.lua", @suits)
         Table.Export("../item_data/refines.lua", @refines)
-        Table.Export("../item_data/cards.lua", @cards)
+        CardEntry.Export("../item_data/cards.lua", @cards)
         Table.Export("../item_data/addpower.lua", @addpower)
-        #Table.Export("../item_data/runes.lua", @runes)
+        ArmorEntry.Export("../item_data/items.lua", @items)
 
         #ArmorEntry.TestWrite(armor)
-        ArmorEntry.ExportLUA("../item_data/armor.lua", @armor)
-        WeaponEntry.ExportLUA("../item_data/weapons.lua", @weapons)
     end
 
 
     def Check
         p "Checking & cleanup"
-        CheckSetItems(@suits, @armor, @weapons)
-        CheckImages(@armor, @images)
-        CheckImages(@weapons, @images)
+        CheckSetItems(@suits, @items)
+        CheckImages(@items, @images)
     end
 
 
@@ -922,18 +909,14 @@ class FullDB
         }
     end
 
-    def CheckSetItems(sets, armor, weapons)
+    def CheckSetItems(sets, items)
 
         sets.each { |id,s|
             s.set_items.each { |i|
-                if (armor.has_key?(i)) then
-                    if armor[i].set!=id then
-                        $log << "Item #{i} is listed for different set: #{armor[i].set} (should be #{id})\n"
+                if (items.has_key?(i)) then
+                    if items[i].set!=id then
+                        $log << "Item #{i} is listed for different set: #{items[i].set} (should be #{id})\n"
                         #raise "mismatch"
-                    end
-                elsif (weapons.has_key?(i)) then
-                    if weapons[i].set!=id then
-                        $log << "Item #{i} is listed for different set: #{weapons[i].set} (should be #{id})\n"
                     end
                 else
                     $log << "set #{id} has unknown item: #{i}\n"
