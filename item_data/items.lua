@@ -1,3 +1,5 @@
+-- ArmorEntry: slot,type,level,iconi,refine,dura,<set>,<efftype>,<effvalue>,<stats>
+-- WeaponEntry: slot,type,level,iconi,refine,dura,<set>,<efftype>,<effvalue>,<stats>,wtype
 return {
   [220012]={slot=8,type=7,level=45,icon=573859,refine=740220,dura=100,efftype={13},effvalue={0}},
   [220018]={slot=8,type=7,level=23,icon=573858,refine=740220,dura=100,efftype={13},effvalue={0}},
@@ -7,7 +9,6 @@ return {
   [220023]={slot=4,type=3,level=1,icon=570261,refine=743080,dura=50},
   [220024]={slot=1,type=3,level=1,icon=570379,refine=740080,dura=50},
   [220025]={slot=2,type=3,level=1,icon=570351,refine=740100,dura=50},
-  [220026]={slot=5,type=0,level=1,icon=570371,refine=740160,dura=50},
   [220027]={slot=7,type=0,level=1,icon=570364,refine=743300,dura=50},
   [220028]={slot=13,type=7,level=1,icon=0,refine=740260,dura=50},
   [220029]={slot=11,type=7,level=1,icon=0,refine=740240,dura=50},

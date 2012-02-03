@@ -346,8 +346,28 @@ end
 
 
 
------------------------------------------------------------
 
+function Calc.CharacterSkills()
+
+    for page=1,4 do
+
+        local count = GetNumSkill( page )
+        for index = 1,count do
+
+            local _SkillName, _SkillLV, _IconPath, _Mode, _PLV, _PPoint, _PTotalPoint, _bLearned = GetSkillDetail( page,  index )
+
+            local link = GetSkillHyperLink( page, index )
+            local _type, _data, _name = ParseHyperlink(link)
+            local _,_,skill_id = string.find(_data, "(%x+)")
+            skill_id =  tonumber(skill_id, 16)
+
+            CP.Debug(string.format("%i %i %s",skill_id, _SkillLV, _SkillName))
+        end
+    end
+
+end
+-----------------------------------------------------------
+--[[
 function UpdatePoints()
 
     info = SumOfAllItems()
@@ -423,7 +443,7 @@ function CalcPCritFk(info)
 end
 
 
---[[	Erläuterungen Variablen:
+        Erläuterungen Variablen:
 		Die Werte setzen sich aus den Char.Grundwerten und den Equip-Werten(inklusive Runen) zusammen (ggf. auch durch Perma-Skills)
 
 		  CRITE = Krit. Trefferrate Equip
