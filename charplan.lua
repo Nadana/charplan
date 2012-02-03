@@ -148,7 +148,7 @@ function CP.Register3rdParty()
         local addon = {
             name         = "CharPlan",
             description  = "Plan you Detailed information for daily-quest items.",
-            author       = "McBen, 19Lestat11",
+            author       = "McBen, 19Lestat88",
             icon         = "interface/AddOns/charplan/icon.dds",
             category     = "Inventory",
             slashCommand = "/cp",

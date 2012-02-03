@@ -99,9 +99,9 @@ local function AddValue(id, value, text)
     AddDesciption(id, text, string.format("+%i",value))
 end
 
-local function AddBonusEffect(effect, effvalues, text)
-    for i, ef in ipairs(effect or {}) do
-        AddValue(ef, effvalues[i], text)
+local function AddBonusEffect(effect, effvalues, text, factor)    
+	for i, ef in ipairs(effect or {}) do
+        AddValue(ef, effvalues[i]*factor, text)
     end
 end
 
@@ -180,21 +180,29 @@ function Calc.Item(item)
 
     local name = TEXT("Sys"..item.id.."_name")
 
-    local factor = 1+item.tier*0.1
-    if item.dura>item.max_dura then
-        factor = factor + 0.2
-    elseif item.dura < item.max_dura/2 then
-        factor = factor - 0.2
-    end
+    local factor1 = 1+item.tier*0.1
+	local factor = 1
+    
+	if (item.dura > 100) or (item.dura > item.max_dura) then
+		factor1 = factor1*1.2
+		factor = 1.2
+	elseif item.dura <= item.max_dura/5 then
+		factor1 = factor1*0.2
+		factor = 0.2
+	elseif item.dura <= item.max_dura/2 then
+		factor1 = factor1*0.8
+		factor = 0.8
+	
+	end			
 
     local effect, effvalues  = CP.DB.GetItemEffect(item.id)
     for i, ef in ipairs(effect or {}) do
-            AddValue(ef, effvalues[i]*factor, "B "..name)
+            AddValue(ef, effvalues[i]*factor1, "B "..name)
     end
 
     if item.plus>0 then
         effect, effvalues  = CP.DB.GetPlusEffect(item.id, item.plus)
-        AddBonusEffect(effect, effvalues, "P "..name)
+        AddBonusEffect(effect, effvalues, "P "..name, factor)
     end
 end
 
@@ -203,11 +211,19 @@ function Calc.ItemStats(item)
     local s = Calc.STATS
 
     local name = TEXT("Sys"..item.id.."_name")
-
+	local factor = 1
+	if (item.dura > 100) or (item.dura > item.max_dura) then
+		factor = 1.2
+	elseif item.dura <= item.max_dura/5 then
+		factor = 0.2
+	elseif item.dura <= item.max_dura/2 then
+		factor = 0.8
+	
+	end	
     for i=1,6 do
         if item.stats[i]>0 then
             local effect, effvalues  = CP.DB.GetBonusEffect(item.stats[i])
-            AddBonusEffect(effect, effvalues, "S "..name)
+            AddBonusEffect(effect, effvalues, "S "..name, factor)
         end
     end
 end
@@ -216,11 +232,19 @@ function Calc.ItemRunes(item)
    local s = Calc.STATS
 
     local name = TEXT("Sys"..item.id.."_name")
-
+	local factor = 1
+	if (item.dura > 100) or (item.dura > item.max_dura) then
+		factor = 1.2
+	elseif item.dura <= item.max_dura/5 then
+		factor = 0.2
+	elseif item.dura <= item.max_dura/2 then
+		factor = 0.8
+	
+	end	
     for i=1,4 do
         if item.runes[i]>0 then
             local effect, effvalues  = CP.DB.GetBonusEffect(item.runes[i])
-            AddBonusEffect(effect, effvalues, "R "..name)
+            AddBonusEffect(effect, effvalues, "R "..name, factor)
         end
     end
 end
