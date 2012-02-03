@@ -28,13 +28,20 @@ Calc.STATS={
 
 	-- melee/range
 	PDMG = 25,
-	PDMG1 = 400,
-	PDMG2 = 401,
-	PDMG3 = 402,
+	PDMGR = 400,
+	PDMGMH = 401,
+	PDMGOH = 402,
+	
 
 	PATK = 12,
+	PATKR = 407,
 	PCRIT = 18,
+	PCRITR = 403,
+	PCRITMH = 404,
+	PCRITOH = 405,
 	PACC = 16,
+	PACCR = 408,
+	PACCOH = 406,
 
 	--mdef
 	MDEF = 14,
@@ -107,7 +114,7 @@ end
 
 function Calc.RecalcPoints(values, descriptions)
     local s = Calc.STATS
-
+	
     Calc.values = values
     Calc.desc = descriptions
 
@@ -116,36 +123,48 @@ function Calc.RecalcPoints(values, descriptions)
     Calc.Bases()
     Calc.Cards()
 
-    for slot, item in pairs(CP.Items) do
+	for _,slot in ipairs( {0,1,2,3,4,5,6,7,8,9,11,12,13,14,21} ) do 
+		if CP.Items[slot] then
+			Calc.Item(CP.Items[slot])
+			Calc.ItemStats(CP.Items[slot])
+			Calc.ItemRunes(CP.Items[slot])
+		end
+	end
+	for _,slot in ipairs( {10,15,16} ) do
 		local temp_dmg = 0
-        if slot==10 or slot==15 or slot==16 then
+		local temp_crit = 0
+		if CP.Items[slot] then	
 			temp_dmg = Calc.values[s.PDMG]
-        end
-
-		Calc.Item(item)
-        if slot==10 then
-			Calc.values[s.PDMG1] = Calc.values[s.PDMG]
+			temp_crit = Calc.values[s.PCRIT]
+			
+			Calc.Item(CP.Items[slot])        
+			Calc.ItemStats(CP.Items[slot])
+			Calc.ItemRunes(CP.Items[slot])
+			
+			
+			
+			if slot==10 then
+				Calc.values[s.PDMGR] = Calc.values[s.PDMG] 			
+				Calc.values[s.PCRITR] = Calc.values[s.PCRIT]
+			end
+			if slot==15 then
+				Calc.values[s.PDMGMH] = Calc.values[s.PDMG]			
+				Calc.values[s.PCRITMH] = Calc.values[s.PCRIT] 			
+			end
+			if slot==16 then
+				Calc.values[s.PDMGOH] = Calc.values[s.PDMG] 			
+				Calc.values[s.PCRITOH] = Calc.values[s.PCRIT] 			
+			end	
 			Calc.values[s.PDMG] = temp_dmg
-
+			Calc.values[s.PCRIT] = temp_crit
 		end
-		if slot==15 then
-			Calc.values[s.PDMG2] = Calc.values[s.PDMG]
-			Calc.values[s.PDMG] = temp_dmg
-		end
-		if slot==16 then
-			Calc.values[s.PDMG3] = Calc.values[s.PDMG]
-			Calc.values[s.PDMG] = temp_dmg
-		end
-		Calc.ItemStats(item)
-        Calc.ItemRunes(item)
-    end
-
+	end
     CP.Calc.ALL_ATTRIBUTES()
-
+	
+	Calc.CharDepended()
     Calc.CharIndepended()
-    Calc.CharDepended()
+    
 end
-
 function Calc.Clear()
     for _,id in pairs(Calc.STATS) do
         Calc.values[id]=0
@@ -279,6 +298,11 @@ function Calc.CharIndepended()
     AddValue(s.PACC, Calc.values[s.DEX]* 0.9 ,CP.L.STAT_NAMES.DEX)
     AddValue(s.MHEAL,Calc.values[s.MDMG]*0.5 ,CP.L.STAT_NAMES.MDMG)
 
+	AddValue(s.PACCR,Calc.values[s.PACC]*1 ,CP.L.STAT_NAMES.PACCR)
+	AddValue(s.PACCOH,Calc.values[s.PACC]*0.5 ,CP.L.STAT_NAMES.PACCOH)
+	AddValue(s.PDMGOH,Calc.values[s.PDMGOH]*0.7,CP.L.STAT_NAMES.PDMGOH)
+	AddValue(s.PATKR,Calc.values[s.PATK]* 1 ,CP.L.STAT_NAMES.PATKR)
+	
     AddValue(s.HP,   Calc.values[s.STA]* 5   ,CP.L.STAT_NAMES.STA)
     AddValue(s.HP,   Calc.values[s.STR]* 0.2 ,CP.L.STAT_NAMES.STR)
 
