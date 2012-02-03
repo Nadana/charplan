@@ -454,6 +454,8 @@ class ItemEntry < Table
     attr_accessor :bonus
     attr_accessor :base_stats
     attr_accessor :refineid
+    attr_accessor :durable, :isfixdurable
+    attr_accessor :runeslots, :runeminlvl
 
     def initialize(csv_row)
         super(csv_row)
@@ -462,6 +464,10 @@ class ItemEntry < Table
         @level = csv_row['limitlv'].to_i
         @set = csv_row['suitid'].to_i
         @refineid = csv_row['refinetableid'].to_i
+        @durable = csv_row['durable'].to_i
+        @isfixdurable = csv_row['isfixdurable'].to_i
+        @runeslots = csv_row['holebase'].to_i      #### looks like max holes?
+        @runeminlvl = csv_row['runelimetlv'].to_i  #### minimum rune level ?
 
         @bonus = BonusStuff.new(csv_row)
         @base_stats = StatsStuff.new(csv_row)
@@ -491,7 +497,10 @@ class ItemEntry < Table
         data.push( "level=%i" % @level)
         data.push( "icon=%i" % @image_id)
         data.push( "refine=%i" % @refineid)
+        data.push( "dura=%i" % @durable)
+        #data.push( "runes=%i" % @runeslots) if @runeslots>0
         data.push( "set=%i" % @set) if @set>0
+
         bonus.ExportData(data)
         base_stats.ExportData(data)
     end

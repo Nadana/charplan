@@ -99,7 +99,7 @@ local function AddValue(id, value, text)
     AddDesciption(id, text, string.format("+%i",value))
 end
 
-local function AddBonusEffect(effect, effvalues, text, factor)    
+local function AddBonusEffect(effect, effvalues, text, factor)
 	for i, ef in ipairs(effect or {}) do
         AddValue(ef, effvalues[i]*factor, text)
     end
@@ -117,28 +117,28 @@ function Calc.RecalcPoints(values, descriptions)
     Calc.Cards()
 
     for slot, item in pairs(CP.Items) do
-		local temp_dmg = 0 
-        if slot==10 or slot==15 or slot==16 then		
-			temp_dmg = Calc.values[s.PDMG]	            
+		local temp_dmg = 0
+        if slot==10 or slot==15 or slot==16 then
+			temp_dmg = Calc.values[s.PDMG]
         end
-		
-		Calc.Item(item)	
-        if slot==10 then 
-			Calc.values[s.PDMG1] = Calc.values[s.PDMG]			
+
+		Calc.Item(item)
+        if slot==10 then
+			Calc.values[s.PDMG1] = Calc.values[s.PDMG]
 			Calc.values[s.PDMG] = temp_dmg
-			
+
 		end
-		if slot==15 then 
-			Calc.values[s.PDMG2] = Calc.values[s.PDMG] 			
-			Calc.values[s.PDMG] = temp_dmg 			
+		if slot==15 then
+			Calc.values[s.PDMG2] = Calc.values[s.PDMG]
+			Calc.values[s.PDMG] = temp_dmg
 		end
-		if slot==16 then 
-			Calc.values[s.PDMG3] = Calc.values[s.PDMG] 			
-			Calc.values[s.PDMG] = temp_dmg 	
+		if slot==16 then
+			Calc.values[s.PDMG3] = Calc.values[s.PDMG]
+			Calc.values[s.PDMG] = temp_dmg
 		end
 		Calc.ItemStats(item)
         Calc.ItemRunes(item)
-    end	
+    end
 
     CP.Calc.ALL_ATTRIBUTES()
 
@@ -182,18 +182,20 @@ function Calc.Item(item)
 
     local factor1 = 1+item.tier*0.1
 	local factor = 1
-    
-	if (item.dura > 100) or (item.dura > item.max_dura) then
+
+    local max_dura = CP.DB.GetItemDura(item.id) * item.max_dura / 100
+
+	if (item.dura > 100) or (item.dura > max_dura) then
 		factor1 = factor1*1.2
 		factor = 1.2
-	elseif item.dura <= item.max_dura/5 then
+	elseif item.dura <= max_dura/5 then
 		factor1 = factor1*0.2
 		factor = 0.2
-	elseif item.dura <= item.max_dura/2 then
+	elseif item.dura <= max_dura/2 then
 		factor1 = factor1*0.8
 		factor = 0.8
-	
-	end			
+
+	end
 
     local effect, effvalues  = CP.DB.GetItemEffect(item.id)
     for i, ef in ipairs(effect or {}) do
@@ -218,8 +220,8 @@ function Calc.ItemStats(item)
 		factor = 0.2
 	elseif item.dura <= item.max_dura/2 then
 		factor = 0.8
-	
-	end	
+
+	end
     for i=1,6 do
         if item.stats[i]>0 then
             local effect, effvalues  = CP.DB.GetBonusEffect(item.stats[i])
@@ -239,8 +241,8 @@ function Calc.ItemRunes(item)
 		factor = 0.2
 	elseif item.dura <= item.max_dura/2 then
 		factor = 0.8
-	
-	end	
+
+	end
     for i=1,4 do
         if item.runes[i]>0 then
             local effect, effvalues  = CP.DB.GetBonusEffect(item.runes[i])

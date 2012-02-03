@@ -21,7 +21,7 @@ Item data = {
     rarity    -- == color??
     tier
     dura
-    max_dura  -- not always valid!
+    max_dura  --  !! Percent of base-dura !!
     stats[6]
     rune_slots
     runes[4]
@@ -528,13 +528,11 @@ function Pimp.GenerateLink(item_data, prefix)
     return link
 end
 
-function Pimp.GenerateLinkByID(id)
+function Pimp.GenerateLinkByID(item_id, prefix)
+    local item_data = CP.DB.GenerateItemDataByID(item_id)
 
-    local link = string.format("|Hitem:%x |h[b]|r|h",id)
-
-    return link
+    return Pimp.GenerateLink(item_data, prefix)
 end
-
 
 -- TEMP HELPER
 local function testflag(set, flag)

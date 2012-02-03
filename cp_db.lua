@@ -142,6 +142,15 @@ function DB.GetItemIcon(item_id)
 end
 
 
+
+function DB.GetItemDura(item_id)
+    local item = DB.items[item_id]
+    if item then
+        return item.dura
+    end
+    return 100
+end
+
 function DB.IsItemAllowedInSlot(item_id, slot)
     local a,b = DB.GetItemPositions(item_id)
 
@@ -361,9 +370,42 @@ end
 
 
 function DB.GetItemInfo(item_id)
+
     local item = DB.items[item_id]
     if not item then return end
 
     return  item.min_level,
             (item.set and TEXT("Sys"..(item.set).."_name"))
+end
+
+
+
+function DB.GenerateItemDataByID(item_id)
+
+    local data = {
+        name = TEXT("Sys"..item_id.."_name"),
+        id = item_id,
+        bind = 0,   --- INVALID
+        bind_flag = 0, --- INVALID
+        plus = 0,
+        rarity = 0,
+        tier = 0,
+        dura = 100,
+        max_dura = 100,
+        stats = {0,0,0,0,0,0},
+        rune_slots = 0,
+        runes = {0,0,0,0},
+        unk1 = 0, --- INVALID/UNKNOWN
+    }
+
+    local item = DB.items[item_id]
+    if item then
+        for i,stat in ipairs(item.basestats or {}) do
+            data.stats[i]=stat
+        end
+
+        data.dura = item.dura
+    end
+
+    return data
 end
