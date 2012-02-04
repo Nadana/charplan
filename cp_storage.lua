@@ -93,7 +93,7 @@ end
 
 function table.copy(src,dst)
     local res = dst or {}
-    while table.remove(res,1) do end
+    for i in pairs(res) do res[i]=nil end
 
     for i,v in pairs(src) do
         if type(v)=="table" then
