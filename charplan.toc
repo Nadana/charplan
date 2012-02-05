@@ -1,5 +1,6 @@
 libs/LibStub.lua
 libs/Nyx.lua
+libs/WaitTimer.lua
 
 charplan.lua
 cp_calc.lua
@@ -11,4 +12,3 @@ cp_storage.lua
 charplan.xml
 cp_pimpme.xml
 cp_search.xml
-cp_storage.xml
