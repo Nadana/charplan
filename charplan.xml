@@ -265,7 +265,7 @@
 							</Anchor>
 						</Anchors>
 					</Frame>
-					<Frame name="CPAttributeFrameValuePCRIT" inherits="CPAttributeFrameTemplate">
+					<Frame name="CPAttributeFrameValuePCRITMH" inherits="CPAttributeFrameTemplate">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValuePATK" relativePoint="BOTTOMLEFT">
 								<Offset>
@@ -276,7 +276,7 @@
 					</Frame>
 					<Frame name="CPAttributeFrameValuePACC" inherits="CPAttributeFrameTemplate">
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValuePCRIT" relativePoint="BOTTOMLEFT">
+							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValuePCRITMH" relativePoint="BOTTOMLEFT">
 								<Offset>
 									<AbsDimension x="0" y="2"/>
 								</Offset>

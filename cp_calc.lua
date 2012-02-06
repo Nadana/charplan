@@ -40,6 +40,7 @@ Calc.STATS={
 	PCRITMH = 404,
 	PCRITOH = 405,
 	PACC = 16,
+	PACCMH = 409,
 	PACCR = 408,
 	PACCOH = 406,
 
@@ -175,17 +176,36 @@ end
 
 function Calc.Bases()
     local s = Calc.STATS
+	--Base
     Calc.values[s.STR] = GetPlayerAbility("STR")
     Calc.values[s.STA] = GetPlayerAbility("STA")
     Calc.values[s.DEX] = GetPlayerAbility("AGI")
     Calc.values[s.INT] = GetPlayerAbility("INT")
     Calc.values[s.WIS] = GetPlayerAbility("MND")
-
+	
     AddDesciption(s.STR, CP.L.STAT_NAMES.STR, tostring(Calc.values[s.STR]))
     AddDesciption(s.STA, CP.L.STAT_NAMES.STA, tostring(Calc.values[s.STA]))
     AddDesciption(s.DEX, CP.L.STAT_NAMES.DEX, tostring(Calc.values[s.DEX]))
     AddDesciption(s.INT, CP.L.STAT_NAMES.INT, tostring(Calc.values[s.INT]))
     AddDesciption(s.WIS, CP.L.STAT_NAMES.WIS, tostring(Calc.values[s.WIS]))
+	
+	--Melee
+	Calc.values[s.PCRITOH] = GetPlayerAbility("MELEE_CRITICAL")	
+	Calc.values[s.PCRITMH] = GetPlayerAbility("MELEE_MAIN_CRITICAL")	
+	Calc.values[s.PCRITOH] = GetPlayerAbility("MELEE_OFF_CRITICAL")
+	Calc.values[s.PACCMH] = GetPlayerAbility("PHYSICAL_MAIN_HIT")	
+	
+	AddDesciption(s.PCRITMH, CP.L.STAT_NAMES.PCRITMH, tostring(Calc.values[s.PCRITMH]))
+	AddDesciption(s.PCRITOH, CP.L.STAT_NAMES.PCRITOH, tostring(Calc.values[s.PCRITOH]))
+	AddDesciption(s.PACCMH, CP.L.STAT_NAMES.PACCMH, tostring(Calc.values[s.PACCMH]))
+	
+	--Range	
+	Calc.values[s.PCRITR] = GetPlayerAbility("RANGE_CRITICAL")	
+	AddDesciption(s.PCRITR, CP.L.STAT_NAMES.PCRITR, tostring(Calc.values[s.PCRITR]))
+	
+	--Magic
+	Calc.values[s.MCRIT] = GetPlayerAbility("MAGIC_CRITICAL")		
+	AddDesciption(s.MCRIT, CP.L.STAT_NAMES.MCRIT, tostring(Calc.values[s.MCRIT]))	
 end
 
 function Calc.Cards()

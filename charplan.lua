@@ -446,7 +446,13 @@ function CP.EquipItem_OnClick(this, key)
     else
         local item_data = CP.Items[this:GetID()]
         if item_data then
-            CP.Pimp.PimpItem(item_data)
+			if( IsShiftKeyDown() ) then				
+				ChatEdit_AddItemLink(CP.Pimp.GenerateLink(item_data, "CP: "));				
+			elseif(IsCtrlKeyDown()) then
+				CP.Search.ForSlot(this:GetID())				
+			else 
+				CP.Pimp.PimpItem(item_data)			
+			end
         else
             CP.Search.ForSlot(this:GetID())
         end
