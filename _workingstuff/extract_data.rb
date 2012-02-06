@@ -7,7 +7,8 @@ require_relative 'rom_utilities'
 
 
 $log = Logger.new(open('logfile.txt', File::WRONLY | File::CREAT))
-$log.level = Logger::INFO # WARN
+$log.level = Logger::WARN
+#$log.level = Logger::INFO
 $log.formatter = proc { |severity, datetime, progname, msg|  "#{severity}: #{msg}\n" }
 
 
@@ -326,10 +327,10 @@ end
 class BonusStuff
     attr_accessor :eqtypes, :eqvalues
 
-    def initialize(csv_row)
+    def initialize(csv_row, max_bonus=10)
         @eqtypes=[]
         @eqvalues=[]
-        for i in 1..10
+        for i in 1..max_bonus
 
             type = csv_row['eqtype'+i.to_s].to_i
             value = csv_row['eqtypevalue'+i.to_s].to_i
@@ -355,6 +356,11 @@ class BonusStuff
         @eqtypes.each { |v| return false unless bonus.eqtypes.find_index(v)}
         bonus.eqtypes.each { |v| return false unless @eqtypes.find_index(v)}
         return true
+    end
+
+    def ExportDesc(data)
+        data.push( "<efftype>")
+        data.push( "<effvalue>")
     end
 
     def ExportData(data)
@@ -390,6 +396,10 @@ class StatsStuff
 
     def HasStats?
         return  ((@stats.size>0) or (@has_randoms))
+    end
+
+    def ExportDesc(data)
+        data.push( "<stats>")
     end
 
     def ExportData(data)
@@ -436,7 +446,21 @@ class Table
     end
 
     def Table.Export(filename, db)
+
+        desc = Hash.new()
+        db.each { |id, data|
+            if not desc.has_key?(data.class) then
+                line_data = []
+                data.ExportDesc(line_data)
+                desc[data.class] = line_data.join(",")
+            end
+        }
+
         File.open(filename, 'wt') { |outf|
+            desc.each { |cl,d|
+                outf.write( "-- %s: %s\n" % [cl.to_s,d])
+                }
+
             outf.write("return {\n")
             db.each { |id, data|
                 line_data = []
@@ -493,6 +517,19 @@ class ItemEntry < Table
         return false
     end
 
+
+    def ExportDesc(data)
+        data.push( "level")
+        data.push( "iconi")
+        data.push( "refine")
+        data.push( "dura")
+        #data.push( "runes=%i" % @runeslots) if @runeslots>0
+        data.push( "<set>")
+
+        bonus.ExportDesc(data)
+        base_stats.ExportDesc(data)
+    end
+
     def ExportData(data)
         data.push( "level=%i" % @level)
         data.push( "icon=%i" % @image_id)
@@ -511,7 +548,7 @@ class ArmorEntry < ItemEntry
 
     FILENAME = "armorobject"
     attr_accessor :inv_pos
-    attr_accessor :armror_typ, :unk1, :unk2
+    attr_accessor :armor_typ, :unk1, :unk2
 
     def initialize(csv_row)
         super(csv_row)
@@ -522,7 +559,7 @@ class ArmorEntry < ItemEntry
         @inv_pos = 13 if @inv_pos==10
         @inv_pos = 11 if @inv_pos==9
 
-        @armror_typ = csv_row['armortype'].to_i
+        @armor_typ = csv_row['armortype'].to_i
         @unk1 = csv_row['unk124'].to_i
         @unk2 = csv_row['unk128'].to_i
 
@@ -531,14 +568,52 @@ class ArmorEntry < ItemEntry
         #raise "stop2: #{@id}" if @bonus.eqtypes.size()>1 and (@bonus.eqtypes[1]!=13 or @bonus.eqtypes[2]!=14)
     end
 
+    def IsTypeValid?
+        case @inv_pos
+            when 0,1,2,3,4,6,7  # nrl armor
+                result = (0..3).include?(@armor_typ)
+                return result
+
+            when 8,11,13 # schmuck
+                return (@armor_typ==7)
+
+            when 21 # rücken
+                return true
+
+            when 10 # fernkampf
+                return (@armor_typ==5)
+
+            when 15,16 # waffen
+                return true
+
+            when 12 # amulet
+                return true
+
+            when 5 # Umhang
+                return (@armor_typ==3)
+        else
+            raise "illegal pos: #{@inv_pos} - #{@id}"
+        end
+    end
+
     def SkipThisItem?
+        if not IsTypeValid? then
+            $log.warn("item has wrong typ-> #{self}")
+            return true
+        end
         res = super
         return res || @inv_pos==12
     end
 
-   def ExportData(data)
+    def ExportDesc(data)
+        data.push( "slot")
+        data.push( "type")
+        super(data)
+    end
+
+    def ExportData(data)
         data.push("slot=%i" % [@inv_pos])
-        data.push("type=%i" % [@armror_typ])
+        data.push("type=%i" % [@armor_typ])
         super(data)
     end
 
@@ -573,7 +648,7 @@ class ArmorEntry < ItemEntry
                     if data.inv_pos==pos then
                         name = $de.get_value("\"Sys#{id}_name\"")
                         outf.write("<a href=\"http://de.runesdatabase.com/item/#{id}\">")
-                        outf.write("#{data.armror_typ} - #{data.unk1} - #{data.unk2} -> #{id} #{name}</a><br>\n")
+                        outf.write("#{data.armor_typ} - #{data.unk1} - #{data.unk2} -> #{id} #{name}</a><br>\n")
                     end
                     }
 
@@ -607,8 +682,14 @@ class WeaponEntry < ItemEntry
         return super() || not_a_weapon
     end
 
+    def ExportDesc(data)
+        data.push( "slot")
+        data.push( "type")
+        super(data)
+        data.push( "wtype")
+    end
 
-   def ExportData(data)
+    def ExportData(data)
         if @weaponpos==5 then
             data.push("slot=10")
         else
@@ -618,7 +699,6 @@ class WeaponEntry < ItemEntry
         super(data)
         data.push("wtype=%i" % [@weapontype])
     end
-
 end
 
 
@@ -671,6 +751,11 @@ class AddPowerEntry < Table
         }
     end
 
+    def ExportDesc(data)
+        data.push( "grp")
+        @bonus.ExportDesc(data)
+    end
+
     def ExportData(data)
         data.push("grp=%i" % @group) if @group
         @bonus.ExportData(data)
@@ -712,6 +797,11 @@ class RunesEntry < Table
 
     def SkipThisItem?
         return @bonus.HasInvalidStat? || (not @bonus.HasStats?) || (NameIsInvalid?(@id))
+    end
+
+    def ExportDesc(data)
+        data.push( "grp")
+        @bonus.ExportDesc(data)
     end
 
     def ExportData(data)
@@ -780,6 +870,12 @@ class SuitEntry < Table
                 (name=="" or name==nil or name=~/^Sys\d+_name$/) )
     end
 
+    def ExportDesc(data)
+        for b in 1..9
+            data.push( "[]={}")
+        end
+    end
+
     def ExportData(data)
         for b in 1..9
             if @bonis[b][:eff].size>0 then
@@ -795,6 +891,62 @@ class RefineEntry < Table
 
     FILENAME = "eqrefineabilityobject"
     attr_accessor :bonus
+    attr_accessor :basefactor
+
+    def initialize(csv_row)
+        super(csv_row)
+        @bonus = BonusStuff.new(csv_row)
+        @basefactor = csv_row['exeqpowerrate'].to_i
+    end
+
+    def SkipThisItem?
+        return false
+    end
+
+    def ExportDesc(data)
+        @bonus.ExportDesc(data)
+        data.push( "base")
+    end
+
+    def ExportData(data)
+        @bonus.ExportData(data)
+        data.push("base=%i" % @basefactor)
+    end
+end
+
+class MagicCollectionEntry < Table
+
+    FILENAME = "magiccollectobject"
+    attr_accessor :magics
+
+    def initialize(csv_row)
+        super(csv_row)
+        @magics=[]
+        for i in 1..12
+            magic = csv_row['magicbaseid'+i.to_s].to_i
+            @magics.push(magic) if magic>0
+        end
+    end
+
+    def SkipThisItem?
+        return @magics.size==0
+    end
+
+    def ExportDesc(data)
+        data.push( "{magics}")
+    end
+
+    def ExportData(data)
+        @magics.each {|d|
+            data.push(d)
+        }
+    end
+end
+
+class MagicObjectEntry < Table
+
+    FILENAME = "magicobject"
+    attr_accessor :bonus
 
     def initialize(csv_row)
         super(csv_row)
@@ -802,7 +954,11 @@ class RefineEntry < Table
     end
 
     def SkipThisItem?
-        return false
+        return (not @bonus.HasStats?)
+    end
+
+    def ExportDesc(data)
+        @bonus.ExportDesc(data)
     end
 
     def ExportData(data)
@@ -828,11 +984,7 @@ class CardEntry < Table
         return false
     end
 
-    def WriteLUAData(outf)
-    end
-
-    def WriteLUA(outf)
-
+    def ExportDesc(data)
     end
 
     def CardEntry.Export(filename, db)
@@ -844,7 +996,25 @@ class CardEntry < Table
             outf.write("}\n")
         }
     end
+end
 
+class TitleEntry < Table
+
+    FILENAME = "titleobject"
+    attr_accessor :bonus
+
+    def initialize(csv_row)
+        super(csv_row)
+        @bonus = BonusStuff.new(csv_row)
+    end
+
+    def SkipThisItem?
+        return (not @bonus.HasStats?)
+    end
+
+    def ExportDesc(data)
+        @bonus.ExportDesc(data)
+    end
 end
 
 class FullDB
@@ -853,6 +1023,7 @@ class FullDB
     attr_accessor :items
     attr_accessor :addpower, :suits
     attr_accessor :refines, :cards
+    attr_accessor :skills, :spells
 
     def Load
 
@@ -881,6 +1052,10 @@ class FullDB
         p "Load Refines"
         @refines = RefineEntry.Load()
 
+        p "Load Spells"
+        @skills = MagicCollectionEntry.Load()
+        @spells = MagicObjectEntry.Load()
+
         p "Load Cards"
         @cards = CardEntry.Load()
 
@@ -895,6 +1070,9 @@ class FullDB
         CardEntry.Export("../item_data/cards.lua", @cards)
         Table.Export("../item_data/addpower.lua", @addpower)
         ArmorEntry.Export("../item_data/items.lua", @items)
+
+        MagicCollectionEntry.Export("../item_data/skills.lua", @skills)
+        MagicObjectEntry.Export("../item_data/spells.lua", @spells)
 
         #ArmorEntry.TestWrite(armor)
     end

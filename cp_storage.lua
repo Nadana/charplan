@@ -8,6 +8,9 @@ local Storage = {}
 local CP = _G.CP
 CP.Storage = Storage
 
+local WaitTimer = LibStub("WaitTimer")
+
+
 function Storage.Init()
     SaveVariablesPerCharacter("CP_Storage")
 end
@@ -20,8 +23,6 @@ function Storage.GetSavedList()
     end
     return list
 end
-
-
 
 
 function Storage.GetLoadedName()
@@ -93,7 +94,7 @@ end
 
 function table.copy(src,dst)
     local res = dst or {}
-    while table.remove(res,1) do end
+    for i in pairs(res) do res[i]=nil end
 
     for i,v in pairs(src) do
         if type(v)=="table" then
@@ -123,7 +124,6 @@ function Storage.LoadCurrentEquipment()
 
     Storage.InvGetPhase=0
     Storage.InvLastItem=-1
-    Storage.Delay = 0
     Storage.MaxDelay = 2
 
     StaticPopupDialogs["CP_LOADS_INV"] = {
@@ -137,7 +137,7 @@ function Storage.LoadCurrentEquipment()
     }
     StaticPopup_Show("CP_LOADS_INV")
 
-    CPStorage:Show()
+    Storage.Timer = WaitTimer.Wait(0.1, Storage.OnUpdate)
 end
 
 
@@ -162,7 +162,7 @@ function Storage.InventoryStopStrip(msg)
 
     StaticPopup_Hide("CP_LOADS_INV")
 
-    CPStorage:Hide()
+    WaitTimer.Stop(Storage.Timer)
 
     Storage.InvGetPhase=nil
     Storage.StripSlot=nil
@@ -173,22 +173,21 @@ function Storage.InventoryStopStrip(msg)
 end
 
 
-function Storage.OnUpdate(elapsedTime)
-    Storage.Delay = Storage.Delay-elapsedTime
-    Storage.MaxDelay = Storage.MaxDelay -elapsedTime
-    if Storage.Delay >0 then return end
+function Storage.OnUpdate()
+    Storage.MaxDelay = Storage.MaxDelay-0.1
 
     if Storage.MaxDelay<0 then
         Storage.InventoryStopStrip(CP.L.ERROR_PICKEDUPITEM)
         return
     end
 
-    Storage.Delay = 0.1
     local phases={Storage.InvPickInv, Storage.InvDropInv, Storage.InvPickBag, Storage.InvDropBag}
     if phases[Storage.InvGetPhase+1]() then
         Storage.InvGetPhase = (Storage.InvGetPhase +1)%4
         Storage.MaxDelay = 2
     end
+
+    return 0.1
 end
 
 

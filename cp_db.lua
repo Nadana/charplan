@@ -374,7 +374,7 @@ function DB.GetItemInfo(item_id)
     local item = DB.items[item_id]
     if not item then return end
 
-    return  item.min_level,
+    return  item.level,
             (item.set and TEXT("Sys"..(item.set).."_name"))
 end
 
@@ -384,6 +384,7 @@ function DB.GenerateItemDataByID(item_id)
 
     local data = {
         name = TEXT("Sys"..item_id.."_name"),
+        icon = DB.GetItemIcon(item_id),
         id = item_id,
         bind = 0,   --- INVALID
         bind_flag = 0, --- INVALID

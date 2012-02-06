@@ -1,3 +1,5 @@
+-- AddPowerEntry: grp,<efftype>,<effvalue>
+-- RunesEntry: grp,<efftype>,<effvalue>
 return {
   [510000]={efftype={10},effvalue={120}},
   [510020]={grp=1,efftype={8},effvalue={10}},
