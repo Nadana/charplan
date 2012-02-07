@@ -298,8 +298,10 @@ function CP.ModelShow()
 	model:InserLinkFrame("p_down",0,0,0)
 	model:Show()
 
-	model:SetCameraPosition(0, 0.10, -1.2);
-	model:SetTargetRotate(0);
+	model:SetCameraPosition(0, 0.10, -1.2)
+	model:SetTargetRotate(0)
+
+    CP.UpdateModel()
 end
 
 function CP.UpdateModel()
