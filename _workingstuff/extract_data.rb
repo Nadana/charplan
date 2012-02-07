@@ -918,6 +918,7 @@ class MagicCollectionEntry < Table
 
     FILENAME = "magiccollectobject"
     attr_accessor :magics
+    attr_accessor :effecttype
 
     def initialize(csv_row)
         super(csv_row)
@@ -926,10 +927,12 @@ class MagicCollectionEntry < Table
             magic = csv_row['magicbaseid'+i.to_s].to_i
             @magics.push(magic) if magic>0
         end
+
+        @effecttype = csv_row['effecttype'].to_i
     end
 
     def SkipThisItem?
-        return @magics.size==0
+        return ( @magics.size==0 or @effecttype!=2 ) # passive spells only
     end
 
     def ExportDesc(data)

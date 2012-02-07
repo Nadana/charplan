@@ -45,6 +45,8 @@ function DB.Load()
     DB.bonus = LoadTable("addpower")
     DB.refines = LoadTable("refines")
     DB.cards = LoadTable("cards")
+    DB.skills = LoadTable("skills")
+    DB.spells = LoadTable("spells")
 end
 
 function DB.Release()
@@ -59,6 +61,8 @@ function DB.Release()
             DB.bonus = nil
             DB.refines = nil
             DB.cards = nil
+            DB.skills = nil
+            DB.spells = nil
         collectgarbage("collect")
         local mem2 = collectgarbage("count")
         CP.Debug("DB Released. Freed memory: "..(math.floor(mem1-mem2)/1000).."mb")
@@ -71,6 +75,23 @@ function DB.GetCardEffect(card_id)
     if boni_id then
         return DB.GetBonusEffect(boni_id)
     end
+end
+
+function DB.GetSkillEffect(skill_id)
+
+    local efftype,effvalue={},{}
+    local skills = DB.skills[skill_id]
+    for _,spell_id in ipairs(skills or {}) do
+        local boni = DB.spells[spell_id]
+        if boni then
+            for i,ef in pairs(boni.efftype) do
+                table.insert(efftype,ef)
+                table.insert(effvalue,boni.effvalue[i])
+            end
+        end
+    end
+
+    return efftype,effvalue
 end
 
 function DB.GetItemEffect(item_id)

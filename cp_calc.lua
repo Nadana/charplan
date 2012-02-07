@@ -375,7 +375,12 @@ end
 
 function Calc.CharacterSkills()
 
-    for page=1,4 do
+-- /run CP.Calc.CharacterSkills()
+
+    CP.DB.Load()
+
+    --for page=1,4 do
+    for page=2,4 do
 
         local count = GetNumSkill( page )
         for index = 1,count do
@@ -384,14 +389,24 @@ function Calc.CharacterSkills()
 
             local link = GetSkillHyperLink( page, index )
             local _type, _data, _name = ParseHyperlink(link)
-            local _,_,skill_id = string.find(_data, "(%x+)")
-            skill_id =  tonumber(skill_id, 16)
+            local _,_,skill_id = string.find(_data, "(%d+)")
 
-            CP.Debug(string.format("%i %i %s",skill_id, _SkillLV, _SkillName))
+            local eff,effval = CP.DB.GetSkillEffect(tonumber(skill_id))
+            if #eff>0 then
+                local txt ={}
+                for i,ef in ipairs(eff) do
+                    table.insert(txt,string.format("%i %s",effval[i],TEXT("SYS_WEAREQTYPE_"..ef)))
+                end
+
+                CP.Debug( string.format("%i %s(%i): %s",skill_id, _SkillName,_SkillLV,table.concat(txt,",")))
         end
     end
+    end
+
+    CP.DB.Release()
 
 end
+
 -----------------------------------------------------------
 --[[
 function UpdatePoints()
