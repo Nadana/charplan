@@ -223,7 +223,7 @@
 								<Offset><AbsDimension x="0" y="2"/></Offset>
 							</Anchor>
 						</Anchors>
-					</Frame>						
+					</Frame>
 					<Frame name="CPAttributeFrameValueMHEAL" inherits="CPAttributeFrameTemplate">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValueMCRIT" relativePoint="BOTTOMLEFT">
@@ -261,7 +261,7 @@
 							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValuePDMGMH" relativePoint="BOTTOMLEFT">
 								<Offset>
 									<AbsDimension x="0" y="2"/>
-								</Offset>								
+								</Offset>
 							</Anchor>
 						</Anchors>
 					</Frame>
@@ -270,7 +270,7 @@
 							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValuePATK" relativePoint="BOTTOMLEFT">
 								<Offset>
 									<AbsDimension x="0" y="2"/>
-								</Offset>								
+								</Offset>
 							</Anchor>
 						</Anchors>
 					</Frame>
@@ -417,7 +417,7 @@
 								</Offset>
 							</Anchor>
 						</Anchors>
-					</Frame!-->					
+					</Frame!-->
 				</Frames>
 			</Frame>
 			<Frame name="CPEquipmentFrame" enableMouse="true">
@@ -471,7 +471,7 @@
 							<OnLoad>CP.OnMenuLoad(this)</OnLoad>
 						</Scripts>
 					</Frame>
-					<Frame name="$parentEquipmentPeperdollFrame" frameStrata="BACKGROUND" frameLevel="1">
+                	<Frame name="$parentPeperdollFrame" frameStrata="BACKGROUND" frameLevel="1">
 						<Size>
 							<AbsDimension x="191" y="238"/>
 						</Size>
@@ -491,35 +491,24 @@
 							</TileSize>
 						</Backdrop>
 					</Frame>
-					<Model name="$parentEquipmentModel" inherits="CommonModelTemplate" frameStrata="BACKGROUND" frameLevel="2">
+					<Model name="$parentModel" inherits="CommonModelTemplate" frameStrata="BACKGROUND" frameLevel="2">
 						<Size>
 							<AbsDimension x="180" y="220"/>
 						</Size>
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parentEquipmentPeperdollFrame">
+							<Anchor point="TOPLEFT" relativeTo="$parentPeperdollFrame">
 								<Offset>
 									<AbsDimension x="4" y="4"/>
 								</Offset>
 							</Anchor>
-							<Anchor point="BOTTOMRIGHT" relativeTo="$parentEquipmentPeperdollFrame">
+							<Anchor point="BOTTOMRIGHT" relativeTo="$parentPeperdollFrame">
 								<Offset>
 									<AbsDimension x="-2" y="-2"/>
 								</Offset>
 							</Anchor>
 						</Anchors>
 						<Scripts>
-							<OnLoad>
-								CommonModel_OnLoad(this);
-
-								this.top = "p_top";
-								this.bottom = "p_down";
-								this.bias_default   = 0.5;
-								this.scale_default  = 0.44;
-
-								this.bias_max       = 1.50;
-								this.bias_min       = -0.50;
-
-							</OnLoad>
+							<OnLoad>CP.OnModelLoad(this)</OnLoad>
 						</Scripts>
 					</Model>
 					<Button name="$parentEquipRing0Slot" inherits="CPEquipItemButtonTemplate">

@@ -88,6 +88,7 @@ function CP.OnShow(this)
     CP.DB.Load()
     CP.Calc.Init()
     CP.UpdateEquipment()
+    CP.ModelShow()
 end
 
 function CP.UpdateTitle()
@@ -221,6 +222,7 @@ function CP.UpdateEquipment()
        end
     end
 
+    CP.UpdateModel()
     CP.UpdatePoints()
 end
 
@@ -276,6 +278,41 @@ function CP.PimpUpdate()
         end
     end
 end
+
+function CP.OnModelLoad(this)
+    CommonModel_OnLoad(this)
+
+    this.top = "p_top";
+    this.bottom = "p_down";
+    this.bias_default   = 0.5;
+    this.scale_default  = 0.44;
+
+    this.bias_max       = 1.50;
+    this.bias_min       = -0.50;
+end
+
+function CP.ModelShow()
+    local model = CPEquipmentFrameModel
+    model:SetUnit("player")
+	model:InserLinkFrame("p_top",0,20,0)
+	model:InserLinkFrame("p_down",0,0,0)
+	model:Show()
+
+	model:SetCameraPosition(0, 0.10, -1.2);
+	model:SetTargetRotate(0);
+end
+
+function CP.UpdateModel()
+    local model = CPEquipmentFrameModel
+
+    model:TakeOffAll()
+    for slot=0,21  do
+        if CP.Items[slot] then
+            model:SetItemLink( CP.Pimp.GenerateLink(CP.Items[slot]) )
+        end
+    end
+end
+
 -----------------------------------
 -- Menu
 function CP.OnMenuLoad(this)
