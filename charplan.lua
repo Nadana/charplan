@@ -7,28 +7,8 @@ Notes:
 ]]
 
 
-
---[[
-Item data:
-    icon
-From LINK:
-    item_id
-    name
-    bind
-    plus
-    tier
-    max_dura
-    stats[6]
-    rune_slots
-    runes[4]
-
-]]
-
-
 local CP = {}
 _G.CP = CP
-
-CP_Storage={}
 
 
 CP.version       = "@project-version@"
@@ -74,7 +54,7 @@ function CP.SlashCMD_Reload()
 end
 ------------------------------
 
-
+local WaitTimer = LibStub("WaitTimer")
 local Nyx = LibStub("Nyx")
 
 Nyx.LoadLocalesAuto("interface/addons/charplan/locales/")
@@ -175,11 +155,11 @@ function CP.ApplyBagItem(inv_slot, bag_slot, hidden)
 end
 
 
-function CP.ApplyLinkItem(link)
+function CP.ApplyLinkItem(link, inv_slot)
     local item_data = CP.Pimp.ExtractLink(link)
     item_data.icon = CP.DB.GetItemIcon(item_data.id)
 
-    local inv_slot = CP.FindSlotForItem(item_data.id)
+    inv_slot = inv_slot or CP.FindSlotForItem(item_data.id)
     CP.ApplyItem(item_data, inv_slot)
 end
 
@@ -189,7 +169,7 @@ function CP.ApplyItem(item_data, inv_slot, hidden)
 
     if not CP.DB.IsItemAllowedInSlot(item_data.id, inv_slot) then
         CP.Debug(string.format("item not allowed in that slot: %i - %s slot:%i",item_data.id,item_data.name,inv_slot))
-    --  return
+        return
     end
 
     if CP.DB.IsWeapon2Hand(item_data.id) then
@@ -423,35 +403,64 @@ end
 
 function CP.EquipItem_OnReceiveDrag( this )
 
-    if CursorItemType()~="bag" then
-        -- TODO: add more drop senders
-        DEFAULT_CHAT_FRAME:AddMessage("only Bag is supported right now")
+    local from = CursorItemType()
+    local pos=GetCursorItemInfo()
+    if not from or not pos then return end
+
+    if from~="bag" and from~="bank" then
+        CP.Debug("Drag from '"..from.."' not supported")
         return
     end
 
+    local data=
+    {
+        from = from,
+        pos = pos,
+        slot = this:GetID()
+    }
+
+    WaitTimer.Wait(0.1, CP.WaitForItemLink,"CP_ITEMDROPER", data )
     ItemClipboard_Clear()
-
-    local pos=GetCursorItemInfo()
-    assert(pos)
-
-    CP.ApplyBagItem(this:GetID(), pos)
 end
 
 
+function CP.WaitForItemLink(data)
+
+    local link
+    if data.from == "bag" then      link = GetBagItemLink(data.pos)
+    elseif data.from == "bank" then link = GetBankItemLink(data.pos)
+    else
+        CP.Debug("Illegal WaitForItemLink data")
+        return
+    end
+
+    if not link then return 0.1 end
+
+	CP.ApplyLinkItem(link, data.slot)
+end
+
+
+
 function CP.EquipItem_OnClick(this, key)
+
+    if CursorItemType() then
+        CP.EquipItem_OnReceiveDrag( this )
+        return
+    end
+
     if( key == "RBUTTON") then
         GameTooltip:Hide()
         CPEquipButtonMenu.Slot = this:GetID()
-        ToggleDropDownMenu(CPEquipButtonMenu, 1,nil,"cursor", 1 ,1 );
+        ToggleDropDownMenu(CPEquipButtonMenu, 1,nil,"cursor", 1 ,1 )
     else
         local item_data = CP.Items[this:GetID()]
         if item_data then
-			if( IsShiftKeyDown() ) then				
-				ChatEdit_AddItemLink(CP.Pimp.GenerateLink(item_data, "CP: "));				
+			if( IsShiftKeyDown() ) then
+				ChatEdit_AddItemLink(CP.Pimp.GenerateLink(item_data, "CP: "))
 			elseif(IsCtrlKeyDown()) then
-				CP.Search.ForSlot(this:GetID())				
-			else 
-				CP.Pimp.PimpItem(item_data)			
+				CP.Search.ForSlot(this:GetID())
+			else
+				CP.Pimp.PimpItem(item_data)
 			end
         else
             CP.Search.ForSlot(this:GetID())

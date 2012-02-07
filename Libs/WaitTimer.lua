@@ -3,6 +3,8 @@
         A simple and easy timer class
 
     by McBen
+        Web: http://rom.curseforge.com/addons/waittimer/
+        Rep: git://git.curseforge.net/rom/waittimer/mainline.git
 
 
     Init:
@@ -20,16 +22,24 @@
         ...
         WaitTimer.Stop(id)
 
+        -- with user data
+        funtion pout(txt) DEFAULT_CHAT_FRAME:AddMessage(txt) end
+        WaitTimer.Wait(1, pout, nil, "3")
+        WaitTimer.Wait(2, pout, nil, "2")
+        WaitTimer.Wait(3, pout, nil, "1")
+
 
     Usage:
-        timer_id = WaitTimer.Wait(seconds, function, id)
+        timer_id = WaitTimer.Wait(seconds, function, id, data)
         ================================================
 
         - seconds=  how long to wait
         - function= will be called when time is elapsed
             if the function returns a value, this value is used as new wait_time.
         - id= (optional) a fixed timer id
-            If another timer with the same ID exists it will be replaced
+            If another timer with the same ID exists it will be replaced.
+            You may use any kind of value.
+        - data= (optional) will be passed to the function call
 
         - timer_id= id which can be used in the other functions
             It's equal "id" when it was provided
@@ -53,16 +63,16 @@
 
 
     Setup:
-        copy theses files to your addon or any subdirectory of it
+        simply copy theses files to your addon or any subdirectory of it
             LibStub.lua
             WaitTimer.lua
-        and add them to the beginning of your .toc file
+            WaitTimer.toc
 
 --]]
 WaitTimerUpdateFrame = nil
 
 
-local Timer = LibStub:NewLibrary("WaitTimer", 1)
+local Timer = LibStub:NewLibrary("WaitTimer", 2)
 if not Timer then return end
 
 
@@ -78,7 +88,7 @@ local function FindID(id)
     end
 end
 
-local function StartUpdater()
+local function StartUpdate()
     if not WaitTimerUpdateFrame then
         local frame = CreateUIComponent("Frame", "WaitTimerUpdateFrame", "UIParent")
         frame:SetScripts("OnUpdate",[=[ WaitTimerOnUpdate(this,elapsedTime)]=])
@@ -100,7 +110,7 @@ function WaitTimerOnUpdate(this,elapsedTime)
         data[1] = data[1]-elapsedTime
 
         if data[1]<=0 then
-            local next_delay = data[3]()
+            local next_delay = data[3](data[4])
             if next_delay then
                 data[1] = next_delay
             else
@@ -113,7 +123,7 @@ function WaitTimerOnUpdate(this,elapsedTime)
     end
 end
 
-function Timer.Wait(seconds, fct, id)
+function Timer.Wait(seconds, fct, id, data)
     local _,cur_data = FindID(id)
     if cur_data then
         cur_data[1]=seconds
@@ -121,13 +131,15 @@ function Timer.Wait(seconds, fct, id)
     end
 
     if not id then
-        id = Timer.last_id
-        Timer.last_id = Timer.last_id+1
+        repeat
+            id = Timer.last_id
+            Timer.last_id = Timer.last_id+1
+        until FindID(id)==nil
     end
 
-    table.insert(Timer.events, {seconds, id, fct} )
+    table.insert(Timer.events, {seconds, id, fct, data} )
 
-    StartUpdater()
+    StartUpdate()
 
     return id
 end

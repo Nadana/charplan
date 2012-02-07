@@ -44,19 +44,7 @@ function Pimp.PimpItemLink(itemlink)
     local item_data = Pimp.ExtractLink(itemlink)
     item_data.icon = CP.DB.GetItemIcon(item_data.id)
 
-    -- TODO: remove (test data)
-    Pimp.data = item_data
-    local test = Pimp.GenerateLink(item_data)
-    if itemlink~=test then
-        DEFAULT_CHAT_FRAME:AddMessage("LINK MISSMATCH:",1,0,0)
-        DEFAULT_CHAT_FRAME:AddMessage(string.gsub(itemlink,"|",";"),1,0,0)
-        DEFAULT_CHAT_FRAME:AddMessage(string.gsub(test,"|",";"),1,0,0)
-        assert(false)
-    end
-    -- end of test
-
     Pimp.PimpItem(item_data)
-
     Pimp.SetHyperLink(itemlink)
 end
 
@@ -106,7 +94,7 @@ end
 
 
 function Pimp.OnItemClicked()
-    ChatEdit_AddItemLink( Pimp.GenerateLink(Pimp.data, "IP: ") )
+    ChatEdit_AddItemLink( Pimp.GenerateLink(Pimp.data, "CP: ") )
 end
 
 function Pimp.FillFields()

@@ -8,6 +8,8 @@ local Storage = {}
 local CP = _G.CP
 CP.Storage = Storage
 
+CP_Storage={}
+
 local WaitTimer = LibStub("WaitTimer")
 
 
