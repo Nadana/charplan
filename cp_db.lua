@@ -285,33 +285,33 @@ function DB.GetBonusInfo(id)
     return name, lvl, (DB.bonus[id] and DB.bonus[id].grp)
 end
 
-function DB.FindBonus(text, is_rune)
+function DB.FindBonus(text, cur_level, is_rune)
 
-    local iname, ilvl = string.match(text,"^%s*(.-)%s+(%w+)%s*$")
-    if not iname then
-        iname = text
-        ilvl = ""
-    end
+    text = text:lower()
 
     local good_match = nil
+    local good_match_name = nil
     for id,rdata in pairs(DB.bonus) do
         if rdata.grp and DB.IsRuneGroup(rdata.grp)==is_rune then
 
-            local name, lvl = GetBonusName(id)
+            local fulltext = TEXT("Sys"..id.."_name")
+            local fulltext_low = fulltext:lower()
+            local _, lvl = GetBonusName(id)
 
-            if iname==name then
-                if ilvl==lvl then
-                    return iname,ilvl,id
+            if text==fulltext_low then
+                return id
+            elseif string.find(fulltext_low, "^"..text) then
+                if lvl == cur_level then
+                    return id
                 else
+                    good_match_name = fulltext
                     good_match = id
                 end
-            elseif string.find(name, "^"..iname) then
-                return name,nil,id
             end
         end
     end
 
-    return iname,ilvl,good_match
+    return good_match
 end
 
 function DB.IsRuneGroup(id)

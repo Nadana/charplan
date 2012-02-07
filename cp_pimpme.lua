@@ -274,6 +274,7 @@ function Pimp.OnStatCtrlSetValue(button, id)
         local name,level, grp = CP.DB.GetBonusInfo(id)
         assert( grp and (CP.DB.IsRuneGroup(grp) == button.isRune))
 
+        namebtn.level = level
         tierbtn.levels = CP.DB.GetBonusGroupLevels(grp)
 
         namebtn:SetText(name)
@@ -291,18 +292,8 @@ function Pimp.OnStatCtrlSetValue(button, id)
 end
 
 
-function Pimp.StatName_Changed(this)
-    local text = this:GetText()
-    if not text or text=="" then return end
-
-    local is_rune = (this:GetParent():GetID()>6)
-    local name,level, bestmatch = CP.DB.FindBonus(text, is_rune)
-
---    CP.Debug("Match: '"..tostring(name).."' L:"..tostring(level).." id:"..tostring(bestmatch))
-end
-
-
 function Pimp.StatName_Finished(this)
+    this:HighlightText(0,0)
     local text = this:GetText()
     if not text or text=="" then
         Pimp.SetStat(this:GetParent():GetID(),0)
@@ -310,10 +301,28 @@ function Pimp.StatName_Finished(this)
     end
 
     local is_rune = (this:GetParent():GetID()>6)
-    local _,_, bestmatch = CP.DB.FindBonus(text, is_rune)
+    local bestmatch = CP.DB.FindBonus(text,this.level, is_rune)
+
     Pimp.SetStat(this:GetParent():GetID(), bestmatch or 0)
 end
 
+
+function Pimp.StatName_Tab(this)
+    local id = this:GetParent():GetID()
+    if IsShiftKeyDown() then
+        id = id-1
+        if id<1 then id=10 end
+    else
+        id = id+1
+        if id>10 then id=1 end
+    end
+
+    if id<7 then
+        _G["CPPimpMeAttrStat"..id.."Name"]:SetFocus()
+    else
+        _G["CPPimpMeAttrRune"..(id-6).."Name"]:SetFocus()
+    end
+end
 
 
 function Pimp.OnStatCtrlTierShow(this)

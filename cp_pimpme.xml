@@ -42,8 +42,8 @@
 					<Anchor point="LEFT" relativeTo="$parentLabel" relativePoint="RIGHT"></Anchor>
 				</Anchors>
 				<Scripts>
-					<OnTextChanged>CP.Pimp.StatName_Changed(this)</OnTextChanged>
-					<OnEditFocusLost>CP.Pimp.StatName_Finished(this)</OnEditFocusLost>					
+                    <OnTabPressed>CP.Pimp.StatName_Tab(this)</OnTabPressed>
+					<OnEditFocusLost>CP.Pimp.StatName_Finished(this)</OnEditFocusLost>
 				</Scripts>
 				<FontString inherits="GameFontNormalSmall" />
 				<TextInsets><AbsInset top="6" right="3" left="4" bottom="0"></AbsInset></TextInsets>
@@ -77,9 +77,9 @@
 			<Anchor point="TOPLEFT" relativePoint="TOP" >
 				<Offset>
 					<AbsDimension x="0" y="-60"/>
-				</Offset>								
-			</Anchor>			
-		</Anchors>		
+				</Offset>
+			</Anchor>
+		</Anchors>
 		<Frames>
 			<GameTooltip name="$parentToolTip" inherits="GameTooltipTemplate" frameStrata="DIALOG" frameLevel="0">
 				<Anchors>
@@ -164,7 +164,7 @@
 						</Anchors>
 						<Scripts>
 							<OnTextChanged>CP.Pimp.OnDura_Changed(this)</OnTextChanged>
-						</Scripts>						
+						</Scripts>
 						<TextInsets><AbsInset top="8" right="4" left="4" bottom="0"></AbsInset></TextInsets>
 					</EditBox>
 					<Frame name="$parentStat1" inherits="CPStatSelectionTemplate" id="1">
@@ -246,7 +246,7 @@
 					</Anchors>
 					<FontHeight><AbsValue val="9"/></FontHeight>
 				</FontString>
-				<Texture name="$parentHighlight" file="Interface\AuctionFrame\AuctionFrameItem-Highlight" alphaMode="ADD" hidden="true">	
+				<Texture name="$parentHighlight" file="Interface\AuctionFrame\AuctionFrameItem-Highlight" alphaMode="ADD" hidden="true">
 				<Anchors>
 					<Anchor point="TOPLEFT"><Offset><AbsDimension x="-2" y="0"></AbsDimension></Offset></Anchor>
 					<Anchor point="BOTTOMRIGHT"><Offset><AbsDimension x="-10" y="-1"></AbsDimension></Offset></Anchor>
@@ -276,7 +276,7 @@
 				<Size><AbsDimension x="150" y="20"/></Size>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativePoint="TOPLEFT"><Offset><AbsDimension x="50" y="29" /></Offset></Anchor>
-				</Anchors> 
+				</Anchors>
 				<Layers>
 					<Layer level="OVERLAY">
 						<FontString name="$parentBack" inherits="GameFontDisable">
@@ -291,7 +291,7 @@
 					<OnEditFocusGained>CP.Pimp.StatSearch_FilterFocus(this,true)</OnEditFocusGained>
 					<OnEditFocusLost>CP.Pimp.StatSearch_FilterFocus(this,false)</OnEditFocusLost>
 					<OnTextChanged>CP.Pimp.StatSearch_UpdateList(this)</OnTextChanged>
-				</Scripts>	
+				</Scripts>
 			</EditBox>
 			<Frame name="$parentItem" enableMouse="true">
 				<Size>
@@ -300,9 +300,9 @@
 				<Anchors>
 					<Anchor point="TOP"><Offset><AbsDimension y="50" x="0"></AbsDimension></Offset></Anchor>
 				</Anchors>
-				<Backdrop edgeFile="Interface\Tooltips\Tooltip-border"> 
+				<Backdrop edgeFile="Interface\Tooltips\Tooltip-border">
 				    <EdgeSize><AbsValue val="8"/></EdgeSize>
-				</Backdrop>				
+				</Backdrop>
 				<Frames>
 					<Frame name="$parent1" inherits="CPStatSearchItemTemplate">
 						<Anchors><Anchor point="TOPLEFT"><Offset><AbsDimension x="4" y="8"></AbsDimension></Offset></Anchor>
@@ -322,28 +322,28 @@
 					</Frame>
 					<Frame name="$parent6" inherits="CPStatSearchItemTemplate">
 						<Anchors><Anchor point="TOPLEFT" relativeTo="$parent5" relativePoint="BOTTOMLEFT" /></Anchors>
-					</Frame>	
+					</Frame>
 					<Frame name="$parent7" inherits="CPStatSearchItemTemplate">
 						<Anchors><Anchor point="TOPLEFT" relativeTo="$parent6" relativePoint="BOTTOMLEFT" /></Anchors>
-					</Frame>	
+					</Frame>
 					<Frame name="$parent8" inherits="CPStatSearchItemTemplate">
 						<Anchors><Anchor point="TOPLEFT" relativeTo="$parent7" relativePoint="BOTTOMLEFT" /></Anchors>
-					</Frame>	
+					</Frame>
 					<Frame name="$parent9" inherits="CPStatSearchItemTemplate">
 						<Anchors><Anchor point="TOPLEFT" relativeTo="$parent8" relativePoint="BOTTOMLEFT" /></Anchors>
-					</Frame>	
+					</Frame>
 					<Frame name="$parent10" inherits="CPStatSearchItemTemplate">
 						<Anchors><Anchor point="TOPLEFT" relativeTo="$parent9" relativePoint="BOTTOMLEFT" /></Anchors>
-					</Frame>	
+					</Frame>
 					<Frame name="$parent11" inherits="CPStatSearchItemTemplate">
 						<Anchors><Anchor point="TOPLEFT" relativeTo="$parent10" relativePoint="BOTTOMLEFT" /></Anchors>
-					</Frame>	
+					</Frame>
 					<Frame name="$parent12" inherits="CPStatSearchItemTemplate">
 						<Anchors><Anchor point="TOPLEFT" relativeTo="$parent11" relativePoint="BOTTOMLEFT" /></Anchors>
-					</Frame>	
+					</Frame>
 					<Frame name="$parent13" inherits="CPStatSearchItemTemplate">
 						<Anchors><Anchor point="TOPLEFT" relativeTo="$parent12" relativePoint="BOTTOMLEFT" /></Anchors>
-					</Frame>	
+					</Frame>
 					<Slider name="$parentSB" inherits="UIPanelScrollBarTemplate">
 						<Anchors>
 							<Anchor point="TOPRIGHT" relativePoint="TOPRIGHT"><Offset><AbsDimension x="-1" y="19"/></Offset></Anchor>
@@ -355,7 +355,7 @@
 								CP.Pimp.StatSearch_ListUpdate()
 							</OnValueChanged>
 						</Scripts>
-					</Slider>			
+					</Slider>
 				</Frames>
 				<Scripts>
 					<OnMouseWheel>UIPanelScrollBar_OnMouseWheel(CPStatSearchItemSB, delta)</OnMouseWheel>
@@ -378,12 +378,12 @@
 				<Scripts>
 					<OnClick>CP.Pimp.StatSearch_Cancel()</OnClick>
 				</Scripts>
-			</Button>			
+			</Button>
 		</Frames>
 		<Scripts>
 			<OnShow>CP.Pimp.StatSearch_OnShow(this)</OnShow>
 			<OnHide>CP.Pimp.StatSearch_OnHide(this)</OnHide>
 		</Scripts>
-		
+
 	</Frame>
 </Ui>
