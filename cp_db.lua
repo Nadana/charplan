@@ -118,7 +118,7 @@ function DB.GetPlusEffect(item_id, plus)
     if item then
         local eff = DB.refines[item.refine+plus-1]
         if eff then
-            return eff.efftype, eff.effvalue
+            return eff.efftype, eff.effvalue, eff.base
         else
             CP.Debug(string.format("Plus table not defined: %i+%i item:%i",item.refine,plus,item_id))
         end

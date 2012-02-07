@@ -236,15 +236,21 @@ function Calc.Item(item)
 
 	end
 
-    local effect, effvalues  = CP.DB.GetItemEffect(item.id)
-    for i, ef in ipairs(effect or {}) do
-            AddValue(ef, effvalues[i]*factor1, "B "..name)
+    local plus_effect, plus_effvalues, plus_base={},{},0
+    if item.plus>0 then
+        plus_effect, plus_effvalues, plus_base = CP.DB.GetPlusEffect(item.id, item.plus)
     end
 
-    if item.plus>0 then
-        effect, effvalues  = CP.DB.GetPlusEffect(item.id, item.plus)
-        AddBonusEffect(effect, effvalues, "P "..name, factor)
+    local effect, effvalues  = CP.DB.GetItemEffect(item.id)
+    for i, ef in ipairs(effect or {}) do
+        if ef<12 or ef>15 then
+            AddValue(ef, effvalues[i]*factor1, "B "..name)
+        else
+            AddValue(ef, effvalues[i]*factor1*(1+plus_base/100), "B "..name)
+        end
     end
+
+    AddBonusEffect(plus_effect, plus_effvalues, "P "..name, factor)
 end
 
 
