@@ -33,7 +33,7 @@ function Search.ForSlot(slot_id, item_id)
     Search.selection = item_id
     Search.selection_changed = false
     Search.type_filter={}
-    for i=0,7 do Search.type_filter[i]=true end
+    for i=0,24 do Search.type_filter[i]=true end
 
     --CPSearchFilterSlotMenu:Disable()
     Search.FindItems()
@@ -50,7 +50,36 @@ function Search.OnHide()
 end
 
 function Search.OnTypeFilterLoad(this)
-    UIDropDownMenu_Initialize( this, Search.OnTypeFilterShow, "MENU")
+    UIDropDownMenu_Initialize( this, Search.OnFilterMenuShow, "MENU")
+end
+
+function Search.ShowFilterMenu(this,kind)
+    if DropDownList1:IsVisible() then
+        CloseDropDownMenus()
+
+        if  CPSearchFilterMenu.Type == kind then
+            return
+        end
+    end
+
+
+    CPSearchFilterMenu:ClearAllAnchors()
+    CPSearchFilterMenu:SetAnchor("TOP", "TOP", this:GetName(), 0, 0)
+
+    CPSearchFilterMenu.Type = kind
+    ToggleDropDownMenu(CPSearchFilterMenu)
+end
+
+function Search.OnFilterMenuShow(this)
+    if CPSearchFilterMenu.Type=="Type" then
+        Search.OnTypeFilterShow(this)
+    elseif CPSearchFilterMenu.Type=="Slot" then
+        Search.OnSlotFilterShow(this)
+    elseif CPSearchFilterMenu.Type=="Kind" then
+        Search.OnSubTypeFilterShow(this)
+    else
+        error("illegal kind")
+    end
 end
 
 function Search.OnTypeFilterShow(this)
@@ -70,24 +99,41 @@ function Search.OnTypeFilterShow(this)
             [TEXT("SYS_ARMORTYPE_07")]=7, -- Jewelery
             },
         [4]= { -- Primary Weapon
-            [TEXT("SYS_WEAPON_POS00")]=0,
-            [TEXT("SYS_WEAPON_POS01")]=1,
-            [TEXT("SYS_WEAPON_POS02")]=2,
-            [TEXT("SYS_WEAPON_POS03")]=3,
+            [TEXT("SYS_WEAPON_TYPE00")]=8,  --="Waffenlos"
+            [TEXT("SYS_WEAPON_TYPE01")]=9,  --="Schwert"
+            [TEXT("SYS_WEAPON_TYPE02")]=10, --="Dolch"
+            [TEXT("SYS_WEAPON_TYPE03")]=11, --="Stab"
+            [TEXT("SYS_WEAPON_TYPE04")]=12, --="Axt"
+            [TEXT("SYS_WEAPON_TYPE05")]=13, --="Einhandhammer"
+            [TEXT("SYS_WEAPON_TYPE06")]=14, --="Zweihandschwert"
+            [TEXT("SYS_WEAPON_TYPE07")]=15, --="Zweihandstab"
+            [TEXT("SYS_WEAPON_TYPE08")]=16, --="Zweihandaxt"
+            [TEXT("SYS_WEAPON_TYPE09")]=17, --="Beidhändiger Hammer"
+            [TEXT("SYS_WEAPON_TYPE10")]=18, --="Stangenwaffe"
             },
         [5]= { -- Secondary Weapon
-            [TEXT("SYS_WEAPON_POS01")]=1,
-            [TEXT("SYS_WEAPON_POS02")]=2,
-            [TEXT("SYS_WEAPON_POS03")]=3,
+            [TEXT("SYS_ARMORTYPE_05")]=5,   -- Shield
+            [TEXT("SYS_ARMORTYPE_06")]=6,   -- Talisman
+            [TEXT("SYS_WEAPON_TYPE00")]=8,  --="Waffenlos"
+            [TEXT("SYS_WEAPON_TYPE01")]=9,  --="Schwert"
+            [TEXT("SYS_WEAPON_TYPE02")]=10, --="Dolch"
+            [TEXT("SYS_WEAPON_TYPE03")]=11, --="Stab"
+            [TEXT("SYS_WEAPON_TYPE04")]=12, --="Axt"
+            [TEXT("SYS_WEAPON_TYPE05")]=13, --="Einhandhammer"
+            [TEXT("SYS_WEAPON_TYPE10")]=18, --="Stangenwaffe"
             },
         [6]= { -- Ranges Weapon
-            [TEXT("SYS_WEAPON_POS05")]=5,
+            [TEXT("SYS_WEAPON_TYPE11")]=19, --="Bogen"
+            [TEXT("SYS_WEAPON_TYPE12")]=20, --="Armbrust"
+            [TEXT("SYS_WEAPON_TYPE13")]=21, --="Feuerwaffe"
+            [TEXT("SYS_WEAPON_TYPE14")]=22, --="Pfeil"
+            [TEXT("SYS_WEAPON_TYPE15")]=23, --="Kugeln"
+            [TEXT("SYS_WEAPON_TYPE16")]=24, --="Wurfwaffen"
             },
         [7]= { -- Back
             [TEXT("SYS_ARMORTYPE_03")]=3, -- Cloth
             },
     }
-    -- SYS_WEAPON_TYPE00
 
     for name,id in pairs(filters[itype]) do
         local info={}
@@ -98,28 +144,11 @@ function Search.OnTypeFilterShow(this)
         info.keepShownOnClick = 1
 		UIDropDownMenu_AddButton( info, 1 )
     end
-
-    --@debug@
-    for i=0,7 do
-        local info={}
-        info.text=string.format("DEBUG: %i",i)
-        info.checked = Search.type_filter[i]
-        info.value = i
-        info.func = Search.OnTypeFilterSelect
-        info.keepShownOnClick = 1
-		UIDropDownMenu_AddButton( info, 1 )
-    end
-    --@end-debug@
 end
 
 function Search.OnTypeFilterSelect(this)
     Search.type_filter[this.value] = not Search.type_filter[this.value]
     Search.FindItems()
-end
-
-
-function Search.OnSlotFilterLoad(this)
-    UIDropDownMenu_Initialize( this, Search.OnSlotFilterShow, "MENU")
 end
 
 
@@ -143,11 +172,38 @@ function Search.OnSlotFilterSelect(this)
     Search.FindItems()
 end
 
+function Search.OnSubTypeFilterShow(this)
+
+    local slots={0,1,2,3,4,5,6,7,8,10,11,13,15,16,21}
+
+    for _,id in ipairs(slots) do
+        local info={}
+        info.text=TEXT(string.format("SYS_EQWEARPOS_%02i",id))
+        info.checked = (Search.slot==id)
+        info.value = id
+        info.func = Search.OnSlotFilterSelect
+		UIDropDownMenu_AddButton( info, 1 )
+    end
+
+end
+
+function Search.OnSubTypeFilterSelect(this)
+    Search.slot=this.value
+    Search.FindItems()
+end
+
+
 local function GetFilterFunction()
 
     local filter ="return function (id,data) "
 
-    filter = filter..'if data.slot~='..Search.slot..' then return false end '
+    local slots = CP.DB.GetItemTypesForSlot(Search.slot)
+    if type(slots)=="number" then
+        filter = filter..'if data.slot~='..slots..' then return false end '
+    else
+        assert(type(slots)=="table")
+        filter = filter..'if data.slot~='..table.concat(slots,' and data.slot~=')..' then return false end '
+    end
 
     filter = filter..'if not CP.Search.type_filter[data.type] then return false end '
 

@@ -670,7 +670,7 @@ class WeaponEntry < ItemEntry
     def initialize(csv_row)
         super(csv_row)
         @weaponpos = csv_row['weaponpos'].to_i # 0-6 -> 0-Haupthand; 1-Nebenhand; 2-Einhand; 3-Zweihand; 4-Munition; 5-Fernkampf; 6-Fertigungswerkzeuge
-        @weapontype = csv_row['weapontype'].to_i # 0-20 -> 0-munition?; 1-Schwert; 2-Dolch; 6-Zweihandschwert; 11-Bogen
+        @weapontype = csv_row['weapontype'].to_i # 0-20 -> 1-Schwert; 2-Dolch; 6-Zweihandschwert; 11-Bogen
 
         raise "unkown weapon_pos:"+@weaponpos.to_s if @weaponpos<0 || @weaponpos>6
 
@@ -679,7 +679,8 @@ class WeaponEntry < ItemEntry
 
     def SkipThisItem?
         not_a_weapon = (@weaponpos==4 || @weaponpos==6)
-        return super() || not_a_weapon
+        strange_type = (@weapontype==10 || @weaponpos==15)
+        return super() || not_a_weapon || strange_type
     end
 
     def ExportDesc(data)
@@ -690,14 +691,9 @@ class WeaponEntry < ItemEntry
     end
 
     def ExportData(data)
-        if @weaponpos==5 then
-            data.push("slot=10")
-        else
-            data.push("slot=15")
-        end
-        data.push("type=%i" % [@weaponpos])
+        data.push("slot=%i" % [32+@weaponpos])
+        data.push("type=%i" % [8+@weapontype])
         super(data)
-        data.push("wtype=%i" % [@weapontype])
     end
 end
 

@@ -181,12 +181,14 @@ end
 
 function DB.GetItemPositions(item_id)
     local item = DB.items[item_id]
+    if not item then return end
 
-    if item.slot == 15 then
-        if item.type == 0 then return 15 end -- Haupthand
-        if item.type == 1 then return 16 end -- Nebenhand
-        if item.type == 2 then return 15,16 end -- Einhand
-        if item.type == 3 then return 15,16,true end -- Zweihand
+    if item.slot >31 then
+        if item.slot == 32 then return 15 end -- Haupthand
+        if item.type == 33 then return 16 end -- Nebenhand
+        if item.type == 34 then return 15,16 end -- Einhand
+        if item.type == 35 then return 15,16,true end -- Zweihand
+        if item.type == 37 then return 10 end -- Fernkampf
     else
         if item.slot==11 or item.slot==12 then return 11,12 end
         if item.slot==13 or item.slot==14 then return 13,14 end
@@ -194,11 +196,20 @@ function DB.GetItemPositions(item_id)
     end
 end
 
+function DB.GetItemTypesForSlot(slot)
+
+    if slot==15 then     return {32,34,35}
+    elseif slot==16 then return {16,33,34}
+    elseif slot==10 then return 37
+    end
+
+    return slot
+end
 
 function DB.IsWeapon2Hand(item_id)
     local item = DB.items[item_id]
     if item then
-        return (item.slot == 15 and item.type == 3)
+        return (item.slot == 35)
     end
 end
 
