@@ -23,12 +23,7 @@ SLASH_charplan2="/charplan"
 SlashCmdList["charplan"] = function(_,msg)
     if msg~="" then
         if string.find(msg,"^t") then
-            if not UnitResult then
-                dofile("interface/addons/charplan/test/luaunit.lua")
-            end
-            UnitResult.verbosity=1
-            dofile("interface/addons/charplan/test/test.lua")
-
+            CP.SlashCMD_Test()
         elseif string.find(msg,"^r") then
             CP.SlashCMD_Reload()
         end
@@ -39,18 +34,28 @@ SlashCmdList["charplan"] = function(_,msg)
     ToggleUIFrame(CPFrame)
 end
 
+function CP.SlashCMD_Test()
+    dofile("interface/addons/charplan/test/luaunit.lua")
+    UnitResult.verbosity=1
+    dofile("interface/addons/charplan/test/test.lua")
+end
+
 function CP.SlashCMD_Reload()
-    local temp = CP_Storage
+    local temp_storage = CP_Storage
+    local temp_ebuttons = CP.EquipButtons
+
     CPFrame:Hide()
     local base = "interface/addons/charplan/"
-    dofile(base.."charplan.lua")
+    --dofile(base.."charplan.lua")
     dofile(base.."cp_calc.lua")
     dofile(base.."cp_db.lua")
-    dofile(base.."cp_pimpme.lua")
+    --dofile(base.."cp_pimpme.lua")
     dofile(base.."cp_search.lua")
     dofile(base.."cp_storage.lua")
 
-    CP_Storage = temp
+    CP_Storage = temp_storage
+    CP.EquipButtons = temp_ebuttons
+    DEFAULT_CHAT_FRAME:AddMessage("CP: RELOADED",1,0.5,0.5)
 end
 ------------------------------
 

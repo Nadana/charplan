@@ -30,7 +30,7 @@ function assertError(f, ...)
 	error( "No error generated", 2 )
 end
 
-function assertEquals(actual, expected)
+function assertEquals(actual, expected, msg)
 	-- assert that two values are equal and calls error else
 	if  actual ~= expected  then
 		local function wrapValue( v )
@@ -46,6 +46,7 @@ function assertEquals(actual, expected)
 			errorMsg = "expected: "..wrapValue(expected)..", actual: "..wrapValue(actual)
 		end
 		print (errorMsg)
+        if msg then print(msg) end
 		error( errorMsg, 2 )
 	end
 end
@@ -371,6 +372,10 @@ LuaUnit = {
 
 		LuaUnit.result:startClass( aClassName )
 
+		if self.isFunction( classInstance.classSetUp) then
+				classInstance:classSetUp()
+		end
+
 		if hasMethod then
             print("no methodes")
 			if not classInstance[ methodName ] then
@@ -386,6 +391,11 @@ LuaUnit = {
 				end
 			end
 		end
+
+        if self.isFunction( classInstance.classTearDown) then
+				classInstance:classTearDown()
+		end
+
 		print()
 	end
 
