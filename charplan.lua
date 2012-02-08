@@ -58,6 +58,7 @@ local WaitTimer = LibStub("WaitTimer")
 local Nyx = LibStub("Nyx")
 
 Nyx.LoadLocalesAuto("interface/addons/charplan/locales/")
+Nyx.LoadFile("interface/addons/charplan/locales/default.lua")
 
 function CP.Debug(txt)
     --@debug@
