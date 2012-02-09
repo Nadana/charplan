@@ -364,9 +364,11 @@ class BonusStuff
     end
 
     def ExportData(data)
-        if @eqtypes.size>0 then
-            data.push("efftype={#{@eqtypes.join(",")}}")
-            data.push("effvalue={#{@eqvalues.join(",")}}")
+        if @eqtypes.size==0 then
+            data.push("nil","nil")
+        else
+            data.push("{#{@eqtypes.join(",")}}")
+            data.push("{#{@eqvalues.join(",")}}")
         end
     end
 
@@ -403,11 +405,10 @@ class StatsStuff
     end
 
     def ExportData(data)
-        if @stats.size>0 then
-            data.push("basestats={#{@stats.join(",")}}")
-        end
-        if @has_randoms then
-            # data.push("hasrandoms=1")
+        if @stats.size==0 then
+            data.push("nil")
+        else
+            data.push("{#{@stats.join(",")}}")
         end
     end
 
@@ -465,6 +466,9 @@ class Table
             db.each { |id, data|
                 line_data = []
                 data.ExportData(line_data)
+
+                while not line_data.empty? and (line_data.last=="nil" or line_data.last.to_s.empty?) do line_data.pop end
+
                 outf.write( "  [%i]={%s},\n" % [id, line_data.join(",")])
                 }
             outf.write("}\n")
@@ -520,26 +524,29 @@ class ItemEntry < Table
 
     def ExportDesc(data)
         data.push( "level")
-        data.push( "iconi")
+        data.push( "icon")
         data.push( "refine")
         data.push( "dura")
         #data.push( "runes=%i" % @runeslots) if @runeslots>0
-        data.push( "<set>")
-
         bonus.ExportDesc(data)
         base_stats.ExportDesc(data)
+        data.push( "<set>")
     end
 
     def ExportData(data)
-        data.push( "level=%i" % @level)
-        data.push( "icon=%i" % @image_id)
-        data.push( "refine=%i" % @refineid)
-        data.push( "dura=%i" % @durable)
+        data.push( @level)
+        data.push( @image_id)
+        data.push( @refineid)
+        data.push( @durable)
         #data.push( "runes=%i" % @runeslots) if @runeslots>0
-        data.push( "set=%i" % @set) if @set>0
-
         bonus.ExportData(data)
         base_stats.ExportData(data)
+
+        if not @set.nil? and @set>0 then
+            data.push( @set)
+        else
+            data.push( "nil")
+        end
     end
 
 end
@@ -612,8 +619,8 @@ class ArmorEntry < ItemEntry
     end
 
     def ExportData(data)
-        data.push("slot=%i" % [@inv_pos])
-        data.push("type=%i" % [@armor_typ])
+        data.push(@inv_pos)
+        data.push(@armor_typ)
         super(data)
     end
 
@@ -687,12 +694,11 @@ class WeaponEntry < ItemEntry
         data.push( "slot")
         data.push( "type")
         super(data)
-        data.push( "wtype")
     end
 
     def ExportData(data)
-        data.push("slot=%i" % [32+@weaponpos])
-        data.push("type=%i" % [8+@weapontype])
+        data.push(32+@weaponpos)
+        data.push(8+@weapontype)
         super(data)
     end
 end
@@ -748,13 +754,13 @@ class AddPowerEntry < Table
     end
 
     def ExportDesc(data)
-        data.push( "grp")
         @bonus.ExportDesc(data)
+        data.push( "grp")
     end
 
     def ExportData(data)
-        data.push("grp=%i" % @group) if @group
         @bonus.ExportData(data)
+        data.push(@group)  if @group
     end
 end
 
@@ -796,13 +802,13 @@ class RunesEntry < Table
     end
 
     def ExportDesc(data)
-        data.push( "grp")
         @bonus.ExportDesc(data)
+        data.push( "grp")
     end
 
     def ExportData(data)
-        data.push("grp=%i" % @group) if @group
         @bonus.ExportData(data)
+        data.push(@group) if @group
     end
 end
 
@@ -906,7 +912,7 @@ class RefineEntry < Table
 
     def ExportData(data)
         @bonus.ExportData(data)
-        data.push("base=%i" % @basefactor)
+        data.push(@basefactor)
     end
 end
 

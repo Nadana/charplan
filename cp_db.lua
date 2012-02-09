@@ -10,20 +10,28 @@ local CP = _G.CP
 CP.DB = DB
 
 
---[[
-    DB-File Description:
+--[[ [ DataBase Format ]]
+    -- Items
+    local I_SLOT=1
+    local I_TYPE=2
+    local I_LEVEL=3
+    local I_ICON=4
+    local I_REFINE=5
+    local I_DURA=6
+    local I_EFFECT_TYPE=7 -- optional
+    local I_EFFECT_VAL=8 -- optional
+    local I_STATS=9 -- optional
+    local I_SET=10 -- optional
 
-    items.lua
-        slot -> Inventory type (0=Head,...  10=RangedWeapon, 15=Weapon)
-        type -> Armor: cloth,leather,plate,... Weapon= 0-Haupthand; 1-Nebenhand; 2-Einhand; 3-Zweihand
-        min_level->
-        icon->
-        refine->
-        efftype->
-        effvalue->
-        basestats->
-        wtype-> (Weapons only) 0-20 -> 0-munition?; 1-Schwert; 2-Dolch; 6-Zweihandschwert; 11-Bogen
-]]
+    -- Bonus
+    local B_EFFECT_TYPE=1 -- optional
+    local B_EFFECT_VAL=2 -- optional
+    local B_GROUP=3  -- optional
+
+    -- Spells
+    local S_EFFECT_TYPE=1 -- optional
+    local S_EFFECT_VAL=2 -- optional
+--[[ ] ]]
 
 
 local function LoadTable(fname)
@@ -84,9 +92,9 @@ function DB.GetSkillEffect(skill_id)
     for _,spell_id in ipairs(skills or {}) do
         local boni = DB.spells[spell_id]
         if boni then
-            for i,ef in pairs(boni.efftype) do
+            for i,ef in pairs(boni[S_EFFECT_TYPE]) do
                 table.insert(efftype,ef)
-                table.insert(effvalue,boni.effvalue[i])
+                table.insert(effvalue,boni[S_EFFECT_VAL][i])
             end
         end
     end
@@ -97,7 +105,7 @@ end
 function DB.GetItemEffect(item_id)
     local item = DB.items[item_id]
     if item then
-        return item.efftype, item.effvalue
+        return item[I_EFFECT_TYPE], item[I_EFFECT_VAL]
     else
         CP.Debug("Item not in DB: "..item_id)
     end
@@ -106,11 +114,10 @@ end
 function DB.GetItemUsualDropEffects(item_id)
     local item = DB.items[item_id]
     if item then
-        if item.basestats then
-
+        if item[I_STATS] then
             local all_effects={}
             local all_values={}
-            for _,stats in ipairs(item.basestats) do
+            for _,stats in ipairs(item[I_STATS]) do
                 local ea,ev = DB.GetBonusEffect(stats)
                 for i,effect in ipairs(ea or {}) do
                     table.insert(all_effects,effect)
@@ -126,7 +133,7 @@ end
 
 function DB.GetBonusEffect(boni_id)
     if DB.bonus[boni_id] then
-        return DB.bonus[boni_id].efftype, DB.bonus[boni_id].effvalue
+        return DB.bonus[boni_id][B_EFFECT_TYPE], DB.bonus[boni_id][B_EFFECT_VAL]
     else
         CP.Debug("Bonus not in DB: "..boni_id)
     end
@@ -137,11 +144,11 @@ function DB.GetPlusEffect(item_id, plus)
 
     local item = DB.items[item_id]
     if item then
-        local eff = DB.refines[item.refine+plus-1]
+        local eff = DB.refines[item[I_REFINE]+plus-1]
         if eff then
-            return eff.efftype, eff.effvalue, eff.base
+            return eff[1], eff[2], eff[3]
         else
-            CP.Debug(string.format("Plus table not defined: %i+%i item:%i",item.refine,plus,item_id))
+            CP.Debug(string.format("Plus table not defined: %i+%i item:%i",item[I_REFINE],plus,item_id))
         end
     else
         CP.Debug("Item not in DB: "..item_id)
@@ -151,11 +158,11 @@ end
 function DB.GetItemIcon(item_id)
     local item = DB.items[item_id]
     if item then
-        local icon = DB.images[ item.icon ]
+        local icon = DB.images[ item[I_ICON] ]
         if icon then
             return "interface/icons/" .. icon
         else
-            CP.Debug("No Icon: "..item.icon.." for Item "..item_id)
+            CP.Debug("No Icon: "..item[I_ICON].." for Item "..item_id)
         end
     else
         CP.Debug("Item not in DB: "..item_id)
@@ -167,7 +174,7 @@ end
 function DB.GetItemDura(item_id)
     local item = DB.items[item_id]
     if item then
-        return item.dura
+        return item[I_DURA]
     end
     return 100
 end
@@ -183,16 +190,17 @@ function DB.GetItemPositions(item_id)
     local item = DB.items[item_id]
     if not item then return end
 
-    if item.slot >31 then
-        if item.slot == 32 then return 15 end -- Haupthand
-        if item.type == 33 then return 16 end -- Nebenhand
-        if item.type == 34 then return 15,16 end -- Einhand
-        if item.type == 35 then return 15,16,true end -- Zweihand
-        if item.type == 37 then return 10 end -- Fernkampf
+    local slot = item[I_SLOT]
+    if slot>31 then
+        if slot == 32 then return 15 end -- Haupthand
+        if slot == 33 then return 16 end -- Nebenhand
+        if slot == 34 then return 15,16 end -- Einhand
+        if slot == 35 then return 15,16,true end -- Zweihand
+        if slot == 37 then return 10 end -- Fernkampf
     else
-        if item.slot==11 or item.slot==12 then return 11,12 end
-        if item.slot==13 or item.slot==14 then return 13,14 end
-        return item.slot
+        if slot==11 or slot==12 then return 11,12 end
+        if slot==13 or slot==14 then return 13,14 end
+        return slot
     end
 end
 
@@ -209,7 +217,7 @@ end
 function DB.IsWeapon2Hand(item_id)
     local item = DB.items[item_id]
     if item then
-        return (item.slot == 35)
+        return (item[I_SLOT] == 35)
     end
 end
 
@@ -261,16 +269,19 @@ function DB.GetBonusGroupList(runes, filter)
     local done={}
     local res={}
     for id,rdata in pairs(DB.bonus) do
-        if rdata.grp then
-            if not done[rdata.grp] then
 
-                if DB.IsRuneGroup(rdata.grp)==runes then
+        local group = rdata[B_GROUP]
+
+        if group then
+            if not done[group] then
+
+                if DB.IsRuneGroup(group)==runes then
                     local name = GetBonusName(id)
 
                     local filter_found = (not filter) or string.find(name:lower(),filter)
 
                     eff = {}
-                    for i, ef in ipairs(rdata.efftype or {}) do
+                    for i, ef in ipairs(rdata[B_EFFECT_TYPE] or {}) do
                         local n = TEXT("SYS_WEAREQTYPE_"..ef)
                         if n then
                             table.insert(eff,n)
@@ -285,7 +296,7 @@ function DB.GetBonusGroupList(runes, filter)
                     end
                 end
 
-                done[rdata.grp]=1
+                done[group]=1
             end
         end
     end
@@ -301,7 +312,7 @@ function DB.GetBonusGroupLevels(grp)
     local res={}
     for id,rdata in pairs(DB.bonus) do
 
-        if rdata.grp==grp then
+        if rdata[B_GROUP]==grp then
             local name, lvl = GetBonusName(id)
             table.insert(res,{lvl,id})
         end
@@ -314,7 +325,8 @@ end
 
 function DB.GetBonusInfo(id)
     local name, lvl = GetBonusName(id)
-    return name, lvl, (DB.bonus[id] and DB.bonus[id].grp)
+    local grp = DB.bonus[id] and DB.bonus[id][B_GROUP]
+    return name, lvl, grp
 end
 
 function DB.FindBonus(text, cur_level, is_rune)
@@ -324,19 +336,18 @@ function DB.FindBonus(text, cur_level, is_rune)
     local good_match = nil
     local good_match_name = nil
     for id,rdata in pairs(DB.bonus) do
-        if rdata.grp and DB.IsRuneGroup(rdata.grp)==is_rune then
 
-            local fulltext = TEXT("Sys"..id.."_name")
-            local fulltext_low = fulltext:lower()
+        if rdata[B_GROUP] and DB.IsRuneGroup(rdata[B_GROUP])==is_rune then
+
+            local fulltext = TEXT("Sys"..id.."_name"):lower()
             local _, lvl = GetBonusName(id)
 
-            if text==fulltext_low then
+            if text==fulltext then
                 return id
-            elseif string.find(fulltext_low, "^"..text) then
+            elseif string.find(fulltext, "^"..text) then
                 if lvl == cur_level then
                     return id
                 else
-                    good_match_name = fulltext
                     good_match = id
                 end
             end
@@ -400,14 +411,13 @@ function DB.FindItems(filter_function)
     return res
 end
 
-
 function DB.GetItemInfo(item_id)
 
     local item = DB.items[item_id]
     if not item then return end
 
-    return  item.level,
-            (item.set and TEXT("Sys"..(item.set).."_name"))
+    return  item[I_LEVEL],
+            (item[I_SET] and TEXT("Sys"..(item[I_SET]).."_name"))
 end
 
 
@@ -418,8 +428,8 @@ function DB.GenerateItemDataByID(item_id)
         name = TEXT("Sys"..item_id.."_name"),
         icon = DB.GetItemIcon(item_id),
         id = item_id,
-        bind = 0,   --- INVALID
-        bind_flag = 0, --- INVALID
+        bind = 0,   -- INVALID
+        bind_flag = 0, -- INVALID
         plus = 0,
         rarity = 0,
         tier = 0,
@@ -428,16 +438,16 @@ function DB.GenerateItemDataByID(item_id)
         stats = {0,0,0,0,0,0},
         rune_slots = 0,
         runes = {0,0,0,0},
-        unk1 = 0, --- INVALID/UNKNOWN
+        unk1 = 0, -- INVALID/UNKNOWN
     }
 
     local item = DB.items[item_id]
     if item then
-        for i,stat in ipairs(item.basestats or {}) do
+        for i,stat in ipairs(item[I_STATS] or {}) do
             data.stats[i]=stat
         end
 
-        data.dura = item.dura
+        data.dura = item[I_DURA]
     end
 
     return data

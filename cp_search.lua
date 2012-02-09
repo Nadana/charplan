@@ -195,43 +195,45 @@ end
 
 local function GetFilterFunction()
 
-    local filter ="return function (id,data) "
+    local code = {"return function (id,data)"}
 
     local slots = CP.DB.GetItemTypesForSlot(Search.slot)
     if type(slots)=="number" then
-        filter = filter..'if data.slot~='..slots..' then return false end '
+        table.insert(code, 'if data[1]~='..slots..' then return false end')
     else
         assert(type(slots)=="table")
-        filter = filter..'if data.slot~='..table.concat(slots,' and data.slot~=')..' then return false end '
+        table.insert(code, 'if data[1]~='..table.concat(slots,' and data[1]~=')..' then return false end')
     end
 
-    filter = filter..'if not CP.Search.type_filter[data.type] then return false end '
+    table.insert(code, 'if not CP.Search.type_filter[data[2]] then return false end')
 
     local name = CPSearchFilterName:GetText()
     if name~="" then
         name = string.lower(name)
-        filter = filter..'if not string.find(TEXT("Sys"..id.."_name"):lower(),"'..name..'") then return false end '
+        table.insert(code, 'if not string.find(TEXT("Sys"..id.."_name"):lower(),"'..name..'") then return false end')
     end
 
     local lvlmin = tonumber(CPSearchFilterLevelMin:GetText())
     if lvlmin then
-        filter = filter..'if data.min_level<'..tostring(lvlmin)..' then return false end '
+        table.insert(code, 'if data[3]<'..tostring(lvlmin)..' then return false end')
     end
 
     local lvlmax = tonumber(CPSearchFilterLevelMax:GetText())
     if lvlmax then
-        filter = filter..'if data.min_level>'..tostring(lvlmax)..' then return false end '
+        table.insert(code, 'if data[3]>'..tostring(lvlmax)..' then return false end')
     end
 
     if CPSearchFilterStatLess:IsChecked() then
-        filter = filter..'if not CP.DB.GetItemEffect(id) then return false end '
+        table.insert(code, 'if not CP.DB.GetItemEffect(id) then return false end')
     end
 
 
-    filter = filter.." return true end"
+    table.insert(code,"return true end")
 
-    local fct,err = loadstring(filter)
-    assert(fct,tostring(err).."\n"..filter)
+    local code_text = table.concat(code," ")
+
+    local fct,err = loadstring(code_text)
+    assert(fct,tostring(err).."\n"..code_text)
     return fct()
 end
 
