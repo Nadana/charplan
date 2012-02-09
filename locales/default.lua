@@ -32,7 +32,12 @@ local rom_text ={
     BY_CARD = TEXT("AC_ITEMTYPENAME_6"),
     BY_TITEL = C_TITLE,
 
-    STAT_SHORTS = {"PDMG","PDEF","MDEF","MDMG"},
+    STAT_SHORTS = {
+        PDMG="PDMG",
+        PDEF="PDEF",
+        MDEF="MDEF",
+        MDMG="MDMG"
+        },
 
     STAT_NAMES= {
         -- categories
