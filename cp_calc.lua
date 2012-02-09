@@ -31,7 +31,7 @@ Calc.STATS={
 	PDMGR = 400,
 	PDMGMH = 401,
 	PDMGOH = 402,
-	
+
 
 	PATK = 12,
 	PATKR = 407,
@@ -57,7 +57,6 @@ Calc.STATS={
 
 	PCRITDMG = 19,
 	MCRITDMG = 21,
-
 }
 
 function Calc.ID2StatName(id)
@@ -115,7 +114,7 @@ end
 
 function Calc.RecalcPoints(values, descriptions)
     local s = Calc.STATS
-	
+
     Calc.values = values
     Calc.desc = descriptions
 
@@ -124,7 +123,7 @@ function Calc.RecalcPoints(values, descriptions)
     Calc.Bases()
     Calc.Cards()
 
-	for _,slot in ipairs( {0,1,2,3,4,5,6,7,8,9,11,12,13,14,21} ) do 
+	for _,slot in ipairs( {0,1,2,3,4,5,6,7,8,9,11,12,13,14,21} ) do
 		if CP.Items[slot] then
 			Calc.Item(CP.Items[slot])
 			Calc.ItemStats(CP.Items[slot])
@@ -134,37 +133,37 @@ function Calc.RecalcPoints(values, descriptions)
 	for _,slot in ipairs( {10,15,16} ) do
 		local temp_dmg = 0
 		local temp_crit = 0
-		if CP.Items[slot] then	
+		if CP.Items[slot] then
 			temp_dmg = Calc.values[s.PDMG]
 			temp_crit = Calc.values[s.PCRIT]
-			
-			Calc.Item(CP.Items[slot])        
+
+			Calc.Item(CP.Items[slot])
 			Calc.ItemStats(CP.Items[slot])
 			Calc.ItemRunes(CP.Items[slot])
-			
-			
-			
+
+
+
 			if slot==10 then
-				Calc.values[s.PDMGR] = Calc.values[s.PDMG] 			
+				Calc.values[s.PDMGR] = Calc.values[s.PDMG]
 				Calc.values[s.PCRITR] = Calc.values[s.PCRIT]
 			end
 			if slot==15 then
-				Calc.values[s.PDMGMH] = Calc.values[s.PDMG]			
-				Calc.values[s.PCRITMH] = Calc.values[s.PCRIT] 			
+				Calc.values[s.PDMGMH] = Calc.values[s.PDMG]
+				Calc.values[s.PCRITMH] = Calc.values[s.PCRIT]
 			end
 			if slot==16 then
-				Calc.values[s.PDMGOH] = Calc.values[s.PDMG] 			
-				Calc.values[s.PCRITOH] = Calc.values[s.PCRIT] 			
-			end	
+				Calc.values[s.PDMGOH] = Calc.values[s.PDMG]
+				Calc.values[s.PCRITOH] = Calc.values[s.PCRIT]
+			end
 			Calc.values[s.PDMG] = temp_dmg
 			Calc.values[s.PCRIT] = temp_crit
 		end
 	end
     CP.Calc.ALL_ATTRIBUTES()
-	
+
 	Calc.CharDepended()
     Calc.CharIndepended()
-    
+
 end
 function Calc.Clear()
     for _,id in pairs(Calc.STATS) do
@@ -182,30 +181,30 @@ function Calc.Bases()
     Calc.values[s.DEX] = GetPlayerAbility("AGI")
     Calc.values[s.INT] = GetPlayerAbility("INT")
     Calc.values[s.WIS] = GetPlayerAbility("MND")
-	
+
     AddDesciption(s.STR, CP.L.STAT_NAMES.STR, tostring(Calc.values[s.STR]))
     AddDesciption(s.STA, CP.L.STAT_NAMES.STA, tostring(Calc.values[s.STA]))
     AddDesciption(s.DEX, CP.L.STAT_NAMES.DEX, tostring(Calc.values[s.DEX]))
     AddDesciption(s.INT, CP.L.STAT_NAMES.INT, tostring(Calc.values[s.INT]))
     AddDesciption(s.WIS, CP.L.STAT_NAMES.WIS, tostring(Calc.values[s.WIS]))
-	
+
 	--Melee
-	Calc.values[s.PCRITOH] = GetPlayerAbility("MELEE_CRITICAL")	
-	Calc.values[s.PCRITMH] = GetPlayerAbility("MELEE_MAIN_CRITICAL")	
+	Calc.values[s.PCRITOH] = GetPlayerAbility("MELEE_CRITICAL")
+	Calc.values[s.PCRITMH] = GetPlayerAbility("MELEE_MAIN_CRITICAL")
 	Calc.values[s.PCRITOH] = GetPlayerAbility("MELEE_OFF_CRITICAL")
-	Calc.values[s.PACCMH] = GetPlayerAbility("PHYSICAL_MAIN_HIT")	
-	
+	Calc.values[s.PACCMH] = GetPlayerAbility("PHYSICAL_MAIN_HIT")
+
 	AddDesciption(s.PCRITMH, CP.L.STAT_NAMES.PCRITMH, tostring(Calc.values[s.PCRITMH]))
 	AddDesciption(s.PCRITOH, CP.L.STAT_NAMES.PCRITOH, tostring(Calc.values[s.PCRITOH]))
 	AddDesciption(s.PACCMH, CP.L.STAT_NAMES.PACCMH, tostring(Calc.values[s.PACCMH]))
-	
-	--Range	
-	Calc.values[s.PCRITR] = GetPlayerAbility("RANGE_CRITICAL")	
+
+	--Range
+	Calc.values[s.PCRITR] = GetPlayerAbility("RANGE_CRITICAL")
 	AddDesciption(s.PCRITR, CP.L.STAT_NAMES.PCRITR, tostring(Calc.values[s.PCRITR]))
-	
+
 	--Magic
-	Calc.values[s.MCRIT] = GetPlayerAbility("MAGIC_CRITICAL")		
-	AddDesciption(s.MCRIT, CP.L.STAT_NAMES.MCRIT, tostring(Calc.values[s.MCRIT]))	
+	Calc.values[s.MCRIT] = GetPlayerAbility("MAGIC_CRITICAL")
+	AddDesciption(s.MCRIT, CP.L.STAT_NAMES.MCRIT, tostring(Calc.values[s.MCRIT]))
 end
 
 function Calc.Cards()
@@ -219,54 +218,48 @@ function Calc.Item(item)
 
     local name = TEXT("Sys"..item.id.."_name")
 
-    local factor1 = 1+item.tier*0.1
-	local factor = 1
-
-    local max_dura = CP.DB.GetItemDura(item.id) * item.max_dura / 100
-
-	if (item.dura > 100) or (item.dura > max_dura) then
-		factor1 = factor1*1.2
-		factor = 1.2
-	elseif item.dura <= max_dura/5 then
-		factor1 = factor1*0.2
-		factor = 0.2
-	elseif item.dura <= max_dura/2 then
-		factor1 = factor1*0.8
-		factor = 0.8
-
-	end
+	local dura_factor = Calc.ItemDuraFactor(item)
+    local factor1 = (1+item.tier*0.1)*dura_factor
 
     local plus_effect, plus_effvalues, plus_base={},{},0
     if item.plus>0 then
         plus_effect, plus_effvalues, plus_base = CP.DB.GetPlusEffect(item.id, item.plus)
     end
 
+    local attA,attB = CP.DB.PrimarAttributes(item.id)
     local effect, effvalues  = CP.DB.GetItemEffect(item.id)
     for i, ef in ipairs(effect or {}) do
-        if ef<12 or ef>15 then
-            AddValue(ef, effvalues[i]*factor1, "B "..name)
-        else
+        if ef==attA or ef==attB then
             AddValue(ef, effvalues[i]*factor1*(1+plus_base/100), "B "..name)
+        else
+            AddValue(ef, effvalues[i]*factor1, "B "..name)
         end
     end
 
-    AddBonusEffect(plus_effect, plus_effvalues, "P "..name, factor)
+    AddBonusEffect(plus_effect, plus_effvalues, "P "..name, dura_factor)
 end
 
+function Calc.ItemDuraFactor(item)
+
+    local max_dura = CP.DB.GetItemDura(item.id) * item.max_dura / 100
+
+	if (item.dura > 100) or (item.dura > max_dura) then
+		return 1.2
+	elseif item.dura <= max_dura/5 then
+		return 0.2
+	elseif item.dura <= max_dura/2 then
+		return 0.8
+	end
+
+    return 1
+end
 
 function Calc.ItemStats(item)
     local s = Calc.STATS
 
     local name = TEXT("Sys"..item.id.."_name")
-	local factor = 1
-	if (item.dura > 100) or (item.dura > item.max_dura) then
-		factor = 1.2
-	elseif item.dura <= item.max_dura/5 then
-		factor = 0.2
-	elseif item.dura <= item.max_dura/2 then
-		factor = 0.8
+	local factor = Calc.ItemDuraFactor(item)
 
-	end
     for i=1,6 do
         if item.stats[i]>0 then
             local effect, effvalues  = CP.DB.GetBonusEffect(item.stats[i])
@@ -279,15 +272,8 @@ function Calc.ItemRunes(item)
    local s = Calc.STATS
 
     local name = TEXT("Sys"..item.id.."_name")
-	local factor = 1
-	if (item.dura > 100) or (item.dura > item.max_dura) then
-		factor = 1.2
-	elseif item.dura <= item.max_dura/5 then
-		factor = 0.2
-	elseif item.dura <= item.max_dura/2 then
-		factor = 0.8
+	local factor = Calc.ItemDuraFactor(item)
 
-	end
     for i=1,4 do
         if item.runes[i]>0 then
             local effect, effvalues  = CP.DB.GetBonusEffect(item.runes[i])
@@ -328,7 +314,7 @@ function Calc.CharIndepended()
 	AddValue(s.PACCOH,Calc.values[s.PACC]*0.5 ,CP.L.STAT_NAMES.PACCOH)
 	AddValue(s.PDMGOH,Calc.values[s.PDMGOH]*0.7,CP.L.STAT_NAMES.PDMGOH)
 	AddValue(s.PATKR,Calc.values[s.PATK]* 1 ,CP.L.STAT_NAMES.PATKR)
-	
+
     AddValue(s.HP,   Calc.values[s.STA]* 5   ,CP.L.STAT_NAMES.STA)
     AddValue(s.HP,   Calc.values[s.STR]* 0.2 ,CP.L.STAT_NAMES.STR)
 

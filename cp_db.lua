@@ -399,6 +399,18 @@ end
 
 --------
 -- item search
+function DB.PrimarAttributes(item_id)
+    local item = DB.items[item_id]
+    if not item then return end
+
+    local s = CP.Calc.STATS
+    if item[I_SLOT]>31 then
+        return s.PDMG, s.MDMG
+    else
+        return s.PDEF, s.MDEF
+    end
+end
+
 function DB.FindItems(filter_function)
 
     local res={}
