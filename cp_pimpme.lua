@@ -161,7 +161,7 @@ end
 
 function Pimp.OnCancel(this)
     if Pimp.data_backup then
-        table.copy(Pimp.data, Pimp.data_backup)
+        table.copy(Pimp.data_backup, Pimp.data)
     end
     CPPimpMe:Hide()
 end
