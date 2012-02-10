@@ -9,26 +9,12 @@ function TestCP_Calc:testItemCalc_ID_212485()
     TestCP_Calc.CheckItem(item, {[s.PDMG]=1159})
     TestCP_Calc.CheckPlus(item, s.PDMG, {1182,1205,1228,1251,1274,1309,1344,1379,1413,1448,1483,1541,1599,1657,1715,1831})
     TestCP_Calc.CheckTier(item, s.PDMG, {1274.9,1390.8,1506.7,1622.6,1738.5})
---~     item.tier=1
---~     TestCP_Calc.CheckPlus(item, s.PDMG, {
---~         [1]=1297.9, -- 1300.2
---~         [2]=1320.9, -- 1325.5
---~         [3]=1343.9, -- 1350.8
---~         [4]=1366.9, -- 1376.1
---~         [5]=1389.9, -- 1401.4
---~         [6]=1424.9  -- 1439.9
---~         })
---~     item.plus=1
---~     TestCP_Calc.CheckTier(item, s.PDMG, {
---~         [1]=1297.9, -- 1300.2
---~         [2]=1413.8, -- 1418.3
---~         [3]=1529.7, -- 1536.6
---~         [4]=1645.6, -- 1654.8
---~         [5]=1761.5, -- 1773
---~         [6]=1877.4  -- 1891,2
---~         })
-    --TestCP_Calc.CheckPlus(item, s.PDMG, {1297.9, 1320.9, 1343.9, 1366.9, 1389.9, 1424.9})
-    --TestCP_Calc.CheckItemPlusGrad(212485, 100,10,10,{[s.PDMG]=2607})
+    item.tier=1
+        TestCP_Calc.CheckPlus(item, s.PDMG, {1297.9,1320.9,1343.9,1366.9,1389.9,1424.9})
+    item.plus=1
+        TestCP_Calc.CheckTier(item, s.PDMG, {1297.9,1413.8,1529.7,1645.6,1761.5,1877.4})
+
+    TestCP_Calc.CheckItemPlusGrad(212485, 100,10,10,{[s.PDMG]=2607})
 end
 
 
@@ -39,9 +25,9 @@ function TestCP_Calc:testItemCalc_with_BasePLUS()
 	TestCP_Calc.CheckItemPlusGrad(212615, 100,0, 0, {[s.PDMG]=2288, [s.PATK]=976})
 	TestCP_Calc.CheckItemPlusGrad(212615, 100,1, 0, {[s.PDMG]=2332, [s.PATK]=1016})
 	TestCP_Calc.CheckItemPlusGrad(212615, 100,2, 0, {[s.PDMG]=2378, [s.PATK]=1056})
---~ 	TestCP_Calc.CheckItemPlusGrad(212615, 100,0, 1, {[s.PDMG]=2516.8, [s.PATK]=1073.6})
---~ 	TestCP_Calc.CheckItemPlusGrad(212615, 100,0, 2, {[s.PDMG]=2745.6, [s.PATK]=1171.2})
---~ 	TestCP_Calc.CheckItemPlusGrad(212615, 100,1, 1, {[s.PDMG]=2560.8, [s.PATK]=1113.6})
+ 	TestCP_Calc.CheckItemPlusGrad(212615, 100,0, 1, {[s.PDMG]=2516.8, [s.PATK]=1073.6})
+ 	TestCP_Calc.CheckItemPlusGrad(212615, 100,0, 2, {[s.PDMG]=2745.6, [s.PATK]=1171.2})
+ 	TestCP_Calc.CheckItemPlusGrad(212615, 100,1, 1, {[s.PDMG]=2560.8, [s.PATK]=1113.6})
 end
 
 

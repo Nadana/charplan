@@ -219,7 +219,8 @@ function Calc.Item(item)
     for i, ef in ipairs(effect or {}) do
         if ef==attA or ef==attB then
             local v = math.floor(effvalues[i]*(1+plus_base/100))
-            AddValue(ef, v*factor1, "B "..name)
+            local dif = (v-effvalues[i])*(item.tier*0.1)
+            AddValue(ef, v*factor1-dif, "B "..name)
         else
             AddValue(ef, effvalues[i]*factor1, "B "..name)
         end
