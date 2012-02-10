@@ -382,12 +382,12 @@ function Search.UpdateList()
             local txt = ""
             local attA,attB = CP.DB.PrimarAttributes(item_id)
             if attA and boni[attA] then
-                local n = Calc.ID2StatName(attA)
+                local n = CP.Calc.ID2StatName(attA)
                 txt = txt..(CP.L.STAT_SHORTS[n])..": "..boni[attA].."\n"
                 boni[attA] = nil
             end
             if attB and boni[attB] then
-                local n = Calc.ID2StatName(attB)
+                local n = CP.Calc.ID2StatName(attB)
                 txt = txt..(CP.L.STAT_SHORTS[n])..": "..boni[attB].."\n"
                 boni[attB] = nil
             end
