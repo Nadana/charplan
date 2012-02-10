@@ -122,41 +122,31 @@ function Calc.RecalcPoints(values, descriptions)
 
     Calc.Bases()
     Calc.Cards()
-
-	for _,slot in ipairs( {0,1,2,3,4,5,6,7,8,9,11,12,13,14,21} ) do
-		if CP.Items[slot] then
+	local temp_dmg = 0
+	local temp_crit = 0
+	for _,slot in ipairs( {0,1,2,3,4,5,6,7,8,9,11,12,13,14,21,10,15,16} ) do
+		temp_dmg = Calc.values[s.PDMG]
+		temp_crit = Calc.values[s.PCRIT]
+		if CP.Items[slot] then		
 			Calc.Item(CP.Items[slot])
 			Calc.ItemStats(CP.Items[slot])
-			Calc.ItemRunes(CP.Items[slot])
+			Calc.ItemRunes(CP.Items[slot])			
 		end
-	end
-	for _,slot in ipairs( {10,15,16} ) do
-		local temp_dmg = 0
-		local temp_crit = 0
-		if CP.Items[slot] then
-			temp_dmg = Calc.values[s.PDMG]
-			temp_crit = Calc.values[s.PCRIT]
-
-			Calc.Item(CP.Items[slot])
-			Calc.ItemStats(CP.Items[slot])
-			Calc.ItemRunes(CP.Items[slot])
-
-
-
-			if slot==10 then
-				Calc.values[s.PDMGR] = Calc.values[s.PDMG]
-				Calc.values[s.PCRITR] = Calc.values[s.PCRIT]
-			end
-			if slot==15 then
-				Calc.values[s.PDMGMH] = Calc.values[s.PDMG]
-				Calc.values[s.PCRITMH] = Calc.values[s.PCRIT]
-			end
-			if slot==16 then
-				Calc.values[s.PDMGOH] = Calc.values[s.PDMG]
-				Calc.values[s.PCRITOH] = Calc.values[s.PCRIT]
-			end
-			Calc.values[s.PDMG] = temp_dmg
-			Calc.values[s.PCRIT] = temp_crit
+		if slot==10 then
+			Calc.values[s.PDMGR] = Calc.values[s.PDMG]
+			Calc.values[s.PCRITR] = Calc.values[s.PCRIT]
+		end
+		if slot==15 then
+			Calc.values[s.PDMGMH] = Calc.values[s.PDMG]
+			Calc.values[s.PCRITMH] = Calc.values[s.PCRIT]
+		end
+		if slot==16 then
+			Calc.values[s.PDMGOH] = Calc.values[s.PDMG]
+			Calc.values[s.PCRITOH] = Calc.values[s.PCRIT]
+		end
+		if slot==10 or slot==15 or slot==16 then
+		Calc.values[s.PDMG] = temp_dmg
+		Calc.values[s.PCRIT] = temp_crit
 		end
 	end
     CP.Calc.ALL_ATTRIBUTES()
