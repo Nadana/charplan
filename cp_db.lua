@@ -61,8 +61,8 @@ function DB.Release()
     DB.LoadCount = DB.LoadCount-1
 
     if DB.LoadCount ==0 then
-        collectgarbage("collect")
-        local mem1 = collectgarbage("count")
+        --collectgarbage("collect")
+        --local mem1 = collectgarbage("count")
             DB.LoadCount = nil
             DB.images = nil
             DB.items = nil
@@ -72,8 +72,8 @@ function DB.Release()
             DB.skills = nil
             DB.spells = nil
         collectgarbage("collect")
-        local mem2 = collectgarbage("count")
-        CP.Debug("DB Released. Freed memory: "..(math.floor(mem1-mem2)/1000).."mb")
+        --local mem2 = collectgarbage("count")
+        --CP.Debug("DB Released. Freed memory: "..(math.floor(mem1-mem2)/1000).."mb")
     end
 end
 
@@ -140,7 +140,9 @@ function DB.GetBonusEffect(boni_id)
 end
 
 function DB.GetPlusEffect(item_id, plus)
-    assert(plus>0 and plus<21)
+    assert(plus>=0 and plus<21)
+
+    if plus==0 then return {},{},0 end
 
     local item = DB.items[item_id]
     if item then

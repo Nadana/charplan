@@ -127,10 +127,10 @@ function Calc.RecalcPoints(values, descriptions)
 	for _,slot in ipairs( {0,1,2,3,4,5,6,7,8,9,11,12,13,14,21,10,15,16} ) do
 		temp_dmg = Calc.values[s.PDMG]
 		temp_crit = Calc.values[s.PCRIT]
-		if CP.Items[slot] then		
+		if CP.Items[slot] then
 			Calc.Item(CP.Items[slot])
 			Calc.ItemStats(CP.Items[slot])
-			Calc.ItemRunes(CP.Items[slot])			
+			Calc.ItemRunes(CP.Items[slot])
 		end
 		if slot==10 then
 			Calc.values[s.PDMGR] = Calc.values[s.PDMG]
@@ -208,23 +208,23 @@ function Calc.Item(item)
 
     local name = TEXT("Sys"..item.id.."_name")
 
-	local dura_factor = Calc.ItemDuraFactor(item)
-    local factor1 = (1+item.tier*0.1)*dura_factor
-
-    local plus_effect, plus_effvalues, plus_base={},{},0
-    if item.plus>0 then
-        plus_effect, plus_effvalues, plus_base = CP.DB.GetPlusEffect(item.id, item.plus)
-    end
 
     local attA,attB = CP.DB.PrimarAttributes(item.id)
     local effect, effvalues  = CP.DB.GetItemEffect(item.id)
+	local dura_factor = Calc.ItemDuraFactor(item)
+    local plus_effect, plus_effvalues, plus_base = CP.DB.GetPlusEffect(item.id, item.plus)
+
+    local factor1 = (1+item.tier*0.1)*dura_factor
+
     for i, ef in ipairs(effect or {}) do
         if ef==attA or ef==attB then
-            AddValue(ef, effvalues[i]*factor1*(1+plus_base/100), "B "..name)
+            local v = math.floor(effvalues[i]*(1+plus_base/100))
+            AddValue(ef, v*factor1, "B "..name)
         else
             AddValue(ef, effvalues[i]*factor1, "B "..name)
         end
     end
+
 
     AddBonusEffect(plus_effect, plus_effvalues, "P "..name, dura_factor)
 end
