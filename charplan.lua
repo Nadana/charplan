@@ -71,6 +71,10 @@ function CP.Debug(txt)
     --@end-debug@
 end
 
+function CP.Output(txt)
+    DEFAULT_CHAT_FRAME:AddMessage(txt,1,0.5,0.5)
+end
+
 function CP.OnLoad(this)
     UIPanelBackdropFrame_SetTexture( this, "Interface/Common/PanelCommonFrame", 256 , 256 )
 
@@ -148,15 +152,27 @@ function CP.Register3rdParty()
 end
 
 
+
+local function FindSkin(path, id)
+    local skins = CP.DB.FindItemsOfIcon(path)
+    for _, skin in ipairs(skins) do
+        if skin == id then return end
+    end
+    if #skins>1 then
+        CP.Output(CP.L.ERROR_SEARCH_SKIN)
+    end
+    return skins[1]
+end
+
 function CP.ApplyBagItem(inv_slot, bag_slot, hidden)
 
     local icon = GetGoodsItemInfo( bag_slot )
     local link = GetBagItemLink( bag_slot )
-
     assert(icon~="" and link)
 
     local item_data = CP.Pimp.ExtractLink(link)
     item_data.icon = icon
+    item_data.skin = FindSkin(icon, item_data.id)
 
     CP.ApplyItem(item_data, inv_slot, hidden)
 end
@@ -316,7 +332,13 @@ function CP.UpdateModel()
     model:TakeOffAll()
     for _,slot in ipairs({0,1,2,3,4,5,6,7,21,10,15,16}) do
         if CP.Items[slot] then
-            model:SetItemLink( CP.Pimp.GenerateLink(CP.Items[slot]) )
+            local link
+            if CP.Items[slot].skin then
+                link = CP.Pimp.GenerateLinkByID(CP.Items[slot].skin)
+            else
+                link = CP.Pimp.GenerateLink(CP.Items[slot])
+            end
+            model:SetItemLink(link)
         end
     end
 end

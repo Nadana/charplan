@@ -9,7 +9,6 @@ local DB = {}
 local CP = _G.CP
 CP.DB = DB
 
-
 --[[ [ DataBase Format ]]
     -- Items
     local I_SLOT=1
@@ -190,7 +189,16 @@ function DB.GetItemIcon(item_id)
     end
 end
 
-
+function DB.FindItemsOfIcon(icon_path)
+    local name = string.gsub(icon_path,"^/?interface/icons/",""):lower()
+    local res = {}
+    for id,data in pairs(DB.items) do
+        if name == DB.images[data[I_ICON]] then
+            table.insert(res,id)
+        end
+    end
+    return res
+end
 
 function DB.GetItemDura(item_id)
     local item = DB.items[item_id]
