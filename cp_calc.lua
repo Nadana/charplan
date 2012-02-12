@@ -122,31 +122,34 @@ function Calc.RecalcPoints(values, descriptions)
 
     Calc.Bases()
     Calc.Cards()
+    Calc.SetBonus()
+
 	local temp_dmg = 0
 	local temp_crit = 0
 	for _,slot in ipairs( {0,1,2,3,4,5,6,7,8,9,11,12,13,14,21,10,15,16} ) do
 		temp_dmg = Calc.values[s.PDMG]
 		temp_crit = Calc.values[s.PCRIT]
+
 		if CP.Items[slot] then
 			Calc.Item(CP.Items[slot])
-			Calc.ItemStats(CP.Items[slot])
-			Calc.ItemRunes(CP.Items[slot])
 		end
-		if slot==10 then
-			Calc.values[s.PDMGR] = Calc.values[s.PDMG]
-			Calc.values[s.PCRITR] = Calc.values[s.PCRIT]
-		end
-		if slot==15 then
-			Calc.values[s.PDMGMH] = Calc.values[s.PDMG]
-			Calc.values[s.PCRITMH] = Calc.values[s.PCRIT]
-		end
-		if slot==16 then
-			Calc.values[s.PDMGOH] = Calc.values[s.PDMG]
-			Calc.values[s.PCRITOH] = Calc.values[s.PCRIT]
-		end
+
 		if slot==10 or slot==15 or slot==16 then
-		Calc.values[s.PDMG] = temp_dmg
-		Calc.values[s.PCRIT] = temp_crit
+            if slot==10 then
+                Calc.values[s.PDMGR] = Calc.values[s.PDMG]
+                Calc.values[s.PCRITR] = Calc.values[s.PCRIT]
+            end
+            if slot==15 then
+                Calc.values[s.PDMGMH] = Calc.values[s.PDMG]
+                Calc.values[s.PCRITMH] = Calc.values[s.PCRIT]
+            end
+            if slot==16 then
+                Calc.values[s.PDMGOH] = Calc.values[s.PDMG]
+                Calc.values[s.PCRITOH] = Calc.values[s.PCRIT]
+            end
+
+            Calc.values[s.PDMG] = temp_dmg
+            Calc.values[s.PCRIT] = temp_crit
 		end
 	end
     CP.Calc.ALL_ATTRIBUTES()
@@ -214,20 +217,37 @@ function Calc.Item(item)
 	local dura_factor = Calc.ItemDuraFactor(item)
     local plus_effect, plus_effvalues, plus_base = CP.DB.GetPlusEffect(item.id, item.plus)
 
-    local factor1 = (1+item.tier*0.1)*dura_factor
+    local factor = (1+item.tier*0.1)*dura_factor
+
 
     for i, ef in ipairs(effect or {}) do
         if ef==attA or ef==attB then
             local v = math.floor(effvalues[i]*(1+plus_base/100))
             local dif = (v-effvalues[i])*(item.tier*0.1)
-            AddValue(ef, v*factor1-dif, "B "..name)
+            AddValue(ef, v*factor-dif, "B "..name)
         else
-            AddValue(ef, effvalues[i]*factor1, "B "..name)
+            AddValue(ef, effvalues[i]*factor, "B "..name)
         end
     end
 
 
     AddBonusEffect(plus_effect, plus_effvalues, "P "..name, dura_factor)
+
+
+    for i=1,6 do
+        if item.stats[i]>0 then
+            local effect, effvalues  = CP.DB.GetBonusEffect(item.stats[i])
+            AddBonusEffect(effect, effvalues, "S "..name, dura_factor)
+        end
+    end
+
+
+    for i=1,4 do
+        if item.runes[i]>0 then
+            local effect, effvalues  = CP.DB.GetBonusEffect(item.runes[i])
+            AddBonusEffect(effect, effvalues, "R "..name, dura_factor)
+        end
+    end
 end
 
 function Calc.ItemDuraFactor(item)
@@ -245,31 +265,20 @@ function Calc.ItemDuraFactor(item)
     return 1
 end
 
-function Calc.ItemStats(item)
-    local s = Calc.STATS
+function Calc.SetBonus()
+    local sets={}
 
-    local name = TEXT("Sys"..item.id.."_name")
-	local factor = Calc.ItemDuraFactor(item)
-
-    for i=1,6 do
-        if item.stats[i]>0 then
-            local effect, effvalues  = CP.DB.GetBonusEffect(item.stats[i])
-            AddBonusEffect(effect, effvalues, "S "..name, factor)
+    for _,item in pairs(CP.Items) do
+        local _,set_id = CP.DB.GetItemInfo(item.id)
+        if set_id then
+            sets[set_id]=(sets[set_id] or 0)+1
         end
     end
-end
 
-function Calc.ItemRunes(item)
-   local s = Calc.STATS
-
-    local name = TEXT("Sys"..item.id.."_name")
-	local factor = Calc.ItemDuraFactor(item)
-
-    for i=1,4 do
-        if item.runes[i]>0 then
-            local effect, effvalues  = CP.DB.GetBonusEffect(item.runes[i])
-            AddBonusEffect(effect, effvalues, "R "..name, factor)
-        end
+    for set_id,item_count in pairs(sets) do
+        local eff,effval = CP.DB.GetSetEffect(set_id, item_count)
+        local name = TEXT("Sys"..set_id.."_name")
+        AddBonusEffect(eff, effval, "S "..name, 1)
     end
 end
 
@@ -285,7 +294,6 @@ function Calc.ALL_ATTRIBUTES()
         AddValue(s.WIS, all, TEXT("SYS_WEAREQTYPE_7"))
     end
 end
-
 
 function Calc.CharSkills()
     -- TODO: Krieger -> Brutale Kraft

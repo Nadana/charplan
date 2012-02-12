@@ -1,5 +1,20 @@
 TestCP_Calc={}
 
+function TestCP_Calc:testSetBonus()
+    local s = CP.Calc.STATS
+
+    local result = TestCP_Calc.GetClearedStats()
+    CP.Items={
+            [1]={id=226503}, -- Set - Handschützer von Yawaka
+            [4]={id=226505}, -- Set - Beinschützer von Yawaka
+            [6]={id=226504}, -- Set - Gurt von Yawaka
+            [13]={id=226506}, -- Set - Ohrring von Yawaka
+            [14]={id=227956}, -- Earring (dummy - other set)
+            [15]={id=212254}, -- Weapon (dummy)
+        }
+    CP.Calc.SetBonus()
+    TestCP_Calc.CompareStatsComplete(result, {[s.DEX]=95,[s.PATK]=1200,[s.PCRIT]=150,[s.STR]=100,[s.PDMG]=45})
+end
 
 function TestCP_Calc:testItemCalc_ID_226499() --Handschützer von Lekani
     local s = CP.Calc.STATS
@@ -58,7 +73,6 @@ function TestCP_Calc:testItemCalc_without_BasePLUS()
     TestCP_Calc.CheckItemPlusGrad(223026, 100,0, 10,{[s.PDEF]=1136, [s.MDEF]=1622})
 end
 
-
 function TestCP_Calc.CheckPlus(item, stat, values)
     local temp = item.plus
     for plus,pdmg in pairs(values) do
@@ -89,24 +103,50 @@ end
 
 
 function TestCP_Calc.CheckItem(item, stats)
+    local result = TestCP_Calc.GetClearedStats()
+    CP.Calc.Item(item)
+    TestCP_Calc.CompareStats(result, stats, "Item: "..item.id)
+end
 
+function TestCP_Calc.CompareStatsComplete(actual, expected, msg)
+
+    for stat, value in pairs(expected) do
+        local act = actual[stat] or 0
+        local round = math.floor(act*10)/10
+        assertEquals(round,value, msg)
+    end
+
+    for stat, value in pairs(actual) do
+        local ex = expected[stat] or 0
+        local round = math.floor(value*10)/10
+        assertEquals(round, ex, msg)
+    end
+end
+
+function TestCP_Calc.CompareStats(actual, expected, msg)
+
+    for stat, value in pairs(expected) do
+        local act = actual[stat] or 0
+        local round = math.floor(act*10)/10
+        assertEquals(round,value, msg)
+    end
+end
+
+function TestCP_Calc.GetClearedStats()
     local result = {}
     CP.Calc.desc = {}
     CP.Calc.values = result
     CP.Calc.Clear()
-    CP.Calc.Item(item)
-
-    for stat, value in pairs(stats) do
-        local round = math.floor(result[stat]*10)/10
-        assertEquals(round,value, "Item: "..item.id)
-    end
+    return result
 end
 
 function TestCP_Calc:classSetUp()
+    TestCP_Calc.old_data = table.copy(CP.Items)
     CP.DB.Load()
 end
 
 
 function TestCP_Calc:classTearDown()
     CP.DB.Release()
+    CP.Items = TestCP_Calc.old_data
 end

@@ -863,12 +863,20 @@ class SuitEntry < Table
         #~ raise "#{id} -> more bonuses #{max+1} in set as possible #{@totalcount}" if @totalcount != max+1
     end
 
+    def HasBonis?
+        for b in 1..9
+            return true if @bonis[b][:eff].size>0
+        end
+        return false
+    end
+
     def SkipThisItem?
         name = $de.get_value("\"Sys#{@id}_name\"")
 
         $log << "set #{id} -> without set items\n" if @totalcount==0
 
         return  (@has_unknown_stat or @totalcount==0 or
+                (not HasBonis?) or
                 (name=="" or name==nil or name=~/^Sys\d+_name$/) )
     end
 
@@ -881,7 +889,7 @@ class SuitEntry < Table
     def ExportData(data)
         for b in 1..9
             if @bonis[b][:eff].size>0 then
-                data.push("[%i]={efftype={%s},effvalue={%s}}" % [b, @bonis[b][:eff].join(","), @bonis[b][:value].join(",")] )
+                data.push("[%i]={{%s},{%s}}" % [b, @bonis[b][:eff].join(","), @bonis[b][:value].join(",")] )
             end
         end
     end

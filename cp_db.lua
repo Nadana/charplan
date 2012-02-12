@@ -55,6 +55,7 @@ function DB.Load()
     DB.cards = LoadTable("cards")
     DB.skills = LoadTable("skills")
     DB.spells = LoadTable("spells")
+    DB.sets = LoadTable("sets")
 end
 
 function DB.Release()
@@ -71,6 +72,7 @@ function DB.Release()
             DB.cards = nil
             DB.skills = nil
             DB.spells = nil
+            DB.sets = nil
         collectgarbage("collect")
         --local mem2 = collectgarbage("count")
         --CP.Debug("DB Released. Freed memory: "..(math.floor(mem1-mem2)/1000).."mb")
@@ -155,6 +157,23 @@ function DB.GetPlusEffect(item_id, plus)
     else
         CP.Debug("Item not in DB: "..item_id)
     end
+end
+
+function DB.GetSetEffect(set_id, item_count)
+
+    local eff = {}
+    local eff_val = {}
+
+    for count,data in pairs(DB.sets[set_id] or {}) do
+        if count<=item_count then
+            for i,e in ipairs(data[1]) do
+                table.insert(eff,e)
+                table.insert(eff_val,data[2][i])
+            end
+        end
+    end
+
+    return eff,eff_val
 end
 
 function DB.GetItemIcon(item_id)
