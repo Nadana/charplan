@@ -416,10 +416,17 @@ function Search.UpdateItem(base_name,item_id)
     end
 end
 
+function Search.OnItemClick(this, key)
 
-function Search.OnItemClick(this)
     local top_pos = CPSearchItemsSB:GetValue()
     local new_item = Search.Items[this:GetID()+top_pos]
+    if key == "RBUTTON" then
+        GameTooltip:Hide()
+        CPSearchItemMenu.item_id = new_item
+        ToggleDropDownMenu(CPSearchItemMenu, 1,this,"cursor", 1 ,1 );
+        return
+    end
+
     if new_item ~= Search.selection then
         Search.selection = new_item
         Search.selection_changed = true
@@ -450,6 +457,67 @@ function Search.OnItemLeave(this)
     GameTooltip2:Hide()
     GameTooltip:Hide()
 end
+
+function Search.ShowContextMenu(this)
+    local info={notCheckable = 1}
+
+    info.text   = "Take it"
+    info.func   = function()
+                    Search.selection_changed = (Search.selection~=this.item_id)
+                    Search.selection=this.item_id
+                    Search.OnTakeIt()
+                end
+    UIDropDownMenu_AddButton(info)
+
+    info.text   = "Use Skin"
+    info.func   = function()
+                end
+    UIDropDownMenu_AddButton(info)
+
+
+    info.text   = "Open Web"
+    info.func   = function()
+                    local linkData = "http://de.runesdatabase.com/item/"..this.item_id
+					--StaticPopupDialogs["OPEN_WEBROWER"].link = linkData
+					--StaticPopup_Show("OPEN_WEBROWER")
+    				GC_OpenWebRadio(linkData)
+                end
+    UIDropDownMenu_AddButton(info)
+
+    local res = Search.FindInDungeonLoots(this.item_id)
+    for _,data in pairs(res) do
+        info.text   = data
+        info.func   = function ()
+                assert(DungeonLoot_Frame)
+                ungeonLoot.var.instance =
+                DungeonLoot_Frame:Show()
+            end
+        UIDropDownMenu_AddButton(info)
+    end
+end
+
+
+function Search.FindInDungeonLoots(item_id)
+    local res = {}
+
+    if DungeonLoot and DungeonLoot.tables then
+        for _,zone in pairs(DungeonLoot.tables) do
+            for _,boss in pairs(zone.Boss or {}) do
+                for _,loot in pairs(boss.Loots or {}) do
+                    if loot==item_id then
+                        table.insert(res, string.format("Dropped in: %s by %s",
+                                GetZoneLocalName(zone.Zone) or "unknown",
+                                TEXT("Sys"..boss.Name.."_name")
+                            ))
+                    end
+                end
+            end
+        end
+    end
+
+    return res
+end
+
 
 function Search.OnTakeIt()
     if Search.selection and Search.selection_changed then

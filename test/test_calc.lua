@@ -1,6 +1,16 @@
 TestCP_Calc={}
 
 
+function TestCP_Calc:testItemCalc_ID_226499() --Handschützer von Lekani
+    local s = CP.Calc.STATS
+
+    -- http://de.runesdatabase.com/item/226499
+    local item = CP.DB.GenerateItemDataByID(226499)
+    TestCP_Calc.CheckItem(item, {[s.PDEF]=1107, [s.MDEF]=1365})
+ 	TestCP_Calc.CheckItemPlusGrad(226499, 100,10, 10, {[s.PDEF]=2601, [s.MDEF]=3207})
+end
+
+
 function TestCP_Calc:testItemCalc_ID_212485()
     local s = CP.Calc.STATS
 
@@ -18,7 +28,7 @@ function TestCP_Calc:testItemCalc_ID_212485()
 end
 
 
-function TestCP_Calc:testItemCalc_with_BasePLUS()
+function TestCP_Calc:testItemCalc_ID_212615()
     local s = CP.Calc.STATS
 
     -- http://de.runesdatabase.com/item/212615
@@ -85,8 +95,6 @@ function TestCP_Calc.CheckItem(item, stats)
     CP.Calc.values = result
     CP.Calc.Clear()
     CP.Calc.Item(item)
-    CP.Calc.ItemStats(item)
-    CP.Calc.ItemRunes(item)
 
     for stat, value in pairs(stats) do
         local round = math.floor(result[stat]*10)/10

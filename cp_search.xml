@@ -81,13 +81,14 @@
 			</Button>
 		</Frames>
 		<Scripts>
-			<OnClick>CP.Search.OnItemClick(this)</OnClick>
+			<OnClick>CP.Search.OnItemClick(this,key)</OnClick>
 			<OnDoubleClick>CP.Search.OnItemDblClick(this)</OnDoubleClick>
 			<OnMouseWheel>
 				--CP.Pimp.StatSearch_ItemOnLeave()
 				UIPanelScrollBar_OnMouseWheel(CPSearchItemsSB, delta)
 				--CP.Pimp.StatSearch_ItemOnEnter(this)
 			</OnMouseWheel>
+            <OnLoad> this:RegisterForClicks("LeftButton", "RightButton")</OnLoad>
 		</Scripts>
 	</Frame>
 
@@ -319,6 +320,14 @@
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
+					<!-- Context menue -->
+					<Frame name="CPSearchItemMenu" inherits="UIDropDownMenuTemplate">
+						<Scripts>
+							<OnLoad>
+								UIDropDownMenu_Initialize(this, CP.Search.ShowContextMenu, "MENU")
+							</OnLoad>
+						</Scripts>
+					</Frame>
 				</Frames>
 			</Frame>
 			<Button name="CPSearchTakeIt" inherits="UIPanelButtonTemplate" text="OK">
