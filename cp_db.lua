@@ -430,8 +430,7 @@ function DB.GetItemInfo(item_id)
     local item = DB.items[item_id]
     if not item then return end
 
-    return  item[I_LEVEL],
-            (item[I_SET] and TEXT("Sys"..(item[I_SET]).."_name"))
+    return  item[I_LEVEL],item[I_SET]
 end
 
 

@@ -355,61 +355,64 @@ function Search.UpdateList()
         local item_id = Search.Items[i+top_pos]
 
         if item_id then
+            Search.UpdateItem(base_name,item_id)
             _G[base_name]:Show()
-
-            SetItemButtonTexture(_G[base_name.."Item"], CP.DB.GetItemIcon(item_id) )
-
-            local r,g,b = GetItemQualityColor(GetQualityByGUID( item_id ))
-            local col=string.format("|cff%02x%02x%02x",r*255,g*255,b*255)
-            _G[base_name.."Name"]:SetText(col..TEXT("Sys"..item_id.."_name"))
-
-            local level, setname = CP.DB.GetItemInfo(item_id)
-            _G[base_name.."Set"]:SetText(setname or "")
-            _G[base_name.."Level"]:SetText(level or "")
-
-
-            local boni={}
-            local efftype, effvalue = CP.DB.GetItemEffect(item_id)
-            for i,eff in pairs(efftype or {}) do
-                boni[eff] = (boni[eff] or 0) + effvalue[i]
-            end
-
-            local efftype, effvalue = CP.DB.GetItemUsualDropEffects(item_id)
-            for i,eff in pairs(efftype or {}) do
-                boni[eff] = (boni[eff] or 0) + effvalue[i]
-            end
-
-            local txt = ""
-            local attA,attB = CP.DB.PrimarAttributes(item_id)
-            if attA and boni[attA] then
-                local n = CP.Calc.ID2StatName(attA)
-                txt = txt..(CP.L.STAT_SHORTS[n])..": "..boni[attA].."\n"
-                boni[attA] = nil
-            end
-            if attB and boni[attB] then
-                local n = CP.Calc.ID2StatName(attB)
-                txt = txt..(CP.L.STAT_SHORTS[n])..": "..boni[attB].."\n"
-                boni[attB] = nil
-            end
-            _G[base_name.."Effect"]:SetText(txt)
-
-
-            txt=""
-            for eff,value in pairs(boni) do
-                txt = txt.."+"..value.." "..TEXT("SYS_WEAREQTYPE_"..eff).."\n"
-            end
-
-            _G[base_name.."Boni"]:SetText(txt)
-
-            if item_id == Search.selection then
-                _G[base_name.."Highlight"]:Show()
-            else
-                _G[base_name.."Highlight"]:Hide()
-            end
-
         else
             _G[base_name]:Hide()
         end
+    end
+end
+
+function Search.UpdateItem(base_name,item_id)
+    SetItemButtonTexture(_G[base_name.."Item"], CP.DB.GetItemIcon(item_id) )
+
+    local r,g,b = GetItemQualityColor(GetQualityByGUID( item_id ))
+    local col=string.format("|cff%02x%02x%02x",r*255,g*255,b*255)
+    _G[base_name.."Name"]:SetText(col..TEXT("Sys"..item_id.."_name"))
+
+    local level, set = CP.DB.GetItemInfo(item_id)
+    local setname = set and TEXT("Sys"..set.."_name") or ""
+    _G[base_name.."Set"]:SetText()
+    _G[base_name.."Level"]:SetText(level or "")
+
+
+    local boni={}
+    local efftype, effvalue = CP.DB.GetItemEffect(item_id)
+    for i,eff in pairs(efftype or {}) do
+        boni[eff] = (boni[eff] or 0) + effvalue[i]
+    end
+
+    local efftype, effvalue = CP.DB.GetItemUsualDropEffects(item_id)
+    for i,eff in pairs(efftype or {}) do
+        boni[eff] = (boni[eff] or 0) + effvalue[i]
+    end
+
+    local txt = ""
+    local attA,attB = CP.DB.PrimarAttributes(item_id)
+    if attA and boni[attA] then
+        local n = CP.Calc.ID2StatName(attA)
+        txt = txt..(CP.L.STAT_SHORTS[n])..": "..boni[attA].."\n"
+        boni[attA] = nil
+    end
+    if attB and boni[attB] then
+        local n = CP.Calc.ID2StatName(attB)
+        txt = txt..(CP.L.STAT_SHORTS[n])..": "..boni[attB].."\n"
+        boni[attB] = nil
+    end
+    _G[base_name.."Effect"]:SetText(txt)
+
+
+    txt=""
+    for eff,value in pairs(boni) do
+        txt = txt.."+"..value.." "..TEXT("SYS_WEAREQTYPE_"..eff).."\n"
+    end
+
+    _G[base_name.."Boni"]:SetText(txt)
+
+    if item_id == Search.selection then
+        _G[base_name.."Highlight"]:Show()
+    else
+        _G[base_name.."Highlight"]:Hide()
     end
 end
 
