@@ -555,11 +555,11 @@ end
 
 
 function Pimp.ExtractLink(itemlink)
-
     local data_str, name = string.match(itemlink, "|Hitem:([%x ]+)|h|c%x%x%x%x%x%x%x%x%[(.-)%]|r|h")
     assert(name and data_str, "not a valid Item link")
 
     local data = Nyx.Split(data_str, " ", 14)
+    while #data<14 do table.insert(data,"0") end
 
     local item_data = {}
     item_data.name = name
@@ -569,7 +569,7 @@ function Pimp.ExtractLink(itemlink)
     item_data.bind_flag = tonumber( string.sub(data[2],-4,-3) , 16) or 0
 
     item_data.unk1 = tonumber( string.sub(data[3],-8,-7) , 16) or 0
-    item_data.max_dura = tonumber( string.sub(data[3],-2,-1), 16)
+    item_data.max_dura = tonumber( string.sub(data[3],-2,-1), 16) or 100
     item_data.dura = tonumber( data[11], 16) / 100
 
     local runesPlus = tonumber( string.sub(data[3],-6,-5) , 16) or 0
@@ -599,6 +599,10 @@ function Pimp.ExtractLink(itemlink)
             tonumber( data[10], 16) or 0 }
 
     item_data.rune_slots = free_slots + Pimp.UsedRunes(item_data)
+
+    if item_data.max_dura==0 then item_data.max_dura=100 end
+    if item_data.tier<0 then item_data.tier=0 end
+    if item_data.dura==0 then item_data.dura=CP.DB.GetItemDura(item_data.id) end
 
     return item_data
 end
