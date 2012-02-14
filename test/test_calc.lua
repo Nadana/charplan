@@ -134,9 +134,7 @@ end
 
 function TestCP_Calc.GetClearedStats()
     local result = {}
-    CP.Calc.desc = {}
     CP.Calc.values = result
-    CP.Calc.Clear()
     return result
 end
 

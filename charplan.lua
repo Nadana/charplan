@@ -113,7 +113,6 @@ function CP.OnHide()
     CP.Calc.Release()
 
     CP.Stats=nil
-    CP.Stats_Desc=nil
 end
 
 
@@ -150,8 +149,6 @@ function CP.Register3rdParty()
         AddonManager.RegisterAddonTable(addon)
     end
 end
-
-
 
 local function FindSkin(path, id)
     local skins = CP.DB.FindItemsOfIcon(path)
@@ -250,17 +247,14 @@ end
 
 function CP.UpdatePoints()
 
-    CP.Stats = {}
-    CP.Stats_Desc = {}
-
-    CP.Calc.RecalcPoints(CP.Stats, CP.Stats_Desc)
+    CP.Stats = CP.Calc.Calculate()
 
     local att=CP.Calc.STATS
 
     for id,frame in pairs(CP.AttributeFields) do
         ctrl = _G[frame:GetName().."Value"]
         assert(att[id], "stat:"..id.." not defined "..frame:GetName())
-        ctrl:SetText(math.floor(CP.Stats[att[id]]))
+        ctrl:SetText(math.floor(CP.Stats[att[id]] or 0))
     end
 end
 
@@ -279,18 +273,14 @@ end
 
 function CP.PimpUpdate()
 
-    local new_vals = {}
-    local temp_desc = {}
-
-    CP.Calc.RecalcPoints(new_vals, temp_desc)
-
+    new_vals = CP.Calc.Calculate()
 
     local att=CP.Calc.STATS
 
     for id,frame in pairs(CP.AttributeFields) do
         ctrl = _G[frame:GetName().."Value"]
 
-        local old, new = CP.Stats[att[id]] , new_vals[att[id]]
+        local old, new = CP.Stats[att[id]] or 0 , new_vals[att[id]]  or 0
         if old > new then
             ctrl:SetText("|cffff2020"..math.floor(new))
         elseif old < new then
@@ -541,21 +531,6 @@ function CP.EquipItem_ShowMenu( this )
     info.notCheckable = 1
 
     if( UIDROPDOWNMENU_MENU_LEVEL == 1 ) then
-        --@debug@
-        info.text   = string.format(CP.L.CONTEXT_PIMPME,"TEST - Ardmonds Helm")
-        info.func   = function()
-                CP.Pimp.PimpItemLink("|Hitem:377a0 3 358e0c74 d41fd41a d56bd56d d48fd56c 0 0 0 0 2d50 82a0|h|cffc805f8[Ardmonds Helm]|r|h")
-            end
-        UIDropDownMenu_AddButton(info)
-
-        info.text   = string.format(CP.L.CONTEXT_PIMPME,"TEST - Flammendrachenherz-Kette der Intelligenz")
-        info.func   = function()
-                CP.Pimp.PimpItemLink("|Hitem:33e87 3 80b56 d2fed2ec d36cd305 d36fd36a 7eff9 0 0 0 4330 d408|h|cffc805f8[Flammendrachenherz-Kette der Intelligenz]|r|h")
-            end
-        UIDropDownMenu_AddButton(info)
-        --@end-debug@
-
-
         local data = CP.Items[CPEquipButtonMenu.Slot]
         if data then
             info.text = string.format(CP.L.CONTEXT_PIMPME,data.name)
@@ -599,8 +574,9 @@ function CP.Attribute_OnEnter(this)
                 CP.L.STAT_NAMES[stat], FONT_COLOR_CODE_CLOSE, CP.Stats[stat_id] or 0)
 
 	GameTooltip:SetText(txt)
-    for i=1,#(CP.Stats_Desc[stat_id].left) do
-  		GameTooltip:AddDoubleLine(CP.Stats_Desc[stat_id].left[i], CP.Stats_Desc[stat_id].right[i])
+    local left,right = CP.Calc.Explain(stat_id)
+    for i=1,#(left) do
+  		GameTooltip:AddDoubleLine(left[i], right[i])
     end
 
 	GameTooltip:Show()
