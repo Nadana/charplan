@@ -205,7 +205,7 @@
 					<OnClick>CP.Search.FindItems()</OnClick>
 				</Scripts>
 			</CheckButton>
-			<Button name="$parentFilterType" inherits="UIPanelButtonTemplate">
+			<Frame name="$parentFilterType" inherits="UIDropDownMenuTemplate">
 				<Size>
 					<AbsDimension x="132" y="24"/>
 				</Size>
@@ -217,21 +217,10 @@
 					</Anchor>
 				</Anchors>
 				<Scripts>
-					<OnClick>CP.Search.ShowFilterMenu(this,"Type")</OnClick>
-				</Scripts>
-			</Button>
-			<Frame name="CPSearchFilterMenu" inherits="UIDropDownMenuTemplate">
-				<Size>
-					<AbsDimension x="132" y="26"/>
-				</Size>
-				<Anchors>
-					<Anchor point="TOP" relativeTo="$parentFilterType"/>
-				</Anchors>
-				<Scripts>
-					<OnLoad>CP.Search.OnTypeFilterLoad(this)</OnLoad>
+					<OnLoad>CP.Search.OnLoadFilterTypeMenu(this)</OnLoad>
 				</Scripts>
 			</Frame>
-			<Button name="$parentFilterSlot" inherits="UIPanelButtonTemplate">
+			<Frame name="$parentFilterSlot" inherits="UIDropDownMenuTemplate">
 				<Size>
 					<AbsDimension x="132" y="24"/>
 				</Size>
@@ -243,16 +232,16 @@
 					</Anchor>
 				</Anchors>
 				<Scripts>
-					<OnClick>CP.Search.ShowFilterMenu(this,"Slot")</OnClick>
+					<OnLoad>CP.Search.OnLoadFilterSlotMenu(this)</OnLoad>
 				</Scripts>
-			</Button>
+			</Frame>
 			<!-- item list !-->
 			<Frame name="CPSearchItems">
 				<Size>
 					<AbsDimension x="580"  y="368"></AbsDimension>
 				</Size>
 				<Anchors>
-					<Anchor point="TOPLEFT"><Offset><AbsDimension x="10" y="70" /></Offset></Anchor>
+					<Anchor point="TOPLEFT"><Offset><AbsDimension x="10" y="72" /></Offset></Anchor>
 				</Anchors>
 				<Backdrop edgeFile="Interface\Tooltips\Tooltip-border">
 				    <EdgeSize><AbsValue val="8"/></EdgeSize>
@@ -267,7 +256,7 @@
 					<Button name="CPSearchHead2" inherits="CPSearchHeaderButtonTemplate" id="2">
 						<Size><AbsDimension x="50" y="20"></AbsDimension></Size>
 						<Anchors>
-							<Anchor point="TOPLEFT"><Offset><AbsDimension x="220" y="1"/></Offset></Anchor>
+							<Anchor point="TOPLEFT"><Offset><AbsDimension x="210" y="1"/></Offset></Anchor>
 						</Anchors>
 					</Button>
 					<Button name="CPSearchHead3" inherits="CPSearchHeaderButtonTemplate" id="3">

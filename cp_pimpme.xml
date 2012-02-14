@@ -71,7 +71,7 @@
 
 	<Frame name="CPPimpMe" parent="CPFrame" inherits="UICommonFrameTemplate">
 		<Size>
-			<AbsDimension x="656" y="550"/>
+			<AbsDimension x="660" y="550"/>
 		</Size>
 		<Anchors>
 			<Anchor point="TOPLEFT" relativePoint="TOP" >

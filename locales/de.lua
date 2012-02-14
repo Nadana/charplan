@@ -1,7 +1,7 @@
 -- coding: utf-8
 
 CP.L ={
-    TITLE_EMPTY = "<unbennant>",
+    TITLE_EMPTY = "<unbenannt>",
     MENU_IMPORT= "Ausrüstung importieren",
     MENU_LOAD= "Ausrüstung laden",
     MENU_SAVE= "Ausrüstung speichern",

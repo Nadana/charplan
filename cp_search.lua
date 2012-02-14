@@ -17,14 +17,12 @@ function Search.OnLoad(this)
     UIPanelBackdropFrame_SetTexture( this, "Interface/Common/PanelCommonFrame", 256, 256 )
 
     -- TODO: localize
-    CPSearchHead1:SetText("Name")
-    CPSearchHead2:SetText("Level")
-    CPSearchHead3:SetText("Base Stats")
-    CPSearchFilterStatLessText:SetText("no empty items")
-    CPSearchFilterNameLabel:SetText("Name")
-    CPSearchFilterLevelLabel:SetText("Level")
-
-    CPSearchFilterStatLess:SetChecked()
+    CPSearchHead1:SetText(CP.L.SEARCH_NAME)
+    CPSearchHead2:SetText(CP.L.SEARCH_LEVEL)
+    CPSearchHead3:SetText(CP.L.SEARCH_BASE_STATS)
+    CPSearchFilterStatLessText:SetText(CP.L.SEARCH_NOSTATLESS)
+    CPSearchFilterNameLabel:SetText(CP.L.SEARCH_NAME)
+    CPSearchFilterLevelLabel:SetText(CP.L.SEARCH_LEVEL)
 end
 
 
@@ -49,44 +47,17 @@ function Search.OnHide()
     Search.Items=nil
 end
 
-function Search.OnTypeFilterLoad(this)
-    UIDropDownMenu_Initialize( this, Search.OnFilterMenuShow, "MENU")
-end
-
-function Search.ShowFilterMenu(this,kind)
-    if DropDownList1:IsVisible() then
-        CloseDropDownMenus()
-
-        if  CPSearchFilterMenu.Type == kind then
-            return
-        end
-    end
-
-
-    CPSearchFilterMenu:ClearAllAnchors()
-    CPSearchFilterMenu:SetAnchor("TOP", "TOP", this:GetName(), 0, 0)
-
-    CPSearchFilterMenu.Type = kind
-    ToggleDropDownMenu(CPSearchFilterMenu)
-end
-
-function Search.OnFilterMenuShow(this)
-    if CPSearchFilterMenu.Type=="Type" then
-        Search.OnTypeFilterShow(this)
-    elseif CPSearchFilterMenu.Type=="Slot" then
-        Search.OnSlotFilterShow(this)
-    elseif CPSearchFilterMenu.Type=="Kind" then
-        Search.OnSubTypeFilterShow(this)
-    else
-        error("illegal kind")
-    end
+function Search.OnLoadFilterTypeMenu(this)
+    UIDropDownMenu_SetWidth(this, 100)
+    UIDropDownMenu_Initialize( this, Search.OnTypeFilterShow)
+    UIDropDownMenu_SetText(this, CP.L.SEARCH_TYPE)
 end
 
 function Search.OnTypeFilterShow(this)
     local itype = CP.DB.IsSlotType(Search.slot)
 
-    local filters=
-    {   [1]= { -- Armor
+    local filters={
+        [1]= { -- Armor
             [TEXT("SYS_ARMORTYPE_00")]=0, -- Plate
             [TEXT("SYS_ARMORTYPE_01")]=1, -- Mail
             [TEXT("SYS_ARMORTYPE_02")]=2, -- Leather
@@ -135,7 +106,7 @@ function Search.OnTypeFilterShow(this)
             },
     }
 
-    for name,id in pairs(filters[itype]) do
+    for name,id in pairs(filters[itype] or {}) do
         local info={}
         info.text=name
         info.checked = Search.type_filter[id]
@@ -152,8 +123,14 @@ function Search.OnTypeFilterSelect(this)
 end
 
 
-function Search.OnSlotFilterShow(this)
 
+function Search.OnLoadFilterSlotMenu(this)
+    UIDropDownMenu_SetWidth(this, 100)
+    UIDropDownMenu_Initialize( this, Search.OnSlotFilterShow)
+    UIDropDownMenu_Refresh(frame)
+end
+
+function Search.OnSlotFilterShow(this)
     local slots={0,1,2,3,4,5,6,7,8,10,11,13,15,16,21}
 
     for _,id in ipairs(slots) do
@@ -164,30 +141,10 @@ function Search.OnSlotFilterShow(this)
         info.func = Search.OnSlotFilterSelect
 		UIDropDownMenu_AddButton( info, 1 )
     end
-
 end
 
 function Search.OnSlotFilterSelect(this)
-    Search.slot=this.value
-    Search.FindItems()
-end
-
-function Search.OnSubTypeFilterShow(this)
-
-    local slots={0,1,2,3,4,5,6,7,8,10,11,13,15,16,21}
-
-    for _,id in ipairs(slots) do
-        local info={}
-        info.text=TEXT(string.format("SYS_EQWEARPOS_%02i",id))
-        info.checked = (Search.slot==id)
-        info.value = id
-        info.func = Search.OnSlotFilterSelect
-		UIDropDownMenu_AddButton( info, 1 )
-    end
-
-end
-
-function Search.OnSubTypeFilterSelect(this)
+    UIDropDownMenu_SetSelectedValue( CPSearchFilterSlot, this.value)
     Search.slot=this.value
     Search.FindItems()
 end
@@ -310,7 +267,7 @@ function Search.ScrollToSelection()
 
         local top_pos = CPSearchItemsSB:GetValue()
         if top_pos>line then
-            CPSearchItemsSB:SetValue(i)
+            CPSearchItemsSB:SetValue(line)
         elseif top_pos+MAX_LINES<line then
             CPSearchItemsSB:SetValue(math.max(line-MAX_LINES))
         end

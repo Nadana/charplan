@@ -605,7 +605,7 @@ class ArmorEntry < ItemEntry
 
     def SkipThisItem?
         if not IsTypeValid? then
-            $log.warn("item has wrong typ-> #{self}")
+            $log.warn("item has wrong typ-> id:#{@id} - pos:#{@inv_pos} type:#{@armor_typ}")
             return true
         end
         res = super
@@ -1103,7 +1103,7 @@ class FullDB
             begin
                 images.ImageUsed(r.image_id)
             rescue
-                $log << "Item #{r.id} removed 'cause image is invalid/unknown (#{r.image_id})"
+                $log.warn("Item #{r.id} removed 'cause image is invalid/unknown (#{r.image_id})")
                 items.delete(r)
             end
         }

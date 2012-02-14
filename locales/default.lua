@@ -30,7 +30,16 @@ local rom_text ={
     PIMP_PLUS = "Plus",
     PIMP_FILTER = "<filter>",
 
+    SEARCH_NAME = "Name",
+    SEARCH_LEVEL = "Level",
+    SEARCH_BASE_STATS = "Dmg/Def",
+    SEARCH_STATS = "Stats",
+    SEARCH_NOSTATLESS = "no empty items",
+    SEARCH_TYPE = "Type",
+
+    BY_CLASS = "Base",
     BY_CARD = TEXT("AC_ITEMTYPENAME_6"),
+    BY_SET = "Sets",
     BY_TITEL = C_TITLE,
 
     STAT_SHORTS = {
