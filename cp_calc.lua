@@ -59,6 +59,46 @@ Calc.STATS={
 	MCRITDMG = 21,
 }
 
+
+local StatsMeta={
+    __index = function(s, key)
+        if type(key)=="string" then
+            key = Calc.STATS[key]
+            if not key then error("unknown field",2) end
+        end
+        return (rawget(s, key) or 0)
+    end,
+    __newindex = function(s,key,val)
+        if type(key)=="string" then
+            key = Calc.STATS[key]
+            if not key then error("unknown field",2) end
+        end
+        rawset(s,key,val)
+    end,
+}
+
+
+local function ApplyBonus(stats, effect, effvalues, factor)
+    factor = factor or 1
+    -- TODO: merge effect + effectvalues in one table (result: decrease memory and easier functions)
+    for i, ef in ipairs(effect or {}) do
+        stats[ef] =stats[ef] + effvalues[i]
+    end
+end
+
+local function AddStats(stats_res, stats)
+    for id, val in pairs(stats or {}) do
+        stats_res[id]=stats_res[id]+val
+    end
+end
+
+function Calc.Clear()
+    Calc.values={} -- TODO: remove Calc.values
+    setmetatable(Calc.values, StatsMeta)
+    return Calc.values
+end
+
+
 function Calc.ID2StatName(id)
     for n,v in pairs(Calc.STATS) do
         if id==v then return n end
@@ -75,80 +115,64 @@ end
 
 function Calc.GetCardBonus()
 
-    Calc.CardsBonus={}
+    Calc.CardsBonus = Calc.Clear()
     for i = 0,15 do
         local count = LuaFunc_GetCardMaxCount(i)
         for j =0, count do
             local id, own = LuaFunc_GetCardInfo(i , j)
             if (own or 0)>0 then
                 local effect, effvalues  = CP.DB.GetCardEffect(id)
-                for i, ef in ipairs(effect or {}) do
-                    Calc.CardsBonus[ef] = (Calc.CardsBonus[ef] or 0) + effvalues[i]
-                end
+                ApplyBonus(Calc.CardsBonus, effect, effvalues)
             end
         end
-    end
-
-end
-
-
-
-local function AddValue(id, value)
-    Calc.values[id] = (Calc.values[id] or 0) + value
-end
-
-local function AddBonusEffect(effect, effvalues, factor)
-	for i, ef in ipairs(effect or {}) do
-        AddValue(ef, effvalues[i]*factor)
     end
 end
 
 function Calc.Calculate()
-    local s = Calc.STATS
 
-    Calc.Clear()
+    local values = Calc.Clear()
 
-    Calc.Bases()
-    Calc.Cards()
-    Calc.SetBonus()
+    Calc.Bases(values)
+    Calc.Cards(values)
+    Calc.SetBonus(values)
 
 	local temp_dmg = 0
 	local temp_crit = 0
 	for _,slot in ipairs( {0,1,2,3,4,5,6,7,8,9,11,12,13,14,21,10,15,16} ) do
 
         if CP.Items[slot] then
-    		temp_dmg = Calc.values[s.PDMG]
-	    	temp_crit = Calc.values[s.PCRIT]
+    		temp_dmg = values.PDMG
+	    	temp_crit = values.PCRIT
 
-			Calc.Item(CP.Items[slot])
+			Calc.Item(values, CP.Items[slot])
 
             if slot==10 or slot==15 or slot==16 then
                 if slot==10 then
-                    Calc.values[s.PDMGR] = Calc.values[s.PDMG]
-                    Calc.values[s.PCRITR] = Calc.values[s.PCRIT]
+                    values.PDMGR = values.PDMG
+                    values.PCRITR= values.PCRIT
                 end
                 if slot==15 then
-                    Calc.values[s.PDMGMH] = Calc.values[s.PDMG]
-                    Calc.values[s.PCRITMH] = Calc.values[s.PCRIT]
+                    values.PDMGMH = values.PDMG
+                    values.PCRITMH= values.PCRIT
                 end
                 if slot==16 then
-                    Calc.values[s.PDMGOH] = Calc.values[s.PDMG]
-                    Calc.values[s.PCRITOH] = Calc.values[s.PCRIT]
+                    values.PDMGOH = values.PDMG
+                    values.PCRITOH= values.PCRIT
                 end
 
-                Calc.values[s.PDMG] = temp_dmg
-                Calc.values[s.PCRIT] = temp_crit
+                values.PDMG = temp_dmg
+                values.PCRIT = temp_crit
             end
 		end
 	end
 
-  	Calc.DependingStats()
+  	Calc.DependingStats(values)
 
     return Calc.values
 end
 
 local function AddDescription(res_tab, text,value, value_prefix)
-    if value and value~=0 then
+    if value~=0 then
         table.insert(res_tab.left, text)
         value_prefix = value_prefix or "+"
         table.insert(res_tab.right,value_prefix..value)
@@ -159,24 +183,23 @@ function Calc.Explain(stat)
 
     local res = {left={}, right={} }
 
-    Calc.Clear()
-    Calc.Bases()
-    AddDescription(res, CP.L.BY_CLASS, Calc.values[stat],"")
+    local values = Calc.Clear()
+    Calc.Bases(values)
+    AddDescription(res, CP.L.BY_CLASS, values[stat],"")
 
-    Calc.Clear()
-    Calc.Cards()
-    AddDescription(res, CP.L.BY_CARD, Calc.values[stat])
+    Calc.Cards(values)
+    AddDescription(res, CP.L.BY_CARD, Calc.CardsBonus[stat])
 
-    Calc.Clear()
-    Calc.SetBonus()
-    AddDescription(res, CP.L.BY_SET, Calc.values[stat])
+    values = Calc.Clear() -- << WRONG
+    Calc.SetBonus(values)
+    AddDescription(res, CP.L.BY_SET, values[stat])
 
 	for _,slot in ipairs( {0,1,2,3,4,5,6,7,8,9,11,12,13,14,21,10,15,16} ) do
         local item = CP.Items[slot]
 		if item then
-            Calc.Clear()
-    		Calc.Item(item)
-            AddDescription(res, TEXT("Sys"..item.id.."_name"), Calc.values[stat])
+            values = Calc.Clear()-- << WRONG
+    		Calc.Item(values, item)
+            AddDescription(res, TEXT("Sys"..item.id.."_name"), values[stat])
 		end
 	end
 
@@ -184,41 +207,33 @@ function Calc.Explain(stat)
     return res.left,res.right
 end
 
-function Calc.Clear()
-    Calc.values={}
-end
+function Calc.Bases(values)
 
-function Calc.Bases()
-    local s = Calc.STATS
 	--Base
-    Calc.values[s.STR] = GetPlayerAbility("STR")
-    Calc.values[s.STA] = GetPlayerAbility("STA")
-    Calc.values[s.DEX] = GetPlayerAbility("AGI")
-    Calc.values[s.INT] = GetPlayerAbility("INT")
-    Calc.values[s.WIS] = GetPlayerAbility("MND")
+    values.STR = GetPlayerAbility("STR")
+    values.STA = GetPlayerAbility("STA")
+    values.DEX = GetPlayerAbility("AGI")
+    values.INT = GetPlayerAbility("INT")
+    values.WIS = GetPlayerAbility("MND")
 
 	--Melee
-	Calc.values[s.PCRITOH] = GetPlayerAbility("MELEE_CRITICAL")
-	Calc.values[s.PCRITMH] = GetPlayerAbility("MELEE_MAIN_CRITICAL")
-	Calc.values[s.PCRITOH] = GetPlayerAbility("MELEE_OFF_CRITICAL")
-	Calc.values[s.PACCMH] = GetPlayerAbility("PHYSICAL_MAIN_HIT")
+	values.PCRITOH = GetPlayerAbility("MELEE_CRITICAL")
+	values.PCRITMH = GetPlayerAbility("MELEE_MAIN_CRITICAL")
+	values.PCRITOH = GetPlayerAbility("MELEE_OFF_CRITICAL")
+	values.PACCMH = GetPlayerAbility("PHYSICAL_MAIN_HIT")
 
 	--Range
-	Calc.values[s.PCRITR] = GetPlayerAbility("RANGE_CRITICAL")
+	values.PCRITR = GetPlayerAbility("RANGE_CRITICAL")
 
 	--Magic
-	Calc.values[s.MCRIT] = GetPlayerAbility("MAGIC_CRITICAL")
+	values.MCRIT = GetPlayerAbility("MAGIC_CRITICAL")
 end
 
-function Calc.Cards()
-    for id, val in pairs(Calc.CardsBonus or {}) do
-        AddValue(id, val)
-    end
+function Calc.Cards(values)
+    AddStats(values, Calc.CardsBonus)
 end
 
-function Calc.Item(item)
-    local s = Calc.STATS
-
+function Calc.Item(values, item)
 
     local attA,attB = CP.DB.PrimarAttributes(item.id)
     local effect, effvalues  = CP.DB.GetItemEffect(item.id)
@@ -232,20 +247,20 @@ function Calc.Item(item)
         if ef==attA or ef==attB then
             local v = math.floor(effvalues[i]*(1+plus_base/100))
             local dif = (v-effvalues[i])*(item.tier*0.1)
-            AddValue(ef, v*factor-dif)
+            values[ef] = values[ef] + (v*factor-dif)
         else
-            AddValue(ef, effvalues[i]*factor)
+            values[ef] = values[ef] + effvalues[i]*factor
         end
     end
 
 
-    AddBonusEffect(plus_effect, plus_effvalues, dura_factor)
+    ApplyBonus(values, plus_effect, plus_effvalues, dura_factor)
 
 
     for i=1,6 do
         if item.stats[i]>0 then
             local effect, effvalues  = CP.DB.GetBonusEffect(item.stats[i])
-            AddBonusEffect(effect, effvalues, dura_factor)
+            ApplyBonus(values, effect, effvalues, dura_factor)
         end
     end
 
@@ -253,7 +268,7 @@ function Calc.Item(item)
     for i=1,4 do
         if item.runes[i]>0 then
             local effect, effvalues  = CP.DB.GetBonusEffect(item.runes[i])
-            AddBonusEffect(effect, effvalues, dura_factor)
+            ApplyBonus(values, effect, effvalues, dura_factor)
         end
     end
 end
@@ -273,7 +288,7 @@ function Calc.ItemDuraFactor(item)
     return 1
 end
 
-function Calc.SetBonus()
+function Calc.SetBonus(values)
     local sets={}
 
     for _,item in pairs(CP.Items) do
@@ -285,61 +300,52 @@ function Calc.SetBonus()
 
     for set_id,item_count in pairs(sets) do
         local eff,effval = CP.DB.GetSetEffect(set_id, item_count)
-        AddBonusEffect(eff, effval, 1)
+        ApplyBonus(values, eff, effval)
     end
 end
 
-function Calc.DependingStats()
-    Calc.ALL_ATTRIBUTES()
-    Calc.CharDepended()
-    Calc.CharIndepended()
+function Calc.DependingStats(values)
+    Calc.ALL_ATTRIBUTES(values)
+    Calc.CharDepended(values)
+    Calc.CharIndepended(values)
 end
-
 
 function Calc.Explain_DependingStats(res)
-    Calc.Clear()
-    CP.Calc.ALL_ATTRIBUTES()
-    AddDescription(res, TEXT("SYS_WEAREQTYPE_7"), Calc.values[stat])
+    local values = Calc.Clear()
+    CP.Calc.ALL_ATTRIBUTES(values)
+    AddDescription(res, TEXT("SYS_WEAREQTYPE_7"), values[stat])
 end
 
-
-local function Get(v)
-    return Calc.values[v] or 0
-end
-
-function Calc.ALL_ATTRIBUTES()
-    local s = Calc.STATS
-    local all = Get(s.ALL_ATTRIBUTES)
+function Calc.ALL_ATTRIBUTES(values)
+    local all = values.ALL_ATTRIBUTES
 
     if all then
-        AddValue(s.STR, all)
-        AddValue(s.STA, all)
-        AddValue(s.DEX, all)
-        AddValue(s.INT, all)
-        AddValue(s.WIS, all)
+        values.STR = values.STR+all
+        values.STA = values.STA+all
+        values.DEX = values.DEX+all
+        values.INT = values.INT+all
+        values.WIS = values.WIS+all
     end
 end
 
-function Calc.CharIndepended()
-    local s = Calc.STATS
+function Calc.CharIndepended(values)
+    values.MATK = values.MATK + values.INT* 2
+    values.EVADE= values.EVADE+ values.DEX* 0.78
+    values.MRES = values.MRES + values.WIS* 0.6
+    values.MACC = values.MACC + values.WIS* 0.9
+    values.PACC = values.PACC + values.DEX* 0.9
+    values.MHEAL= values.MHEAL+ values.MDMG*0.5
 
-    AddValue(s.MATK, Get(s.INT)* 2   )--,CP.L.STAT_NAMES.INT)
-    AddValue(s.EVADE,Get(s.DEX)* 0.78)--,CP.L.STAT_NAMES.DEX)
-    AddValue(s.MRES, Get(s.WIS)* 0.6 )--,CP.L.STAT_NAMES.WIS)
-    AddValue(s.MACC, Get(s.WIS)* 0.9 )--,CP.L.STAT_NAMES.WIS)
-    AddValue(s.PACC, Get(s.DEX)* 0.9 )--,CP.L.STAT_NAMES.DEX)
-    AddValue(s.MHEAL,Get(s.MDMG)*0.5 )--,CP.L.STAT_NAMES.MDMG)
+	values.PACCR = values.PACCR+ values.PACC*1
+	values.PACCOH= values.PACCOH+values.PACC*0.5
+	values.PDMGOH= values.PDMGOH+values.PDMGOH*0.7
+	values.PATKR = values.PATKR+ values.PATK* 1
 
-	AddValue(s.PACCR, Get(s.PACC)*1 )--,CP.L.STAT_NAMES.PACCR)
-	AddValue(s.PACCOH,Get(s.PACC)*0.5 )--,CP.L.STAT_NAMES.PACCOH)
-	AddValue(s.PDMGOH,Get(s.PDMGOH)*0.7)--,CP.L.STAT_NAMES.PDMGOH)
-	AddValue(s.PATKR, Get(s.PATK)* 1 )--,CP.L.STAT_NAMES.PATKR)
+    values.HP= values.HP + values.STA* 5
+    values.HP= values.HP + values.STR* 0.2
 
-    AddValue(s.HP,   Get(s.STA)* 5   )--,CP.L.STAT_NAMES.STA)
-    AddValue(s.HP,   Get(s.STR)* 0.2 )--,CP.L.STAT_NAMES.STR)
-
-    AddValue(s.MANA, Get(s.WIS)* 5   )--,CP.L.STAT_NAMES.WIS)
-    AddValue(s.MANA, Get(s.INT)* 1   )--,CP.L.STAT_NAMES.INT)
+    values.MANA= values.MANA + values.WIS* 5
+    values.MANA= values.MANA + values.INT* 1
 end
 
 
@@ -362,17 +368,16 @@ local CLASS_VARS={
                     PATKint=0  ,PATKdex=0  ,PATKstr=2  },
 }
 
-function Calc.CharDepended()
+function Calc.CharDepended(values)
     local cname = UnitClass("player")
     local d = CLASS_VARS[cname]
-    local s = Calc.STATS
 
-    AddValue(s.PDEF, Get(s.STA)* d.PDEF   )--,CP.L.STAT_NAMES.STA)
-    AddValue(s.MDEF, Get(s.WIS)* d.MDEF   )--,CP.L.STAT_NAMES.WIS)
+    values.PDEF = values.PDEF + values.STA* d.PDEF
+    values.MDEF = values.MDEF + values.WIS* d.MDEF
 
-    AddValue(s.PATK, Get(s.INT)* d.PATKint)--,CP.L.STAT_NAMES.INT)
-    AddValue(s.PATK, Get(s.DEX)* d.PATKdex)--,CP.L.STAT_NAMES.DEX)
-    AddValue(s.PATK, Get(s.STR)* d.PATKstr)--,CP.L.STAT_NAMES.STR)
+    values.PATK = values.PATK + values.INT* d.PATKint
+    values.PATK = values.PATK + values.DEX* d.PATKdex
+    values.PATK = values.PATK + values.STR* d.PATKstr
 end
 
 
