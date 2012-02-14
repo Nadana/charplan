@@ -238,6 +238,8 @@ function DB.GetItemTypesForSlot(slot)
     if slot==15 then     return {32,34,35}
     elseif slot==16 then return {16,33,34}
     elseif slot==10 then return 37
+    elseif slot==12 then return 11
+    elseif slot==14 then return 13
     end
 
     return slot
