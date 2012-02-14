@@ -442,7 +442,61 @@ function DB.PrimarAttributes(item_id)
     end
 end
 
-function DB.FindItems(filter_function)
+local function GetFilterFunction(info)
+--[[
+ info.slot
+ info.types
+ info.name
+ info.level_min
+ info.level_max
+ info.no_empty_items
+]]
+    local code = {"return function (id,data)"}
+
+    if info.slot then
+        local slots = CP.DB.GetItemTypesForSlot(info.slot)
+        if type(slots)=="number" then
+            table.insert(code, 'if data[1]~='..slots..' then return false end')
+        else
+            assert(type(slots)=="table")
+            table.insert(code, 'if data[1]~='..table.concat(slots,' and data[1]~=')..' then return false end')
+        end
+    end
+
+    if info.types then
+        table.insert(code, 'if data[2]~='..table.concat(info.types,' and data[2]~=')..' then return false end')
+    end
+
+    if info.name and info.name~="" then
+        local name = string.lower(info.name)
+        table.insert(code, 'if not string.find(TEXT("Sys"..id.."_name"):lower(),"'..name..'") then return false end')
+    end
+
+    if info.level_min then
+        table.insert(code, 'if data[3]<'..tostring(info.level_min)..' then return false end')
+    end
+
+    if info.level_max then
+        table.insert(code, 'if data[3]>'..tostring(info.level_max)..' then return false end')
+    end
+
+    if info.no_empty_items then
+        table.insert(code, 'if not CP.DB.GetItemEffect(id) then return false end')
+    end
+
+
+    table.insert(code,"return true end")
+
+    local code_text = table.concat(code," ")
+
+    local fct,err = loadstring(code_text)
+    assert(fct,tostring(err).."\n"..code_text)
+    return fct()
+end
+
+function DB.FindItems(info)
+
+    local filter_function =  GetFilterFunction(info)
 
     local res={}
     for id,data in pairs(DB.items) do

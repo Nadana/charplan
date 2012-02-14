@@ -193,56 +193,32 @@ function Search.OnSubTypeFilterSelect(this)
 end
 
 
-local function GetFilterFunction()
+local function GetFilterInfo()
 
-    local code = {"return function (id,data)"}
+    local info={}
 
-    local slots = CP.DB.GetItemTypesForSlot(Search.slot)
-    if type(slots)=="number" then
-        table.insert(code, 'if data[1]~='..slots..' then return false end')
-    else
-        assert(type(slots)=="table")
-        table.insert(code, 'if data[1]~='..table.concat(slots,' and data[1]~=')..' then return false end')
+    info.slot = Search.slot
+    info.name = CPSearchFilterName:GetText()
+    info.level_min = tonumber(CPSearchFilterLevelMin:GetText())
+    info.level_max = tonumber(CPSearchFilterLevelMax:GetText())
+    info.no_empty_items = CPSearchFilterStatLess:IsChecked()
+
+    info.types = {}
+    for id,v in pairs(CP.Search.type_filter) do
+        if v then
+            table.insert(info.types,id)
+        end
     end
 
-    table.insert(code, 'if not CP.Search.type_filter[data[2]] then return false end')
-
-    local name = CPSearchFilterName:GetText()
-    if name~="" then
-        name = string.lower(name)
-        table.insert(code, 'if not string.find(TEXT("Sys"..id.."_name"):lower(),"'..name..'") then return false end')
-    end
-
-    local lvlmin = tonumber(CPSearchFilterLevelMin:GetText())
-    if lvlmin then
-        table.insert(code, 'if data[3]<'..tostring(lvlmin)..' then return false end')
-    end
-
-    local lvlmax = tonumber(CPSearchFilterLevelMax:GetText())
-    if lvlmax then
-        table.insert(code, 'if data[3]>'..tostring(lvlmax)..' then return false end')
-    end
-
-    if CPSearchFilterStatLess:IsChecked() then
-        table.insert(code, 'if not CP.DB.GetItemEffect(id) then return false end')
-    end
-
-
-    table.insert(code,"return true end")
-
-    local code_text = table.concat(code," ")
-
-    local fct,err = loadstring(code_text)
-    assert(fct,tostring(err).."\n"..code_text)
-    return fct()
+    return info
 end
 
 
 function Search.FindItems()
 
-    local filter_fct = GetFilterFunction()
+    local filter_info = GetFilterInfo()
 
-    Search.Items = CP.DB.FindItems(filter_fct)
+    Search.Items = CP.DB.FindItems(filter_info)
 
     CPSearchItemsSB:SetValueStepMode("INT")
     CPSearchItemsSB:SetMinMaxValues(0,math.max(0,(#Search.Items)-MAX_LINES))
