@@ -78,11 +78,10 @@ local StatsMeta={
 }
 
 
-local function ApplyBonus(stats, effect, effvalues, factor)
+local function ApplyBonus(stats, effect, factor)
     factor = factor or 1
-    -- TODO: merge effect + effectvalues in one table (result: decrease memory and easier functions)
-    for i, ef in ipairs(effect or {}) do
-        stats[ef] =stats[ef] + effvalues[i]
+    for i=1,#effect,2 do
+        stats[effect[i]] = stats[effect[i]] + effect[i+1]
     end
 end
 
@@ -121,8 +120,8 @@ function Calc.GetCardBonus()
         for j =0, count do
             local id, own = LuaFunc_GetCardInfo(i , j)
             if (own or 0)>0 then
-                local effect, effvalues  = CP.DB.GetCardEffect(id)
-                ApplyBonus(Calc.CardsBonus, effect, effvalues)
+                local effect  = CP.DB.GetCardEffect(id)
+                ApplyBonus(Calc.CardsBonus, effect)
             end
         end
     end
@@ -236,39 +235,40 @@ end
 function Calc.Item(values, item)
 
     local attA,attB = CP.DB.PrimarAttributes(item.id)
-    local effect, effvalues  = CP.DB.GetItemEffect(item.id)
+    local effect = CP.DB.GetItemEffect(item.id)
 	local dura_factor = Calc.ItemDuraFactor(item)
-    local plus_effect, plus_effvalues, plus_base = CP.DB.GetPlusEffect(item.id, item.plus)
+    local plus_effect, plus_base = CP.DB.GetPlusEffect(item.id, item.plus)
 
     local factor = (1+item.tier*0.1)*dura_factor
 
-
-    for i, ef in ipairs(effect or {}) do
+    for i=1,#effect,2 do
+        local ef = effect[i]
+        local val = effect[i+1]
         if ef==attA or ef==attB then
-            local v = math.floor(effvalues[i]*(1+plus_base/100))
-            local dif = (v-effvalues[i])*(item.tier*0.1)
+            local v = math.floor(val*(1+plus_base/100))
+            local dif = (v-val)*(item.tier*0.1)
             values[ef] = values[ef] + (v*factor-dif)
         else
-            values[ef] = values[ef] + effvalues[i]*factor
+            values[ef] = values[ef] + val*factor
         end
     end
 
 
-    ApplyBonus(values, plus_effect, plus_effvalues, dura_factor)
+    ApplyBonus(values, plus_effect, dura_factor)
 
 
     for i=1,6 do
         if item.stats[i]>0 then
-            local effect, effvalues  = CP.DB.GetBonusEffect(item.stats[i])
-            ApplyBonus(values, effect, effvalues, dura_factor)
+            local effect  = CP.DB.GetBonusEffect(item.stats[i])
+            ApplyBonus(values, effect, dura_factor)
         end
     end
 
 
     for i=1,4 do
         if item.runes[i]>0 then
-            local effect, effvalues  = CP.DB.GetBonusEffect(item.runes[i])
-            ApplyBonus(values, effect, effvalues, dura_factor)
+            local effect = CP.DB.GetBonusEffect(item.runes[i])
+            ApplyBonus(values, effect, dura_factor)
         end
     end
 end
@@ -299,8 +299,8 @@ function Calc.SetBonus(values)
     end
 
     for set_id,item_count in pairs(sets) do
-        local eff,effval = CP.DB.GetSetEffect(set_id, item_count)
-        ApplyBonus(values, eff, effval)
+        local eff = CP.DB.GetSetEffect(set_id, item_count)
+        ApplyBonus(values, eff)
     end
 end
 
@@ -399,11 +399,11 @@ function Calc.CharacterSkills()
             local _type, _data, _name = ParseHyperlink(link)
             local _,_,skill_id = string.find(_data, "(%d+)")
 
-            local eff,effval = CP.DB.GetSkillEffect(tonumber(skill_id))
-            if #eff>0 then
+            local effect = CP.DB.GetSkillEffect(tonumber(skill_id))
+            if #effect>0 then
                 local txt ={}
-                for i,ef in ipairs(eff) do
-                    table.insert(txt,string.format("%i %s",effval[i],TEXT("SYS_WEAREQTYPE_"..ef)))
+                for i=1,#effect,2  do
+                    table.insert(txt,string.format("%i %s",effect[i+1],TEXT("SYS_WEAREQTYPE_"..effect[i])))
                 end
 
                 CP.Debug( string.format("%i %s(%i): %s",skill_id, _SkillName,_SkillLV,table.concat(txt,",")))

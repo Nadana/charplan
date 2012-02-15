@@ -126,7 +126,7 @@ end
 function TestCP_CalcItems:CompareStats(actual, expected, msg)
 
     for stat, value in pairs(expected) do
-        local act = actual[stat] or 0
+        local act = actual[stat]
         local round = math.floor(act*10)/10
         assertEquals(round,value, msg)
     end

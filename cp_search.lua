@@ -222,20 +222,22 @@ function Search.DoSort(column)
             end,
 
         [3] = function (id1,id2)
-                local slots={[12]=1,[13]=1,[14]=1,[15]=1}
+                local att1,att2 = CP.DB.PrimarAttributes(id1)
+
                 local boni1=0
-                local efftype, effvalue = CP.DB.GetItemEffect(id1)
-                for i,eff in pairs(efftype or {}) do
-                    if slots[eff] then
-                        boni1 = boni1 + effvalue[i]
+                local effect = CP.DB.GetItemEffect(id1)
+                for i=1,#effect,2 do
+                    if slots[effect[i]]==att1 or slots[effect[i]]==att2 then
+                        boni1 = boni1 + effect[i+1]
                     end
                 end
 
+                att1,att2 = CP.DB.PrimarAttributes(id2)
+                effect  = CP.DB.GetItemEffect(id2)
                 local boni2=0
-                local efftype, effvalue = CP.DB.GetItemEffect(id2)
-                for i,eff in pairs(efftype or {}) do
-                    if slots[eff] then
-                        boni2 = boni2 + effvalue[i]
+                for i=1,#effect,2 do
+                    if slots[effect[i]]==att1 or slots[effect[i]]==att2 then
+                        boni2 = boni2 + effect[i+1]
                     end
                 end
 
@@ -305,19 +307,19 @@ function Search.UpdateItem(base_name,item_id)
 
     local level, set = CP.DB.GetItemInfo(item_id)
     local setname = set and TEXT("Sys"..set.."_name") or ""
-    _G[base_name.."Set"]:SetText()
+    _G[base_name.."Set"]:SetText(setname)
     _G[base_name.."Level"]:SetText(level or "")
 
 
     local boni={}
-    local efftype, effvalue = CP.DB.GetItemEffect(item_id)
-    for i,eff in pairs(efftype or {}) do
-        boni[eff] = (boni[eff] or 0) + effvalue[i]
+    local effect = CP.DB.GetItemEffect(item_id)
+    for i=1,#effect,2 do
+        boni[ effect[i] ] = (boni[effect[i] ] or 0) + effect[i+1]
     end
 
-    local efftype, effvalue = CP.DB.GetItemUsualDropEffects(item_id)
-    for i,eff in pairs(efftype or {}) do
-        boni[eff] = (boni[eff] or 0) + effvalue[i]
+    local efftype = CP.DB.GetItemUsualDropEffects(item_id)
+    for i=1,#effect,2 do
+        boni[ effect[i] ] = (boni[effect[i] ] or 0) + effect[i+1]
     end
 
     local txt = ""

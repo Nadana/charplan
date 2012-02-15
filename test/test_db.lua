@@ -59,6 +59,12 @@ function TestCP_DB:testRomans()
 end
 
 
+function TestCP_DB.testGetItemEffect()
+    local effect = CP.DB.GetItemEffect(212485)
+    assertArrayEquals(effect, {25,1159,6,80,12,483})
+end
+
+
 --[[
 -- TODO: tests for
 function DB.GetCardEffect(card_id)

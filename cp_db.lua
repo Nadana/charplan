@@ -17,19 +17,14 @@ CP.DB = DB
     local I_ICON=4
     local I_REFINE=5
     local I_DURA=6
-    local I_EFFECT_TYPE=7 -- optional
-    local I_EFFECT_VAL=8 -- optional
-    local I_STATS=9 -- optional
-    local I_SET=10 -- optional
+    local I_EFFECT=7 -- optional
+    local I_STATS=8 -- optional
+    local I_SET=9 -- optional
 
     -- Bonus
-    local B_EFFECT_TYPE=1 -- optional
-    local B_EFFECT_VAL=2 -- optional
-    local B_GROUP=3  -- optional
+    local B_EFFECT=1 -- optional
+    local B_GROUP=2  -- optional
 
-    -- Spells
-    local S_EFFECT_TYPE=1 -- optional
-    local S_EFFECT_VAL=2 -- optional
 --[[ ] ]]
 
 
@@ -88,25 +83,24 @@ end
 
 function DB.GetSkillEffect(skill_id)
 
-    local efftype,effvalue={},{}
+    local effect={}
     local skills = DB.skills[skill_id]
     for _,spell_id in ipairs(skills or {}) do
         local boni = DB.spells[spell_id]
         if boni then
-            for i,ef in pairs(boni[S_EFFECT_TYPE]) do
-                table.insert(efftype,ef)
-                table.insert(effvalue,boni[S_EFFECT_VAL][i])
+            for _,v in ipairs(boni) do
+                table.insert(effect,v)
             end
         end
     end
 
-    return efftype,effvalue
+    return effect
 end
 
 function DB.GetItemEffect(item_id)
     local item = DB.items[item_id]
     if item then
-        return item[I_EFFECT_TYPE], item[I_EFFECT_VAL]
+        return item[I_EFFECT]
     else
         CP.Debug("Item not in DB: "..item_id)
     end
@@ -117,15 +111,13 @@ function DB.GetItemUsualDropEffects(item_id)
     if item then
         if item[I_STATS] then
             local all_effects={}
-            local all_values={}
             for _,stats in ipairs(item[I_STATS]) do
-                local ea,ev = DB.GetBonusEffect(stats)
-                for i,effect in ipairs(ea or {}) do
-                    table.insert(all_effects,effect)
-                    table.insert(all_values,ev[i])
+                local ea = DB.GetBonusEffect(stats)
+                for _,v in ipairs(ea or {}) do
+                    table.insert(all_effects,v)
                 end
             end
-            return all_effects, all_values
+            return all_effects
         end
     else
         CP.Debug("Item not in DB: "..item_id)
@@ -134,7 +126,7 @@ end
 
 function DB.GetBonusEffect(boni_id)
     if DB.bonus[boni_id] then
-        return DB.bonus[boni_id][B_EFFECT_TYPE], DB.bonus[boni_id][B_EFFECT_VAL]
+        return DB.bonus[boni_id][B_EFFECT]
     else
         CP.Debug("Bonus not in DB: "..boni_id)
     end
@@ -143,13 +135,13 @@ end
 function DB.GetPlusEffect(item_id, plus)
     assert(plus>=0 and plus<21)
 
-    if plus==0 then return {},{},0 end
+    if plus==0 then return {},0 end
 
     local item = DB.items[item_id]
     if item then
         local eff = DB.refines[item[I_REFINE]+plus-1]
         if eff then
-            return eff[1], eff[2], eff[3]
+            return eff[1], eff[2]
         else
             CP.Debug(string.format("Plus table not defined: %i+%i item:%i",item[I_REFINE],plus,item_id))
         end
@@ -161,13 +153,11 @@ end
 function DB.GetSetEffect(set_id, item_count)
 
     local eff = {}
-    local eff_val = {}
 
     for count,data in pairs(DB.sets[set_id] or {}) do
         if count<=item_count then
-            for i,e in ipairs(data[1]) do
-                table.insert(eff,e)
-                table.insert(eff_val,data[2][i])
+            for _,v in ipairs(data) do
+                table.insert(eff,v)
             end
         end
     end
@@ -312,8 +302,8 @@ function DB.GetBonusGroupList(runes, filter)
                     local filter_found = (not filter) or string.find(name:lower(),filter)
 
                     eff = {}
-                    for i, ef in ipairs(rdata[B_EFFECT_TYPE] or {}) do
-                        local n = TEXT("SYS_WEAREQTYPE_"..ef)
+                    for i=1,#rdata[B_EFFECT],2 do
+                        local n = TEXT("SYS_WEAREQTYPE_"..rdata[B_EFFECT][i])
                         if n then
                             table.insert(eff,n)
                             if not filter_found then

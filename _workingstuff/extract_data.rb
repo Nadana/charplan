@@ -328,10 +328,11 @@ class BonusStuff
     attr_accessor :eqtypes, :eqvalues
 
     def initialize(csv_row, max_bonus=10)
+        raise "db-format changed (updated fdbex?)" unless csv_row.header?('eqtype1')
+
         @eqtypes=[]
         @eqvalues=[]
         for i in 1..max_bonus
-
             type = csv_row['eqtype'+i.to_s].to_i
             value = csv_row['eqtypevalue'+i.to_s].to_i
 
@@ -359,19 +360,29 @@ class BonusStuff
     end
 
     def ExportDesc(data)
-        data.push( "<efftype>")
-        data.push( "<effvalue>")
+        data.push( "<effect>")
     end
 
-    def ExportData(data)
+    def ExportString()
         if @eqtypes.size==0 then
-            data.push("nil","nil")
+            return "nil"
         else
-            data.push("{#{@eqtypes.join(",")}}")
-            data.push("{#{@eqvalues.join(",")}}")
+            res = []
+            for i in 0..(@eqtypes.size-1)
+                res.push(@eqtypes[i])
+                res.push(@eqvalues[i])
+            end
+            return res.join(",")
         end
     end
 
+    def ExportData(data)
+        data.push("{#{ExportString()}}")
+    end
+
+    def ExportDataPlain(data)
+        data.push(ExportString())
+    end
 end
 
 
@@ -788,7 +799,7 @@ class RunesEntry < Table
             matchdata = /^(.+)\s+(\w+)$/.match(name)
 
             if groups.key?(r.group) then
-                raise "differnt bonis" unless r.bonus.SameEffects?(groups[r.group][:boni])
+                raise "different bonis in group #{r.group}" unless r.bonus.SameEffects?(groups[r.group][:boni])
                 raise "name differs" if matchdata[1] != groups[r.group][:name]
             else
                 groups[r.group] ={:boni => r.bonus, :name=>matchdata[1] }
@@ -818,7 +829,7 @@ class SuitEntry < Table
 
     attr_accessor :totalcount
     attr_accessor :set_items
-    attr_accessor :bonis
+    #attr_accessor :bonis
 
     def initialize(csv_row)
         super(csv_row)
@@ -840,14 +851,13 @@ class SuitEntry < Table
 
         @bonis=[]
         for b in 1..9
-            @bonis[b] = {:eff=>[], :value=>[]}
+            @bonis[b] = []
             for i in 1..3
                 type = csv_row["basetype#{b}_#{i}"].to_i
                 value = csv_row["basetypevalue#{b}_#{i}"].to_i
 
                 if type>0 and value>0 then
-                    @bonis[b][:eff].push(type)
-                    @bonis[b][:value].push(value)
+                    @bonis[b].push(type,value)
 
                     $log << "set #{id} -> unknown stat #{type}\n" if not $STATLIST.key?(type)
                     @has_unknown_stat=type if not $STATLIST.key?(type)
@@ -865,7 +875,7 @@ class SuitEntry < Table
 
     def HasBonis?
         for b in 1..9
-            return true if @bonis[b][:eff].size>0
+            return true if @bonis[b].size>0
         end
         return false
     end
@@ -882,14 +892,14 @@ class SuitEntry < Table
 
     def ExportDesc(data)
         for b in 1..9
-            data.push( "[]={}")
+            data.push( "[count]={effect}")
         end
     end
 
     def ExportData(data)
         for b in 1..9
-            if @bonis[b][:eff].size>0 then
-                data.push("[%i]={{%s},{%s}}" % [b, @bonis[b][:eff].join(","), @bonis[b][:value].join(",")] )
+            if @bonis[b].size>0 then
+                data.push("[#{b}]={#{@bonis[b].join(",")}}")
             end
         end
     end
@@ -975,7 +985,7 @@ class MagicObjectEntry < Table
     end
 
     def ExportData(data)
-        @bonus.ExportData(data)
+        @bonus.ExportDataPlain(data)
     end
 end
 

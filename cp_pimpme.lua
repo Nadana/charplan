@@ -447,14 +447,14 @@ function Pimp.StatSearch_ItemOnEnter(this)
 
     for _,d in ipairs(ids) do
 
-        local effect, effval = CP.DB.GetBonusEffect(d[2])
+        local effect = CP.DB.GetBonusEffect(d[2])
         if #effect>0 then
             GameTooltip:AddLine(d[1],1,0.82,0)
             local left={}
             local right={}
-            for i, ef in ipairs(effect or {}) do
-                table.insert(left, TEXT("SYS_WEAREQTYPE_"..ef))
-                table.insert(right,effval[i])
+            for i=1,#effect,2 do
+                table.insert(left, TEXT("SYS_WEAREQTYPE_"..effect[i]))
+                table.insert(right,effect[i+1])
             end
             GameTooltip:AddDoubleLine(" "..table.concat(left,"/"), table.concat(right,"/"))
         end
