@@ -86,7 +86,7 @@ end
 
 function Pimp.PimpItem(item_data)
     Pimp.data = item_data
-    Pimp.data_backup = table.copy(item_data)
+    Pimp.data_backup = CP.Utils.TableCopy(item_data)
 
     Pimp.FillFields()
     CPPimpMe:Show()
@@ -161,7 +161,7 @@ end
 
 function Pimp.OnCancel(this)
     if Pimp.data_backup then
-        table.copy(Pimp.data_backup, Pimp.data)
+        CP.Utils.TableCopy(Pimp.data_backup, Pimp.data)
     end
     CPPimpMe:Hide()
 end
@@ -511,7 +511,7 @@ function Pimp.GenerateLink(item_data, prefix)
         item_data.dura*100
     }
 
-    data[12] = Pimp.CalculateItemLinkHash(data)
+    data[12] = CP.Utils.CalculateItemLinkHash(data)
 
     local r,g,b = GetItemQualityColor(GetQualityByGUID( item_data.id ))
 
@@ -530,29 +530,6 @@ function Pimp.GenerateLinkByID(item_id, prefix)
 
     return Pimp.GenerateLink(item_data, prefix)
 end
-
--- TEMP HELPER
-local function testflag(set, flag)
-  return set % (2*flag) >= flag
-end
-
-local function setflag(set, flag)
-  if set % (2*flag) >= flag then
-    return set
-  end
-  return set + flag
-end
-
-local function clearflag(set, flag)
-  if set % (2*flag) >= flag then
-    return set - flag
-  end
-  return set
-end
-
-
--- END TEMP HELPER
-
 
 function Pimp.ExtractLink(itemlink)
     local data_str, name = string.match(itemlink, "|Hitem:([%x ]+)|h|c%x%x%x%x%x%x%x%x%[(.-)%]|r|h")
@@ -609,131 +586,3 @@ end
 
 
 
---//////////////////////////////////////////////////////////////////
--- Runes of Magic item link hash calculation code
-
--- Author: Valacar (aka Duppy of the Runes of Magic US Osha server)
--- Release Date: September 12th, 2010
-
--- Credit goes to Neil Richardson for the xor, lshift, and rshift function
--- which I slightly modified. The original code can be found at:
--- http://luamemcached.googlecode.com/svn/trunk/CRC32.lua
-
--- I could care less what anyone does with the code (i.e. it's public domain),
--- but I'd very much appreciate being given credit (to me Valacar) if you do
--- use the code in any way.
-
-
--- Exclusive OR
-local function xor(a, b)
-    local calc = 0
-    for i = 32, 0, -1 do
-        local val = 2 ^ i
-        local aa = false
-        local bb = false
-        if a == 0 then
-            calc = calc + b
-            break
-        end
-        if b == 0 then
-            calc = calc + a
-            break
-        end
-        if a >= val then
-            aa = true
-            a = a - val
-        end
-        if b >= val then
-            bb = true
-            b = b - val
-        end
-        if not (aa and bb) and (aa or bb) then
-             calc = calc + val
-        end
-    end
-     return calc
-end
-
--- binary shift left
-local function lshift(num, left)
-     local res = num * (2 ^ left)
-     return res % (2 ^ 32)
-end
-
--- binary shift right
-local function rshift(num, right)
-    right = right % 0x20
-    local res = num / (2 ^ right)
-    return math.floor(res)
-end
-
--- get lower word of a 32-bit number
-local function loword(num)
-    return rshift(lshift(num, 16), 16)
-end
-
--- get high word of a 32-bit number
-local function hiword(num)
-    return rshift(num, 16) % 2^16
-end
-
--- multiply two 32-bit numbers, but returns only the low dword of the 64-bit result
-local function mymul(num1, num2)
-    local x = loword(num2) * num1
-    local y = (hiword(num2) * num1) * 2^16
-    local a = hiword(x) + hiword(y)
-    local b = loword(x)
-
-    return (a * 2^16) + b
-end
-
---//////////////////////////////////////////////////////////////////
--- Calculates hash value of an item based on first 11 hex numbers of an item link
-function Pimp.CalculateItemLinkHash(num)
-
-    assert(#num == 11, "11 values required!")
-
-    local sum = 0
-    for s = 1, 11 do
-        sum = sum + num[s]
-    end
-
-    local a,b,c,d,e,x,i = sum,0,0,0,0,0,0
-
-    repeat
-        d = num[x+1]
-        b = d
-        b = b * x
-        b = b % 2^32
-        e = d
-        e = rshift(e, i)
-        i = i + 0x10
-        x = x + 1
-        e = e + a
-        e = e % 2^32
-        b = b + e
-        b = b % 2^32
-        b = xor(b, d)
-        a = b
-    until (i >= 0xB0)
-
-    local j = 0
-
-    repeat
-        d = num[j+1]
-        c = d + 1
-        c = mymul(c, a)
-        c = c % 2^32
-        a = d
-        a = mymul(a, c)
-        a = a % 2^32
-        a = rshift(a, 16)
-        a = a + c
-        j = j + 1
-        a = xor(a, d)
-    until (j >= 0x0B)
-
-    hash = loword(a)
-
-    return hash
-end

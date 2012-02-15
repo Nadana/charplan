@@ -339,7 +339,7 @@ function DB.GetBonusGroupLevels(grp)
         end
     end
 
-    table.sort(res, function (a,b) return DB.RomanToNum(a[1])<DB.RomanToNum(b[1]) end)
+    table.sort(res, function (a,b) return CP.Utils.RomanToNum(a[1])<CP.Utils.RomanToNum(b[1]) end)
 
     return res
 end
@@ -380,42 +380,6 @@ end
 
 function DB.IsRuneGroup(id)
     return id>10000
-end
-
-function DB.ToRoman(num)
-    local letters={"M","CM","D","CD","C","XC","L","XL","X", "IX", "V", "IV", "I"}
-    local numbers={1000,900,500,400,100,90,50,40,10,9,5,4,1}
-
-    local result=""
-    for i,val in ipairs(numbers) do
-        while num >= val do
-            num = num-val
-            result = result .. letters[i]
-        end
-    end
-    return result
-end
-
-function DB.RomanToNum( roman )
-    local Num = { ["M"] = 1000, ["D"] = 500, ["C"] = 100, ["L"] = 50, ["X"] = 10, ["V"] = 5, ["I"] = 1 }
-    local numeral = 0
-
-    local i = 1
-    local strlen = string.len(roman)
-    while i < strlen do
-        local z1, z2 = Num[ string.sub(roman,i,i) ], Num[ string.sub(roman,i+1,i+1) ]
-        if z1 < z2 then
-            numeral = numeral + ( z2 - z1 )
-            i = i + 2
-        else
-            numeral = numeral + z1
-            i = i + 1
-        end
-    end
-
-    if i <= strlen then numeral = numeral + Num[ string.sub(roman,i,i) ] end
-
-    return numeral
 end
 
 --------

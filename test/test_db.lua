@@ -46,19 +46,6 @@ function TestCP_DB.testBonusTextParser()
 end
 
 
-function TestCP_DB:testRomans()
-
-    assertEquals(CP.DB.ToRoman(1),"I")
-    assertEquals(CP.DB.ToRoman(3),"III")
-    assertEquals(CP.DB.ToRoman(4),"IV")
-    assertEquals(CP.DB.ToRoman(12),"XII")
-
-    for i=1,105 do
-        assertEquals(CP.DB.RomanToNum( CP.DB.ToRoman(i)), i)
-    end
-end
-
-
 function TestCP_DB.testGetItemEffect()
     local effect = CP.DB.GetItemEffect(212485)
     assertArrayEquals(effect, {25,1159,6,80,12,483})

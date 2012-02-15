@@ -8,6 +8,7 @@ cp_db.lua
 cp_pimpme.lua
 cp_search.lua
 cp_storage.lua
+cp_utils.lua
 
 charplan.xml
 cp_pimpme.xml

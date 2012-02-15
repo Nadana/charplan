@@ -54,7 +54,7 @@ function Storage.SaveItems(name)
 
     Storage.LoadedItems = name
     CP_Storage[name]={}
-    table.copy(CP.Items,CP_Storage[name])
+    CP.Utils.TableCopy(CP.Items,CP_Storage[name])
 
     CP.UpdateTitle()
 end
@@ -74,7 +74,7 @@ function Storage.LoadItems(name)
     assert(CP_Storage[name])
 
     Storage.LoadedItems = name
-    table.copy(CP_Storage[name], CP.Items)
+    CP.Utils.TableCopy(CP_Storage[name], CP.Items)
 
     CP.UpdateTitle()
     CP.UpdateEquipment()
@@ -92,21 +92,6 @@ function Storage.DeleteItems(name)
     CP_Storage[name] = nil
 end
 
-
-
-function table.copy(src,dst)
-    local res = dst or {}
-    for i in pairs(res) do res[i]=nil end
-
-    for i,v in pairs(src) do
-        if type(v)=="table" then
-            res[i]=table.copy(v)
-        else
-            res[i]=v
-        end
-    end
-    return res
-end
 
 
 

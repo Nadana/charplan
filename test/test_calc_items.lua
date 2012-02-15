@@ -132,10 +132,8 @@ function TestCP_CalcItems:CompareStats(actual, expected, msg)
     end
 end
 
-
-
 function TestCP_CalcItems:classSetUp()
-    self.old_data = table.copy(CP.Items)
+    self.old_data = CP.Utils.TableCopy(CP.Items)
     CP.DB.Load()
 end
 

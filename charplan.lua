@@ -52,6 +52,7 @@ function CP.SlashCMD_Reload()
     --dofile(base.."cp_pimpme.lua")
     dofile(base.."cp_search.lua")
     dofile(base.."cp_storage.lua")
+    dofile(base.."cp_utils.lua")
 
     CP_Storage = temp_storage
     CP.EquipButtons = temp_ebuttons
