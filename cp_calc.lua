@@ -61,6 +61,14 @@ Calc.STATS={
 
 
 local StatsMeta={
+    __add = function (tab1,tab2)
+        local res = CP.Utils.TableCopy(tab1)
+        setmetatable(res , getmetatable(tab1))
+        for i,v in pairs(tab2) do
+            res[i]=res[i]+v
+        end
+        return res
+    end,
     __index = function(s, key)
         if type(key)=="string" then
             key = Calc.STATS[key]
@@ -77,6 +85,11 @@ local StatsMeta={
     end,
 }
 
+function Calc.NewStats()
+    local res = {}
+    setmetatable(res , StatsMeta)
+    return res
+end
 
 local function ApplyBonus(stats, effect, factor)
     factor = factor or 1
@@ -92,8 +105,7 @@ local function AddStats(stats_res, stats)
 end
 
 function Calc.Clear()
-    Calc.values={} -- TODO: remove Calc.values
-    setmetatable(Calc.values, StatsMeta)
+    Calc.values=Calc.NewStats()
     return Calc.values
 end
 
@@ -105,16 +117,16 @@ function Calc.ID2StatName(id)
 end
 
 function Calc.Init()
-    Calc.GetCardBonus()
+    Calc.ReadCards()
 end
 
 function Calc.Release()
     Calc.CardsBonus=nil
 end
 
-function Calc.GetCardBonus()
+function Calc.ReadCards()
 
-    Calc.CardsBonus = Calc.Clear()
+    Calc.CardsBonus = Calc.NewStats()
     for i = 0,15 do
         local count = LuaFunc_GetCardMaxCount(i)
         for j =0, count do
@@ -129,45 +141,26 @@ end
 
 function Calc.Calculate()
 
-    local values = Calc.Clear()
+    local values = Calc.GetBases()
+    values = values + Calc.GetCardBonus()
+    values = values + Calc.GetSetBonus()
 
-    Calc.Bases(values)
-    Calc.Cards(values)
-    Calc.SetBonus(values)
-
-	local temp_dmg = 0
-	local temp_crit = 0
+    local items = {}
 	for _,slot in ipairs( {0,1,2,3,4,5,6,7,8,9,11,12,13,14,21,10,15,16} ) do
+        items[slot] = Calc.GetItemBonus(CP.Items[slot])
+    	values = values + items[slot]
+    end
 
-        if CP.Items[slot] then
-    		temp_dmg = values.PDMG
-	    	temp_crit = values.PCRIT
-
-			Calc.Item(values, CP.Items[slot])
-
-            if slot==10 or slot==15 or slot==16 then
-                if slot==10 then
-                    values.PDMGR = values.PDMG
-                    values.PCRITR= values.PCRIT
-                end
-                if slot==15 then
-                    values.PDMGMH = values.PDMG
-                    values.PCRITMH= values.PCRIT
-                end
-                if slot==16 then
-                    values.PDMGOH = values.PDMG
-                    values.PCRITOH= values.PCRIT
-                end
-
-                values.PDMG = temp_dmg
-                values.PCRIT = temp_crit
-            end
-		end
-	end
+    values.PDMGR = values.PDMG   -items[15].PDMG -items[16].PDMG
+    values.PCRITR= values.PCRIT  -items[15].PCRIT-items[16].PCRIT
+    values.PDMGMH = values.PDMG  -items[10].PDMG -items[16].PDMG
+    values.PCRITMH= values.PCRIT -items[10].PCRIT-items[16].PCRIT
+    values.PDMGOH = values.PDMG  -items[10].PDMG -items[15].PDMG
+    values.PCRITOH= values.PCRIT -items[10].PCRIT-items[15].PCRIT
 
   	Calc.DependingStats(values)
 
-    return Calc.values
+    return values
 end
 
 local function AddDescription(res_tab, text,value, value_prefix)
@@ -180,25 +173,31 @@ end
 
 function Calc.Explain(stat)
 
+    local COLOR_CLASS= "|cff00ff00"
+    local COLOR_CARD = "|cffa0a040"
+    local COLOR_SET  = "|cffa08040"
+    local COLOR_ITEM = "|cffe0e0e0"
+
     local res = {left={}, right={} }
 
-    local values = Calc.Clear()
-    Calc.Bases(values)
-    AddDescription(res, CP.L.BY_CLASS, values[stat],"")
+    local values = Calc.GetBases()
+    local total = values
+    AddDescription(res, COLOR_CLASS..CP.L.BY_CLASS, values[stat],"")
 
-    Calc.Cards(values)
-    AddDescription(res, CP.L.BY_CARD, Calc.CardsBonus[stat])
+    values = Calc.GetCardBonus()
+    total = total + values
+    AddDescription(res, COLOR_CARD..CP.L.BY_CARD, values[stat])
 
-    values = Calc.Clear() -- << WRONG
-    Calc.SetBonus(values)
-    AddDescription(res, CP.L.BY_SET, values[stat])
+    values = Calc.GetSetBonus()
+    total = total + values
+    AddDescription(res, COLOR_SET..CP.L.BY_SET, values[stat])
 
 	for _,slot in ipairs( {0,1,2,3,4,5,6,7,8,9,11,12,13,14,21,10,15,16} ) do
         local item = CP.Items[slot]
 		if item then
-            values = Calc.Clear()-- << WRONG
-    		Calc.Item(values, item)
-            AddDescription(res, TEXT("Sys"..item.id.."_name"), values[stat])
+            values = Calc.GetItemBonus(item)
+            total = total + values
+            AddDescription(res, COLOR_ITEM..TEXT("Sys"..item.id.."_name"), values[stat])
 		end
 	end
 
@@ -206,37 +205,44 @@ function Calc.Explain(stat)
     return res.left,res.right
 end
 
-function Calc.Bases(values)
+function Calc.GetBases()
+
+    local v = Calc.NewStats()
 
 	--Base
-    values.STR = GetPlayerAbility("STR")
-    values.STA = GetPlayerAbility("STA")
-    values.DEX = GetPlayerAbility("AGI")
-    values.INT = GetPlayerAbility("INT")
-    values.WIS = GetPlayerAbility("MND")
+    v.STR = GetPlayerAbility("STR")
+    v.STA = GetPlayerAbility("STA")
+    v.DEX = GetPlayerAbility("AGI")
+    v.INT = GetPlayerAbility("INT")
+    v.WIS = GetPlayerAbility("MND")
 
 	--Melee
-	values.PCRITOH = GetPlayerAbility("MELEE_CRITICAL")
-	values.PCRITMH = GetPlayerAbility("MELEE_MAIN_CRITICAL")
-	values.PCRITOH = GetPlayerAbility("MELEE_OFF_CRITICAL")
-	values.PACCMH = GetPlayerAbility("PHYSICAL_MAIN_HIT")
+	v.PCRITOH = GetPlayerAbility("MELEE_CRITICAL")
+	v.PCRITMH = GetPlayerAbility("MELEE_MAIN_CRITICAL")
+	v.PCRITOH = GetPlayerAbility("MELEE_OFF_CRITICAL")
+	v.PACCMH = GetPlayerAbility("PHYSICAL_MAIN_HIT")
 
 	--Range
-	values.PCRITR = GetPlayerAbility("RANGE_CRITICAL")
+	v.PCRITR = GetPlayerAbility("RANGE_CRITICAL")
 
 	--Magic
-	values.MCRIT = GetPlayerAbility("MAGIC_CRITICAL")
+	v.MCRIT = GetPlayerAbility("MAGIC_CRITICAL")
+
+    return v
 end
 
-function Calc.Cards(values)
-    AddStats(values, Calc.CardsBonus)
+function Calc.GetCardBonus()
+    return Calc.CardsBonus
 end
 
-function Calc.Item(values, item)
+function Calc.GetItemBonus(item)
+
+    local values = Calc.NewStats()
+    if not item then return values end
 
     local attA,attB = CP.DB.PrimarAttributes(item.id)
     local effect = CP.DB.GetItemEffect(item.id)
-	local dura_factor = Calc.ItemDuraFactor(item)
+	local dura_factor = Calc.GetItemDuraFactor(item)
     local plus_effect, plus_base = CP.DB.GetPlusEffect(item.id, item.plus)
 
     local factor = (1+item.tier*0.1)*dura_factor
@@ -253,9 +259,7 @@ function Calc.Item(values, item)
         end
     end
 
-
     ApplyBonus(values, plus_effect, dura_factor)
-
 
     for i=1,6 do
         if item.stats[i]>0 then
@@ -264,16 +268,17 @@ function Calc.Item(values, item)
         end
     end
 
-
     for i=1,4 do
         if item.runes[i]>0 then
             local effect = CP.DB.GetBonusEffect(item.runes[i])
             ApplyBonus(values, effect, dura_factor)
         end
     end
+
+    return values
 end
 
-function Calc.ItemDuraFactor(item)
+function Calc.GetItemDuraFactor(item)
 
     local max_dura = CP.DB.GetItemDura(item.id) * item.max_dura / 100
 
@@ -288,7 +293,7 @@ function Calc.ItemDuraFactor(item)
     return 1
 end
 
-function Calc.SetBonus(values)
+function Calc.GetSetBonus()
     local sets={}
 
     for _,item in pairs(CP.Items) do
@@ -298,10 +303,13 @@ function Calc.SetBonus(values)
         end
     end
 
+    local v = Calc.NewStats()
     for set_id,item_count in pairs(sets) do
         local eff = CP.DB.GetSetEffect(set_id, item_count)
-        ApplyBonus(values, eff)
+        ApplyBonus(v, eff)
     end
+
+    return v
 end
 
 function Calc.DependingStats(values)
