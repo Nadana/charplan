@@ -40,10 +40,10 @@
 				<FontHeight><AbsValue val="12"></AbsValue></FontHeight>
 			</FontString>
 			<FontString name="$parentEffect" inherits="GameFontNormal" justifyH="LEFT">
-				<Size><AbsDimension x="100" y="34"/></Size>
+				<Size><AbsDimension x="90" y="34"/></Size>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentName" relativePoint="TOPRIGHT">
-						<Offset><AbsDimension x="24" y="0" /></Offset>
+						<Offset><AbsDimension x="30" y="0" /></Offset>
 					</Anchor>
 				</Anchors>
 				<FontHeight><AbsValue val="10"></AbsValue></FontHeight>
@@ -69,11 +69,11 @@
 		</Layers>
 		<Frames>
 			<Button name="$parentItem" inherits="ItemButtonTemplate">
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset><AbsDimension x="0" y="0" /></Offset>
-						</Anchor>
-					</Anchors>
+                <Anchors>
+                    <Anchor point="TOPLEFT">
+                        <Offset><AbsDimension x="0" y="0" /></Offset>
+                    </Anchor>
+                </Anchors>
 				<Scripts>
 					<OnEnter>CP.Search.OnItemEnter(this:GetParent())</OnEnter>
 					<OnLeave>CP.Search.OnItemLeave(this:GetParent())</OnLeave>
@@ -235,13 +235,43 @@
 					<OnLoad>CP.Search.OnLoadFilterSlotMenu(this)</OnLoad>
 				</Scripts>
 			</Frame>
+			<Frame name="$parentFilterPlus" inherits="UIDropDownMenuTemplate">
+				<Size>
+					<AbsDimension x="60" y="24"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="480" y="23"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>CP.Search.OnLoadFilterPlusMenu(this)</OnLoad>
+				</Scripts>
+			</Frame>		
+			<Frame name="$parentFilterTier" inherits="UIDropDownMenuTemplate">
+				<Size>
+					<AbsDimension x="60" y="24"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="480" y="47"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>CP.Search.OnLoadFilterTierMenu(this)</OnLoad>
+				</Scripts>
+			</Frame>					
 			<!-- item list !-->
 			<Frame name="CPSearchItems">
 				<Size>
 					<AbsDimension x="580"  y="368"></AbsDimension>
 				</Size>
 				<Anchors>
-					<Anchor point="TOPLEFT"><Offset><AbsDimension x="10" y="72" /></Offset></Anchor>
+					<Anchor point="TOPLEFT"><Offset><AbsDimension x="10" y="80" /></Offset></Anchor>
 				</Anchors>
 				<Backdrop edgeFile="Interface\Tooltips\Tooltip-border">
 				    <EdgeSize><AbsValue val="8"/></EdgeSize>
@@ -263,6 +293,12 @@
 						<Size><AbsDimension x="50" y="20"></AbsDimension></Size>
 						<Anchors>
 							<Anchor point="TOPLEFT"><Offset><AbsDimension x="260" y="1"/></Offset></Anchor>
+						</Anchors>
+					</Button>
+                    <Button name="CPSearchHead4" inherits="CPSearchHeaderButtonTemplate" id="4">
+						<Size><AbsDimension x="50" y="20"></AbsDimension></Size>
+						<Anchors>
+							<Anchor point="TOPLEFT"><Offset><AbsDimension x="350" y="1"/></Offset></Anchor>
 						</Anchors>
 					</Button>
 					<Frame name="CPSearchItem1" inherits="CPSearchItemTemplate" id="1">

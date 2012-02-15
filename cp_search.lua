@@ -9,7 +9,7 @@ local Search = {}
 CP.Search = Search
 
 local MAX_LINES=10
-local HEADER_COUNT=3
+local HEADER_COUNT=4
 
 
 function Search.OnLoad(this)
@@ -20,6 +20,7 @@ function Search.OnLoad(this)
     CPSearchHead1:SetText(CP.L.SEARCH_NAME)
     CPSearchHead2:SetText(CP.L.SEARCH_LEVEL)
     CPSearchHead3:SetText(CP.L.SEARCH_BASE_STATS)
+    CPSearchHead4:SetText(CP.L.SEARCH_STATS)
     CPSearchFilterStatLessText:SetText(CP.L.SEARCH_NOSTATLESS)
     CPSearchFilterNameLabel:SetText(CP.L.SEARCH_NAME)
     CPSearchFilterLevelLabel:SetText(CP.L.SEARCH_LEVEL)
@@ -149,6 +150,50 @@ function Search.OnSlotFilterSelect(this)
     Search.FindItems()
 end
 
+function Search.OnLoadFilterPlusMenu(this)
+    UIDropDownMenu_SetWidth(this, 60)
+    UIDropDownMenu_Initialize(this, Search.OnLoadFilterPlusShow)
+    UIDropDownMenu_SetSelectedValue(this, 0)
+end
+
+function Search.OnLoadFilterPlusShow(button)
+    local info={}
+    for i=0,16 do
+        info.text = "+"..i
+        info.value = i
+        info.notCheckable=1
+        info.func = Search.OnLoadFilterPlusClicked
+        UIDropDownMenu_AddButton(info)
+    end
+end
+
+function Search.OnLoadFilterPlusClicked(button)
+    UIDropDownMenu_SetSelectedValue(CPSearchFilterPlus, button.value)
+    Search.UpdateList()
+end
+
+
+function Search.OnLoadFilterTierMenu(this)
+    UIDropDownMenu_SetWidth(this, 60)
+    UIDropDownMenu_Initialize(this, Search.OnLoadFilterTierShow)
+    UIDropDownMenu_SetSelectedValue(this, 0)
+end
+
+function Search.OnLoadFilterTierShow(button)
+    local info={}
+    for i=0,10 do
+        info.text = "+"..i
+        info.value = i
+        info.notCheckable=1
+        info.func = Search.OnLoadFilterTierClicked
+        UIDropDownMenu_AddButton(info)
+    end
+end
+
+function Search.OnLoadFilterTierClicked(button)
+    UIDropDownMenu_SetSelectedValue(CPSearchFilterTier, button.value)
+    Search.UpdateList()
+end
 
 local function GetFilterInfo()
 
@@ -180,6 +225,9 @@ function Search.FindItems()
     CPSearchItemsSB:SetValueStepMode("INT")
     CPSearchItemsSB:SetMinMaxValues(0,math.max(0,(#Search.Items)-MAX_LINES))
 
+    if Search.cur_sort then
+        Search.DoSort(Search.cur_sort)
+    end
     Search.ScrollToSelection()
 end
 
@@ -209,6 +257,47 @@ end
 
 
 function Search.DoSort(column)
+
+    local cache={}
+
+    local function GetPriBonus(item_id)
+        local cached = cache[item_id]
+        if cached then return cached end
+
+        local att1,att2 = CP.DB.PrimarAttributes(item_id)
+
+        local item = CP.DB.GenerateItemDataByID(item_id)
+        item.plus= UIDropDownMenu_GetSelectedValue(CPSearchFilterPlus) or 0
+        item.tier= UIDropDownMenu_GetSelectedValue(CPSearchFilterTier) or 0
+
+        local effect = CP.Calc.GetItemBonus(item)
+        local boni=effect[att1] + (att2 and effect[att2])
+        cache[item_id] = boni
+        return boni
+    end
+
+    local function GetNonPriBonus(item_id)
+        local cached = cache[item_id]
+        if cached then return cached end
+
+        local att1,att2 = CP.DB.PrimarAttributes(item_id)
+
+        local item = CP.DB.GenerateItemDataByID(item_id)
+        item.plus= UIDropDownMenu_GetSelectedValue(CPSearchFilterPlus) or 0
+        item.tier= UIDropDownMenu_GetSelectedValue(CPSearchFilterTier) or 0
+
+        local boni=0
+        local effect = CP.Calc.GetItemBonus(item)
+        for id,val in pairs(effect) do
+            if id~=att1 and id~=att2 then
+                boni = boni + val
+            end
+        end
+
+        cache[item_id] = boni
+        return boni
+    end
+
     local sorts=
     {
         [1] = function (id1,id2)
@@ -222,26 +311,11 @@ function Search.DoSort(column)
             end,
 
         [3] = function (id1,id2)
-                local att1,att2 = CP.DB.PrimarAttributes(id1)
+                return GetPriBonus(id1) > GetPriBonus(id2)
+            end,
 
-                local boni1=0
-                local effect = CP.DB.GetItemEffect(id1)
-                for i=1,#effect,2 do
-                    if slots[effect[i]]==att1 or slots[effect[i]]==att2 then
-                        boni1 = boni1 + effect[i+1]
-                    end
-                end
-
-                att1,att2 = CP.DB.PrimarAttributes(id2)
-                effect  = CP.DB.GetItemEffect(id2)
-                local boni2=0
-                for i=1,#effect,2 do
-                    if slots[effect[i]]==att1 or slots[effect[i]]==att2 then
-                        boni2 = boni2 + effect[i+1]
-                    end
-                end
-
-                return boni1>boni2
+        [4] = function (id1,id2)
+               return GetNonPriBonus(id1) > GetNonPriBonus(id2)
             end,
     }
 
@@ -269,7 +343,7 @@ function Search.ScrollToSelection()
 
         local top_pos = CPSearchItemsSB:GetValue()
         if top_pos>line then
-            CPSearchItemsSB:SetValue(line)
+            CPSearchItemsSB:SetValue(line-1)
         elseif top_pos+MAX_LINES<line then
             CPSearchItemsSB:SetValue(math.max(line-MAX_LINES))
         end
@@ -277,8 +351,6 @@ function Search.ScrollToSelection()
 
     Search.UpdateList()
 end
-
-
 
 function Search.UpdateList()
 
@@ -290,7 +362,17 @@ function Search.UpdateList()
         local item_id = Search.Items[i+top_pos]
 
         if item_id then
-            Search.UpdateItem(base_name,item_id)
+            local item_data = CP.DB.GenerateItemDataByID(item_id)
+            item_data.plus= UIDropDownMenu_GetSelectedValue(CPSearchFilterPlus) or 0
+            item_data.tier= UIDropDownMenu_GetSelectedValue(CPSearchFilterTier) or 0
+
+            Search.UpdateItem(base_name,item_data)
+
+            if item_id == Search.selection then
+                _G[base_name.."Highlight"]:Show()
+            else
+                _G[base_name.."Highlight"]:Hide()
+            end
             _G[base_name]:Show()
         else
             _G[base_name]:Hide()
@@ -298,44 +380,35 @@ function Search.UpdateList()
     end
 end
 
-function Search.UpdateItem(base_name,item_id)
-    SetItemButtonTexture(_G[base_name.."Item"], CP.DB.GetItemIcon(item_id) )
+function Search.UpdateItem(base_name, item)
 
-    local r,g,b = GetItemQualityColor(GetQualityByGUID( item_id ))
+    SetItemButtonTexture(_G[base_name.."Item"], item.icon )
+
+    local r,g,b = GetItemQualityColor(GetQualityByGUID( item.id ))
     local col=string.format("|cff%02x%02x%02x",r*255,g*255,b*255)
-    _G[base_name.."Name"]:SetText(col..TEXT("Sys"..item_id.."_name"))
+    _G[base_name.."Name"]:SetText(col..TEXT("Sys"..item.id.."_name"))
 
-    local level, set = CP.DB.GetItemInfo(item_id)
+    local level, set = CP.DB.GetItemInfo(item.id)
     local setname = set and TEXT("Sys"..set.."_name") or ""
     _G[base_name.."Set"]:SetText(setname)
     _G[base_name.."Level"]:SetText(level or "")
 
 
-    local boni={}
-    local effect = CP.DB.GetItemEffect(item_id)
-    for i=1,#effect,2 do
-        boni[ effect[i] ] = (boni[effect[i] ] or 0) + effect[i+1]
-    end
-
-    local efftype = CP.DB.GetItemUsualDropEffects(item_id)
-    for i=1,#effect,2 do
-        boni[ effect[i] ] = (boni[effect[i] ] or 0) + effect[i+1]
-    end
+    local boni=CP.Calc.GetItemBonus(item)
 
     local txt = ""
-    local attA,attB = CP.DB.PrimarAttributes(item_id)
-    if attA and boni[attA] then
+    local attA,attB = CP.DB.PrimarAttributes(item.id)
+    if attA and boni[attA]~=0 then
         local n = CP.Calc.ID2StatName(attA)
         txt = txt..(CP.L.STAT_SHORTS[n])..": "..boni[attA].."\n"
         boni[attA] = nil
     end
-    if attB and boni[attB] then
+    if attB and boni[attB]~=0 then
         local n = CP.Calc.ID2StatName(attB)
         txt = txt..(CP.L.STAT_SHORTS[n])..": "..boni[attB].."\n"
         boni[attB] = nil
     end
     _G[base_name.."Effect"]:SetText(txt)
-
 
     txt=""
     for eff,value in pairs(boni) do
@@ -343,12 +416,6 @@ function Search.UpdateItem(base_name,item_id)
     end
 
     _G[base_name.."Boni"]:SetText(txt)
-
-    if item_id == Search.selection then
-        _G[base_name.."Highlight"]:Show()
-    else
-        _G[base_name.."Highlight"]:Hide()
-    end
 end
 
 function Search.OnItemClick(this, key)
@@ -380,7 +447,12 @@ function Search.OnItemEnter(this)
     local item_id = Search.Items[this:GetID()+top_pos]
     if item_id then
         GameTooltip:SetOwner(this, "ANCHOR_TOPLEFT", 0, 2)
-        GameTooltip:SetHyperLink(CP.Pimp.GenerateLinkByID(item_id))
+
+        local item = CP.DB.GenerateItemDataByID(item_id)
+        item.plus= UIDropDownMenu_GetSelectedValue(CPSearchFilterPlus) or 0
+        item.tier= UIDropDownMenu_GetSelectedValue(CPSearchFilterTier) or 0
+
+        GameTooltip:SetHyperLink(CP.Pimp.GenerateLink(item))
         GameTooltip:Show()
         GameTooltip1:Hide()
         GameTooltip2:Hide()
