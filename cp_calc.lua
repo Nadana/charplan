@@ -144,6 +144,7 @@ function Calc.Calculate()
     local values = Calc.GetBases()
     values = values + Calc.GetCardBonus()
     values = values + Calc.GetSetBonus()
+    values = values + Calc.GetArchievementBonus()
 
     local items = {}
 	for _,slot in ipairs( {0,1,2,3,4,5,6,7,8,9,11,12,13,14,21,10,15,16} ) do
@@ -177,6 +178,7 @@ function Calc.Explain(stat)
     local COLOR_CARD = "|cffa0a040"
     local COLOR_SET  = "|cffa08040"
     local COLOR_ITEM = "|cffe0e0e0"
+    local COLOR_TITLE= "|cffe0e0e0"
 
     local res = {left={}, right={} }
 
@@ -191,6 +193,10 @@ function Calc.Explain(stat)
     values = Calc.GetSetBonus()
     total = total + values
     AddDescription(res, COLOR_SET..CP.L.BY_SET, values[stat])
+
+    values = Calc.GetArchievementBonus()
+    total = total + values
+    AddDescription(res, COLOR_SET..CP.L.BY_TITLE, values[stat])
 
 	for _,slot in ipairs( {0,1,2,3,4,5,6,7,8,9,11,12,13,14,21,10,15,16} ) do
         local item = CP.Items[slot]
@@ -233,6 +239,19 @@ end
 
 function Calc.GetCardBonus()
     return Calc.CardsBonus
+end
+
+function Calc.GetArchievementBonus()
+
+    local values = Calc.NewStats()
+
+    local titel_id = GetCurrentTitle()
+    if titel_id>0 then
+        local effect = CP.DB.GetArchievementEffect(titel_id)
+        ApplyBonus(values, effect)
+    end
+
+    return values
 end
 
 function Calc.GetItemBonus(item)
@@ -389,9 +408,9 @@ function Calc.CharDepended(values)
 end
 
 
-function Calc.CharacterSkills()
+function Calc.DumpCharacterSkills()
 
--- /run CP.Calc.CharacterSkills()
+-- /run CP.Calc.DumpCharacterSkills()
 
     CP.DB.Load()
 
@@ -417,6 +436,28 @@ function Calc.CharacterSkills()
                 CP.Debug( string.format("%i %s(%i): %s",skill_id, _SkillName,_SkillLV,table.concat(txt,",")))
         end
     end
+    end
+
+    CP.DB.Release()
+
+end
+
+function Calc.DumpCharacterTitles()
+
+-- /run CP.Calc.DumpCharacterTitles()
+    -- only titles with bonus
+
+    CP.DB.Load()
+
+    local count = GetTitleCount()
+    for i = 1 , count do
+		local name, titleID, geted, icon,classify1, classify2,note,brief,rare = GetTitleInfoByIndex( i - 1 )
+        if geted then
+            local v = CP.DB.GetArchievementEffect(titel_id)
+            if #v>0 then
+                CP.Debug(name)
+            end
+        end
     end
 
     CP.DB.Release()

@@ -50,6 +50,7 @@ function DB.Load()
     DB.skills = LoadTable("skills")
     DB.spells = LoadTable("spells")
     DB.sets = LoadTable("sets")
+    DB.archievements = LoadTable("archievements")
 end
 
 function DB.Release()
@@ -67,6 +68,7 @@ function DB.Release()
             DB.skills = nil
             DB.spells = nil
             DB.sets = nil
+            DB.archievements = nil
         collectgarbage("collect")
         --local mem2 = collectgarbage("count")
         --CP.Debug("DB Released. Freed memory: "..(math.floor(mem1-mem2)/1000).."mb")
@@ -95,6 +97,10 @@ function DB.GetSkillEffect(skill_id)
     end
 
     return effect
+end
+
+function DB.GetArchievementEffect(title_id)
+    return DB.archievements[title_id] or {}
 end
 
 function DB.GetItemEffect(item_id)

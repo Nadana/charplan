@@ -40,7 +40,7 @@ local rom_text ={
     BY_CLASS = "Base",
     BY_CARD = TEXT("AC_ITEMTYPENAME_6"),
     BY_SET = "Sets",
-    BY_TITEL = C_TITLE,
+    BY_TITLE = C_TITLE,
 
     STAT_SHORTS = {
         PDMG="PDMG",

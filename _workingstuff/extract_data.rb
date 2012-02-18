@@ -1038,6 +1038,10 @@ class TitleEntry < Table
     def ExportDesc(data)
         @bonus.ExportDesc(data)
     end
+
+    def ExportData(data)
+        @bonus.ExportDataPlain(data)
+    end
 end
 
 class FullDB
@@ -1047,6 +1051,7 @@ class FullDB
     attr_accessor :addpower, :suits
     attr_accessor :refines, :cards
     attr_accessor :skills, :spells
+    attr_accessor :title
 
     def Load
 
@@ -1082,6 +1087,9 @@ class FullDB
         p "Load Cards"
         @cards = CardEntry.Load()
 
+        p "Load Archievements"
+        @title = TitleEntry.Load()
+
     end
 
     def Export
@@ -1090,8 +1098,10 @@ class FullDB
 
         Table.Export("../item_data/sets.lua", @suits)
         Table.Export("../item_data/refines.lua", @refines)
-        CardEntry.Export("../item_data/cards.lua", @cards)
         Table.Export("../item_data/addpower.lua", @addpower)
+        Table.Export("../item_data/archievements.lua", @title)
+
+        CardEntry.Export("../item_data/cards.lua", @cards)
         ArmorEntry.Export("../item_data/items.lua", @items)
 
         MagicCollectionEntry.Export("../item_data/skills.lua", @skills)
