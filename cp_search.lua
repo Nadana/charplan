@@ -24,6 +24,9 @@ function Search.OnLoad(this)
     CPSearchFilterStatLessText:SetText(CP.L.SEARCH_NOSTATLESS)
     CPSearchFilterNameLabel:SetText(CP.L.SEARCH_NAME)
     CPSearchFilterLevelLabel:SetText(CP.L.SEARCH_LEVEL)
+
+    CPSearchPimpPlus:SetText(CP.L.PIMP_PLUS)
+    CPSearchPimpTier:SetText(CP.L.PIMP_TIER)
 end
 
 
@@ -31,8 +34,7 @@ function Search.ForSlot(slot_id, item_id)
     Search.slot = slot_id
     Search.selection = item_id
     Search.selection_changed = false
-    Search.type_filter={}
-    for i=0,24 do Search.type_filter[i]=true end
+    Search.ClearSettings()
 
     --CPSearchFilterSlotMenu:Disable()
     Search.FindItems()
@@ -40,8 +42,14 @@ function Search.ForSlot(slot_id, item_id)
     CPSearch:Show()
 end
 
+function Search.ClearSettings()
+    Search.type_filter={}
+    for i=0,24 do Search.type_filter[i]=true end
+end
+
 function Search.OnShow(this)
     this:ResetFrameOrder()
+    Search.UpdateSlotInfo()
 end
 
 function Search.OnHide()
@@ -151,7 +159,7 @@ function Search.OnSlotFilterSelect(this)
 end
 
 function Search.OnLoadFilterPlusMenu(this)
-    UIDropDownMenu_SetWidth(this, 60)
+    UIDropDownMenu_SetWidth(this, 40)
     UIDropDownMenu_Initialize(this, Search.OnLoadFilterPlusShow)
     UIDropDownMenu_SetSelectedValue(this, 0)
 end
@@ -174,7 +182,7 @@ end
 
 
 function Search.OnLoadFilterTierMenu(this)
-    UIDropDownMenu_SetWidth(this, 60)
+    UIDropDownMenu_SetWidth(this, 40)
     UIDropDownMenu_Initialize(this, Search.OnLoadFilterTierShow)
     UIDropDownMenu_SetSelectedValue(this, 0)
 end
@@ -410,12 +418,59 @@ function Search.UpdateItem(base_name, item)
     end
     _G[base_name.."Effect"]:SetText(txt)
 
-    txt=""
+    local txt=""
+    local txt2=""
+    local i=0
     for eff,value in pairs(boni) do
-        txt = txt.."+"..value.." "..TEXT("SYS_WEAREQTYPE_"..eff).."\n"
+        if i<3 then
+            txt = txt.."+"..value.." "..TEXT("SYS_WEAREQTYPE_"..eff).."\n"
+        else
+            txt2 = txt2.."+"..value.." "..TEXT("SYS_WEAREQTYPE_"..eff).."\n"
+        end
+        i=i+1
     end
 
     _G[base_name.."Boni"]:SetText(txt)
+    _G[base_name.."Boni2"]:SetText(txt2)
+end
+
+
+function Search.UpdateSlotInfo()
+    local s1,s2
+    if Search.selection then
+        s1,s2 = CP.DB.GetItemPositions(Search.selection)
+    else
+        s1 = Search.slot
+        if s1==11 or s1==12 then s1,s2=11,12 end
+        if s1==13 or s1==14 then s1,s2=13,14 end
+    end
+
+    if s1 then
+        CPSearchTakeIt1:Show()
+        CPSearchTakeIt1Item:Show()
+        SetItemButtonTexture(CPSearchTakeIt1Item, CP.GetSlotTexture(s1))
+    else
+        CPSearchTakeIt1:Hide()
+        CPSearchTakeIt1Item:Hide()
+    end
+
+    if s2 then
+        CPSearchTakeIt2:Show()
+        CPSearchTakeIt2Item:Show()
+        SetItemButtonTexture(CPSearchTakeIt2Item, CP.GetSlotTexture(s2))
+    else
+        CPSearchTakeIt2:Hide()
+        CPSearchTakeIt2Item:Hide()
+    end
+end
+
+function Search.SelectItem(item_id)
+    if item_id ~= Search.selection then
+        Search.selection = item_id
+        Search.selection_changed = true
+        Search.ScrollToSelection()
+        Search.UpdateSlotInfo()
+    end
 end
 
 function Search.OnItemClick(this, key)
@@ -429,11 +484,7 @@ function Search.OnItemClick(this, key)
         return
     end
 
-    if new_item ~= Search.selection then
-        Search.selection = new_item
-        Search.selection_changed = true
-    end
-
+    Search.SelectItem(new_item)
     Search.UpdateList()
 end
 
@@ -526,10 +577,22 @@ function Search.FindInDungeonLoots(item_id)
 end
 
 
-function Search.OnTakeIt()
+function Search.OnTakeIt(slot1or2)
+
+    local s1,s2
+    if Search.selection then
+        s1,s2 = CP.DB.GetItemPositions(Search.selection)
+    else
+        s1 = Search.slot
+        if s1==11 or s1==12 then s1,s2=11,12 end
+        if s1==13 or s1==14 then s1,s2=13,14 end
+    end
+
+    local slot = slot1or2==2 and s2 or s1
+
     if Search.selection and Search.selection_changed then
         local item_data = CP.DB.GenerateItemDataByID(Search.selection)
-        CP.ApplyItem(item_data, Search.slot, false)
+        CP.ApplyItem(item_data, slot, false)
 
         CPSearch:Hide()
     end

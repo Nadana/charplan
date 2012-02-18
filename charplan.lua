@@ -233,17 +233,21 @@ end
 
 
 function CP.UpdateEquipment()
-   for id, button in pairs(CP.EquipButtons) do
-       local item = CP.Items[id]
-       if item and item.icon then
-           SetItemButtonTexture(button, item.icon)
-       else
-           SetItemButtonTexture(button, button.backgroundTextureName)
-       end
+    for id, button in pairs(CP.EquipButtons) do
+       SetItemButtonTexture(button, CP.GetSlotTexture(id))
     end
 
     CP.UpdateModel()
     CP.UpdatePoints()
+end
+
+function CP.GetSlotTexture(slot)
+    local item = CP.Items[slot]
+    if item and item.icon then
+        return item.icon
+    else
+        return  CP.EquipButtons[slot].backgroundTextureName
+    end
 end
 
 function CP.UpdatePoints()

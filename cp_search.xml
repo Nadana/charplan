@@ -1,13 +1,13 @@
 <Ui xmlns="http://www.runewaker.com/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.runewaker.com/ ../../worldxml/ui.xsd">
 	<Frame name="CPSearchItemTemplate" enableMouse="true" virtual="true">
 		<Size>
-			<AbsDimension x="550" y="34" />
+			<AbsDimension x="630" y="34" />
 		</Size>
 		<Layers>
 			<Layer>
 			<FontString name="$parentName" inherits="GameFontLabel" justifyH="LEFT">
 				<Size>
-					<AbsDimension x="180" y="14"/>
+					<AbsDimension x="220" y="14"/>
 				</Size>
 				<Anchors>
 					<Anchor point="TOPLEFT"><Offset><AbsDimension x="40" y="0"/></Offset></Anchor>
@@ -50,10 +50,18 @@
 			</FontString>
 			<FontString name="$parentBoni" inherits="GameFontGreen" justifyH="LEFT">
 				<Size>
-					<AbsDimension x="180" y="34"/>
+					<AbsDimension x="110" y="34"/>
 				</Size>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentEffect" relativePoint="TOPRIGHT" />
+				</Anchors>
+				<FontHeight><AbsValue val="10"></AbsValue></FontHeight>
+			</FontString>
+			<FontString name="$parentBoni2" inherits="GameFontGreen" justifyH="LEFT">
+				<Size><AbsDimension x="110" y="34"/></Size>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentBoni" relativePoint="TOPRIGHT" ><Offset>
+						<AbsDimension x="5" y="0"></AbsDimension></Offset></Anchor>
 				</Anchors>
 				<FontHeight><AbsValue val="10"></AbsValue></FontHeight>
 			</FontString>
@@ -123,7 +131,7 @@
 
 	<Frame name="CPSearch" parent="CPFrame"  inherits="UICommonFrameTemplate">
 		<Size>
-			<AbsDimension x="600" y="500"/>
+			<AbsDimension x="660" y="550"/>
 		</Size>
 		<Anchors>
 			<Anchor point="TOPLEFT" relativePoint="TOP" >
@@ -135,13 +143,19 @@
 		<Layers>
 			<Layer level="BACKGROUND">
 				<FontString name="$parentFilterNameLabel" inherits="GameFontLabel"><Anchors>
-					<Anchor point="TOPLEFT"><Offset><AbsDimension x="14" y="29"></AbsDimension></Offset></Anchor>
+					<Anchor point="TOPLEFT"><Offset><AbsDimension x="14" y="35"></AbsDimension></Offset></Anchor>
 				</Anchors></FontString>
 				<FontString name="$parentFilterLevelLabel" inherits="GameFontLabel"><Anchors>
-					<Anchor point="TOPLEFT"><Offset><AbsDimension x="14" y="52"></AbsDimension></Offset></Anchor>
+					<Anchor point="TOPLEFT"><Offset><AbsDimension x="14" y="58"></AbsDimension></Offset></Anchor>
 				</Anchors></FontString>
 				<FontString inherits="GameFontLabel" text="-"><Anchors>
-					<Anchor point="TOPLEFT"><Offset><AbsDimension x="103" y="52"></AbsDimension></Offset></Anchor>
+					<Anchor point="TOPLEFT"><Offset><AbsDimension x="103" y="58"></AbsDimension></Offset></Anchor>
+				</Anchors></FontString>
+				<FontString name="$parentPimpPlus" inherits="GameFontLabel"><Anchors>
+					<Anchor point="TOPLEFT"><Offset><AbsDimension x="490" y="29"></AbsDimension></Offset></Anchor>
+				</Anchors></FontString>
+				<FontString name="$parentPimpTier" inherits="GameFontLabel"><Anchors>
+					<Anchor point="TOPLEFT"><Offset><AbsDimension x="560" y="29"></AbsDimension></Offset></Anchor>
 				</Anchors></FontString>
 			</Layer>
 		</Layers>
@@ -150,7 +164,7 @@
 		    <EditBox name="$parentFilterName" inherits="UIPanelEditBoxTemplate">
 				<Size><AbsDimension x="120" y="20"/></Size>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativePoint="TOPLEFT"><Offset><AbsDimension x="54" y="28" /></Offset></Anchor>
+					<Anchor point="TOPLEFT" relativePoint="TOPLEFT"><Offset><AbsDimension x="54" y="35" /></Offset></Anchor>
 				</Anchors>
 				<Scripts>
 					<OnTextChanged>CP.Search.FindItems()</OnTextChanged>
@@ -159,7 +173,7 @@
 		    <EditBox name="$parentFilterLevelMin" inherits="UIPanelEditBoxTemplate" numeric="true">
 				<Size><AbsDimension x="40" y="20"/></Size>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativePoint="TOPLEFT"><Offset><AbsDimension x="60" y="48" /></Offset></Anchor>
+					<Anchor point="TOPLEFT" relativePoint="TOPLEFT"><Offset><AbsDimension x="60" y="55" /></Offset></Anchor>
 				</Anchors>
 				<Scripts>
 					<OnTextChanged>CP.Search.FindItems()</OnTextChanged>
@@ -212,7 +226,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="200" y="47"/>
+							<AbsDimension x="200" y="50"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -227,7 +241,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="350" y="47"/>
+							<AbsDimension x="350" y="50"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -237,12 +251,12 @@
 			</Frame>
 			<Frame name="$parentFilterPlus" inherits="UIDropDownMenuTemplate">
 				<Size>
-					<AbsDimension x="60" y="24"/>
+					<AbsDimension x="40" y="24"/>
 				</Size>
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="480" y="23"/>
+							<AbsDimension x="480" y="50"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -252,12 +266,12 @@
 			</Frame>		
 			<Frame name="$parentFilterTier" inherits="UIDropDownMenuTemplate">
 				<Size>
-					<AbsDimension x="60" y="24"/>
+					<AbsDimension x="40" y="24"/>
 				</Size>
 				<Anchors>
-					<Anchor point="TOPLEFT">
+					<Anchor point="LEFT" relativeTo="$parentFilterPlus" relativePoint="RIGHT">
 						<Offset>
-							<AbsDimension x="480" y="47"/>
+							<AbsDimension x="8" y="0"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -268,10 +282,10 @@
 			<!-- item list !-->
 			<Frame name="CPSearchItems">
 				<Size>
-					<AbsDimension x="580"  y="368"></AbsDimension>
+					<AbsDimension x="640"  y="368"></AbsDimension>
 				</Size>
 				<Anchors>
-					<Anchor point="TOPLEFT"><Offset><AbsDimension x="10" y="80" /></Offset></Anchor>
+					<Anchor point="TOPLEFT"><Offset><AbsDimension x="10" y="90" /></Offset></Anchor>
 				</Anchors>
 				<Backdrop edgeFile="Interface\Tooltips\Tooltip-border">
 				    <EdgeSize><AbsValue val="8"/></EdgeSize>
@@ -286,19 +300,19 @@
 					<Button name="CPSearchHead2" inherits="CPSearchHeaderButtonTemplate" id="2">
 						<Size><AbsDimension x="50" y="20"></AbsDimension></Size>
 						<Anchors>
-							<Anchor point="TOPLEFT"><Offset><AbsDimension x="210" y="1"/></Offset></Anchor>
+							<Anchor point="TOPLEFT"><Offset><AbsDimension x="240" y="1"/></Offset></Anchor>
 						</Anchors>
 					</Button>
 					<Button name="CPSearchHead3" inherits="CPSearchHeaderButtonTemplate" id="3">
 						<Size><AbsDimension x="50" y="20"></AbsDimension></Size>
 						<Anchors>
-							<Anchor point="TOPLEFT"><Offset><AbsDimension x="260" y="1"/></Offset></Anchor>
+							<Anchor point="TOPLEFT"><Offset><AbsDimension x="290" y="1"/></Offset></Anchor>
 						</Anchors>
 					</Button>
                     <Button name="CPSearchHead4" inherits="CPSearchHeaderButtonTemplate" id="4">
 						<Size><AbsDimension x="50" y="20"></AbsDimension></Size>
 						<Anchors>
-							<Anchor point="TOPLEFT"><Offset><AbsDimension x="350" y="1"/></Offset></Anchor>
+							<Anchor point="TOPLEFT"><Offset><AbsDimension x="400" y="1"/></Offset></Anchor>
 						</Anchors>
 					</Button>
 					<Frame name="CPSearchItem1" inherits="CPSearchItemTemplate" id="1">
@@ -355,26 +369,55 @@
 					</Frame>
 				</Frames>
 			</Frame>
-			<Button name="CPSearchTakeIt" inherits="UIPanelButtonTemplate" text="OK">
+			<Button name="CPSearchTakeIt1" inherits="UIPanelButtonTemplate" text="Put into Slot 1">
 				<Size>
 					<AbsDimension x="100" y="24"></AbsDimension>
 				</Size>
 				<Anchors>
 					<Anchor point="BOTTOM"><Offset>
-						<AbsDimension x="-100" y="-20"></AbsDimension>
+						<AbsDimension x="-180" y="-50"></AbsDimension>
 					</Offset></Anchor>
 				</Anchors>
 				<Scripts>
 					<OnClick>CP.Search.OnTakeIt()</OnClick>
 				</Scripts>
+			</Button>			
+			<Button name="CPSearchTakeIt1Item" inherits="ItemButtonTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="CPSearchTakeIt1" relativePoint="BOTTOM"><Offset><AbsDimension x="0" y="0"></AbsDimension></Offset></Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>CP.Search.OnTakeIt()</OnClick>
+				</Scripts>
 			</Button>
-			<Button name="CPSearchCancel" inherits="UIPanelButtonTemplate" text="CANCEL">
+			<Button name="CPSearchTakeIt2" inherits="UIPanelButtonTemplate" text="Put into Slot 2">
 				<Size>
 					<AbsDimension x="100" y="24"></AbsDimension>
 				</Size>
 				<Anchors>
 					<Anchor point="BOTTOM"><Offset>
-						<AbsDimension x="100" y="-20"></AbsDimension>
+						<AbsDimension x="-50" y="-50"></AbsDimension>
+					</Offset></Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>CP.Search.OnTakeIt(2)</OnClick>
+				</Scripts>
+			</Button>			
+			<Button name="CPSearchTakeIt2Item" inherits="ItemButtonTemplate">
+				<Anchors>
+					<Anchor point="TOP" relativeTo="CPSearchTakeIt2" relativePoint="BOTTOM"><Offset><AbsDimension x="0" y="0"></AbsDimension></Offset></Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>CP.Search.OnTakeIt(2)</OnClick>
+				</Scripts>
+			</Button>						
+			<Button name="CPSearchCancel" inherits="UIPanelButtonTemplate" text="CANCEL">
+				<Size>
+					<AbsDimension x="130" y="24"></AbsDimension>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOM"><Offset>
+						<AbsDimension x="100" y="-40"></AbsDimension>
 					</Offset></Anchor>
 				</Anchors>
 				<Scripts>
