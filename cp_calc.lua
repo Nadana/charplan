@@ -94,7 +94,7 @@ end
 local function ApplyBonus(stats, effect, factor)
     factor = factor or 1
     for i=1,#effect,2 do
-        stats[effect[i]] = stats[effect[i]] + effect[i+1]
+        stats[effect[i]] = stats[effect[i]] + effect[i+1] * factor
     end
 end
 
