@@ -14,6 +14,7 @@ _G.CP = CP
 CP.version       = "@project-version@"
 --@do-not-package@
 CP.version       = "v1.0 (alpha)"
+dofile("interface/addons/charplan/debug_utils.lua")
 --@end-do-not-package@
 
 
@@ -21,43 +22,16 @@ CP.version       = "v1.0 (alpha)"
 SLASH_charplan1="/cp"
 SLASH_charplan2="/charplan"
 SlashCmdList["charplan"] = function(_,msg)
+    --@do-not-package@
     if msg~="" then
-        if string.find(msg,"^t") then
-            CP.SlashCMD_Test()
-        elseif string.find(msg,"^r") then
-            CP.SlashCMD_Reload()
-        end
-
+        CP.SlashCMD(msg)
         return
     end
+    --@end-do-not-package@
 
     ToggleUIFrame(CPFrame)
 end
 
-function CP.SlashCMD_Test()
-    dofile("interface/addons/charplan/test/luaunit.lua")
-    UnitResult.verbosity=1
-    dofile("interface/addons/charplan/test/test.lua")
-end
-
-function CP.SlashCMD_Reload()
-    local temp_storage = CP_Storage
-    local temp_ebuttons = CP.EquipButtons
-
-    CPFrame:Hide()
-    local base = "interface/addons/charplan/"
-    --dofile(base.."charplan.lua")
-    dofile(base.."cp_calc.lua")
-    dofile(base.."cp_db.lua")
-    --dofile(base.."cp_pimpme.lua")
-    dofile(base.."cp_search.lua")
-    dofile(base.."cp_storage.lua")
-    dofile(base.."cp_utils.lua")
-
-    CP_Storage = temp_storage
-    CP.EquipButtons = temp_ebuttons
-    DEFAULT_CHAT_FRAME:AddMessage("CP: RELOADED",1,0.5,0.5)
-end
 ------------------------------
 
 local WaitTimer = LibStub("WaitTimer")
@@ -116,8 +90,6 @@ function CP.OnHide()
     CP.Stats=nil
 end
 
-
-
 function CP.VARIABLES_LOADED()
     CP.Items = {}
 
@@ -129,8 +101,7 @@ function CP.VARIABLES_LOADED()
     CP.Register3rdParty()
 
     --@do-not-package@
-    dofile("interface/addons/charplan/test/luaunit.lua")
-    dofile("interface/addons/charplan/test/test.lua")
+    CP.InitialTest()
     --@end-do-not-package@
 end
 

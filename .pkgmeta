@@ -2,3 +2,4 @@ ignore:
  - _workingstuff
  - test
  - item_data/_all_stats.lua
+ - debug_utils.lua
