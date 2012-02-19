@@ -332,20 +332,21 @@ function Calc.GetSetBonus()
 end
 
 function Calc.DependingStats(values)
-    Calc.ALL_ATTRIBUTES(values)
+    Calc.StatRelations(values)
     Calc.CharDepended(values)
     Calc.CharIndepended(values)
 end
 
 function Calc.Explain_DependingStats(res)
     local values = Calc.Clear()
-    CP.Calc.ALL_ATTRIBUTES(values)
+    CP.Calc.StatRelations(values)
     AddDescription(res, TEXT("SYS_WEAREQTYPE_7"), values[stat])
 end
 
-function Calc.ALL_ATTRIBUTES(values)
-    local all = values.ALL_ATTRIBUTES
 
+function Calc.StatRelations(values)
+
+    local all = values.ALL_ATTRIBUTES
     if all then
         values.STR = values.STR+all
         values.STA = values.STA+all
@@ -353,6 +354,27 @@ function Calc.ALL_ATTRIBUTES(values)
         values.INT = values.INT+all
         values.WIS = values.WIS+all
     end
+
+    local p = values[166] / 100 --% all
+    if p~=0 then
+        values.STR = values.STR*(1+p)
+        values.STA = values.STA*(1+p)
+        values.DEX = values.DEX*(1+p)
+        values.INT = values.INT*(1+p)
+        values.WIS = values.WIS*(1+p)
+    end
+
+    local s = Calc.STATS
+    local perc={
+        [161]=s.STR, [162]=s.STA, [163]=s.INT,  [164]=s.WIS, [165]=s.DEX,
+        [167]=s.HP,  [168]=s.MP,  [170]=s.MDEF, [171]=s.MATK,
+    }
+
+    for s,v in pairs(perc) do
+        local p = values[s]/100
+        if p~=0 then  values[v] = values[v]*(1+p) end
+    end
+
 end
 
 function Calc.CharIndepended(values)
@@ -434,8 +456,10 @@ function Calc.DumpCharacterSkills()
                 end
 
                 CP.Debug( string.format("%i %s(%i): %s",skill_id, _SkillName,_SkillLV,table.concat(txt,",")))
+            --else
+            --    CP.Debug( string.format("%i %s(%i)",skill_id, _SkillName,_SkillLV))
+            end
         end
-    end
     end
 
     CP.DB.Release()
@@ -464,108 +488,3 @@ function Calc.DumpCharacterTitles()
 
 end
 
------------------------------------------------------------
---[[
-function UpdatePoints()
-
-    info = SumOfAllItems()
-
-	-- magie: Schaden, Kritisch, Heilbonus, Präzision
-
-
-
-    -- Physische Verteidigung:
-	pdef:SetText( CalcPdef(info) )				-- Physische Verteidigung
-	par:SetText ( CalcPar(info) )				-- Parieren
-	phyau:SetText( CalcPhyau(info) )			-- Physische Ausweichrate (Ausweichen)
-
-	-- Magische Verteidigung:
-	mdef:SetText( CalcMdef(info) )				-- Magische Verteidigung
-	mwid:SetText( CalcMWid(info) )				-- Magischer Widerstand
-	-- Magie:
-	mdmg:SetText( CalcMdmg(info) )				-- Magischer Schaden
-    matk:SetText( CalcMatk(info) )				-- Magischer Angriff
-    mcrit:SetText( CalcMCrit(info))				-- Magische Kritische Trefferrate
-    healb:SetText( CalcHealb(info))				-- Heilbonus
-	mprae:SetText( CalcMPrae(info))				-- Magische Präzision
-
-	-- Nahkampf:
-	pdmghh:SetText( CalcPdmgHh(info))			-- Physischer Schaden Haupthand
-	pdmgnh:SetText( CalcPdmgNh(info))			-- Physischer Schaden Nebenhand
-	patk:SetText( CalcPatk(info) )				-- Physischer Angriff
-	pcrithh:SetText( CalcPCritHh(info))			-- Physischer Kritische Trefferrate Haupthand
-	pcritNh:SetText( CalcPCritNh(info))			-- Physischer Kritische Trefferrate Nebenhand
-	ppraehh:SetText( CalcPPraeHh(info))			-- Physische Präzision Haupthand
-	ppraeNh:SetText( CalcPPraeNh(info))			-- Physische Präzision Nebenhand
-			-- Veränderung ??
-
-	-- Fernkampf:
-	pdmgfk:SetText( CalcPdmgFk(info))			-- Physischer Fernkampf-Schaden
-	-- Fernkampf-Angriff = Nahkampf-Angriff
-	pcritfk:SetText( CalcPCritFk(info))			-- Physische Kritische Trefferrate, Fernkampf
-	-- Fernkampf-Präzision = Nahkampf-Präzision,Haupthand
-
-	-- Anderes:
-	manap:SetText( CalcManap(info))				-- Manapunkte
-	--manareg:SetText( CalcManareg(info))			-- Manaregeneration
-	lifep:SetText( CalcLifep(info))				-- Lebenspunkte
-	--lifereg:SetText( CalcLifereg(info)) 		-- Lebensregeneration
-
-end
-
-
-
-
-function CalcPdmgHh(info)
-        return (info.PDMGWHH + info.PDMG) --SKILLS?
-end
-function CalcPdmgNh(info)
-        return ((info.PDMGWNH*0.7) + info.PDMG) --SKILLS?
-end
-function CalcPCritHh(info)
-        return ((info.CRITE) + (info.CRITWHH))   --CRITE=Krit. von Items (Equip) ohne Runen von Waffen, CRITWHH=Krit. aus Haupthandwaffe inkl Rune
-end
-function CalcPCritNh(info)
-        return ((info.CRITE) + (info.CRITWNH))
-end
-
-function CalcPPraeNh(info)
-        return ((CalcPPraeHh(info)*0.5))  --Fehler bei Schurke
-end
-
-function CalcPdmgFk(info)
-        return (info.PDMGFK + info.PDMG)
-end
-function CalcPCritFk(info)
-        return ((info.CRITE) + (info.CRITWFK))    -- CRITWFK= Krit. von der Fernkamfwaffe, inklusive Rune
-end
-
-
-        Erläuterungen Variablen:
-		Die Werte setzen sich aus den Char.Grundwerten und den Equip-Werten(inklusive Runen) zusammen (ggf. auch durch Perma-Skills)
-
-		  CRITE = Krit. Trefferrate Equip
-		CRITWFK = Krit. Trefferrate Fernkampfwaffe (Nonstat und Rune)
-		CRITWHH = Krit. Trefferrate Haupthandwaffe (Nonstat und Rune)
-		CRITWNH = Krit. Trefferrate Nebenhandwaffe (Nonstat und Rune)
-		  MCRIT = mag. Kritische Trefferrate
-		   MWID = mag. Widerstand
-		   LIFE = Lebenspunkte
-		   MANA = Manapunkte
-		   PATK = Physischer Angriff
-		   MATK = Magischer Angriff
-
-		   MDMG = Magischer Schaden (Setzt sich aus Equip, mag. Schaden Runen und Haupt-und Nebenhand-Waffe zusammen)
-		   PDMG = Physischer Schaden (Setzt sich aus Equip und Runen zusammen)
-		   PDEF = Physische Verteidigung
-		   MDEF = Magische Verteidigung
-		    PAR = Parieren
-		  PHYAU = Physische ausweichrate
-		  PPRAE = phy. Präzision
-		  MPRAE = mag. Präzision
-		 PDMGHH = Physischer Schaden Haupthandwaffe
-		 PDMGNH = Physischer Schaden Nebenhandwaffe
-		 PDMGFK = Physischer Schaden Fernkampfwaffe
-
-
-		]]--
