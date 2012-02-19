@@ -136,7 +136,7 @@ end
 function Search.OnLoadFilterSlotMenu(this)
     UIDropDownMenu_SetWidth(this, 100)
     UIDropDownMenu_Initialize( this, Search.OnSlotFilterShow)
-    UIDropDownMenu_Refresh(frame)
+    UIDropDownMenu_Refresh(this)
 end
 
 function Search.OnSlotFilterShow(this)
