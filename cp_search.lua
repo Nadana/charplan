@@ -189,7 +189,7 @@ end
 
 function Search.OnLoadFilterTierShow(button)
     local info={}
-    for i=0,10 do
+    for i=0,20 do
         info.text = "+"..i
         info.value = i
         info.notCheckable=1

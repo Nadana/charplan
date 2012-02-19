@@ -203,8 +203,8 @@ end
 
 function Pimp.OnCtrlShow_Tier(button)
     local info={}
-    for i=0,10 do
-        info.text = i
+    for i=0,20 do
+        info.text = "+"..i
         info.value = i
         info.notCheckable=1
         info.func = Pimp.OnCtrlClicked_Tier
