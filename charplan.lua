@@ -147,12 +147,12 @@ function CP.ApplyBagItem(inv_slot, bag_slot, hidden)
 end
 
 
-function CP.ApplyLinkItem(link, inv_slot)
+function CP.ApplyLinkItem(link, inv_slot, hidden)
     local item_data = CP.Pimp.ExtractLink(link)
     item_data.icon = CP.DB.GetItemIcon(item_data.id)
 
     inv_slot = inv_slot or CP.FindSlotForItem(item_data.id)
-    CP.ApplyItem(item_data, inv_slot)
+    CP.ApplyItem(item_data, inv_slot, hidden)
 end
 
 

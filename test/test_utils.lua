@@ -13,4 +13,12 @@ function TestCP_Utils:testRomans()
     end
 end
 
+function TestCP_Utils:testTableCopy()
+    local a = {"a","b","c","d","e"}
+    local b = {"f","g","h","i"}
+    c = CP.Utils.TableCopy(a)
+    assertArrayEquals(c,a)
+    CP.Utils.TableCopy(b,c)
+    assertArrayEquals(c,b)
+end
 
