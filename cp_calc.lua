@@ -378,7 +378,7 @@ end
 
 function Calc.CharIndepended(values)
     values.MATK = values.MATK + values.INT* 2
-    values.EVADE= values.EVADE+ values.DEX* 0.78
+    values.EVADE= values.EVADE+ math.floor(values.DEX* 0.78)
     values.MRES = values.MRES + values.WIS* 0.6
     values.MACC = values.MACC + values.WIS* 0.9
     values.PACC = values.PACC + values.DEX* 0.9
@@ -420,7 +420,7 @@ function Calc.CharDepended(values, cname)
     local d = CLASS_VARS[cname]
 
     values.PDEF = values.PDEF + values.STA* d.PDEF
-    values.MDEF = values.MDEF + values.WIS* d.MDEF
+    values.MDEF = values.MDEF + math.floor(values.WIS* d.MDEF)
 
     values.PATK = values.PATK + values.INT* d.PATKint
     values.PATK = values.PATK + values.DEX* d.PATKdex
