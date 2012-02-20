@@ -161,7 +161,7 @@ function DB.GetSetEffect(set_id, item_count)
     local eff = {}
 
     for count,data in pairs(DB.sets[set_id] or {}) do
-        if count<=item_count then
+        if count<item_count then
             for _,v in ipairs(data) do
                 table.insert(eff,v)
             end

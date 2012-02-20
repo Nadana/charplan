@@ -314,11 +314,13 @@ end
 
 function Calc.GetSetBonus()
     local sets={}
+    local counted={}
 
     for _,item in pairs(CP.Items) do
         local _,set_id = CP.DB.GetItemInfo(item.id)
-        if set_id then
+        if set_id and not counted[item.id] then
             sets[set_id]=(sets[set_id] or 0)+1
+            counted[item.id]=1
         end
     end
 

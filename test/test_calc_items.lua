@@ -13,6 +13,14 @@ function TestCP_CalcItems:testSetBonus()
         }
     local result = CP.Calc.GetSetBonus(result)
     self:CompareStatsComplete(result, {[s.DEX]=95,[s.PATK]=1200,[s.PCRIT]=150,[s.STR]=100,[s.PDMG]=45})
+
+
+    CP.Items={
+            [1]={id=226503}, -- Set - Handschützer von Yawaka
+            [4]={id=226505}, -- Set - Beinschützer von Yawaka
+        }
+    local result = CP.Calc.GetSetBonus(result)
+    self:CompareStatsComplete(result, {[s.DEX]=95})
 end
 
 function TestCP_CalcItems:testItemCalc_ID_226499() --Handschützer von Lekani
