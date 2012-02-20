@@ -1,10 +1,21 @@
+-- coding: utf-8
 TestCP_CalcFull={}
 
+--[[
+ How to:
+  -> Ingame: import equipment into cp  & run command "/cp s"
+  -> logout
+  -> open savevariables.lua and copy the "CP_FullCharInfo" block
+  -> create a new function (named "TestCP_CalcFull:testXXXX")
+  -> paste the CP_FullCharInfo variable into it
+  -> at the end of the function add the test call: "TestCP_CalcFull:DoFullCharCheck(CP_FullCharInfo)"
+]]
 
-function TestCP_CalcFull:testFullCharTho()
 
-    -- note: this was copy & pasted from savevariables - I just removed some line breaks
-    CP_FullCharInfo = {
+function TestCP_CalcFull:testThoros()
+
+    local CP_FullCharInfo = {
+        ["class"]= "WARDEN",
         ["cards"] = {
             [2] = 6, [3] = 7, [4] = 8, [6] = 14, [13] = 18,[15] = 4,
         },
@@ -40,9 +51,9 @@ function TestCP_CalcFull:testFullCharTho()
             --[9] = 2892, -- MP 2625
             --[12] = 1757, -- PATK 1758
             --[13] = 2899, -- PDEF 2898
-            --[14] = 2612, -- MDEF 2612.6
+            [14] = 2612, -- MDEF
             --[15] = 880, -- MATK 879
-            --[17] = 375, -- EVADE 375.9
+            [17] = 375, -- EVADE
             [20] = 20,
             [22] = 0,
             --[404] = 20, -- PCRITMH 10
@@ -90,7 +101,9 @@ function  TestCP_CalcFull:DoFullCharCheck(info)
     values.PDMGOH = values.PDMG  -items[10].PDMG -items[15].PDMG
     values.PCRITOH= values.PCRIT -items[10].PCRIT-items[15].PCRIT
 
-  	CP.Calc.DependingStats(values)
+  	CP.Calc.StatRelations(values)
+    CP.Calc.CharDepended(values, info.class)
+    CP.Calc.CharIndepended(values)
 
     TestCP_CalcItems:CompareStats(values, info.result)
 end

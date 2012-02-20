@@ -333,7 +333,7 @@ end
 
 function Calc.DependingStats(values)
     Calc.StatRelations(values)
-    Calc.CharDepended(values)
+    Calc.CharDepended(values, UnitClassToken("player"))
     Calc.CharIndepended(values)
 end
 
@@ -342,7 +342,6 @@ function Calc.Explain_DependingStats(res)
     CP.Calc.StatRelations(values)
     AddDescription(res, TEXT("SYS_WEAREQTYPE_7"), values[stat])
 end
-
 
 function Calc.StatRelations(values)
 
@@ -399,26 +398,25 @@ end
 
 
 local CLASS_VARS={
-	[C_AUGUR]  ={   PDEF=1.5, MDEF=3.2,
+	["AUGUR"]  ={   PDEF=1.5, MDEF=3.2,
                     PATKint=0.5, PATKdex=0  ,PATKstr=0.8},
-	[C_MAGE]   ={   PDEF=1.5, MDEF=3  ,
+	["MAGE"]   ={   PDEF=1.5, MDEF=3  ,
                     PATKint=0.5,PATKdex=0  ,PATKstr=0.8},
-	[C_DRUID]  ={   PDEF=1.5, MDEF=3  ,
+	["DRUID"]  ={   PDEF=1.5, MDEF=3  ,
                     PATKint=0.5,PATKdex=0  ,PATKstr=0.8},
-	[C_RANGER] ={   PDEF=1.8, MDEF=2.6,
+	["RANGER"] ={   PDEF=1.8, MDEF=2.6,
                     PATKint=0  ,PATKdex=1  ,PATKstr=1  },
-	[C_KNIGHT] ={   PDEF=3  , MDEF=2.4,
+	["KNIGHT"] ={   PDEF=3  , MDEF=2.4,
                     PATKint=0.5,PATKdex=0  ,PATKstr=1.5},
-	[C_WARDEN] ={   PDEF=2  , MDEF=2.4,
+	["WARDEN"] ={   PDEF=2  , MDEF=2.4,
                     PATKint=0.5,PATKdex=0  ,PATKstr=1.5},
-	[C_THIEF]  ={   PDEF=1.8, MDEF=2.3,
+	["THIEF"]  ={   PDEF=1.8, MDEF=2.3,
                     PATKint=0  ,PATKdex=1.3,PATKstr=1.2},
-    [C_WARRIOR]={   PDEF=2.3, MDEF=2.2,
+    ["WARRIOR"]={   PDEF=2.3, MDEF=2.2,
                     PATKint=0  ,PATKdex=0  ,PATKstr=2  },
 }
 
-function Calc.CharDepended(values)
-    local cname = UnitClass("player")
+function Calc.CharDepended(values, cname)
     local d = CLASS_VARS[cname]
 
     values.PDEF = values.PDEF + values.STA* d.PDEF
@@ -429,62 +427,4 @@ function Calc.CharDepended(values)
     values.PATK = values.PATK + values.STR* d.PATKstr
 end
 
-
-function Calc.DumpCharacterSkills()
-
--- /run CP.Calc.DumpCharacterSkills()
-
-    CP.DB.Load()
-
-    --for page=1,4 do
-    for page=2,4 do
-
-        local count = GetNumSkill( page )
-        for index = 1,count do
-
-            local _SkillName, _SkillLV, _IconPath, _Mode, _PLV, _PPoint, _PTotalPoint, _bLearned = GetSkillDetail( page,  index )
-
-            local link = GetSkillHyperLink( page, index )
-            local _type, _data, _name = ParseHyperlink(link)
-            local _,_,skill_id = string.find(_data, "(%d+)")
-
-            local effect = CP.DB.GetSkillEffect(tonumber(skill_id))
-            if #effect>0 then
-                local txt ={}
-                for i=1,#effect,2  do
-                    table.insert(txt,string.format("%i %s",effect[i+1],TEXT("SYS_WEAREQTYPE_"..effect[i])))
-                end
-
-                CP.Debug( string.format("%i %s(%i): %s",skill_id, _SkillName,_SkillLV,table.concat(txt,",")))
-            --else
-            --    CP.Debug( string.format("%i %s(%i)",skill_id, _SkillName,_SkillLV))
-            end
-        end
-    end
-
-    CP.DB.Release()
-
-end
-
-function Calc.DumpCharacterTitles()
-
--- /run CP.Calc.DumpCharacterTitles()
-    -- only titles with bonus
-
-    CP.DB.Load()
-
-    local count = GetTitleCount()
-    for i = 1 , count do
-		local name, titleID, geted, icon,classify1, classify2,note,brief,rare = GetTitleInfoByIndex( i - 1 )
-        if geted then
-            local v = CP.DB.GetArchievementEffect(titel_id)
-            if #v>0 then
-                CP.Debug(name)
-            end
-        end
-    end
-
-    CP.DB.Release()
-
-end
 

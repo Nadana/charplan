@@ -54,6 +54,7 @@ function CP.SlashCMD_SnapShot()
     CP.Calc.ReadCards()
 
     CP_FullCharInfo = {}
+    CP_FullCharInfo.class=UnitClassToken("player")
     CP_FullCharInfo.bases=CP.Calc.GetBases()
     CP_FullCharInfo.cards=CP.Calc.GetCardBonus()
     CP_FullCharInfo.title=GetCurrentTitle()
@@ -118,3 +119,62 @@ GetOri("MAGIC_RESIST_CRITICAL")
     CP.Output("-> Equipment from Charplan is used.")
     CP.Output("-> 'CP_FullCharInfo' will be written to savevarialbes.lua. Copy and use it in test_calc_full.lua!")
 end
+
+function CP.DumpCharacterSkills()
+
+-- /run CP.DumpCharacterSkills()
+
+    CP.DB.Load()
+
+    --for page=1,4 do
+    for page=2,4 do
+
+        local count = GetNumSkill( page )
+        for index = 1,count do
+
+            local _SkillName, _SkillLV, _IconPath, _Mode, _PLV, _PPoint, _PTotalPoint, _bLearned = GetSkillDetail( page,  index )
+
+            local link = GetSkillHyperLink( page, index )
+            local _type, _data, _name = ParseHyperlink(link)
+            local _,_,skill_id = string.find(_data, "(%d+)")
+
+            local effect = CP.DB.GetSkillEffect(tonumber(skill_id))
+            if #effect>0 then
+                local txt ={}
+                for i=1,#effect,2  do
+                    table.insert(txt,string.format("%i %s",effect[i+1],TEXT("SYS_WEAREQTYPE_"..effect[i])))
+                end
+
+                CP.Debug( string.format("%i %s(%i): %s",skill_id, _SkillName,_SkillLV,table.concat(txt,",")))
+            --else
+            --    CP.Debug( string.format("%i %s(%i)",skill_id, _SkillName,_SkillLV))
+            end
+        end
+    end
+
+    CP.DB.Release()
+
+end
+
+function CP.DumpCharacterTitles()
+
+-- /run CP.DumpCharacterTitles()
+    -- only titles with bonus
+
+    CP.DB.Load()
+
+    local count = GetTitleCount()
+    for i = 1 , count do
+		local name, titleID, geted, icon,classify1, classify2,note,brief,rare = GetTitleInfoByIndex( i - 1 )
+        if geted then
+            local v = CP.DB.GetArchievementEffect(titel_id)
+            if #v>0 then
+                CP.Debug(name)
+            end
+        end
+    end
+
+    CP.DB.Release()
+
+end
+
