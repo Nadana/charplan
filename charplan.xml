@@ -727,8 +727,28 @@
 		<Scripts>
 			<OnClick>ToggleUIFrame(CPFrame)</OnClick>
 		</Scripts>
-		<NormalTexture file="interface/AddOns/charplan/icon.dds"/>
-		<PushedTexture file="interface/AddOns/charplan/icon.dds"/>
+		<NormalTexture file="interface/AddOns/charplan/icon"/>
+		<PushedTexture file="interface/AddOns/charplan/icon"/>
 		<HighlightTexture file="Interface\Buttons\PanelSmallButtonHighlight" alphaMode="ADD"/>
+	</Button>
+
+    <Button name="CharplanMinimapButton" hidden="false" inherits="MinimapButtonTemplate" parent="UIParent" >
+		<Size>
+			<AbsDimension y="24" x="24"/>
+		</Size>
+		<Anchors>
+			<Anchor point="CENTER" relativeTo="MinimapViewFrame" relativePoint="CENTER">
+				<Offset>
+					<RelDimension x="-85" y="-2.5"/>
+				</Offset>
+			</Anchor>
+		</Anchors>
+		<Scripts>
+			<OnClick>ToggleUIFrame(CPFrame)</OnClick>
+            <OnLoad>if AddonManager then this:Hide() end</OnLoad>
+		</Scripts>
+		<NormalTexture file="interface/AddOns/charplan/minimap_icon"/>
+		<PushedTexture file="interface/AddOns/charplan/minimap_icon"/>
+		<HighlightTexture file="interface/minimap/minimapbutton_highlight" alphaMode="ADD"/>
 	</Button>
 </Ui>
