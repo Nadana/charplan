@@ -118,10 +118,12 @@ end
 
 function Calc.Init()
     Calc.ReadCards()
+    Calc.ReadSkills()
 end
 
 function Calc.Release()
     Calc.CardsBonus=nil
+    Calc.SkillBonus=nil
 end
 
 function Calc.ReadCards()
@@ -139,9 +141,50 @@ function Calc.ReadCards()
     end
 end
 
+function Calc.ReadSkills()
+
+    Calc.SkillBonus = Calc.NewStats()
+
+    local skills = Calc.GetListOfSkills()
+    for skill_id, level in pairs(skills) do
+
+        local effect = CP.DB.GetSkillEffect(skill_id)
+        for i=1,#effect,2 do
+            local ev = effect[i+1]
+            -- NOTE: a approximation - real value can differ by 0.1 (related to rounding borders)
+            local val = ev*(1+level/10)- math.floor(ev*level/10+0.49)/10
+
+            Calc.SkillBonus[effect[i]] = Calc.SkillBonus[effect[i]] + val
+        end
+    end
+end
+
+function Calc.GetListOfSkills()
+
+    local skills = {}
+
+    for page=2,4 do
+
+        local count = GetNumSkill( page ) or 0
+        for index = 1,count do
+
+            local _, _, _, _, PLV, _, _, _ = GetSkillDetail( page,  index )
+
+            local link = GetSkillHyperLink( page, index )
+            local _type, _data, _name = ParseHyperlink(link)
+            local _,_,skill_id = string.find(_data, "(%d+)")
+
+            skills[tonumber(skill_id)] = PLV
+        end
+    end
+
+    return skills
+end
+
 function Calc.Calculate()
 
     local values = Calc.GetBases()
+    values = values + Calc.GetSkillBonus()
     values = values + Calc.GetCardBonus()
     values = values + Calc.GetSetBonus()
     values = values + Calc.GetArchievementBonus()
@@ -239,6 +282,10 @@ end
 
 function Calc.GetCardBonus()
     return Calc.CardsBonus
+end
+
+function Calc.GetSkillBonus()
+    return Calc.SkillBonus
 end
 
 function Calc.GetArchievementBonus()

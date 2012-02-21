@@ -41,39 +41,22 @@ function CP.SlashCMD_Reload()
     dofile(base.."cp_search.lua")
     dofile(base.."cp_storage.lua")
     dofile(base.."cp_utils.lua")
+    dofile(base.."debug_utils.lua")
 
     CP_Storage = temp_storage
     CP.EquipButtons = temp_ebuttons
     DEFAULT_CHAT_FRAME:AddMessage("CP: RELOADED",1,0.5,0.5)
 end
 
-
-function CP.SlashCMD_SnapShot()
-    SaveVariables("CP_FullCharInfo")
-
-    CP.Calc.ReadCards()
-
-    CP_FullCharInfo = {}
-    CP_FullCharInfo.class=UnitClassToken("player")
-    CP_FullCharInfo.bases=CP.Calc.GetBases()
-    CP_FullCharInfo.cards=CP.Calc.GetCardBonus()
-    CP_FullCharInfo.title=GetCurrentTitle()
-    CP_FullCharInfo.item_links={}
-    for _,item in pairs(CP.Items) do
-        local lnk = CP.Pimp.GenerateLink(item)
-        table.insert(CP_FullCharInfo.item_links, lnk)
-    end
-    if #CP_FullCharInfo.item_links<1 then
-        CP.Output("WARN: no equipment!")
-    end
+local function GetCurrentStats()
+    local s = CP.Calc.STATS
 
     local function GetOri(txt)
         local b,e = GetPlayerAbility(txt)
         return b+e
     end
 
-    local s = CP.Calc.STATS
-    CP_FullCharInfo.result =
+    return
     {
         --Base
         [s.STR] = GetOri("STR"),
@@ -115,6 +98,37 @@ GetOri("MAGIC_DODGE")
 GetOri("MAGIC_RESIST_CRITICAL")
 ]]
     }
+end
+
+
+local function GetCurrentCPItems()
+    local item_links ={}
+    for _,item in pairs(CP.Items) do
+        local lnk = CP.Pimp.GenerateLink(item)
+        table.insert(item_links, lnk)
+    end
+    if #item_links<1 then
+        CP.Output("WARN: no equipment!")
+    end
+
+    return item_links
+end
+
+function CP.SlashCMD_SnapShot()
+    SaveVariables("CP_FullCharInfo")
+
+    CP.Calc.ReadCards()
+
+    CP_FullCharInfo = {}
+    CP_FullCharInfo.class=UnitClassToken("player")
+    CP_FullCharInfo.bases=CP.Calc.GetBases()
+    CP_FullCharInfo.cards=CP.Calc.GetCardBonus()
+    CP_FullCharInfo.title=GetCurrentTitle()
+    CP_FullCharInfo.item_links=GetCurrentCPItems()
+    CP_FullCharInfo.skills=CP.Calc.GetListOfSkills()
+
+    CP_FullCharInfo.result =GetCurrentStats()
+
 
     CP.Output("-> Equipment from Charplan is used.")
     CP.Output("-> 'CP_FullCharInfo' will be written to savevarialbes.lua. Copy and use it in test_calc_full.lua!")
@@ -129,7 +143,7 @@ function CP.DumpCharacterSkills()
     --for page=1,4 do
     for page=2,4 do
 
-        local count = GetNumSkill( page )
+        local count = GetNumSkill( page ) or 0
         for index = 1,count do
 
             local _SkillName, _SkillLV, _IconPath, _Mode, _PLV, _PPoint, _PTotalPoint, _bLearned = GetSkillDetail( page,  index )
@@ -145,9 +159,9 @@ function CP.DumpCharacterSkills()
                     table.insert(txt,string.format("%i %s",effect[i+1],TEXT("SYS_WEAREQTYPE_"..effect[i])))
                 end
 
-                CP.Debug( string.format("%i %s(%i): %s",skill_id, _SkillName,_SkillLV,table.concat(txt,",")))
+                CP.Debug( string.format("%i %s(%i): %s",skill_id, _SkillName,_PLV,table.concat(txt,",")))
             --else
-            --    CP.Debug( string.format("%i %s(%i)",skill_id, _SkillName,_SkillLV))
+            --    CP.Debug( string.format("%i %s(%i)",skill_id, _SkillName,_PLV))
             end
         end
     end
