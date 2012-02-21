@@ -74,57 +74,63 @@ end
 
 function  TestCP_CalcFull:DoFullCharCheck(info)
 
-    local values = CP.Calc.NewStats()
-    values = values + info.bases
-    values = values + info.cards
-
-    local effect = CP.DB.GetArchievementEffect(info.titel)
-    ApplyBonus(values, effect)
+    -- data prepase
+    TestCP_CalcFull.cur_title = info.title
+    TestCP_CalcFull.cur_class_token = info.class
+    TestCP_CalcFull.cur_list_of_skills = info.skills
 
     CP.Items={}
     for _,item in pairs(info.item_links) do
         CP.ApplyLinkItem(item,nil,true)
     end
 
-    values = values + CP.Calc.GetSetBonus()
+    CP.Calc.Init()
 
-    local items = {}
-	for _,slot in ipairs( {0,1,2,3,4,5,6,7,8,9,11,12,13,14,21,10,15,16} ) do
-        items[slot] = CP.Calc.GetItemBonus(CP.Items[slot])
-    	values = values + items[slot]
-    end
+    -- !Same as in calculate
+    local values = CP.Calc.NewStats()
+    values = values + info.bases
+    values = values + CP.Calc.GetSkillBonus()
+    values = values + info.cards
+    values = values + CP.Calc.GetArchievementBonus()
+    values = values + CP.Calc.GetAllItemsBonus()
+    CP.Calc.DependingStats(values)
+    -- !end
 
-    values.PDMGR = values.PDMG   -items[15].PDMG -items[16].PDMG
-    values.PCRITR= values.PCRIT  -items[15].PCRIT-items[16].PCRIT
-    values.PDMGMH = values.PDMG  -items[10].PDMG -items[16].PDMG
-    values.PCRITMH= values.PCRIT -items[10].PCRIT-items[16].PCRIT
-    values.PDMGOH = values.PDMG  -items[10].PDMG -items[15].PDMG
-    values.PCRITOH= values.PCRIT -items[10].PCRIT-items[15].PCRIT
-
-  	CP.Calc.StatRelations(values)
-    CP.Calc.CharDepended(values, info.class)
-    CP.Calc.CharIndepended(values)
-
-    TestCP_CalcItems:CompareStats(values, info.result)
+    TestCP_Calc:CompareStats(values, info.result)
 end
 
+function TestCP_CalcFull.HOOKED_GetCurrentTitle()
+    return TestCP_CalcFull.cur_title
+end
 
-function TestCP_CalcFull:CompareStats(actual, expected, msg)
+function TestCP_CalcFull.HOOKED_UnitClassToken(unit)
+    return TestCP_CalcFull.cur_class_token
+end
 
-    for stat, value in pairs(expected) do
-        local act = actual[stat]
-        local round = math.floor(act*10)/10
-        assertEquals(round,value, msg)
-    end
+function TestCP_CalcFull.HOOKED_GetListOfSkills()
+    return TestCP_CalcFull.cur_list_of_skills or {}
 end
 
 function TestCP_CalcFull:classSetUp()
     self.old_data = CP.Utils.TableCopy(CP.Items)
+
+    self.old_GetCurrentTitle = GetCurrentTitle
+    GetCurrentTitle = TestCP_CalcFull.HOOKED_GetCurrentTitle
+
+    self.old_UnitClassToken = UnitClassToken
+    UnitClassToken = TestCP_CalcFull.HOOKED_UnitClassToken
+
+    self.old_GetListOfSkills = CP.Calc.GetListOfSkills
+    CP.Calc.GetListOfSkills = TestCP_CalcFull.HOOKED_GetListOfSkills
+
     CP.DB.Load()
 end
 
-
 function TestCP_CalcFull:classTearDown()
-    CP.DB.Release()
+    GetCurrentTitle = self.old_GetCurrentTitle
+    UnitClassToken = self.old_UnitClassToken
+    CP.Calc.GetListOfSkills = self.old_GetListOfSkills
     CP.Items = self.old_data
+    CP.Calc.Init()
+    CP.DB.Release()
 end

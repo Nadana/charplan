@@ -1,5 +1,16 @@
 TestCP_CalcItems={}
 
+
+function TestCP_CalcItems:testSkillBonus()
+--~     local s = CP.Calc.STATS
+
+--~     TestCP_CalcItems.cur_list_of_skills = {[490222]=0}
+--~     CP.Calc.ReadSkills()
+--~     TestCP_Calc:CompareStatsComplete(CP.Calc.GetSkillBonus(), {[s.WIS]=11})
+
+--    Calc.DependingStats(values)
+end
+
 function TestCP_CalcItems:testSetBonus()
     local s = CP.Calc.STATS
 
@@ -12,7 +23,7 @@ function TestCP_CalcItems:testSetBonus()
             [15]={id=212254}, -- Weapon (dummy)
         }
     local result = CP.Calc.GetSetBonus(result)
-    self:CompareStatsComplete(result, {[s.DEX]=95,[s.PATK]=1200,[s.PCRIT]=150,[s.STR]=100,[s.PDMG]=45})
+    TestCP_Calc:CompareStatsComplete(result, {[s.DEX]=95,[s.PATK]=1200,[s.PCRIT]=150,[s.STR]=100,[s.PDMG]=45})
 
 
     CP.Items={
@@ -20,7 +31,7 @@ function TestCP_CalcItems:testSetBonus()
             [4]={id=226505}, -- Set - Beinschützer von Yawaka
         }
     local result = CP.Calc.GetSetBonus(result)
-    self:CompareStatsComplete(result, {[s.DEX]=95})
+    TestCP_Calc:CompareStatsComplete(result, {[s.DEX]=95})
 end
 
 function TestCP_CalcItems:testItemCalc_ID_226499() --Handschützer von Lekani
@@ -111,40 +122,26 @@ end
 
 function TestCP_CalcItems:CheckItem(item, stats)
     local result = CP.Calc.GetItemBonus(item)
-    self:CompareStats(result, stats, "Item: "..item.id)
+    TestCP_Calc:CompareStats(result, stats, "Item: "..item.id)
 end
 
-function TestCP_CalcItems:CompareStatsComplete(actual, expected, msg)
 
-    for stat, value in pairs(expected) do
-        local act = actual[stat] or 0
-        local round = math.floor(act*10)/10
-        assertEquals(round,value, msg)
-    end
-
-    for stat, value in pairs(actual) do
-        local ex = expected[stat] or 0
-        local round = math.floor(value*10)/10
-        assertEquals(round, ex, msg)
-    end
-end
-
-function TestCP_CalcItems:CompareStats(actual, expected, msg)
-
-    for stat, value in pairs(expected) do
-        local act = actual[stat]
-        local round = math.floor(act*10)/10
-        assertEquals(round,value, msg)
-    end
+function TestCP_CalcItems.HOOKED_GetListOfSkills()
+    return TestCP_CalcItems.cur_list_of_skills
 end
 
 function TestCP_CalcItems:classSetUp()
     self.old_data = CP.Utils.TableCopy(CP.Items)
+
+    self.old_GetListOfSkills = CP.Calc.GetListOfSkills
+    CP.Calc.GetListOfSkills = TestCP_CalcItems.HOOKED_GetListOfSkills
+
     CP.DB.Load()
 end
 
-
 function TestCP_CalcItems:classTearDown()
-    CP.DB.Release()
     CP.Items = self.old_data
+    CP.Calc.GetListOfSkills = self.old_GetListOfSkills
+    CP.Calc.Init()
+    CP.DB.Release()
 end

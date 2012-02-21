@@ -186,8 +186,19 @@ function Calc.Calculate()
     local values = Calc.GetBases()
     values = values + Calc.GetSkillBonus()
     values = values + Calc.GetCardBonus()
-    values = values + Calc.GetSetBonus()
     values = values + Calc.GetArchievementBonus()
+    values = values + Calc.GetAllItemsBonus()
+
+  	Calc.DependingStats(values)
+
+    return values
+end
+
+function Calc.GetAllItemsBonus()
+
+    local values = Calc.NewStats()
+
+    values = values + Calc.GetSetBonus()
 
     local items = {}
 	for _,slot in ipairs( {0,1,2,3,4,5,6,7,8,9,11,12,13,14,21,10,15,16} ) do
@@ -201,8 +212,6 @@ function Calc.Calculate()
     values.PCRITMH= values.PCRIT -items[10].PCRIT-items[16].PCRIT
     values.PDMGOH = values.PDMG  -items[10].PDMG -items[15].PDMG
     values.PCRITOH= values.PCRIT -items[10].PCRIT-items[15].PCRIT
-
-  	Calc.DependingStats(values)
 
     return values
 end
@@ -382,7 +391,7 @@ end
 
 function Calc.DependingStats(values)
     Calc.StatRelations(values)
-    Calc.CharDepended(values, UnitClassToken("player"))
+    Calc.CharDepended(values)
     Calc.CharIndepended(values)
 end
 
@@ -484,7 +493,8 @@ local CLASS_VARS={
                     PATKint=0  ,PATKdex=0  ,PATKstr=2  },
 }
 
-function Calc.CharDepended(values, cname)
+function Calc.CharDepended(values)
+    local cname = UnitClassToken("player")
     local d = CLASS_VARS[cname]
 
     values.PDEF = values.PDEF + values.STA* d.PDEF

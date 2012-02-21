@@ -22,3 +22,27 @@ function TestCP_Calc:testStats()
     assertEquals(c.INT, 5)
 end
 
+
+function TestCP_Calc:CompareStats(actual, expected, msg)
+
+    for stat, value in pairs(expected) do
+        local act = actual[stat]
+        local round = math.floor(act*10)/10
+        assertEquals(round,value, msg)
+    end
+end
+
+function TestCP_Calc:CompareStatsComplete(actual, expected, msg)
+
+    for stat, value in pairs(expected) do
+        local act = actual[stat] or 0
+        local round = math.floor(act*10)/10
+        assertEquals(round,value, msg)
+    end
+
+    for stat, value in pairs(actual) do
+        local ex = expected[stat] or 0
+        local round = math.floor(value*10)/10
+        assertEquals(round, ex, msg)
+    end
+end
