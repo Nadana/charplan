@@ -356,54 +356,43 @@ function Calc.StatRelations(values)
         values.WIS = values.WIS+all
     end
 
-    local p = values[166] / 100 --% all
-    if p~=0 then
-        values.STR = values.STR*(1+p)
-        values.STA = values.STA*(1+p)
-        values.DEX = values.DEX*(1+p)
-        values.INT = values.INT*(1+p)
-        values.WIS = values.WIS*(1+p)
-    end
-	
-	local p = values[56] / 100 -- pdmg (melee)
-	if p~=0 then
-		values.PDMGMH = values.PDMGMH*(1+p)
-		values.PDMGOH = values.PDMGOH*(1+p)
-	end	
-	
-	local p = values[173] / 100 -- pdmg
-	if p~=0 then
-		values.PDMGMH = values.PDMGMH*(1+p)
-		values.PDMGOH = values.PDMGOH*(1+p)
-		values.PDMGR  = values.PDMGR *(1+p)
-	end	
-	
-	local p = values[134] / 100 -- pdmg
-	if p~=0 then
-		values.PATK  = values.PATK*(1+p)
-		values.PATKR = values.PATKR*(1+p)
-	end	
-	
-	local p = values[134] / 100 -- pdmg
-	if p~=0 then
-		values.PACC   = values.PACC  *(1+p)
-		values.PACCOH = values.PACCOH*(1+p)
-		values.PACCR  = values.PACCR *(1+p)
-	end	
-	
     local s = Calc.STATS
     local perc={
-        [161]=s.STR,    [162]=s.STA,    [163]=s.INT,   [164]=s.WIS,   [165]=s.DEX,
-        [167]=s.HP,     [168]=s.MP,     [170]=s.MDEF,  [171]=s.MATK,  [192]=s.MDMG,
-		[197]=s.PACC,   [199]=s.MACC,   [149]=s.MHEAL, [135]=s.PDEF,   [37]=s.PDMGOH,
-  		 [36]=s.PACCOH,  [52]=s.PDMGR,
-		
-		
+        [161]=s.STR,   -- "% Stärke"
+        [162]=s.STA,   -- "% Ausdauer"
+        [163]=s.INT,   -- "% Intelligenz"
+        [164]=s.WIS,   -- "% Weisheit"
+        [165]=s.DEX,   -- "% Geschicklichkeit"
+        [166]={s.STR, s.STA, s.INT, s.WIS, s.DEX}, -- "% Alle Hauptattribute"
+        [167]=s.HP,    -- "% LP-Maximums"
+        [168]=s.MP,    -- "% MP-Maximums"
+        [170]=s.MDEF,  -- "% Magische Verteidigung"
+        [171]=s.MATK,  -- "% Magische Angriffskraft"
+        [192]=s.MDMG,  -- "% magische Schadensrate"
+        [197]=s.PACC,  -- "% Präzision bei physischen Angriffen"
+        [199]=s.MACC,  -- "% Magische Präzision"
+        [149]=s.MHEAL, -- "% Heilung"
+        [135]=s.PDEF,  -- "% Verteidigung"
+        [37]=s.PDMGOH, -- "% Nebenhand-Schadensrate"
+        [36]=s.PACCOH, -- "% Nebenhand-Präzision"
+        [52]=s.PDMGR,  -- "% Fernkampfwaffen-Schadensrate"
+        [134]={s.PATK, s.PATKR, s.PACC, s.PACCOH, s.PACCR}, -- "% physische Angriffe"
+        [173]={s.PDMGMH, s.PDMGOH, s.PDMGR}, -- "% Schaden"
+        [56] ={s.PDMGMH, s.PDMGOH, s.PDMGR}, -- "% Nahkampfwaffen-Schadensrate"
     }
 
-    for s,v in pairs(perc) do
-        local p = values[s]/100
-        if p~=0 then  values[v] = values[v]*(1+p) end
+    for p_stat,inc_stat in pairs(perc) do
+        if values[p_stat]~=0 then
+            local percent = 1 + values[p_stat]/100
+
+            if type(inc_stat)=="table" then
+                for _,i_stat in ipairs(inc_stat) do
+                    values[i_stat] = values[i_stat]*percent
+                end
+            else
+                values[inc_stat] = values[inc_stat]*percent
+            end
+        end
     end
 
 end
