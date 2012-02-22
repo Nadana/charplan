@@ -1,5 +1,27 @@
 TestCP_Calc={}
 
+
+function TestCP_Calc:testSkillBonus()
+    local s = CP.Calc.STATS
+
+    TestCP_Calc:CheckSkill({[s.INT]=78}, {[490222]=0}, {[s.INT]=78+11}) -- Weisheit+0
+--    TestCP_Calc:CheckSkill({[s.INT]=78}, {[490222]=1}, {[s.INT]=78+13}) -- Weisheit+1
+end
+
+function TestCP_Calc:CheckSkill(base_val, skills, result)
+
+    TestCP_Calc.cur_list_of_skills = skills
+    CP.Calc.ReadSkills()
+
+    local values = CP.Calc.NewStats()
+    values = values + base_val
+    values = values + CP.Calc.GetSkillBonus()
+    CP.Calc.DependingStats(values)
+
+
+    TestCP_Calc:CompareStats(values, result)
+end
+
 function TestCP_Calc:testStats()
 
     local a= CP.Calc.NewStats()
@@ -22,6 +44,9 @@ function TestCP_Calc:testStats()
     assertEquals(c.INT, 5)
 end
 
+function TestCP_Calc.HOOKED_GetListOfSkills()
+    return TestCP_Calc.cur_list_of_skills
+end
 
 function TestCP_Calc:CompareStats(actual, expected, msg)
 
@@ -45,4 +70,18 @@ function TestCP_Calc:CompareStatsComplete(actual, expected, msg)
         local round = math.floor(value*10)/10
         assertEquals(round, ex, msg)
     end
+end
+
+
+function TestCP_Calc:classSetUp()
+    self.old_GetListOfSkills = CP.Calc.GetListOfSkills
+    CP.Calc.GetListOfSkills = TestCP_Calc.HOOKED_GetListOfSkills
+
+    CP.DB.Load()
+end
+
+function TestCP_Calc:classTearDown()
+    CP.Calc.GetListOfSkills = self.old_GetListOfSkills
+    CP.Calc.Init()
+    CP.DB.Release()
 end

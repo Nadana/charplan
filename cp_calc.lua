@@ -443,10 +443,10 @@ function Calc.StatRelations(values)
 
             if type(inc_stat)=="table" then
                 for _,i_stat in ipairs(inc_stat) do
-                    values[i_stat] = values[i_stat]*percent
+                    values[i_stat] = math.floor(values[i_stat]*percent)
                 end
             else
-                values[inc_stat] = values[inc_stat]*percent
+                values[inc_stat] = math.floor(values[inc_stat]*percent)
             end
         end
     end

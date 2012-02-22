@@ -1,15 +1,6 @@
 TestCP_CalcItems={}
 
 
-function TestCP_CalcItems:testSkillBonus()
---~     local s = CP.Calc.STATS
-
---~     TestCP_CalcItems.cur_list_of_skills = {[490222]=0}
---~     CP.Calc.ReadSkills()
---~     TestCP_Calc:CompareStatsComplete(CP.Calc.GetSkillBonus(), {[s.WIS]=11})
-
---    Calc.DependingStats(values)
-end
 
 function TestCP_CalcItems:testSetBonus()
     local s = CP.Calc.STATS
@@ -126,22 +117,13 @@ function TestCP_CalcItems:CheckItem(item, stats)
 end
 
 
-function TestCP_CalcItems.HOOKED_GetListOfSkills()
-    return TestCP_CalcItems.cur_list_of_skills
-end
 
 function TestCP_CalcItems:classSetUp()
     self.old_data = CP.Utils.TableCopy(CP.Items)
-
-    self.old_GetListOfSkills = CP.Calc.GetListOfSkills
-    CP.Calc.GetListOfSkills = TestCP_CalcItems.HOOKED_GetListOfSkills
-
     CP.DB.Load()
 end
 
 function TestCP_CalcItems:classTearDown()
     CP.Items = self.old_data
-    CP.Calc.GetListOfSkills = self.old_GetListOfSkills
-    CP.Calc.Init()
     CP.DB.Release()
 end
