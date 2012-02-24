@@ -272,11 +272,8 @@ function Calc.GetBases()
     v.INT = GetPlayerAbility("INT")
     v.WIS = GetPlayerAbility("MND")
 
-	--Melee
-	v.PCRITOH = GetPlayerAbility("MELEE_CRITICAL")
-	v.PCRITMH = GetPlayerAbility("MELEE_MAIN_CRITICAL")
-	v.PCRITOH = GetPlayerAbility("MELEE_OFF_CRITICAL")
-	v.PACCMH = GetPlayerAbility("PHYSICAL_MAIN_HIT")
+	--Melee	
+	v.PCRITMH = GetPlayerAbility("MAGIC_CRITICAL") -- not correct ability but correct numbers 	
 
 	--Range
 	v.PCRITR = GetPlayerAbility("RANGE_CRITICAL")
@@ -450,17 +447,16 @@ function Calc.StatRelations(values)
         [168]=s.MP,    -- "% MP-Maximums"
         [170]=s.MDEF,  -- "% Magische Verteidigung"
         [171]=s.MATK,  -- "% Magische Angriffskraft"
-        [192]=s.MDMG,  -- "% magische Schadensrate"
-        [197]=s.PACC,  -- "% Präzision bei physischen Angriffen"
+        [192]=s.MDMG,  -- "% magische Schadensrate"        
         [199]=s.MACC,  -- "% Magische Präzision"
         [149]=s.MHEAL, -- "% Heilung"
         [135]=s.PDEF,  -- "% Verteidigung"
         [37]=s.PDMGOH, -- "% Nebenhand-Schadensrate"
         [36]=s.PACCOH, -- "% Nebenhand-Präzision"
         [52]=s.PDMGR,  -- "% Fernkampfwaffen-Schadensrate"
-        [134]={s.PATK, s.PATKR, s.PACC, s.PACCOH, s.PACCR}, -- "% physische Angriffe"
+        [134]=s.PATK, -- "% physische Angriffe"
         [173]={s.PDMGMH, s.PDMGOH, s.PDMGR}, -- "% Schaden"
-        [56] ={s.PDMGMH, s.PDMGOH, s.PDMGR}, -- "% Nahkampfwaffen-Schadensrate"
+        [56] ={s.PDMGMH, s.PDMGOH}, -- "% Nahkampfwaffen-Schadensrate"
     }
 
     for p_stat,inc_stat in pairs(perc) do
