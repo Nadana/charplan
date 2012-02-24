@@ -552,7 +552,11 @@ function CP.Attribute_OnEnter(this)
 	GameTooltip:SetText(txt)
     local left,right = CP.Calc.Explain(stat_id)
     for i=1,#(left) do
-  		GameTooltip:AddDoubleLine(left[i], right[i])
+        if left[i]~="" then
+            GameTooltip:AddDoubleLine(left[i], right[i])
+        else
+            GameTooltip:AddSeparator()
+        end
     end
 
 	GameTooltip:Show()

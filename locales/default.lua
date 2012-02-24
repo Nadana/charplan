@@ -38,6 +38,7 @@ local rom_text ={
     SEARCH_TYPE = "Type",
 
     BY_CLASS = "Base",
+    BY_SKILL = "Skill",
     BY_CARD = TEXT("AC_ITEMTYPENAME_6"),
     BY_SET = "Sets",
     BY_TITLE = C_TITLE,

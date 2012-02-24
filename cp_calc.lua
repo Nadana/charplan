@@ -194,28 +194,6 @@ function Calc.Calculate()
     return values
 end
 
-function Calc.GetAllItemsBonus()
-
-    local values = Calc.NewStats()
-
-    values = values + Calc.GetSetBonus()
-
-    local items = {}
-	for _,slot in ipairs( {0,1,2,3,4,5,6,7,8,9,11,12,13,14,21,10,15,16} ) do
-        items[slot] = Calc.GetItemBonus(CP.Items[slot])
-    	values = values + items[slot]
-    end
-
-    values.PDMGR = values.PDMG   -items[15].PDMG -items[16].PDMG
-    values.PCRITR= values.PCRIT  -items[15].PCRIT-items[16].PCRIT
-    values.PDMGMH = values.PDMG  -items[10].PDMG -items[16].PDMG
-    values.PCRITMH= values.PCRIT -items[10].PCRIT-items[16].PCRIT
-    values.PDMGOH = values.PDMG  -items[10].PDMG -items[15].PDMG
-    values.PCRITOH= values.PCRIT -items[10].PCRIT-items[15].PCRIT
-
-    return values
-end
-
 local function AddDescription(res_tab, text,value, value_prefix)
     if value~=0 then
         table.insert(res_tab.left, text)
@@ -227,6 +205,7 @@ end
 function Calc.Explain(stat)
 
     local COLOR_CLASS= "|cff00ff00"
+    local COLOR_SKILL= "|cffff5040"
     local COLOR_CARD = "|cffa0a040"
     local COLOR_SET  = "|cffa08040"
     local COLOR_ITEM = "|cffe0e0e0"
@@ -234,9 +213,28 @@ function Calc.Explain(stat)
 
     local res = {left={}, right={} }
 
+
+    local s = Calc.STATS
+    if stat == s.PDMGR or stat == s.PDMGMH or stat == s.PDMGOH then
+        res.left, res.right= Calc.Explain(s.PDMG)
+        AddDescription(res, "",0)
+    end
+
+    if stat == s.PCRITR or stat == s.PCRITMH or stat == s.PCRITOH then
+        res.left, res.right= Calc.Explain(s.PCRIT)
+        AddDescription(res, "",0)
+    end
+
+
+
+
     local values = Calc.GetBases()
     local total = values
     AddDescription(res, COLOR_CLASS..CP.L.BY_CLASS, values[stat],"")
+
+    values = Calc.GetSkillBonus()
+    total = total + values
+    AddDescription(res, COLOR_SKILL..CP.L.BY_SKILL, values[stat])
 
     values = Calc.GetCardBonus()
     total = total + values
@@ -306,6 +304,34 @@ function Calc.GetArchievementBonus()
         local effect = CP.DB.GetArchievementEffect(titel_id)
         ApplyBonus(values, effect)
     end
+
+    return values
+end
+
+function Calc.GetAllItemsBonus()
+
+    local values = Calc.NewStats()
+    values = values + Calc.GetSetBonus()
+
+    local items = {}
+	for slot,item in pairs(CP.Items) do
+        items[slot] = Calc.GetItemBonus(item)
+    	values = values + items[slot]
+    end
+
+    items[10] = items[10] or Calc.NewStats()
+    items[15] = items[15] or Calc.NewStats()
+    items[16] = items[16] or Calc.NewStats()
+
+    values.PDMG = values.PDMG   -items[10].PDMG-items[15].PDMG -items[16].PDMG
+    values.PCRIT= values.PCRIT  -items[10].PCRIT-items[15].PCRIT-items[16].PCRIT
+
+    values.PDMGR = values.PDMG   +items[10].PDMG
+    values.PCRITR= values.PCRIT  +items[10].PCRIT
+    values.PDMGMH = values.PDMG  +items[15].PDMG
+    values.PCRITMH= values.PCRIT +items[15].PCRIT
+    values.PDMGOH = values.PDMG  +items[16].PDMG
+    values.PCRITOH= values.PCRIT +items[16].PCRIT
 
     return values
 end
