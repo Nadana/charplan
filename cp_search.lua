@@ -592,6 +592,8 @@ function Search.OnTakeIt(slot1or2)
 
     if Search.selection and Search.selection_changed then
         local item_data = CP.DB.GenerateItemDataByID(Search.selection)
+        item_data.plus= UIDropDownMenu_GetSelectedValue(CPSearchFilterPlus) or 0
+        item_data.tier= UIDropDownMenu_GetSelectedValue(CPSearchFilterTier) or 0
         CP.ApplyItem(item_data, slot, false)
 
         CPSearch:Hide()
