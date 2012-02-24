@@ -8,5 +8,8 @@ dofile(path..'test_calc_items.lua')
 dofile(path..'test_calc_full.lua')
 dofile(path..'test_utils.lua')
 
-LuaUnit:run()
+CP.DB.Load()
+    LuaUnit:run()
+CP.DB.Release()
+
 
