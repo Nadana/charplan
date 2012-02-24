@@ -120,7 +120,7 @@ function TestCP_CalcFull:testLestat()
 		["class"] = "THIEF",
 	}
 	TestCP_CalcFull:DoFullCharCheck(CP_FullCharInfo)
-}	
+end	
 function TestCP_CalcFull:testThoros()
 
     local CP_FullCharInfo = {
