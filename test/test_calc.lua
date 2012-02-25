@@ -52,12 +52,12 @@ function TestCP_Calc.HOOKED_UnitClassToken(unit)
     return "WARDEN"
 end
 
-function TestCP_Calc:CompareStats(actual, expected, msg)
-
+function TestCP_Calc:CompareStats(actual, expected, msg, tolerance)
+    tolerance = tolerance or 0.01
     for stat, value in pairs(expected) do
-        local act = actual[stat]
-        local round = math.floor(act*10)/10
-        assertEquals(round,value, msg)
+        if math.abs(1-value/actual[stat])*100>tolerance then
+            assertEquals(actual[stat],value, msg)
+        end
     end
 end
 

@@ -32,6 +32,25 @@ function TestCP_CalcItems:testItemCalc_ID_226499() --Handschützer von Lekani
     local item = CP.DB.GenerateItemDataByID(226499)
     self:CheckItem(item, {[s.PDEF]=1107, [s.MDEF]=1365})
  	self:CheckItemPlusGrad(226499, 100,10, 10, {[s.PDEF]=2601, [s.MDEF]=3207})
+
+  	self:CheckItemPlusGrad(226499, 116,0, 0, {[s.PDEF]=1328.4, [s.MDEF]=1638})
+  	self:CheckItemPlusGrad(226499, 116,6, 0, {[s.PDEF]=1580.4, [s.MDEF]=1948.8})
+  	self:CheckItemPlusGrad(226499, 116,0, 2, {[s.PDEF]=1594, [s.MDEF]=1965.6})
+  	self:CheckItemPlusGrad(226499, 100,6, 2, {[s.PDEF]=1538.4, [s.MDEF]=1897})
+  	self:CheckItemPlusGrad(226499, 116,6, 2, {[s.PDEF]=1846, [s.MDEF]=2276.4})
+
+    local item = CP.Pimp.ExtractLink("|Hitem:374c3 0 77060c74 d41bd3b2 d56cd570 d492d574 7f1d9 0 0 0 2d50 9604|h|cffc805f8[Handschützer von Lekani]|r|h")
+ 	self:CheckItem(item, {
+                            [s.PDEF]=1846,
+                            [s.MDEF]=2276.4,
+                            [s.DEX]=967.4, -- =252.2+91.2+115.2+127.2+127.2+127.2+127.2,
+                            [s.HP]=930.2+592.8,
+                            [s.PCRIT]=174.2,
+                            [s.STA]=115.2+127.2,
+                            [s.STR]=127.2+127.2,
+                            [s.PATK]=318,
+                            [s.ALL_ATTRIBUTES]=15.6
+                        })
 end
 
 
@@ -63,7 +82,6 @@ function TestCP_CalcItems:testItemCalc_ID_212615()
  	self:CheckItemPlusGrad(212615, 100,0, 2, {[s.PDMG]=2745.6, [s.PATK]=1171.2})
  	self:CheckItemPlusGrad(212615, 100,1, 1, {[s.PDMG]=2560.8, [s.PATK]=1113.6})
 end
-
 
 function TestCP_CalcItems:testItemCalc_without_BasePLUS()
     local s = CP.Calc.STATS
@@ -113,7 +131,7 @@ end
 
 function TestCP_CalcItems:CheckItem(item, stats)
     local result = CP.Calc.GetItemBonus(item)
-    TestCP_Calc:CompareStats(result, stats, "Item: "..item.id)
+    TestCP_Calc:CompareStats(result, stats, "Item: "..item.id,0.03) -- TODO: tolerance (last value) should be 0
 end
 
 

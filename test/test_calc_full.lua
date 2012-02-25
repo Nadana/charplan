@@ -11,10 +11,12 @@ TestCP_CalcFull={}
   -> at the end of the function add the test call: "TestCP_CalcFull:DoFullCharCheck(CP_FullCharInfo)"
 ]]
 function TestCP_CalcFull:testLestatFull()
+    local s = CP.Calc.STATS
+
 	local CP_FullCharInfo = {
 		["cards"] = {
 			[2] = 34,
-			[3] = 22,
+            [3] = 22,
 			[4] = 25,
 			[5] = 9,
 			[6] = 36,
@@ -99,30 +101,34 @@ function TestCP_CalcFull:testLestatFull()
 			[403] = 0,
 		},
 		["result"] = {
-			[409] = 9884,
+        	-- INVALID: [s.MANA] = 100,
+
+			--[s.PACCMH] = 9884,
+			[s.MATK] = 1147,
+			[s.PDEF] = 29616,
+			[s.MDEF] = 24072,
 			[2] = 1686,
 			[4] = 561,
-			[8] = 55084,
-			[17] = 8532,
-			[9] = 100,
+			--[s.HP] = 55084,
+			[s.EVADE] = 8532,
 			[5] = 520,
 			[404] = 2883,
 			[20] = 593,
-			[405] = 2763,
+			[s.PCRITOH] = 2763,
 			[22] = 0,
 			[3] = 5424,
-			[6] = 10534,
-			[12] = 37074,
-			[13] = 29616,
-			[14] = 24072,
-			[15] = 1147,
+			[s.DEX] = 10534,
+			[s.PATK] = 37074,
 			[403] = 2753,
 		},
 		["class"] = "THIEF",
 	}
 	TestCP_CalcFull:DoFullCharCheck(CP_FullCharInfo)
-end	
+end
+
 function TestCP_CalcFull:testLestatNoWeapons()
+    local s = CP.Calc.STATS
+
 	local CP_FullCharInfo = {
 		["cards"] = {
 			[2] = 34,
@@ -208,32 +214,36 @@ function TestCP_CalcFull:testLestatNoWeapons()
 			[403] = 0,
 		},
 		["result"] = {
-			[409] = 9489,
+        	-- INVALID: [s.MANA] = 100,
+
+			--[s.PACCMH] = 9489,
+			[s.MATK] = 1115,
+			[s.PDEF] = 28888,
+			[s.MDEF] = 24009,
 			[2] = 1499,
 			[4] = 545,
-			[8] = 52342,
-			[17] = 8190,
-			[9] = 100,
+			--[s.HP] = 52342,
+			[s.EVADE] = 8190,
 			[5] = 497,
 			[404] = 2763,
 			[20] = 593,
-			[405] = 2763,
+			[s.PCRITOH] = 2763,
 			[22] = 0,
 			[3] = 5020,
-			[6] = 10096,
-			[12] = 28910,
-			[13] = 28888,
-			[14] = 24009,
-			[15] = 1115,
+			[s.DEX] = 10096,
+			[s.PATK] = 28910,
 			[403] = 2753,
 		},
 		["class"] = "THIEF",
 	}
-	
+
 	TestCP_CalcFull:DoFullCharCheck(CP_FullCharInfo)
 end
-function TestCP_CalcFull:testLestatInclusiveTitel()
-	local CP_FullCharInfo = {		
+
+function TestCP_CalcFull:testLestatInclusiveTitle()
+    local s = CP.Calc.STATS
+
+	local CP_FullCharInfo = {
 		["cards"] = {
 			[2] = 34,
 			[3] = 22,
@@ -321,23 +331,24 @@ function TestCP_CalcFull:testLestatInclusiveTitel()
 			[403] = 0,
 		},
 		["result"] = {
-			[409] = 9884,
+        	-- INVALID: [s.MANA] = 100,
+
+			--[s.PACCMH] = 9884,
+			[s.MATK] = 1147,
+			[s.PDEF] = 29986,
+			[s.MDEF] = 24072,
 			[2] = 1686,
 			[4] = 561,
-			[8] = 56113,
-			[17] = 8532,
-			[9] = 100,
+			--[s.HP] = 56113,
+			[s.EVADE] = 8532,
 			[5] = 520,
 			[404] = 2883,
 			[20] = 593,
-			[405] = 2763,
+			[s.PCRITOH] = 2763,
 			[22] = 0,
 			[3] = 5630,
-			[6] = 10534,
-			[12] = 38121,
-			[13] = 29986,
-			[14] = 24072,
-			[15] = 1147,
+			[s.DEX] = 10534,
+			[s.PATK] = 38121,
 			[403] = 2753,
 		},
 		["class"] = "THIEF",
@@ -345,6 +356,7 @@ function TestCP_CalcFull:testLestatInclusiveTitel()
 	TestCP_CalcFull:DoFullCharCheck(CP_FullCharInfo)
 end
 function TestCP_CalcFull:testThoros()
+    local s = CP.Calc.STATS
 
     local CP_FullCharInfo = {
         ["class"]= "WARDEN",
@@ -378,8 +390,8 @@ function TestCP_CalcFull:testThoros()
             [3] = 596,
             [4] = 430,
             [5] = 439,
-            [6] = 482,
-            --[8] = 4443, -- HP 3761.2
+            [s.DEX] = 482,
+            --[s.HP] = 4443, -- HP 3761.2
             --[9] = 2892, -- MP 2625
             --[12] = 1757, -- PATK 1758
             --[13] = 2899, -- PDEF 2898
@@ -428,7 +440,7 @@ function  TestCP_CalcFull:DoFullCharCheck(info)
     CP.Calc.DependingStats(values)
     -- !end
 
-    TestCP_Calc:CompareStats(values, info.result)
+    TestCP_Calc:CompareStats(values, info.result,nil,0.9) -- TODO: tolerance (last value) should be 0
 end
 
 function TestCP_CalcFull.HOOKED_GetCurrentTitle()

@@ -56,6 +56,9 @@ local function GetCurrentStats()
         return b+e
     end
 
+    local mana = UnitMaxMana("player")
+    if mana==100 then mana = UnitMaxSkill("player") end
+
     return
     {
         --Base
@@ -65,7 +68,7 @@ local function GetCurrentStats()
         [s.INT] = GetOri("INT"),
         [s.WIS] = GetOri("MND"),
         [s.HP] = UnitMaxHealth("player"),
-        [s.MANA] = UnitMaxMana("player"),
+        [s.MANA] = mana,
 
 	    --Melee
         [s.PATK] =  GetOri("MELEE_ATTACK"),
