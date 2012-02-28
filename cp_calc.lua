@@ -349,9 +349,11 @@ function Calc.GetItemBonus(item)
         local ef = effect[i]
         local val = effect[i+1]
         if ef==attA or ef==attB then
+            -- NB: based on float/rounding errors we may have a +/- 0.1
             local v = math.floor(val*(1+plus_base/100))
-            local dif = (v-val)*(item.tier*0.1)
-            values[ef] = values[ef] + (v*factor-dif)
+            local dif = math.floor( (v-val)*(item.tier*0.1*dura_factor) *10)/10
+            v = v*factor-dif
+            values[ef] = values[ef] + v
         else
             values[ef] = values[ef] + val*factor
         end
