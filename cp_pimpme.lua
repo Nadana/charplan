@@ -150,24 +150,23 @@ function Pimp.OnShow(this)
 end
 
 function Pimp.OnHide(this)
+    if Pimp.data_backup then
+        CP.Utils.TableCopy(Pimp.data_backup, Pimp.data)
+    end
+
     Pimp.data = nil
     Pimp.data_backup = nil
     CP.PimpFinished()
 end
 
 function Pimp.OnOK(this)
+    Pimp.data_backup = nil
     CPPimpMe:Hide()
 end
 
 function Pimp.OnCancel(this)
-    if Pimp.data_backup then
-        CP.Utils.TableCopy(Pimp.data_backup, Pimp.data)
-    end
     CPPimpMe:Hide()
 end
-
-
-
 
 function Pimp.OnCtrlLoad(this)
 
