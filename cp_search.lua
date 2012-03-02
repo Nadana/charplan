@@ -36,7 +36,6 @@ end
 function Search.ForSlot(slot_id, item_id)
     Search.slot = slot_id
     Search.selection = item_id
-    Search.selection_changed = false
     Search.ClearSettings()
 
     --CPSearchFilterSlotMenu:Disable()
@@ -470,7 +469,6 @@ end
 function Search.SelectItem(item_id)
     if item_id ~= Search.selection then
         Search.selection = item_id
-        Search.selection_changed = true
         Search.ScrollToSelection()
         Search.UpdateSlotInfo()
     end
@@ -524,7 +522,6 @@ function Search.ShowContextMenu(this)
 
     info.text = CP.L.SEARCH_CONTEXT_TAKE
     info.func = function()
-                    Search.selection_changed = (Search.selection~=this.item_id)
                     Search.selection=this.item_id
                     Search.OnTakeIt()
                 end
@@ -586,25 +583,23 @@ end
 
 function Search.OnTakeIt(slot1or2)
 
-    local s1,s2
-    if Search.selection then
-        s1,s2 = CP.DB.GetItemPositions(Search.selection)
+    if not Search.selection then return end
+
+    local slot
+    if slot1or2 then
+        local s1,s2 = CP.DB.GetItemPositions(Search.selection)
+        slot = slot1or2==2 and s2 or s1
     else
-        s1 = Search.slot
-        if s1==11 or s1==12 then s1,s2=11,12 end
-        if s1==13 or s1==14 then s1,s2=13,14 end
+        slot = CP.FindSlotForItem(Search.selection)
     end
 
-    local slot = slot1or2==2 and s2 or s1
 
-    if Search.selection and Search.selection_changed then
-        local item_data = CP.DB.GenerateItemDataByID(Search.selection)
-        item_data.plus= UIDropDownMenu_GetSelectedValue(CPSearchFilterPlus) or 0
-        item_data.tier= UIDropDownMenu_GetSelectedValue(CPSearchFilterTier) or 0
-        CP.ApplyItem(item_data, slot, false)
+    local item_data = CP.DB.GenerateItemDataByID(Search.selection)
+    item_data.plus= UIDropDownMenu_GetSelectedValue(CPSearchFilterPlus) or 0
+    item_data.tier= UIDropDownMenu_GetSelectedValue(CPSearchFilterTier) or 0
+    CP.ApplyItem(item_data, slot, false)
 
-        CPSearch:Hide()
-    end
+    CPSearch:Hide()
 end
 
 
