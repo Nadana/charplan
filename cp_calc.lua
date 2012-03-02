@@ -186,6 +186,7 @@ end
 function Calc.Calculate()
 
     local values = Calc.GetBases()
+    values = values + Calc.GetBasesCalced()
     values = values + Calc.GetSkillBonus()
     values = values + Calc.GetCardBonus()
     values = values + Calc.GetArchievementBonus()
@@ -217,20 +218,19 @@ function Calc.Explain(stat)
 
 
     local s = Calc.STATS
-    if stat == s.PDMGR or stat == s.PDMGMH or stat == s.PDMGOH then
-        res.left, res.right= Calc.Explain(s.PDMG)
-        AddDescription(res, "",0)
-    end
+--~     if stat == s.PDMGR or stat == s.PDMGMH or stat == s.PDMGOH then
+--~         res.left, res.right= Calc.Explain(s.PDMG)
+--~         AddDescription(res, "",0)
+--~     end
 
-    if stat == s.PCRITR or stat == s.PCRITMH or stat == s.PCRITOH then
-        res.left, res.right= Calc.Explain(s.PCRIT)
-        AddDescription(res, "",0)
-    end
-
-
+--~     if stat == s.PCRITR or stat == s.PCRITMH or stat == s.PCRITOH then
+--~         res.left, res.right= Calc.Explain(s.PCRIT)
+--~         AddDescription(res, "",0)
+--~     end
 
 
     local values = Calc.GetBases()
+    values = values + Calc.GetBasesCalced()
     local total = values
     AddDescription(res, COLOR_CLASS..CP.L.BY_CLASS, values[stat],"")
 
@@ -260,6 +260,19 @@ function Calc.Explain(stat)
 	end
 
     Calc.Explain_DependingStats(res)
+
+    if stat == s.PDMG then
+        AddDescription(res, "",0)
+        local l,r = Calc.Explain(s.PDMGMH)
+        for _,t in ipairs(l) do table.insert(res.left,t) end
+        for _,t in ipairs(r) do table.insert(res.right,t) end
+
+        AddDescription(res, "",0)
+        local l,r = Calc.Explain(s.PDMGOH)
+        for _,t in ipairs(l) do table.insert(res.left,t) end
+        for _,t in ipairs(r) do table.insert(res.right,t) end
+    end
+
     return res.left,res.right
 end
 
@@ -274,14 +287,26 @@ function Calc.GetBases()
     v.INT = GetPlayerAbility("INT")
     v.WIS = GetPlayerAbility("MND")
 
-	--Melee	
-	v.PCRITMH = GetPlayerAbility("MAGIC_CRITICAL") -- not correct ability but correct numbers 	
+	--Melee
+	v.PCRITMH = GetPlayerAbility("MAGIC_CRITICAL") -- not correct ability but correct numbers
 
 	--Range
 	v.PCRITR = GetPlayerAbility("RANGE_CRITICAL")
 
 	--Magic
 	v.MCRIT = GetPlayerAbility("MAGIC_CRITICAL")
+
+    return v
+end
+
+function Calc.GetBasesCalced()
+
+    local v = Calc.NewStats()
+
+    -- HP
+    -- TODO: that's wrong but atleast a lower border
+    local lvl = UnitLevel("player")
+    v.HP = 64 + 6.5*lvl
 
     return v
 end
@@ -325,11 +350,11 @@ function Calc.GetAllItemsBonus()
     values.PDMG = values.PDMG   -items[10].PDMG-items[15].PDMG -items[16].PDMG
     values.PCRIT= values.PCRIT  -items[10].PCRIT-items[15].PCRIT-items[16].PCRIT
 
-    values.PDMGR = values.PDMG   +items[10].PDMG
-    values.PCRITR= values.PCRIT  +items[10].PCRIT
+    values.PDMGR  = values.PDMG   +items[10].PDMG
     values.PDMGMH = values.PDMG  +items[15].PDMG
-    values.PCRITMH= values.PCRIT +items[15].PCRIT
     values.PDMGOH = values.PDMG  +items[16].PDMG
+    values.PCRITR = values.PCRIT  +items[10].PCRIT
+    values.PCRITMH= values.PCRIT +items[15].PCRIT
     values.PCRITOH= values.PCRIT +items[16].PCRIT
 
     return values
@@ -451,7 +476,7 @@ function Calc.StatRelations(values)
         [168]=s.MP,    -- "% MP-Maximums"
         [170]=s.MDEF,  -- "% Magische Verteidigung"
         [171]=s.MATK,  -- "% Magische Angriffskraft"
-        [192]=s.MDMG,  -- "% magische Schadensrate"        
+        [192]=s.MDMG,  -- "% magische Schadensrate"
         [199]=s.MACC,  -- "% Magische Präzision"
         [149]=s.MHEAL, -- "% Heilung"
         [135]=s.PDEF,  -- "% Verteidigung"

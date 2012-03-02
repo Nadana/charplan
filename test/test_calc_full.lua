@@ -101,7 +101,7 @@ function TestCP_CalcFull:testLestatFull()
 			[403] = 0,
 		},
 		["result"] = {
-        	-- INVALID: [s.MANA] = 100,
+        	-- INVALID: [s.MANA] = 100, -- PLZ FIX
 
 			--[s.PACCMH] = 9884,
 			[s.MATK] = 1147,
@@ -122,6 +122,8 @@ function TestCP_CalcFull:testLestatFull()
 			[403] = 2753,
 		},
 		["class"] = "THIEF",
+        level = 67, -- PLZ FIX
+        sec_level = 67, -- PLZ FIX
 	}
 	TestCP_CalcFull:DoFullCharCheck(CP_FullCharInfo)
 end
@@ -214,7 +216,7 @@ function TestCP_CalcFull:testLestatNoWeapons()
 			[403] = 0,
 		},
 		["result"] = {
-        	-- INVALID: [s.MANA] = 100,
+        	-- INVALID: [s.MANA] = 100, -- PLZ FIX
 
 			--[s.PACCMH] = 9489,
 			[s.MATK] = 1115,
@@ -235,6 +237,8 @@ function TestCP_CalcFull:testLestatNoWeapons()
 			[403] = 2753,
 		},
 		["class"] = "THIEF",
+        level = 67, -- PLZ FIX
+        sec_level = 67, -- PLZ FIX
 	}
 
 	TestCP_CalcFull:DoFullCharCheck(CP_FullCharInfo)
@@ -352,6 +356,8 @@ function TestCP_CalcFull:testLestatInclusiveTitle()
 			[403] = 2753,
 		},
 		["class"] = "THIEF",
+        level = 67, -- PLZ FIX
+        sec_level = 67, -- PLZ FIX
 	}
 	TestCP_CalcFull:DoFullCharCheck(CP_FullCharInfo)
 end
@@ -405,6 +411,7 @@ function TestCP_CalcFull:testThoros()
             --[409] = 433, -- PACCMH 359
             [403] = 10,
         },
+        level = 54,
     }
 
     TestCP_CalcFull:DoFullCharCheck(CP_FullCharInfo)
@@ -419,9 +426,7 @@ end
 function  TestCP_CalcFull:DoFullCharCheck(info)
 
     -- data prepase
-    TestCP_CalcFull.cur_title = info.title
-    TestCP_CalcFull.cur_class_token = info.class
-    TestCP_CalcFull.cur_list_of_skills = info.skills
+    TestCP_CalcFull.cur_data = info
 
     CP.Items={}
     for _,item in pairs(info.item_links) do
@@ -433,6 +438,7 @@ function  TestCP_CalcFull:DoFullCharCheck(info)
     -- !Same as in calculate
     local values = CP.Calc.NewStats()
     values = values + info.bases
+    values = values + CP.Calc.GetBasesCalced()
     values = values + CP.Calc.GetSkillBonus()
     values = values + info.cards
     values = values + CP.Calc.GetArchievementBonus()
@@ -444,15 +450,23 @@ function  TestCP_CalcFull:DoFullCharCheck(info)
 end
 
 function TestCP_CalcFull.HOOKED_GetCurrentTitle()
-    return TestCP_CalcFull.cur_title
+    return TestCP_CalcFull.cur_data.title
 end
 
 function TestCP_CalcFull.HOOKED_UnitClassToken(unit)
-    return TestCP_CalcFull.cur_class_token
+    return TestCP_CalcFull.cur_data.class
+end
+
+function TestCP_CalcFull.HOOKED_UnitLevel(unit)
+    return  TestCP_CalcFull.cur_data.level,
+            TestCP_CalcFull.cur_data.sec_level
 end
 
 function TestCP_CalcFull.HOOKED_GetListOfSkills()
-    return TestCP_CalcFull.cur_list_of_skills or {}
+    if TestCP_CalcFull.cur_data and TestCP_CalcFull.cur_data.skills then
+        return TestCP_CalcFull.cur_data.skills
+    end
+    return {}
 end
 
 function TestCP_CalcFull:classSetUp()
@@ -464,6 +478,9 @@ function TestCP_CalcFull:classSetUp()
     self.old_UnitClassToken = UnitClassToken
     UnitClassToken = TestCP_CalcFull.HOOKED_UnitClassToken
 
+    self.old_UnitLevel = UnitLevel
+    UnitLevel = TestCP_CalcFull.HOOKED_UnitLevel
+
     self.old_GetListOfSkills = CP.Calc.GetListOfSkills
     CP.Calc.GetListOfSkills = TestCP_CalcFull.HOOKED_GetListOfSkills
 
@@ -473,6 +490,7 @@ end
 function TestCP_CalcFull:classTearDown()
     GetCurrentTitle = self.old_GetCurrentTitle
     UnitClassToken = self.old_UnitClassToken
+    UnitLevel = self.old_UnitLevel
     CP.Calc.GetListOfSkills = self.old_GetListOfSkills
     CP.Items = self.old_data
     CP.Calc.Init()

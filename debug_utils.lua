@@ -120,9 +120,15 @@ end
 function CP.SlashCMD_SnapShot()
     SaveVariables("CP_FullCharInfo")
 
+    local buff = UnitBuff("player",1)
+    if buff then
+        CP.Output("|cffff0000!!You have to remove all buffs before doing a snapshot !!")
+    end
+
     CP.Calc.ReadCards()
 
     CP_FullCharInfo = {}
+    CP_FullCharInfo.level , CP_FullCharInfo.sec_level=UnitLevel("player")
     CP_FullCharInfo.class=UnitClassToken("player")
     CP_FullCharInfo.bases=CP.Calc.GetBases()
     CP_FullCharInfo.cards=CP.Calc.GetCardBonus()
