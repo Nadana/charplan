@@ -45,6 +45,7 @@ function Storage.SaveItems(name)
                 local name = getglobal(this:GetName().."EditBox"):GetText()
                 CP.Storage.SaveItems(name)
             end,
+            EditBoxOnEnterPressed = StaticPopup_EnterPressed,
             hasEditBox = 1,
             hideOnEscape = 1
         }
