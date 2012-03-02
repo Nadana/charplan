@@ -203,7 +203,7 @@
 					<Layer>
 						<FontString name="$parentText" inherits="GameFontHighlight" justifyH="LEFT">
 							<Size>
-								<AbsDimension x="90" y="16"/>
+								<AbsDimension x="150" y="16"/>
 							</Size>
 							<Anchors>
 								<Anchor point="LEFT" relativePoint="RIGHT">
@@ -263,7 +263,7 @@
 				<Scripts>
 					<OnLoad>CP.Search.OnLoadFilterPlusMenu(this)</OnLoad>
 				</Scripts>
-			</Frame>		
+			</Frame>
 			<Frame name="$parentFilterTier" inherits="UIDropDownMenuTemplate">
 				<Size>
 					<AbsDimension x="40" y="24"/>
@@ -278,7 +278,7 @@
 				<Scripts>
 					<OnLoad>CP.Search.OnLoadFilterTierMenu(this)</OnLoad>
 				</Scripts>
-			</Frame>					
+			</Frame>
 			<!-- item list !-->
 			<Frame name="CPSearchItems">
 				<Size>
@@ -369,7 +369,7 @@
 					</Frame>
 				</Frames>
 			</Frame>
-			<Button name="CPSearchTakeIt1" inherits="UIPanelButtonTemplate" text="Put into Slot 1">
+			<Button name="CPSearchTakeIt1" inherits="UIPanelButtonTemplate">
 				<Size>
 					<AbsDimension x="100" y="24"></AbsDimension>
 				</Size>
@@ -381,7 +381,7 @@
 				<Scripts>
 					<OnClick>CP.Search.OnTakeIt()</OnClick>
 				</Scripts>
-			</Button>			
+			</Button>
 			<Button name="CPSearchTakeIt1Item" inherits="ItemButtonTemplate">
 				<Anchors>
 					<Anchor point="TOP" relativeTo="CPSearchTakeIt1" relativePoint="BOTTOM"><Offset><AbsDimension x="0" y="0"></AbsDimension></Offset></Anchor>
@@ -390,7 +390,7 @@
 					<OnClick>CP.Search.OnTakeIt()</OnClick>
 				</Scripts>
 			</Button>
-			<Button name="CPSearchTakeIt2" inherits="UIPanelButtonTemplate" text="Put into Slot 2">
+			<Button name="CPSearchTakeIt2" inherits="UIPanelButtonTemplate">
 				<Size>
 					<AbsDimension x="100" y="24"></AbsDimension>
 				</Size>
@@ -402,7 +402,7 @@
 				<Scripts>
 					<OnClick>CP.Search.OnTakeIt(2)</OnClick>
 				</Scripts>
-			</Button>			
+			</Button>
 			<Button name="CPSearchTakeIt2Item" inherits="ItemButtonTemplate">
 				<Anchors>
 					<Anchor point="TOP" relativeTo="CPSearchTakeIt2" relativePoint="BOTTOM"><Offset><AbsDimension x="0" y="0"></AbsDimension></Offset></Anchor>
@@ -410,7 +410,7 @@
 				<Scripts>
 					<OnClick>CP.Search.OnTakeIt(2)</OnClick>
 				</Scripts>
-			</Button>						
+			</Button>
 			<Button name="CPSearchCancel" inherits="UIPanelButtonTemplate" text="CANCEL">
 				<Size>
 					<AbsDimension x="130" y="24"></AbsDimension>

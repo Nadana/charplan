@@ -13,7 +13,7 @@ _G.CP = CP
 
 CP.version       = "@project-version@"
 --@do-not-package@
-CP.version       = "v1.0 (alpha)"
+CP.version       = "v4.0.8"
 dofile("interface/addons/charplan/debug_utils.lua")
 --@end-do-not-package@
 
@@ -78,7 +78,7 @@ end
 
 function CP.UpdateTitle()
     local stored = CP.Storage.GetLoadedName()
-    local name = CP.L.TITLE.." "..CP.version.." - " .. (stored or CP.L.TITLE_EMPTY)
+    local name = "CharPlan "..CP.version.." - " .. (stored or CP.L.TITLE_EMPTY)
 
     CPFrameTitle:SetText(name)
 end
@@ -174,6 +174,20 @@ function CP.ApplyItem(item_data, inv_slot, hidden)
     if not hidden then
         CP.UpdateEquipment()
     end
+end
+
+function CP.UseSkin(item_id, inv_slot)
+    if not CP.Items[inv_slot] then
+        return
+    end
+
+    if CP.Items[inv_slot].id == item_id then
+        CP.Items[inv_slot].skin = nil
+    else
+        CP.Items[inv_slot].skin = item_id
+    end
+
+    CP.UpdateModel()
 end
 
 function CP.ClearItem(inv_slot, hidden)

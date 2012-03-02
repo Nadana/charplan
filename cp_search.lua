@@ -27,6 +27,9 @@ function Search.OnLoad(this)
 
     CPSearchPimpPlus:SetText(CP.L.PIMP_PLUS)
     CPSearchPimpTier:SetText(CP.L.PIMP_TIER)
+
+    CPSearchTakeIt1:SetText(CP.L.SEARCH_USE_SLOT1)
+    CPSearchTakeIt2:SetText(CP.L.SEARCH_USE_SLOT2)
 end
 
 
@@ -519,23 +522,27 @@ end
 function Search.ShowContextMenu(this)
     local info={notCheckable = 1}
 
-    info.text   = "Take it"
-    info.func   = function()
+    info.text = CP.L.SEARCH_CONTEXT_TAKE
+    info.func = function()
                     Search.selection_changed = (Search.selection~=this.item_id)
                     Search.selection=this.item_id
                     Search.OnTakeIt()
                 end
     UIDropDownMenu_AddButton(info)
 
-    info.text   = "Use Skin"
-    info.func   = function()
+    local skin = CP.DB.ItemSkinPosition(this.item_id)
+    if skin then
+        info.text = CP.L.SEARCH_CONTEXT_SKIN
+        info.func = function()
+                    CP.UseSkin(this.item_id,skin)
                 end
-    UIDropDownMenu_AddButton(info)
+        UIDropDownMenu_AddButton(info)
+    end
 
 
-    info.text   = "Open Web"
-    info.func   = function()
-                    local linkData = "http://de.runesdatabase.com/item/"..this.item_id
+    info.text = CP.L.SEARCH_CONTEXT_WEB
+    info.func = function()
+                    local linkData = string.format(CP.L.SEARCH_WEBSITE,this.item_id)
 					--StaticPopupDialogs["OPEN_WEBROWER"].link = linkData
 					--StaticPopup_Show("OPEN_WEBROWER")
     				GC_OpenWebRadio(linkData)

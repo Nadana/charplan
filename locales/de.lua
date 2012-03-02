@@ -23,13 +23,29 @@ CP.L ={
     ERROR_SEARCH_SKIN = "Skin konnte nicht eindeutig erkannt werden und könnte falsch sein!",
 
     PIMP_STAT = "Stat %i",
-    PIMP_RUNE = "Rune %i",  -- SYS_ITEMTYPE_24
-    PIMP_DURA = "Dura",   --TEXT("_glossary_01188"),  -- Haltbarkeit
+    PIMP_RUNE = "Rune %i",
+    PIMP_DURA = "Dura",
     PIMP_PLUS = "Plus",
     PIMP_FILTER = "<Filter>",
 
-    STAT_SHORTS = {"PDMG","PDEF","MDEF","MDMG"},
+    SEARCH_NAME = "Name",
+    SEARCH_LEVEL = "Stufe",
+    SEARCH_BASE_STATS = "Dmg/Def",
+    SEARCH_STATS = "Stats",
+    SEARCH_NOSTATLESS = "keine Leeren Gegenst.",
+    SEARCH_TYPE = "Type",
 
-    STAT_NAMES= {
-    },
+    SEARCH_USE_SLOT1 = "In Slot1",
+    SEARCH_USE_SLOT2 = "In Slot2",
+    SEARCH_CONTEXT_TAKE = "Gegenstand anlegen",
+    SEARCH_CONTEXT_SKIN = "Skin übernehmen",
+    SEARCH_CONTEXT_WEB = "Im Webbrowser öffnen",
+    SEARCH_WEBSITE = "http://de.runesdatabase.com/item/%i",
+
+    BY_CLASS = "Base",
+    BY_SKILL = "Skill",
+    BY_SET = "Sets",
+
+    STAT_SHORTS= {},
+    STAT_NAMES= {},
 }

@@ -37,6 +37,13 @@ local rom_text ={
     SEARCH_NOSTATLESS = "no empty items",
     SEARCH_TYPE = "Type",
 
+    SEARCH_USE_SLOT1 = "Put into Slot 1",
+    SEARCH_USE_SLOT2 = "Put into Slot 2",
+    SEARCH_CONTEXT_TAKE = "Equip Item",
+    SEARCH_CONTEXT_SKIN = "Apply Skin",
+    SEARCH_CONTEXT_WEB = "Open in Webbrowser",
+    SEARCH_WEBSITE = "http://www.runesdatabase.com/item/%i",
+
     BY_CLASS = "Base",
     BY_SKILL = "Skill",
     BY_CARD = TEXT("AC_ITEMTYPENAME_6"),
