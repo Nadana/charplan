@@ -109,7 +109,7 @@ function CP.Register3rdParty()
     if AddonManager then
         local addon = {
             name         = "CharPlan",
-            description  = "Plan you Detailed information for daily-quest items.",
+            description  = "Plan&Pimp your toon equipment",
             author       = "McBen, 19Lestat88",
             icon         = "interface/AddOns/charplan/icon.dds",
             category     = "Inventory",

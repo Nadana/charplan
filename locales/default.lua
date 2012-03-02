@@ -1,7 +1,6 @@
 -- coding: utf-8
 local rom_text ={
 
-    TITLE = "CharPlan",
     TITLE_EMPTY = "<unnamed>",
     MENU_IMPORT= "Import current equipment",
     MENU_LOAD= "Load Items",

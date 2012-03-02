@@ -1,0 +1,7 @@
+-üdura im search
+-üdura im pimp
+-waffen bonis tooltip
+-hp/mana calculation
+-item-history
+-equipment compare
+
