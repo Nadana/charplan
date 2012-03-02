@@ -92,6 +92,8 @@ function Calc.NewStats()
 end
 
 local function ApplyBonus(stats, effect, factor)
+    if not effect then return end
+
     factor = factor or 1
     for i=1,#effect,2 do
         stats[effect[i]] = stats[effect[i]] + effect[i+1] * factor
