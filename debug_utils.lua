@@ -128,8 +128,8 @@ function CP.SlashCMD_SnapShot()
     CP.Calc.ReadCards()
 
     CP_FullCharInfo = {}
-    CP_FullCharInfo.level , CP_FullCharInfo.sec_level=UnitLevel("player")
-    CP_FullCharInfo.class=UnitClassToken("player")
+    CP_FullCharInfo.level, CP_FullCharInfo.sec_level=UnitLevel("player")
+    CP_FullCharInfo.class, CP_FullCharInfo.sec_class=UnitClassToken("player")
     CP_FullCharInfo.bases=CP.Calc.GetBases()
     CP_FullCharInfo.cards=CP.Calc.GetCardBonus()
     CP_FullCharInfo.title=GetCurrentTitle()
