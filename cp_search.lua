@@ -17,13 +17,13 @@ function Search.OnLoad(this)
     UIPanelBackdropFrame_SetTexture( this, "Interface/Common/PanelCommonFrame", 256, 256 )
 
     -- TODO: localize
-    CPSearchHead1:SetText(CP.L.SEARCH_NAME)
-    CPSearchHead2:SetText(CP.L.SEARCH_LEVEL)
+    CPSearchHead1:SetText(C_NAME)
+    CPSearchHead2:SetText(C_LEVEL)
     CPSearchHead3:SetText(CP.L.SEARCH_BASE_STATS)
     CPSearchHead4:SetText(CP.L.SEARCH_STATS)
     CPSearchFilterStatLessText:SetText(CP.L.SEARCH_NOSTATLESS)
-    CPSearchFilterNameLabel:SetText(CP.L.SEARCH_NAME)
-    CPSearchFilterLevelLabel:SetText(CP.L.SEARCH_LEVEL)
+    CPSearchFilterNameLabel:SetText(C_NAME)
+    CPSearchFilterLevelLabel:SetText(C_LEVEL)
 
     CPSearchPimpPlus:SetText(CP.L.PIMP_PLUS)
     CPSearchPimpTier:SetText(CP.L.PIMP_TIER)
