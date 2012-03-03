@@ -85,17 +85,16 @@
 				<Scripts>
 					<OnEnter>CP.Search.OnItemEnter(this:GetParent())</OnEnter>
 					<OnLeave>CP.Search.OnItemLeave(this:GetParent())</OnLeave>
+			        <OnClick>CP.Search.OnItemClick(this:GetParent(),key)</OnClick>
+			        <OnDoubleClick>CP.Search.OnItemDblClick(this:GetParent())</OnDoubleClick>
+                    <OnLoad>this:RegisterForClicks("LeftButton", "RightButton")</OnLoad>
 				</Scripts>
 			</Button>
 		</Frames>
 		<Scripts>
 			<OnClick>CP.Search.OnItemClick(this,key)</OnClick>
 			<OnDoubleClick>CP.Search.OnItemDblClick(this)</OnDoubleClick>
-			<OnMouseWheel>
-				--CP.Pimp.StatSearch_ItemOnLeave()
-				UIPanelScrollBar_OnMouseWheel(CPSearchItemsSB, delta)
-				--CP.Pimp.StatSearch_ItemOnEnter(this)
-			</OnMouseWheel>
+			<OnMouseWheel>UIPanelScrollBar_OnMouseWheel(CPSearchItemsSB, delta)</OnMouseWheel>
             <OnLoad> this:RegisterForClicks("LeftButton", "RightButton")</OnLoad>
 		</Scripts>
 	</Frame>
