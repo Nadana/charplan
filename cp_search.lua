@@ -36,8 +36,10 @@ end
 function Search.ForSlot(slot_id, item_id)
     Search.slot = slot_id
     Search.selection = item_id
-    Search.ClearSettings()
-
+    if CP.DB.IsSlotType(slot_id) ~= Search.itype then
+    	Search.ClearSettings()
+		end
+		
     --CPSearchFilterSlotMenu:Disable()
     Search.FindItems()
     CPSearchTitle:SetText(TEXT(string.format("SYS_EQWEARPOS_%02i",slot_id)))
@@ -65,7 +67,7 @@ function Search.OnLoadFilterTypeMenu(this)
 end
 
 function Search.OnTypeFilterShow(this)
-    local itype = CP.DB.IsSlotType(Search.slot)
+    Search.itype = CP.DB.IsSlotType(Search.slot)
 
     local filters={
         [1]= { -- Armor
@@ -117,7 +119,7 @@ function Search.OnTypeFilterShow(this)
             },
     }
 
-    for name,id in pairs(filters[itype] or {}) do
+    for name,id in pairs(filters[Search.itype] or {}) do
         local info={}
         info.text=name
         info.checked = Search.type_filter[id]
