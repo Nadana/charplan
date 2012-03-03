@@ -67,7 +67,8 @@ end
 function CP.OnShow(this)
 
     CPFrameClassFrameLeftText:SetText(UnitClass("player"))
-	CPFrameClassFrameRightText:SetText(UnitLevel("player"))
+    CPFrameClassFrameRightText:SetText(UnitLevel("player"))
+    CPFrameMenuBtn:SetText(CP.L.MENU_TITLE)
 
     CP.UpdateTitle()
     CP.DB.Load()
@@ -157,6 +158,7 @@ end
 
 
 function CP.ApplyItem(item_data, inv_slot, hidden)
+    if not inv_slot then return end
     assert(CP.EquipButtons[inv_slot])
 
     if not CP.DB.IsItemAllowedInSlot(item_data.id, inv_slot) then

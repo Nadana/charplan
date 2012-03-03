@@ -2,12 +2,13 @@
 local rom_text ={
 
     TITLE_EMPTY = "<unnamed>",
+    MENU_TITLE = "Menu",
     MENU_IMPORT= "Import current equipment",
     MENU_LOAD= "Load Items",
     MENU_SAVE= "Save Items",
     MENU_SAVEAS= "Save Items as ...",
     MENU_DEL= "Delete saved",
-	MENU_CLEARALL = "Clear Items",
+	  MENU_CLEARALL = "Clear Items",
 
     DLG_WAIT_INV= "Please wait while we enumerate you equipment",
     DLG_SAVENAME= "Enter Name",
