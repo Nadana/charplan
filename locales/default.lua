@@ -8,7 +8,7 @@ local rom_text ={
     MENU_SAVE= "Save Items",
     MENU_SAVEAS= "Save Items as ...",
     MENU_DEL= "Delete saved",
-	  MENU_CLEARALL = "Clear Items",
+    MENU_CLEARALL = "Clear Items",
 
     DLG_WAIT_INV= "Please wait while we enumerate you equipment",
     DLG_SAVENAME= "Enter Name",
@@ -26,12 +26,12 @@ local rom_text ={
     PIMP_TIER = TEXT("_glossary_00703"),
     PIMP_STAT = "Stat %i",
     PIMP_RUNE = "Rune %i",  -- SYS_ITEMTYPE_24
-    PIMP_DURA = "Dura",   --TEXT("_glossary_01188"),  -- Haltbarkeit
+    PIMP_DURA = TEXT("SYS_ITEM_DURABLE"), -- "Dura",   --TEXT("_glossary_01188"),  -- Haltbarkeit
     PIMP_PLUS = "Plus",
     PIMP_FILTER = "<filter>",
 
-    SEARCH_NAME = "Name",
-    SEARCH_LEVEL = "Level",
+    SEARCH_NAME = C_NAME,
+    SEARCH_LEVEL = C_LEVEL,
     SEARCH_BASE_STATS = "Dmg/Def",
     SEARCH_STATS = "Stats",
     SEARCH_NOSTATLESS = "no empty items",
