@@ -111,6 +111,7 @@ function Pimp.FillFields()
     CPPimpMeAttrTierText:SetText(data.tier)
 
     CPPimpMeAttrDura:SetText(math.floor(data.dura))
+	CPPimpMeAttrMaxDura:SetText(math.floor(data.max_dura*100/CP.DB.GetItemDura(item_id)))
 
     Pimp.OnStatCtrlSetValue(CPPimpMeAttrStat1, data.stats[1])
     Pimp.OnStatCtrlSetValue(CPPimpMeAttrStat2, data.stats[2])
@@ -244,6 +245,15 @@ function Pimp.OnDura_Changed(this)
     if not text or text=="" then return end
 
     Pimp.data.dura=tonumber(text) or (Pimp.data.max_dura)
+    Pimp.UpdateInfo()
+end
+function Pimp.OnMaxDura_Changed(this, item_id)
+    local text = this:GetText()
+    if not text or text=="" then return end		
+	local edit_max_dura = tonumber(text)
+	--Pimp.data.max_dura = Pimp.data.max_dura * max_dura / 100     
+	Pimp.data.max_dura = CP.DB.GetItemDura(item_id)* edit_max_dura/100
+	
     Pimp.UpdateInfo()
 end
 

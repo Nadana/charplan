@@ -7,9 +7,9 @@
 		</Size>
 		<Layers>
 			<Layer>
-				<FontString name="$parentLabel" inherits="GameFontHighlight">
+				<FontString name="$parentLabel" inherits="GameFontHighlight" justifyH="RIGHT">
 					<Size>
-						<AbsDimension x="50" y="16"></AbsDimension>
+						<AbsDimension x="40" y="16"></AbsDimension>
 					</Size>
 					<Anchors>
 						<Anchor point="LEFT">
@@ -29,8 +29,8 @@
 		<Size><AbsDimension x="160" y="26"></AbsDimension></Size>
 		<Layers>
 			<Layer>
-				<FontString name="$parentLabel" inherits="GameFontHighlight"  justifyH="LEFT" text="Rune X">
-					<Size><AbsDimension x="46" y="16"></AbsDimension></Size>
+				<FontString name="$parentLabel" inherits="GameFontHighlight"  justifyH="RIGHT" text="Rune X">
+					<Size><AbsDimension x="44" y="16"></AbsDimension></Size>
 					<Anchors><Anchor point="LEFT"></Anchor></Anchors>
 				</FontString>
 			</Layer>
@@ -126,8 +126,8 @@
 								</Anchor>
 							</Anchors>
 						</Texture>
-						<FontString name="$parentDuraLabel" inherits="GameFontHighlight">
-							<Size><AbsDimension x="50" y="24"></AbsDimension></Size>
+						<FontString name="$parentDuraLabel" justifyH="RIGHT" inherits="GameFontHighlight">
+							<Size><AbsDimension x="40" y="24"></AbsDimension></Size>
 							<Anchors>
 								<Anchor point="TOPLEFT">
 									<Offset><AbsDimension x="60" y="70"/></Offset>
@@ -164,6 +164,19 @@
 						</Anchors>
 						<Scripts>
 							<OnTextChanged>CP.Pimp.OnDura_Changed(this)</OnTextChanged>
+						</Scripts>
+						<TextInsets><AbsInset top="8" right="4" left="4" bottom="0"></AbsInset></TextInsets>
+					</EditBox>
+					<EditBox name="$parentMaxDura" inherits="UIPanelEditBoxTemplate" numeric="true">	
+						<Size>
+							<AbsDimension x="40" y="32"/>
+						</Size>
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentDura" relativePoint="TOPRIGHT"><Offset><AbsDimension x="5" y="0"/></Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnTextChanged>CP.Pimp.OnMaxDura_Changed(this)</OnTextChanged>
 						</Scripts>
 						<TextInsets><AbsInset top="8" right="4" left="4" bottom="0"></AbsInset></TextInsets>
 					</EditBox>
