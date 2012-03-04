@@ -9,12 +9,12 @@
 			<Layer>
 				<FontString name="$parentLabel" inherits="GameFontHighlight" justifyH="RIGHT">
 					<Size>
-						<AbsDimension x="40" y="16"></AbsDimension>
+						<AbsDimension x="79" y="16"></AbsDimension>
 					</Size>
 					<Anchors>
 						<Anchor point="LEFT">
 							<Offset>
-								<AbsDimension x="-40" y="1"/>
+								<AbsDimension x="-80" y="1"/>
 							</Offset>
 						</Anchor>
 					</Anchors>
@@ -29,9 +29,9 @@
 		<Size><AbsDimension x="160" y="26"></AbsDimension></Size>
 		<Layers>
 			<Layer>
-				<FontString name="$parentLabel" inherits="GameFontHighlight"  justifyH="RIGHT" text="Rune X">
-					<Size><AbsDimension x="44" y="16"></AbsDimension></Size>
-					<Anchors><Anchor point="LEFT"></Anchor></Anchors>
+				<FontString name="$parentLabel" inherits="GameFontHighlight"  justifyH="RIGHT">
+					<Size><AbsDimension x="43" y="16"></AbsDimension></Size>
+					<Anchors><Anchor point="LEFT"/></Anchors>
 				</FontString>
 			</Layer>
 		</Layers>
@@ -39,7 +39,9 @@
 			<EditBox name="$parentName" inherits="UIPanelEditBoxTemplate">
 				<Size><AbsDimension x="100" y="22"></AbsDimension></Size>
 				<Anchors>
-					<Anchor point="LEFT" relativeTo="$parentLabel" relativePoint="RIGHT"></Anchor>
+					<Anchor point="LEFT" relativeTo="$parentLabel" relativePoint="RIGHT">
+                        <Offset><AbsDimension x="1" y="0"/></Offset>
+                    </Anchor>
 				</Anchors>
 				<Scripts>
                     <OnTabPressed>CP.Pimp.StatName_Tab(this)</OnTabPressed>
@@ -127,10 +129,10 @@
 							</Anchors>
 						</Texture>
 						<FontString name="$parentDuraLabel" justifyH="RIGHT" inherits="GameFontHighlight">
-							<Size><AbsDimension x="40" y="24"></AbsDimension></Size>
+							<Size><AbsDimension x="80" y="24"></AbsDimension></Size>
 							<Anchors>
 								<Anchor point="TOPLEFT">
-									<Offset><AbsDimension x="60" y="70"/></Offset>
+									<Offset><AbsDimension x="20" y="70"/></Offset>
 								</Anchor>
 							</Anchors>
 						</FontString>
@@ -167,7 +169,7 @@
 						</Scripts>
 						<TextInsets><AbsInset top="8" right="4" left="4" bottom="0"></AbsInset></TextInsets>
 					</EditBox>
-					<EditBox name="$parentMaxDura" inherits="UIPanelEditBoxTemplate" numeric="true">	
+					<EditBox name="$parentMaxDura" inherits="UIPanelEditBoxTemplate" numeric="true">
 						<Size>
 							<AbsDimension x="40" y="32"/>
 						</Size>
