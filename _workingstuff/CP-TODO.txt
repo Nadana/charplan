@@ -1,4 +1,3 @@
--üdura im pimp
 -waffen bonis tooltip
 -hp/mana calculation
 -item-history

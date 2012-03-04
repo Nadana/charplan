@@ -581,7 +581,7 @@ function Search.ShowContextMenu(this)
         info.text   = data
         info.func   = function ()
                 assert(DungeonLoot_Frame)
-                ungeonLoot.var.instance =
+                DungeonLoot.var.instance =
                 DungeonLoot_Frame:Show()
             end
         UIDropDownMenu_AddButton(info)
