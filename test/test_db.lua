@@ -23,7 +23,7 @@ local function FindRune(txt)
 end
 
 function TestCP_DB.testBonusInfos()
-    if not GetLanguage()=="DE" then return end
+    if GetLanguage()~="DE" then return end
 
     local name, lvl, grp = CP.DB.GetBonusInfo( FindStat("Leben X") )
     assertEquals(name,"Leben")
@@ -39,7 +39,7 @@ end
 
 
 function TestCP_DB.testBonusTextParser()
-    if not GetLanguage()=="DE" then return end
+    if GetLanguage()~="DE" then return end
 
     assertEquals(CP.DB.FindBonus("Leben", "X", false), FindStat("Leben X")  )
     assertEquals(CP.DB.FindBonus("Leben", "X", true),  FindRune("Leben X") )
