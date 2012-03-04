@@ -524,7 +524,11 @@ function CP.EquipItem_OnClick(this, key)
         local item_data = CP.Items[this:GetID()]
         if item_data then
 			if( IsShiftKeyDown() ) then
-				ChatEdit_AddItemLink(CP.Pimp.GenerateLink(item_data, "CP: "))
+                local link_txt = CP.Pimp.GenerateLink(item_data, "CP: ")
+				if not ChatEdit_AddItemLink(link_txt) and not DEFAULT_CHAT_EDITBOX:IsVisible() then
+                    DEFAULT_CHAT_EDITBOX:Show()
+                    ChatEdit_AddItemLink(link_txt)
+                end
 			elseif(IsCtrlKeyDown()) then
 				CP.Search.ForSlot(this:GetID())
 			else
