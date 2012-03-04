@@ -1,9 +1,8 @@
--üdura im search
 -üdura im pimp
 -waffen bonis tooltip
 -hp/mana calculation
 -item-history
 -equipment compare
--beim "add to plan" aus dem chat eine slotauswahl einfügen für mehrslotmöglichkeiten (ringe,ohrringe,waffen)
 -bevorzugte pimp-history (speichern von bevorzugtem statanordnungen auf einem item)
 
+- Alpiset prüfen

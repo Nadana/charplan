@@ -158,7 +158,6 @@ end
 
 
 function CP.ApplyItem(item_data, inv_slot, hidden)
-    if not inv_slot then return end
     assert(CP.EquipButtons[inv_slot])
 
     if not CP.DB.IsItemAllowedInSlot(item_data.id, inv_slot) then
@@ -401,18 +400,38 @@ function CP.Hooked_Hyperlink_Assign(link, key)
 
 	local _type, _data, _name = ParseHyperlink(link)
 	if(_type=="item") then
-  		local info = {}
-		info.text = CP.L.CONTEXT_MENU
-        info.notCheckable = 1
-		info.func = function()
-            CP.DB.Load()
-			CP.ApplyLinkItem(link)
-            CP.DB.Release()
-		end
-		UIDropDownMenu_AddButton(info, 1)
+        CP.DB.Load()
+        local item_data = CP.Pimp.ExtractLink(link)
+        item_data.icon = CP.DB.GetItemIcon(item_data.id)
+        local s1,s2, force1 = CP.DB.GetItemPositions(item_data.id)
+        if force1 then s2=nil end
+        CP.DB.Release()
+
+        if s1 then
+  		    local info = {}
+		    info.text = CP.L.CONTEXT_MENU
+            if s2 then info.text = CP.L.CONTEXT_MENU.. " - "..CP.L.SEARCH_USE_SLOT1 end
+            info.notCheckable = 1
+		    info.func = function()
+                CP.DB.Load()
+			    CP.ApplyItem(item_data, s1)
+                CP.DB.Release()
+		    end
+		    UIDropDownMenu_AddButton(info, 1)
+
+            if s2 then
+    		    info.text = CP.L.CONTEXT_MENU.. " - "..CP.L.SEARCH_USE_SLOT2
+        	    info.func = function()
+                    CP.DB.Load()
+			        CP.ApplyItem(item_data, s2)
+                    CP.DB.Release()
+		        end
+    		    UIDropDownMenu_AddButton(info, 1)
+            end
 
 
-		UIDropDownMenu_Refresh(ChatFrameDropDown)
+    		UIDropDownMenu_Refresh(ChatFrameDropDown)
+        end
 	end
 end
 
