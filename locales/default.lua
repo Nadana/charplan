@@ -22,6 +22,7 @@ local rom_text ={
     ERROR_NOSLOT = "A free Bag Slot is needed to import your current equipment",
     ERROR_PICKEDUPITEM = "There was a problem while scanning equipment! Check your current equipment!",
     ERROR_SEARCH_SKIN = "Skin is ambiguous and could be wrong!",
+    ERROR_NO_VALID_ITEM= "Not a valid equipment.",
 
     PIMP_TIER = TEXT("_glossary_00703"),
     PIMP_STAT = "Stat %i",

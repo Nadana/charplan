@@ -22,6 +22,7 @@ CP.L ={
     ERROR_NOSLOT = "Ein freier Rucksack platz wird für das Importieren benötigt.",
     ERROR_PICKEDUPITEM = "Beim Übertragen ist ein Fehler aufgetreten! Bitte prüfen Sie ihre Ausrüstung!",
     ERROR_SEARCH_SKIN = "Skin konnte nicht eindeutig erkannt werden und könnte falsch sein!",
+    ERROR_NO_VALID_ITEM= "Kein ausrüstbarer Gegenstand.",
 
     PIMP_STAT = "Stat %i",
     PIMP_RUNE = "Rune %i",

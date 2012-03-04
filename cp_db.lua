@@ -75,6 +75,9 @@ function DB.Release()
     end
 end
 
+function DB.IsLoaded()
+    return DB.LoadCount
+end
 
 function DB.GetCardEffect(card_id)
     local boni_id = DB.cards[card_id]

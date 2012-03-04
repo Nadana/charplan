@@ -400,24 +400,43 @@ function CP.Hooked_Hyperlink_Assign(link, key)
 
 	local _type, _data, _name = ParseHyperlink(link)
 	if(_type=="item") then
-        CP.DB.Load()
-        local item_data = CP.Pimp.ExtractLink(link)
-        item_data.icon = CP.DB.GetItemIcon(item_data.id)
-        local s1,s2, force1 = CP.DB.GetItemPositions(item_data.id)
-        if force1 then s2=nil end
-        CP.DB.Release()
 
-        if s1 then
-  		    local info = {}
+        if not CP.DB.IsLoaded() then
+            -- a simple method if dialog is not open (performance)
+            local info = {}
 		    info.text = CP.L.CONTEXT_MENU
-            if s2 then info.text = CP.L.CONTEXT_MENU.. " - "..CP.L.SEARCH_USE_SLOT1 end
             info.notCheckable = 1
 		    info.func = function()
                 CP.DB.Load()
-			    CP.ApplyItem(item_data, s1)
+                local item_data = CP.Pimp.ExtractLink(link)
+                local inv_pos = CP.FindSlotForItem(item_data.id)
+                if inv_pos then
+			        CP.ApplyItem(item_data, inv_pos,true)
+                else
+                    CP.Output(CP.L.ERROR_NO_VALID_ITEM)
+                end
                 CP.DB.Release()
 		    end
 		    UIDropDownMenu_AddButton(info, 1)
+        else
+
+            local item_data = CP.Pimp.ExtractLink(link)
+            item_data.icon = CP.DB.GetItemIcon(item_data.id)
+            local s1,s2, force1 = CP.DB.GetItemPositions(item_data.id)
+            if force1 then s2=nil end
+
+            if s1 then
+  	    	    local info = {}
+		        info.text = CP.L.CONTEXT_MENU
+                if s2 then info.text = CP.L.CONTEXT_MENU.. " - "..CP.L.SEARCH_USE_SLOT1 end
+                info.notCheckable = 1
+		        info.func = function()
+                    CP.DB.Load()
+			        CP.ApplyItem(item_data, s1)
+                    CP.DB.Release()
+		        end
+		        UIDropDownMenu_AddButton(info, 1)
+            end
 
             if s2 then
     		    info.text = CP.L.CONTEXT_MENU.. " - "..CP.L.SEARCH_USE_SLOT2
@@ -428,10 +447,9 @@ function CP.Hooked_Hyperlink_Assign(link, key)
 		        end
     		    UIDropDownMenu_AddButton(info, 1)
             end
-
-
-    		UIDropDownMenu_Refresh(ChatFrameDropDown)
         end
+
+   		UIDropDownMenu_Refresh(ChatFrameDropDown)
 	end
 end
 
