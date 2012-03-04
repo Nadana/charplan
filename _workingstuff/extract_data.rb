@@ -548,7 +548,11 @@ class ItemEntry < Table
         data.push( @level)
         data.push( @image_id)
         data.push( @refineid)
-        data.push( @durable)
+        if @isfixdurable==0 then
+            data.push( @durable)
+        else
+            data.push( -@durable)
+        end
         #data.push( "runes=%i" % @runeslots) if @runeslots>0
         bonus.ExportData(data)
         base_stats.ExportData(data)

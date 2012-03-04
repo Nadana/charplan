@@ -199,15 +199,33 @@ end
 function DB.GetItemDura(item_id)
     local item = DB.items[item_id]
     if item then
-        return item[I_DURA]
+        return math.abs(item[I_DURA])
     end
     return 100
 end
 
-function DB.CalcMaxDura(item_id, dura)
+function DB.GetItemMaxDura(item_id, item_max_dura)
     local item = DB.items[item_id]
     if item then
-        return dura*100/item[I_DURA]+0.5 -- 0.5 to prevent rounding errors
+        if item[I_DURA]<0 then
+            return -item[I_DURA]
+        else
+            return math.floor(item[I_DURA]*item_max_dura/100)
+        end
+    end
+end
+
+function DB.HasFixedMaxDura(item_id)
+    local item = DB.items[item_id]
+    if item then
+        return (item[I_DURA]<0)
+    end
+end
+
+function DB.CalcMaxDura(item_id, dura)
+    local item = DB.items[item_id]
+    if item and item[I_DURA]>0 then
+        return math.floor(dura*100/item[I_DURA]+0.5)
     end
     return 100
 end
@@ -527,7 +545,7 @@ function DB.GenerateItemDataByID(item_id)
             data.stats[i]=stat
         end
 
-        data.dura = item[I_DURA]
+        data.dura = math.abs(item[I_DURA])
     end
 
     return data

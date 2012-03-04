@@ -407,7 +407,7 @@ end
 
 function Calc.GetItemDuraFactor(item)
 
-    local max_dura = CP.DB.GetItemDura(item.id) * item.max_dura / 100
+    local max_dura = CP.DB.GetItemMaxDura(item.id, item.max_dura)
 
 	if (item.dura > 100) or (item.dura > max_dura) then
 		return 1.2
