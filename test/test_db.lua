@@ -11,13 +11,13 @@ end
 
 
 local function FindStat(txt)
-    for id=510000,515000 do
+    for id=510000,519999 do
         if TEXT("Sys"..id.."_name")==txt then return id end
     end
 end
 
 local function FindRune(txt)
-    for id=520000,525000 do
+    for id=520000,529999 do
         if TEXT("Sys"..id.."_name")==txt then return id end
     end
 end
