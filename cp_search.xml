@@ -218,6 +218,37 @@
 					<OnClick>CP.Search.FindItems()</OnClick>
 				</Scripts>
 			</CheckButton>
+			<CheckButton name="$parentPowerModify" inherits="UIPanelCheckButtonTemplate" autoChecked="true">
+				<Size>
+					<AbsDimension x="18" y="20"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="350" y="28"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Layers>
+					<Layer>
+						<FontString name="$parentText" inherits="GameFontHighlight" justifyH="LEFT">
+							<Size>
+								<AbsDimension x="150" y="16"/>
+							</Size>
+							<Anchors>
+								<Anchor point="LEFT" relativePoint="RIGHT">
+									<Offset>
+										<AbsDimension x="0" y="0"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Scripts>
+					<OnClick>CP.Search.FindItems()</OnClick>
+				</Scripts>
+			</CheckButton>
 			<Frame name="$parentFilterType" inherits="UIDropDownMenuTemplate">
 				<Size>
 					<AbsDimension x="132" y="24"/>

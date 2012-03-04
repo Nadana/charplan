@@ -35,6 +35,7 @@ local rom_text ={
     SEARCH_STATS = "Stats",
     SEARCH_NOSTATLESS = "no empty items",
     SEARCH_TYPE = "Type",
+	SEARCH_POWER_MODIFY = "115 Dura",
 
     SEARCH_USE_SLOT1 = "Put into Slot 1",
     SEARCH_USE_SLOT2 = "Put into Slot 2",

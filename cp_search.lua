@@ -27,6 +27,7 @@ function Search.OnLoad(this)
 
     CPSearchPimpPlus:SetText(CP.L.PIMP_PLUS)
     CPSearchPimpTier:SetText(CP.L.PIMP_TIER)
+	CPSearchPowerModifyText:SetText(CP.L.SEARCH_POWER_MODIFY)
 
     CPSearchTakeIt1:SetText(CP.L.SEARCH_USE_SLOT1)
     CPSearchTakeIt2:SetText(CP.L.SEARCH_USE_SLOT2)
@@ -182,7 +183,6 @@ function Search.OnLoadFilterPlusClicked(button)
     Search.UpdateList()
 end
 
-
 function Search.OnLoadFilterTierMenu(this)
     UIDropDownMenu_SetWidth(this, 40)
     UIDropDownMenu_Initialize(this, Search.OnLoadFilterTierShow)
@@ -279,6 +279,7 @@ function Search.DoSort(column)
         local item = CP.DB.GenerateItemDataByID(item_id)
         item.plus= UIDropDownMenu_GetSelectedValue(CPSearchFilterPlus) or 0
         item.tier= UIDropDownMenu_GetSelectedValue(CPSearchFilterTier) or 0
+		if  (CPSearchPowerModify:IsChecked()== true) then item_data.dura=115 end
 
         local effect = CP.Calc.GetItemBonus(item)
         local boni=effect[att1] + (att2 and effect[att2])
@@ -295,7 +296,7 @@ function Search.DoSort(column)
         local item = CP.DB.GenerateItemDataByID(item_id)
         item.plus= UIDropDownMenu_GetSelectedValue(CPSearchFilterPlus) or 0
         item.tier= UIDropDownMenu_GetSelectedValue(CPSearchFilterTier) or 0
-
+		if  (CPSearchPowerModify:IsChecked()== true) then item_data.dura=115 end
         local boni=0
         local effect = CP.Calc.GetItemBonus(item)
         for id,val in pairs(effect) do
@@ -375,6 +376,7 @@ function Search.UpdateList()
             local item_data = CP.DB.GenerateItemDataByID(item_id)
             item_data.plus= UIDropDownMenu_GetSelectedValue(CPSearchFilterPlus) or 0
             item_data.tier= UIDropDownMenu_GetSelectedValue(CPSearchFilterTier) or 0
+			if  (CPSearchPowerModify:IsChecked()== true) then item_data.dura=115 end
 
             Search.UpdateItem(base_name,item_data)
 
@@ -503,7 +505,7 @@ function Search.OnItemEnter(this)
         local item = CP.DB.GenerateItemDataByID(item_id)
         item.plus= UIDropDownMenu_GetSelectedValue(CPSearchFilterPlus) or 0
         item.tier= UIDropDownMenu_GetSelectedValue(CPSearchFilterTier) or 0
-
+		if  (CPSearchPowerModify:IsChecked()== true) then item.dura=115 end 				
         GameTooltip:SetHyperLink(CP.Pimp.GenerateLink(item))
         GameTooltip:Show()
         GameTooltip1:Hide()
@@ -597,6 +599,7 @@ function Search.OnTakeIt(slot1or2)
     local item_data = CP.DB.GenerateItemDataByID(Search.selection)
     item_data.plus= UIDropDownMenu_GetSelectedValue(CPSearchFilterPlus) or 0
     item_data.tier= UIDropDownMenu_GetSelectedValue(CPSearchFilterTier) or 0
+	if  (CPSearchPowerModify:IsChecked()== true) then item_data.dura=115 end
     CP.ApplyItem(item_data, slot, false)
 
     CPSearch:Hide()
