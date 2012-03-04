@@ -151,7 +151,7 @@ function Search.OnSlotFilterShow(this)
     for _,id in ipairs(slots) do
 		local info={}
 		if  id==-1 then info.text=TEXT(string.format(CP.L.SEARCH_FILTER_NIL,id))id=nil
-		else			
+		else
 			info.text=TEXT(string.format("SYS_EQWEARPOS_%02i",id))
 		end
         info.checked = (Search.slot==id)
@@ -505,11 +505,12 @@ function Search.OnItemClick(this, key)
 		local  item_data = CP.DB.GenerateItemDataByID(new_item)
 		item_data.plus= UIDropDownMenu_GetSelectedValue(CPSearchFilterPlus) or 0
 		item_data.tier= UIDropDownMenu_GetSelectedValue(CPSearchFilterTier) or 0
-		if  (CPSearchPowerModify:IsChecked()== true) then
+		if  CPSearchPowerModify:IsChecked() then
 			item_data.dura = OVERDURA
 			item_data.max_dura =  CP.DB.CalcMaxDura(item_data.id, OVERDURA)
 		end
-		ChatEdit_AddItemLink(CP.Pimp.GenerateLink(item_data, "CP: "))
+
+        CP.PostItemLink(item_data)
 		return
 	end
     Search.SelectItem(new_item)

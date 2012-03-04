@@ -435,6 +435,14 @@ function CP.Hooked_Hyperlink_Assign(link, key)
 	end
 end
 
+function CP.PostItemLink(item_data)
+    local link_txt = CP.Pimp.GenerateLink(item_data, "CP: ")
+
+    if not ChatEdit_AddItemLink(link_txt) and not DEFAULT_CHAT_EDITBOX:IsVisible() then
+        DEFAULT_CHAT_FRAME:AddMessage(link_txt)
+    end
+end
+
 -----------------------------------
 -- EquipItem Buttons
 function CP.EquipItem_OnLoad(this)
@@ -524,11 +532,7 @@ function CP.EquipItem_OnClick(this, key)
         local item_data = CP.Items[this:GetID()]
         if item_data then
 			if( IsShiftKeyDown() ) then
-                local link_txt = CP.Pimp.GenerateLink(item_data, "CP: ")
-				if not ChatEdit_AddItemLink(link_txt) and not DEFAULT_CHAT_EDITBOX:IsVisible() then
-                    DEFAULT_CHAT_EDITBOX:Show()
-                    ChatEdit_AddItemLink(link_txt)
-                end
+                CP.PostItemLink(item_data)
 			elseif(IsCtrlKeyDown()) then
 				CP.Search.ForSlot(this:GetID())
 			else

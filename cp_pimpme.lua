@@ -94,7 +94,7 @@ end
 
 
 function Pimp.OnItemClicked()
-    ChatEdit_AddItemLink( Pimp.GenerateLink(Pimp.data, "CP: ") )
+    CP.PostItemLink(Pimp.data)
 end
 
 function Pimp.FillFields()
