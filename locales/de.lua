@@ -2,6 +2,7 @@
 
 CP.L ={
     TITLE_EMPTY = "<unbenannt>",
+    MENU_TITLE = "Menu",
     MENU_IMPORT= "Ausrüstung importieren",
     MENU_LOAD= "Ausrüstung laden",
     MENU_SAVE= "Ausrüstung speichern",
@@ -24,12 +25,9 @@ CP.L ={
 
     PIMP_STAT = "Stat %i",
     PIMP_RUNE = "Rune %i",
-    PIMP_DURA = "Dura",
     PIMP_PLUS = "Plus",
     PIMP_FILTER = "<Filter>",
 
-    SEARCH_NAME = "Name",
-    SEARCH_LEVEL = "Stufe",
     SEARCH_BASE_STATS = "Dmg/Def",
     SEARCH_STATS = "Stats",
     SEARCH_NOSTATLESS = "keine Leeren Gegenst.",

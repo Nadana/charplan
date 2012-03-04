@@ -8,10 +8,10 @@
 --]]
 
 CP.L =
---@localization(locale="esES", format="lua_table", handle-unlocalized="ignore")@
+--@localization(locale="zhTW", format="lua_table", handle-unlocalized="ignore")@
 
 CP.L.STAT_SHORTS =
---@localization(locale="esES", namespace="STAT_SHORTS", format="lua_table", handle-unlocalized="ignore")@
+--@localization(locale="zhTW", namespace="STAT_SHORTS", format="lua_table", handle-unlocalized="ignore")@
 
 CP.L.STAT_NAMES =
---@localization(locale="esES", namespace="STATS", format="lua_table", handle-unlocalized="ignore")@
+--@localization(locale="zhTW", namespace="STATS", format="lua_table", handle-unlocalized="ignore")@
