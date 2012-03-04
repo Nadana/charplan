@@ -500,8 +500,19 @@ function Search.OnItemClick(this, key)
         CPSearchItemMenu.item_id = new_item
         ToggleDropDownMenu(CPSearchItemMenu, 1,this,"cursor", 1 ,1 );
         return
-    end
-	local item_data = Search.Items[this]	
+    end		
+	if key== "LBUTTON" and IsShiftKeyDown() then
+		local  item_data = CP.DB.GenerateItemDataByID(new_item)
+		item_data.plus= UIDropDownMenu_GetSelectedValue(CPSearchFilterPlus) or 0
+		item_data.tier= UIDropDownMenu_GetSelectedValue(CPSearchFilterTier) or 0
+		if  (CPSearchPowerModify:IsChecked()== true) then 	
+			item_data.dura = 110
+			item_data.max_dura = CP.DB.GetItemDura(item_data.id) * item_data.max_dura/100
+			item_data.max_dura =  110*100/CP.DB.GetItemDura(item_data.id)+0.5 		
+		end 
+		ChatEdit_AddItemLink(CP.Pimp.GenerateLink(item_data, "CP: "))
+		return
+	end
     Search.SelectItem(new_item)
     Search.UpdateList()
 end
