@@ -35,6 +35,7 @@ CP.L ={
     SEARCH_NOSTATLESS = "keine Leeren Gegenst.",
 	SEARCH_ONLYSET = "Nur Item-Sets",
     SEARCH_TYPE = "Type",
+    SEARCH_POWER_MODIFY = "%i Dura",
 
     SEARCH_USE_SLOT1 = "In Slot1",
     SEARCH_USE_SLOT2 = "In Slot2",

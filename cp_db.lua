@@ -204,6 +204,14 @@ function DB.GetItemDura(item_id)
     return 100
 end
 
+function DB.CalcMaxDura(item_id, dura)
+    local item = DB.items[item_id]
+    if item then
+        return dura*100/item[I_DURA]+0.5 -- 0.5 to prevent rounding errors
+    end
+    return 100
+end
+
 function DB.IsItemAllowedInSlot(item_id, slot)
     local a,b = DB.GetItemPositions(item_id)
 
@@ -455,7 +463,7 @@ local function GetFilterFunction(info)
     if info.no_empty_items then
         table.insert(code, 'if not CP.DB.GetItemEffect(id) then return false end')
     end
-    
+
     if info.itemset_only then
         table.insert(code, 'if not data[9] then return false end')
     end

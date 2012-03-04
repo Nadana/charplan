@@ -46,6 +46,7 @@ CP.L =
 	SEARCH_USE_SLOT1 = "В слот № 1",
 	SEARCH_USE_SLOT2 = "В слот № 2",
 	SEARCH_WEBSITE = "http://ru.runesdatabase.com/item/%i",
+    SEARCH_POWER_MODIFY = "%i Прочность", -- Needs review
 	TITLE_EMPTY = "<без имени>",
 }
 

@@ -10,7 +10,7 @@ CP.Search = Search
 
 local MAX_LINES=10
 local HEADER_COUNT=4
-
+local OVERDURA=110
 
 function Search.OnLoad(this)
 
@@ -28,7 +28,7 @@ function Search.OnLoad(this)
 
     CPSearchPimpPlus:SetText(CP.L.PIMP_PLUS)
     CPSearchPimpTier:SetText(CP.L.PIMP_TIER)
-	CPSearchPowerModifyText:SetText(CP.L.SEARCH_POWER_MODIFY)
+	CPSearchPowerModifyText:SetText(string.format(CP.L.SEARCH_POWER_MODIFY , OVERDURA))
 
     CPSearchTakeIt1:SetText(CP.L.SEARCH_USE_SLOT1)
     CPSearchTakeIt2:SetText(CP.L.SEARCH_USE_SLOT2)
@@ -41,7 +41,7 @@ function Search.ForSlot(slot_id, item_id)
     if CP.DB.IsSlotType(slot_id) ~= Search.itype then
     	Search.ClearSettings()
 		end
-		
+
     --CPSearchFilterSlotMenu:Disable()
     Search.FindItems()
     CPSearchTitle:SetText(TEXT(string.format("SYS_EQWEARPOS_%02i",slot_id)))
@@ -283,11 +283,10 @@ function Search.DoSort(column)
         local item = CP.DB.GenerateItemDataByID(item_id)
         item.plus= UIDropDownMenu_GetSelectedValue(CPSearchFilterPlus) or 0
         item.tier= UIDropDownMenu_GetSelectedValue(CPSearchFilterTier) or 0
-		if  (CPSearchPowerModify:IsChecked()== true) then 	
-			item.dura = 110
-			item.max_dura = CP.DB.GetItemDura(item_id) * item.max_dura/100
-			item.max_dura =  110*100/CP.DB.GetItemDura(item_id)+0.5 		
-		end 	
+		if CPSearchPowerModify:IsChecked() then
+			item.dura = OVERDURA
+			item.max_dura = CP.DB.CalcMaxDura(item.id, OVERDURA)
+		end
 
         local effect = CP.Calc.GetItemBonus(item)
         local boni=effect[att1] + (att2 and effect[att2])
@@ -304,11 +303,10 @@ function Search.DoSort(column)
         local item = CP.DB.GenerateItemDataByID(item_id)
         item.plus= UIDropDownMenu_GetSelectedValue(CPSearchFilterPlus) or 0
         item.tier= UIDropDownMenu_GetSelectedValue(CPSearchFilterTier) or 0
-		if  (CPSearchPowerModify:IsChecked()== true) then 	
-			item.dura = 110
-			item.max_dura = CP.DB.GetItemDura(item_id) * item.max_dura/100
-			item.max_dura =  110*100/CP.DB.GetItemDura(item_id)+0.5 		
-		end 	
+		if CPSearchPowerModify:IsChecked() then
+			item.dura = OVERDURA
+			item.max_dura = CP.DB.CalcMaxDura(item.id, OVERDURA)
+		end
         local boni=0
         local effect = CP.Calc.GetItemBonus(item)
         for id,val in pairs(effect) do
@@ -387,12 +385,11 @@ function Search.UpdateList()
         if item_id then
             local item_data = CP.DB.GenerateItemDataByID(item_id)
             item_data.plus= UIDropDownMenu_GetSelectedValue(CPSearchFilterPlus) or 0
-            item_data.tier= UIDropDownMenu_GetSelectedValue(CPSearchFilterTier) or 0			
-			if  (CPSearchPowerModify:IsChecked()== true) then 	
-				item_data.dura = 110
-				item_data.max_dura = CP.DB.GetItemDura(item_data.id) * item_data.max_dura/100
-				item_data.max_dura =  110*100/CP.DB.GetItemDura(item_data.id)+0.5 		
-			end 
+            item_data.tier= UIDropDownMenu_GetSelectedValue(CPSearchFilterTier) or 0
+			if CPSearchPowerModify:IsChecked() then
+				item_data.dura = OVERDURA
+				item_data.max_dura = CP.DB.CalcMaxDura(item_data.id, OVERDURA)
+			end
             Search.UpdateItem(base_name,item_data)
 
             if item_id == Search.selection then
@@ -501,7 +498,6 @@ function Search.OnItemClick(this, key)
         ToggleDropDownMenu(CPSearchItemMenu, 1,this,"cursor", 1 ,1 );
         return
     end
-	local item_data = Search.Items[this]	
     Search.SelectItem(new_item)
     Search.UpdateList()
 end
@@ -520,11 +516,10 @@ function Search.OnItemEnter(this)
         local item = CP.DB.GenerateItemDataByID(item_id)
         item.plus= UIDropDownMenu_GetSelectedValue(CPSearchFilterPlus) or 0
         item.tier= UIDropDownMenu_GetSelectedValue(CPSearchFilterTier) or 0
-		if  (CPSearchPowerModify:IsChecked()== true) then 	
-		item.dura = 110
-		item.max_dura = CP.DB.GetItemDura(item_id) * item.max_dura/100
-		item.max_dura =  110*100/CP.DB.GetItemDura(item_id)+0.5 		
-		end 		
+		if CPSearchPowerModify:IsChecked() then
+		    item.dura = OVERDURA
+		    item.max_dura = CP.DB.CalcMaxDura(item_id, OVERDURA)
+		end
         GameTooltip:SetHyperLink(CP.Pimp.GenerateLink(item))
         GameTooltip:Show()
         GameTooltip1:Hide()
@@ -618,11 +613,10 @@ function Search.OnTakeIt(slot1or2)
     local item_data = CP.DB.GenerateItemDataByID(Search.selection)
     item_data.plus= UIDropDownMenu_GetSelectedValue(CPSearchFilterPlus) or 0
     item_data.tier= UIDropDownMenu_GetSelectedValue(CPSearchFilterTier) or 0
-	if  (CPSearchPowerModify:IsChecked()== true) then 	
-		item_data.dura = 110
-		item_data.max_dura = CP.DB.GetItemDura(item_data.id) * item_data.max_dura/100
-		item_data.max_dura =  110*100/CP.DB.GetItemDura(item_data.id)+0.5 		
-	end 
+	if CPSearchPowerModify:IsChecked() then
+		item_data.dura = OVERDURA
+		item_data.max_dura = CP.DB.CalcMaxDura(item_data.id, OVERDURA)
+	end
     CP.ApplyItem(item_data, slot, false)
 
     CPSearch:Hide()
