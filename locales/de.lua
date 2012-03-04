@@ -33,6 +33,7 @@ CP.L ={
     SEARCH_BASE_STATS = "Dmg/Def",
     SEARCH_STATS = "Stats",
     SEARCH_NOSTATLESS = "keine Leeren Gegenst.",
+	SEARCH_ONLYSET = "Nur Item-Sets",
     SEARCH_TYPE = "Type",
 
     SEARCH_USE_SLOT1 = "In Slot1",

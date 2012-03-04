@@ -177,10 +177,10 @@
 					<Anchor point="TOPLEFT"><Offset><AbsDimension x="103" y="58"></AbsDimension></Offset></Anchor>
 				</Anchors></FontString>
 				<FontString name="$parentPimpPlus" inherits="GameFontLabel"><Anchors>
-					<Anchor point="TOPLEFT"><Offset><AbsDimension x="490" y="29"></AbsDimension></Offset></Anchor>
+					<Anchor point="TOPLEFT"><Offset><AbsDimension x="530" y="29"></AbsDimension></Offset></Anchor>
 				</Anchors></FontString>
 				<FontString name="$parentPimpTier" inherits="GameFontLabel"><Anchors>
-					<Anchor point="TOPLEFT"><Offset><AbsDimension x="560" y="29"></AbsDimension></Offset></Anchor>
+					<Anchor point="TOPLEFT"><Offset><AbsDimension x="600" y="29"></AbsDimension></Offset></Anchor>
 				</Anchors></FontString>
 			</Layer>
 		</Layers>
@@ -217,7 +217,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="200" y="28"/>
+							<AbsDimension x="180" y="28"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -226,7 +226,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT" >
 						<Offset>
-							<AbsDimension x="300" y="28"/>
+							<AbsDimension x="320" y="28"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -235,7 +235,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="400" y="28"/>
+							<AbsDimension x="440" y="28"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -247,7 +247,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="200" y="50"/>
+							<AbsDimension x="180" y="50"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -262,7 +262,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="350" y="50"/>
+							<AbsDimension x="320" y="50"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -277,7 +277,7 @@
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
-							<AbsDimension x="480" y="50"/>
+							<AbsDimension x="510" y="50"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
