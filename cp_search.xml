@@ -231,7 +231,15 @@
 					</Anchor>
 				</Anchors>
 			</CheckButton>
-
+			<CheckButton name="$parentPowerModify" inherits="CPSearchCheckbox">
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="400" y="28"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
 			<Frame name="$parentFilterType" inherits="UIDropDownMenuTemplate">
 				<Size>
 					<AbsDimension x="132" y="24"/>
