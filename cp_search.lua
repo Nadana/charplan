@@ -22,6 +22,7 @@ function Search.OnLoad(this)
     CPSearchHead3:SetText(CP.L.SEARCH_BASE_STATS)
     CPSearchHead4:SetText(CP.L.SEARCH_STATS)
     CPSearchFilterStatLessText:SetText(CP.L.SEARCH_NOSTATLESS)
+    CPSearchFilterSetsText:SetText(CP.L.SEARCH_ONLYSET)
     CPSearchFilterNameLabel:SetText(CP.L.SEARCH_NAME)
     CPSearchFilterLevelLabel:SetText(CP.L.SEARCH_LEVEL)
 
@@ -216,6 +217,7 @@ local function GetFilterInfo()
     info.level_min = tonumber(CPSearchFilterLevelMin:GetText())
     info.level_max = tonumber(CPSearchFilterLevelMax:GetText())
     info.no_empty_items = CPSearchFilterStatLess:IsChecked()
+    info.itemset_only = CPSearchFilterSets:IsChecked()
 
     info.types = {}
     for id,v in pairs(CP.Search.type_filter) do

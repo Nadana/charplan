@@ -128,6 +128,32 @@
 		</PushedTextOffset>
 	</Button>
 
+	<CheckButton name="CPSearchCheckbox" inherits="UIPanelCheckButtonTemplate" autoChecked="true" virtual="true">
+		<Size>
+			<AbsDimension x="18" y="20"/>
+		</Size>
+		<Layers>
+			<Layer>
+				<FontString name="$parentText" inherits="GameFontHighlight" justifyH="LEFT">
+					<Size>
+						<AbsDimension x="150" y="16"/>
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT" relativePoint="RIGHT">
+							<Offset>
+								<AbsDimension x="0" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnClick>CP.Search.FindItems()</OnClick>
+		</Scripts>
+	</CheckButton>
+
+
 	<Frame name="CPSearch" parent="CPFrame"  inherits="UICommonFrameTemplate">
 		<Size>
 			<AbsDimension x="660" y="550"/>
@@ -187,10 +213,7 @@
 					<OnTextChanged>CP.Search.FindItems()</OnTextChanged>
 				</Scripts>
 			</EditBox>
-			<CheckButton name="$parentFilterStatLess" inherits="UIPanelCheckButtonTemplate" autoChecked="true">
-				<Size>
-					<AbsDimension x="18" y="20"/>
-				</Size>
+			<CheckButton name="$parentFilterStatLess" inherits="CPSearchCheckbox">
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset>
@@ -198,26 +221,17 @@
 						</Offset>
 					</Anchor>
 				</Anchors>
-				<Layers>
-					<Layer>
-						<FontString name="$parentText" inherits="GameFontHighlight" justifyH="LEFT">
-							<Size>
-								<AbsDimension x="150" y="16"/>
-							</Size>
-							<Anchors>
-								<Anchor point="LEFT" relativePoint="RIGHT">
-									<Offset>
-										<AbsDimension x="0" y="0"/>
-									</Offset>
-								</Anchor>
-							</Anchors>
-						</FontString>
-					</Layer>
-				</Layers>
-				<Scripts>
-					<OnClick>CP.Search.FindItems()</OnClick>
-				</Scripts>
 			</CheckButton>
+			<CheckButton name="$parentFilterSets" inherits="CPSearchCheckbox">
+				<Anchors>
+					<Anchor point="TOPLEFT" >
+						<Offset>
+							<AbsDimension x="300" y="28"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+			</CheckButton>
+
 			<Frame name="$parentFilterType" inherits="UIDropDownMenuTemplate">
 				<Size>
 					<AbsDimension x="132" y="24"/>

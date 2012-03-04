@@ -421,6 +421,7 @@ local function GetFilterFunction(info)
  info.level_min
  info.level_max
  info.no_empty_items
+ info.itemset_only
 ]]
     local code = {"return function (id,data)"}
 
@@ -453,6 +454,10 @@ local function GetFilterFunction(info)
 
     if info.no_empty_items then
         table.insert(code, 'if not CP.DB.GetItemEffect(id) then return false end')
+    end
+    
+    if info.itemset_only then
+        table.insert(code, 'if not data[9] then return false end')
     end
 
 

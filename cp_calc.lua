@@ -367,7 +367,7 @@ function Calc.GetItemBonus(item)
 
     local attA,attB = CP.DB.PrimarAttributes(item.id)
     local effect = CP.DB.GetItemEffect(item.id)
-	local dura_factor = Calc.GetItemDuraFactor(item)
+    local dura_factor = Calc.GetItemDuraFactor(item)
     local plus_effect, plus_base = CP.DB.GetPlusEffect(item.id, item.plus)
 
     local factor = (1+item.tier*0.1)*dura_factor

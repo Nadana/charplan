@@ -35,6 +35,7 @@ local rom_text ={
     SEARCH_BASE_STATS = "Dmg/Def",
     SEARCH_STATS = "Stats",
     SEARCH_NOSTATLESS = "no empty items",
+    SEARCH_ONLYSET = "itemsets only",
     SEARCH_TYPE = "Type",
 
     SEARCH_USE_SLOT1 = "Put into Slot 1",
