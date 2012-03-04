@@ -146,11 +146,14 @@ function Search.OnLoadFilterSlotMenu(this)
 end
 
 function Search.OnSlotFilterShow(this)
-    local slots={0,1,2,3,4,5,6,7,8,10,11,13,15,16,21}
+    local slots={-1,0,1,2,3,4,5,6,7,8,10,11,13,15,16,21}
 
     for _,id in ipairs(slots) do
-        local info={}
-        info.text=TEXT(string.format("SYS_EQWEARPOS_%02i",id))
+		local info={}
+		if  id==-1 then info.text=TEXT(string.format(CP.L.SEARCH_FILTER_NIL,id))id=nil
+		else			
+			info.text=TEXT(string.format("SYS_EQWEARPOS_%02i",id))
+		end
         info.checked = (Search.slot==id)
         info.value = id
         info.func = Search.OnSlotFilterSelect
@@ -159,7 +162,7 @@ function Search.OnSlotFilterShow(this)
 end
 
 function Search.OnSlotFilterSelect(this)
-    UIDropDownMenu_SetSelectedValue( CPSearchFilterSlot, this.value)
+    UIDropDownMenu_SetSelectedID(CPSearchFilterSlot, this:GetID())
     Search.slot=this.value
     Search.FindItems()
 end
@@ -551,7 +554,7 @@ function Search.ShowContextMenu(this)
     info.text = CP.L.SEARCH_CONTEXT_TAKE
     info.func = function()
                     Search.selection=this.item_id
-                    Search.OnTakeIt()
+                    Search.OnTakeIt(nil,true)
                 end
     UIDropDownMenu_AddButton(info)
 
@@ -609,7 +612,7 @@ function Search.FindInDungeonLoots(item_id)
 end
 
 
-function Search.OnTakeIt(slot1or2)
+function Search.OnTakeIt(slot1or2,dont_close)
 
     if not Search.selection then return end
 
@@ -630,8 +633,7 @@ function Search.OnTakeIt(slot1or2)
 		item_data.max_dura = CP.DB.CalcMaxDura(item_data.id, OVERDURA)
 	end
     CP.ApplyItem(item_data, slot, false)
-
-    CPSearch:Hide()
+	if not  dont_close then CPSearch:Hide() end
 end
 
 

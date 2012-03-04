@@ -38,6 +38,7 @@ local rom_text ={
     SEARCH_ONLYSET = "itemsets only",
     SEARCH_TYPE = "Type",
     SEARCH_POWER_MODIFY = "%i Dura",
+	SEARCH_FILTER_NIL = "All",
 
     SEARCH_USE_SLOT1 = "Put into Slot 1",
     SEARCH_USE_SLOT2 = "Put into Slot 2",
