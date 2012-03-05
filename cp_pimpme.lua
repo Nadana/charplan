@@ -372,30 +372,42 @@ end
 
 function Pimp.StatSearch_OnShow(this)
     Pimp.Selection = nil
+    Pimp.Initiaizing = true
     CPStatSearchTitle:SetText(Pimp.GetStatLable(this.slot))
     local is_rune = this.slot > 6
-    if is_rune ~= this.prev_type then
+    if is_rune ~= Pimp.statType then
     	-- dont clear filters between calls
-    	this.prev_type = this.is_rune
-    	for i=1,4 do
-    		local edit = getglobal('CPStatSearchSearchBox' .. i)
-    		local label = getglobal(edit:GetName() .. 'Back')
-    		edit:SetText()
-    		label:SetText(CP.L['PIMP_FILTER' .. i])
-    	end
-	  end
+    	Pimp.statType = is_rune
+    	Pimp.statFilters = {}
+    end
+  	for i=1,4 do
+  		local edit = getglobal('CPStatSearchSearchBox' .. i)
+  		local label = getglobal(edit:GetName() .. 'Back')
+  		edit:SetText(Pimp.statFilters[i] or "")
+  		label:SetText(CP.L['PIMP_FILTER' .. i])
+  		if Pimp.statFilters[i] then
+  			label:Hide()
+  		else
+  			label:Show()
+  		end
+  	end
+  	Pimp.Initiaizing = nil
 		CP.Pimp.StatSearch_UpdateList()
 end
 
 
 function Pimp.StatSearch_UpdateList()
-		local trim = function(s) return (s == '' and nil) or s:lower() end
-    local name = trim(CPStatSearchSearchBox1:GetText())
-    local text1 = trim(CPStatSearchSearchBox2:GetText())
-    local text2 = trim(CPStatSearchSearchBox3:GetText())
-    local minBonus = trim(CPStatSearchSearchBox4:GetText())
+		if Pimp.Initiaizing then return end
+		local trim = function(s)
+			if(s and s ~= '') then return s:lower() else return nil end
+		end
+		local filters = Pimp.statFilters
+		for i=1,4 do
+			local val = getglobal('CPStatSearchSearchBox' .. i):GetText()
+			filters[i] = trim(val)
+		end
     local isrune = (CPStatSearch.slot>6)
-    Pimp.Stats = CP.DB.GetBonusFilteredList(isrune, name, text1, text2, minBonus)
+    Pimp.Stats = CP.DB.GetBonusFilteredList(isrune, unpack(filters))
 
     CPStatSearchItemSB:SetValueStepMode("INT")
     CPStatSearchItemSB:SetMinMaxValues(0,math.max(0,(#Pimp.Stats)-STATSEARCH_FIELD))
