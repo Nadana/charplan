@@ -150,7 +150,6 @@ end
 
 function CP.ApplyLinkItem(link, inv_slot, hidden)
     local item_data = CP.Pimp.ExtractLink(link)
-    item_data.icon = CP.DB.GetItemIcon(item_data.id)
 
     inv_slot = inv_slot or CP.FindSlotForItem(item_data.id)
     CP.ApplyItem(item_data, inv_slot, hidden)
@@ -421,7 +420,6 @@ function CP.Hooked_Hyperlink_Assign(link, key)
         else
 
             local item_data = CP.Pimp.ExtractLink(link)
-            item_data.icon = CP.DB.GetItemIcon(item_data.id)
             local s1,s2, force1 = CP.DB.GetItemPositions(item_data.id)
             if force1 then s2=nil end
 

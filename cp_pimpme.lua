@@ -42,7 +42,6 @@ local STATSEARCH_FIELD=13
 function Pimp.PimpItemLink(itemlink)
 
     local item_data = Pimp.ExtractLink(itemlink)
-    item_data.icon = CP.DB.GetItemIcon(item_data.id)
 
     Pimp.PimpItem(item_data)
     Pimp.SetHyperLink(itemlink)
@@ -596,6 +595,8 @@ function Pimp.ExtractLink(itemlink)
     if item_data.max_dura==0 then item_data.max_dura=100 end
     if item_data.tier<0 then item_data.tier=0 end
     if item_data.dura==0 then item_data.dura=CP.DB.GetItemDura(item_data.id) end
+
+    item_data.icon = CP.DB.GetItemIcon(item_data.id)
 
     return item_data
 end
