@@ -387,13 +387,7 @@ function Search.UpdateList()
         local item_id = Search.Items[i+top_pos]
 
         if item_id then
-            local item_data = CP.DB.GenerateItemDataByID(item_id)
-            item_data.plus= UIDropDownMenu_GetSelectedValue(CPSearchFilterPlus) or 0
-            item_data.tier= UIDropDownMenu_GetSelectedValue(CPSearchFilterTier) or 0
-			if CPSearchPowerModify:IsChecked() then
-				item_data.dura = OVERDURA
-				item_data.max_dura = CP.DB.CalcMaxDura(item_data.id, OVERDURA)
-			end
+            local item_data = Search.GetPimpedItemData(item_id)
             Search.UpdateItem(base_name,item_data)
 
             if item_id == Search.selection then
@@ -503,21 +497,15 @@ function Search.OnItemClick(this, key)
   if key == "RBUTTON" then
     GameTooltip:Hide()
     CPSearchItemMenu.item_id = new_item
-    ToggleDropDownMenu(CPSearchItemMenu, 1,this,"cursor", 1 ,1 );
+    ToggleDropDownMenu(CPSearchItemMenu, 1,this,"cursor", 1 ,1 )
     return
   elseif key == "LBUTTON" and (IsShiftKeyDown() or IsCtrlKeyDown()) then
-    local item_data = CP.DB.GenerateItemDataByID(new_item)
-    item_data.plus= UIDropDownMenu_GetSelectedValue(CPSearchFilterPlus) or 0
-    item_data.tier= UIDropDownMenu_GetSelectedValue(CPSearchFilterTier) or 0
-    if CPSearchPowerModify:IsChecked() then
-      item_data.dura = OVERDURA
-      item_data.max_dura =  CP.DB.CalcMaxDura(item_data.id, OVERDURA)
-    end
+    local item_data = Search.GetPimpedItemData(new_item)
     if IsCtrlKeyDown() then
-      local link = CP.Pimp.GenerateLink(item_data, "CP: ")
-      ItemPreviewFrame_SetItemLink(ItemPreviewFrame, link)
+        local link = CP.Pimp.GenerateLink(item_data, "CP: ")
+        ItemPreviewFrame_SetItemLink(ItemPreviewFrame, link)
     else
-      CP.PostItemLink(item_data)
+        CP.PostItemLink(item_data)
     end
 		return
   end
@@ -658,14 +646,22 @@ function Search.ApplyItem(item_id, slot1or2)
         slot = CP.FindSlotForItem(item_id)
     end
 
+    local item_data = Search.GetPimpedItemData(item_id)
+    CP.ApplyItem(item_data, slot, false)
+end
+
+function Search.GetPimpedItemData(item_id)
+
     local item_data = CP.DB.GenerateItemDataByID(item_id)
     item_data.plus = UIDropDownMenu_GetSelectedValue(CPSearchFilterPlus) or 0
     item_data.tier = UIDropDownMenu_GetSelectedValue(CPSearchFilterTier) or 0
+
     if CPSearchPowerModify:IsChecked() then
         item_data.dura = OVERDURA
         item_data.max_dura = CP.DB.CalcMaxDura(item_data.id, OVERDURA)
     end
-    CP.ApplyItem(item_data, slot, false)
+
+    return item_data
 end
 
 function Search.OnCancel()
