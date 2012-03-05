@@ -494,28 +494,31 @@ end
 
 function Search.OnItemClick(this, key)
 
-    local top_pos = CPSearchItemsSB:GetValue()
-    local new_item = Search.Items[this:GetID()+top_pos]
-    if key == "RBUTTON" then
-        GameTooltip:Hide()
-        CPSearchItemMenu.item_id = new_item
-        ToggleDropDownMenu(CPSearchItemMenu, 1,this,"cursor", 1 ,1 );
-        return
+  local top_pos = CPSearchItemsSB:GetValue()
+  local new_item = Search.Items[this:GetID()+top_pos]
+  if key == "RBUTTON" then
+    GameTooltip:Hide()
+    CPSearchItemMenu.item_id = new_item
+    ToggleDropDownMenu(CPSearchItemMenu, 1,this,"cursor", 1 ,1 );
+    return
+  elseif key == "LBUTTON" and (IsShiftKeyDown() or IsCtrlKeyDown()) then
+    local item_data = CP.DB.GenerateItemDataByID(new_item)
+    item_data.plus= UIDropDownMenu_GetSelectedValue(CPSearchFilterPlus) or 0
+    item_data.tier= UIDropDownMenu_GetSelectedValue(CPSearchFilterTier) or 0
+    if CPSearchPowerModify:IsChecked() then
+      item_data.dura = OVERDURA
+      item_data.max_dura =  CP.DB.CalcMaxDura(item_data.id, OVERDURA)
     end
-	if key== "LBUTTON" and IsShiftKeyDown() then
-		local  item_data = CP.DB.GenerateItemDataByID(new_item)
-		item_data.plus= UIDropDownMenu_GetSelectedValue(CPSearchFilterPlus) or 0
-		item_data.tier= UIDropDownMenu_GetSelectedValue(CPSearchFilterTier) or 0
-		if  CPSearchPowerModify:IsChecked() then
-			item_data.dura = OVERDURA
-			item_data.max_dura =  CP.DB.CalcMaxDura(item_data.id, OVERDURA)
-		end
-
-        CP.PostItemLink(item_data)
+    if IsCtrlKeyDown() then
+      local link = CP.Pimp.GenerateLink(item_data, "CP: ")
+      ItemPreviewFrame_SetItemLink(ItemPreviewFrame, link)
+    else
+      CP.PostItemLink(item_data)
+    end
 		return
-	end
-    Search.SelectItem(new_item)
-    Search.UpdateList()
+  end
+  Search.SelectItem(new_item)
+  Search.UpdateList()
 end
 
 function Search.OnItemDblClick(this)
