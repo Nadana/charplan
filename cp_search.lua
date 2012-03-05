@@ -28,7 +28,7 @@ function Search.OnLoad(this)
 
     CPSearchPimpPlus:SetText(CP.L.PIMP_PLUS)
     CPSearchPimpTier:SetText(CP.L.PIMP_TIER)
-	CPSearchPowerModifyText:SetText(string.format(CP.L.SEARCH_POWER_MODIFY , OVERDURA))
+    CPSearchPowerModifyText:SetText(string.format(CP.L.SEARCH_POWER_MODIFY , OVERDURA))
 
     CPSearchTakeIt1:SetText(CP.L.SEARCH_USE_SLOT1)
     CPSearchTakeIt2:SetText(CP.L.SEARCH_USE_SLOT2)
@@ -42,7 +42,7 @@ function Search.ForSlot(slot_id, item_id)
     	Search.ClearSettings()
 		end
 
-    --CPSearchFilterSlotMenu:Disable()
+    -- CPSearchFilterSlotMenu:Disable()
     Search.FindItems()
     CPSearchTitle:SetText(TEXT(string.format("SYS_EQWEARPOS_%02i",slot_id)))
     CPSearch:Show()
@@ -85,7 +85,7 @@ function Search.OnTypeFilterShow(this)
             [TEXT("SYS_ARMORTYPE_07")]=7, -- Jewelery
             },
         [4]= { -- Primary Weapon
-            [TEXT("SYS_WEAPON_TYPE00")]=8,  --="Waffenlos"
+            -- [TEXT("SYS_WEAPON_TYPE00")]=8,  --="Waffenlos"
             [TEXT("SYS_WEAPON_TYPE01")]=9,  --="Schwert"
             [TEXT("SYS_WEAPON_TYPE02")]=10, --="Dolch"
             [TEXT("SYS_WEAPON_TYPE03")]=11, --="Stab"
@@ -100,7 +100,7 @@ function Search.OnTypeFilterShow(this)
         [5]= { -- Secondary Weapon
             [TEXT("SYS_ARMORTYPE_05")]=5,   -- Shield
             [TEXT("SYS_ARMORTYPE_06")]=6,   -- Talisman
-            [TEXT("SYS_WEAPON_TYPE00")]=8,  --="Waffenlos"
+            -- [TEXT("SYS_WEAPON_TYPE00")]=8,  --="Waffenlos"
             [TEXT("SYS_WEAPON_TYPE01")]=9,  --="Schwert"
             [TEXT("SYS_WEAPON_TYPE02")]=10, --="Dolch"
             [TEXT("SYS_WEAPON_TYPE03")]=11, --="Stab"
