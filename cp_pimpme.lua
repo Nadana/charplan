@@ -547,7 +547,7 @@ function Pimp.GenerateLinkByID(item_id, prefix)
 end
 
 function Pimp.ExtractLink(itemlink)
-    assert(CP.DB.IsLoaded())
+    assert(CP.DB.IsLoaded(),"CP-Err002")
 
     local data_str, name = string.match(itemlink, "|Hitem:([%x ]+)|h|c%x%x%x%x%x%x%x%x%[(.-)%]|r|h")
     assert(name and data_str, "not a valid Item link")
