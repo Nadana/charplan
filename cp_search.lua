@@ -138,26 +138,28 @@ function Search.OnTypeFilterSelect(this)
 end
 
 
-
 function Search.OnLoadFilterSlotMenu(this)
     UIDropDownMenu_SetWidth(this, 100)
     UIDropDownMenu_Initialize( this, Search.OnSlotFilterShow)
     UIDropDownMenu_Refresh(this)
 end
 
+
 function Search.OnSlotFilterShow(this)
-    local slots={-1,0,1,2,3,4,5,6,7,8,10,11,13,15,16,21}
+    local slots={0,1,2,3,4,5,6,7,8,10,11,13,15,16,21}
+
+    local info={
+        text=CP.L.SEARCH_FILTER_NIL,
+        checked = (Search.slot==nil),
+        value = nil,
+        func = Search.OnSlotFilterSelect,
+    }
+    UIDropDownMenu_AddButton( info, 1 )
 
     for _,id in ipairs(slots) do
-      local info={}
-      if  id==-1 then
-        info.text=TEXT(string.format(CP.L.SEARCH_FILTER_NIL,id))id=nil
-      else
-        info.text=TEXT(string.format("SYS_EQWEARPOS_%02i",id))
-      end
+      info.text=TEXT(string.format("SYS_EQWEARPOS_%02i",id))
       info.checked = (Search.slot==id)
       info.value = id
-      info.func = Search.OnSlotFilterSelect
       UIDropDownMenu_AddButton( info, 1 )
     end
 end
@@ -565,7 +567,7 @@ function Search.ShowContextMenu(this)
                     Search.OnTakeIt(nil,true)
                 end
     UIDropDownMenu_AddButton(info)
-    
+
     if CP.DB.IsSuitItem(this.item_id) then
       info.text = CP.L.SEARCH_CONTEXT_SUIT
       info.func = function() Search.ApplySuit(this.item_id) end
