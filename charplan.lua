@@ -160,7 +160,7 @@ function CP.ApplyItem(item_data, inv_slot, hidden)
     assert(CP.EquipButtons[inv_slot])
 
     if not CP.DB.IsItemAllowedInSlot(item_data.id, inv_slot) then
-        CP.Debug(string.format("item not allowed in that slot: %i - %s slot:%i",item_data.id,item_data.name,inv_slot))
+        CP.Debug(string.format("item not allowed in that slot: %i - %s slot:%i",item_data.id,CP.DB.GetItemName(item_data.id),inv_slot))
         return
     end
 
@@ -568,7 +568,7 @@ function CP.EquipItem_ShowMenu( this )
     if( UIDROPDOWNMENU_MENU_LEVEL == 1 ) then
         local data = CP.Items[CPEquipButtonMenu.Slot]
         if data then
-            info.text = string.format(CP.L.CONTEXT_PIMPME,data.name)
+            info.text = string.format(CP.L.CONTEXT_PIMPME, CP.DB.GetItemName(data.id))
             info.func = function() CP.PimpStart(CPEquipButtonMenu.Slot) end
             UIDropDownMenu_AddButton(info)
         end

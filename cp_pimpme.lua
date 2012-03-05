@@ -13,7 +13,6 @@
 --[[
 Item data = {
     -- icon,quality
-    name
     id
     bind
     bind_flag
@@ -99,7 +98,7 @@ end
 function Pimp.FillFields()
     local data = Pimp.data
 
-    CPPimpMeTitle:SetText(data.name)
+    CPPimpMeTitle:SetText( CP.DB.GetItemName(data.id))
 
     SetItemButtonTexture(CPPimpMeItem, data.icon)
 
@@ -532,7 +531,7 @@ function Pimp.GenerateLink(item_data, prefix)
         data[1], data[2], data[3], data[4],data[5], data[6], data[7], data[8],data[9], data[10], data[11], data[12],
         r*256,g*256,b*256, -- Note: another RoM enigma
         prefix or "",
-        item_data.name
+        CP.DB.GetItemName(item_data.id)
         )
 
     return link
@@ -554,7 +553,6 @@ function Pimp.ExtractLink(itemlink)
     while #data<14 do table.insert(data,"0") end
 
     local item_data = {}
-    item_data.name = name
 
     item_data.id =  tonumber(data[1], 16)
     item_data.bind = tonumber( string.sub(data[2],-2,-1) , 16)

@@ -174,6 +174,10 @@ function DB.GetSetEffect(set_id, item_count)
     return eff,eff_val
 end
 
+function DB.GetItemName(item_id)
+    return TEXT("Sys"..item_id.."_name")
+end
+
 function DB.GetItemIcon(item_id)
     local item = DB.items[item_id]
     if item then
