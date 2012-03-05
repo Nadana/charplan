@@ -85,7 +85,6 @@ function Search.OnTypeFilterShow(this)
             [TEXT("SYS_ARMORTYPE_07")]=7, -- Jewelery
             },
         [4]= { -- Primary Weapon
-            -- [TEXT("SYS_WEAPON_TYPE00")]=8,  --="Waffenlos"
             [TEXT("SYS_WEAPON_TYPE01")]=9,  --="Schwert"
             [TEXT("SYS_WEAPON_TYPE02")]=10, --="Dolch"
             [TEXT("SYS_WEAPON_TYPE03")]=11, --="Stab"
@@ -100,7 +99,6 @@ function Search.OnTypeFilterShow(this)
         [5]= { -- Secondary Weapon
             [TEXT("SYS_ARMORTYPE_05")]=5,   -- Shield
             [TEXT("SYS_ARMORTYPE_06")]=6,   -- Talisman
-            -- [TEXT("SYS_WEAPON_TYPE00")]=8,  --="Waffenlos"
             [TEXT("SYS_WEAPON_TYPE01")]=9,  --="Schwert"
             [TEXT("SYS_WEAPON_TYPE02")]=10, --="Dolch"
             [TEXT("SYS_WEAPON_TYPE03")]=11, --="Stab"
