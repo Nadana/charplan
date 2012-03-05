@@ -17,6 +17,7 @@ local rom_text ={
     CONTEXT_MENU = "|cffb0b030[CharPlan]|r Add to plan",
     CONTEXT_PIMPME= "Pimp: %s",
     CONTEXT_SEARCH= "Search",
+    CONTEXT_SHARE = "Share to all equip",
     CONTEXT_CLEAR = "Clear",
 
     ERROR_NOSLOT = "A free Bag Slot is needed to import your current equipment",
@@ -30,6 +31,8 @@ local rom_text ={
     PIMP_DURA = TEXT("SYS_ITEM_DURABLE"), -- "Dura",   --TEXT("_glossary_01188"),  -- Haltbarkeit
     PIMP_PLUS = "Plus",
     PIMP_FILTER = "<filter>",
+    PIMP_SHARE = "Share",
+    PIMP_SHARE_TIP = "Share this enchancements to all items",
 
     SEARCH_NAME = C_NAME,
     SEARCH_LEVEL = C_LEVEL,

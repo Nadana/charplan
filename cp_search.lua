@@ -474,6 +474,7 @@ function Search.UpdateSlotInfo()
         CPSearchTakeIt1Item:Hide()
     end
 
+    CPSearchTakeIt1:SetText(CP.L.SEARCH_USE_SLOT1)
     if s2 then
         CPSearchTakeIt2:Show()
         CPSearchTakeIt2Item:Show()
@@ -481,6 +482,9 @@ function Search.UpdateSlotInfo()
     else
         CPSearchTakeIt2:Hide()
         CPSearchTakeIt2Item:Hide()
+        if Search.slot == 16 then   -- "Slot 2" for right hand
+          CPSearchTakeIt1:SetText(CP.L.SEARCH_USE_SLOT2)
+        end
     end
 end
 
@@ -562,11 +566,11 @@ function Search.ShowContextMenu(this)
                 end
     UIDropDownMenu_AddButton(info)
     
-    info.text = CP.L.SEARCH_CONTEXT_SUIT
-    info.func = function()
-                    Search.ApplySuit(this.item_id)
-                end
-    UIDropDownMenu_AddButton(info)
+    if CP.DB.IsSuitItem(this.item_id) then
+      info.text = CP.L.SEARCH_CONTEXT_SUIT
+      info.func = function() Search.ApplySuit(this.item_id) end
+      UIDropDownMenu_AddButton(info)
+    end
 
     local skin = CP.DB.ItemSkinPosition(this.item_id)
     if skin then
