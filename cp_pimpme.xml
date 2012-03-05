@@ -299,30 +299,54 @@
 			<OnLeave>CP.Pimp.StatSearch_ItemOnLeave()</OnLeave>
 		</Scripts>
 	</Frame>
+	<EditBox name="CPStatSearch_FilterBox" inherits="UIPanelEditBoxTemplate" virtual="true">
+		<Size><AbsDimension x="75" y="20"/></Size>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString name="$parentBack" inherits="GameFontDisable">
+					<Anchors>
+						<Anchor point="LEFT"><Offset><AbsDimension x="5" y="0"></AbsDimension></Offset></Anchor>
+					</Anchors>
+					<FontHeight><AbsValue val="12"></AbsValue></FontHeight>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Scripts>
+			<OnEditFocusGained>CP.Pimp.StatSearch_FilterFocus(this,true)</OnEditFocusGained>
+			<OnEditFocusLost>CP.Pimp.StatSearch_FilterFocus(this,false)</OnEditFocusLost>
+			<OnTextChanged>CP.Pimp.StatSearch_UpdateList(this)</OnTextChanged>
+		</Scripts>
+	</EditBox>
+
 	<Frame name="CPStatSearch" hidden="true" parent="CPPimpMe" inherits="UICommonFrameTemplate" frameStrata="TOOLTIP" frameLevel="1000">
 		<Size><AbsDimension x="290" y="300"></AbsDimension></Size>
 		<Frames>
-		     <EditBox name="$parentSearchBox" inherits="UIPanelEditBoxTemplate">
-				<Size><AbsDimension x="150" y="20"/></Size>
+		  <!-- filter -->
+		  <EditBox name="$parentSearchBox1" inherits="CPStatSearch_FilterBox">
+				<Size><AbsDimension x="75" y="20"/></Size>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativePoint="TOPLEFT"><Offset><AbsDimension x="50" y="29" /></Offset></Anchor>
+					<Anchor point="TOPLEFT" relativePoint="TOPLEFT"><Offset><AbsDimension x="5" y="29" /></Offset></Anchor>
 				</Anchors>
-				<Layers>
-					<Layer level="OVERLAY">
-						<FontString name="$parentBack" inherits="GameFontDisable">
-							<Anchors>
-								<Anchor point="LEFT"><Offset><AbsDimension x="5" y="0"></AbsDimension></Offset></Anchor>
-							</Anchors>
-							<FontHeight><AbsValue val="12"></AbsValue></FontHeight>
-						</FontString>
-					</Layer>
-				</Layers>
-				<Scripts>
-					<OnEditFocusGained>CP.Pimp.StatSearch_FilterFocus(this,true)</OnEditFocusGained>
-					<OnEditFocusLost>CP.Pimp.StatSearch_FilterFocus(this,false)</OnEditFocusLost>
-					<OnTextChanged>CP.Pimp.StatSearch_UpdateList(this)</OnTextChanged>
-				</Scripts>
 			</EditBox>
+		  <EditBox name="$parentSearchBox2" inherits="CPStatSearch_FilterBox">
+				<Size><AbsDimension x="75" y="20"/></Size>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentSearchBox1" relativePoint="TOPRIGHT"><Offset><AbsDimension x="5" y="0" /></Offset></Anchor>
+				</Anchors>
+			</EditBox>
+		  <EditBox name="$parentSearchBox3" inherits="CPStatSearch_FilterBox">
+				<Size><AbsDimension x="75" y="20"/></Size>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentSearchBox2" relativePoint="TOPRIGHT"><Offset><AbsDimension x="0" y="0" /></Offset></Anchor>
+				</Anchors>
+			</EditBox>
+		  <EditBox name="$parentSearchBox4" inherits="CPStatSearch_FilterBox">
+				<Size><AbsDimension x="35" y="20"/></Size>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentSearchBox3" relativePoint="TOPRIGHT"><Offset><AbsDimension x="5" y="0" /></Offset></Anchor>
+				</Anchors>
+			</EditBox>
+			
 			<Frame name="$parentItem" enableMouse="true">
 				<Size>
 					<AbsDimension x="270" y="210"></AbsDimension>

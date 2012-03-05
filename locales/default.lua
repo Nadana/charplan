@@ -30,7 +30,10 @@ local rom_text ={
     PIMP_RUNE = "Rune %i",  -- SYS_ITEMTYPE_24
     PIMP_DURA = TEXT("SYS_ITEM_DURABLE"), -- "Dura",   --TEXT("_glossary_01188"),  -- Haltbarkeit
     PIMP_PLUS = "Plus",
-    PIMP_FILTER = "<filter>",
+    PIMP_FILTER1 = "<Name>",
+    PIMP_FILTER2 = "<Stat1>",
+    PIMP_FILTER3 = "<Stat2>",
+    PIMP_FILTER4 = "min",
     PIMP_SHARE = "Share",
     PIMP_SHARE_TIP = "Share this enchancements to all items",
 

@@ -255,16 +255,15 @@ end
 function Pimp.OnMaxDura_Changed(this)
     local edit_max_dura = tonumber( this:GetText() )
     if not edit_max_dura then return end
-	Pimp.data.max_dura =  CP.DB.CalcMaxDura(Pimp.data.id, edit_max_dura)
+    Pimp.data.max_dura =  CP.DB.CalcMaxDura(Pimp.data.id, edit_max_dura)
     Pimp.UpdateInfo()
 end
 
 function Pimp.ShareAllEnchancements()
-  CP.ShareAllEnchancements(Pimp.data)
+    CP.ShareAllEnchancements(Pimp.data)
 end
 
 
------------------------------------
 function Pimp.GetStatLable(id)
     if id<7 then
         return string.format(CP.L.PIMP_STAT,id)
@@ -373,21 +372,30 @@ end
 
 function Pimp.StatSearch_OnShow(this)
     Pimp.Selection = nil
-
     CPStatSearchTitle:SetText(Pimp.GetStatLable(this.slot))
-
-    CPStatSearchSearchBox:SetText("")
-    CPStatSearchSearchBoxBack:SetText(CP.L.PIMP_FILTER)
-    CP.Pimp.StatSearch_UpdateList()
+    local is_rune = this.slot > 6
+    if is_rune ~= this.prev_type then
+    	-- dont clear filters between calls
+    	this.prev_type = this.is_rune
+    	for i=1,4 do
+    		local edit = getglobal('CPStatSearchSearchBox' .. i)
+    		local label = getglobal(edit:GetName() .. 'Back')
+    		edit:SetText()
+    		label:SetText(CP.L['PIMP_FILTER' .. i])
+    	end
+	  end
+		CP.Pimp.StatSearch_UpdateList()
 end
 
 
 function Pimp.StatSearch_UpdateList()
-    local text = CPStatSearchSearchBox:GetText()
-    if text=="" then  text=nil end
-
+		local trim = function(s) return (s == '' and nil) or s:lower() end
+    local name = trim(CPStatSearchSearchBox1:GetText())
+    local text1 = trim(CPStatSearchSearchBox2:GetText())
+    local text2 = trim(CPStatSearchSearchBox3:GetText())
+    local minBonus = trim(CPStatSearchSearchBox4:GetText())
     local isrune = (CPStatSearch.slot>6)
-    Pimp.Stats = CP.DB.GetBonusGroupList(isrune, text)
+    Pimp.Stats = CP.DB.GetBonusFilteredList(isrune, name, text1, text2, minBonus)
 
     CPStatSearchItemSB:SetValueStepMode("INT")
     CPStatSearchItemSB:SetMinMaxValues(0,math.max(0,(#Pimp.Stats)-STATSEARCH_FIELD))
@@ -403,12 +411,10 @@ function Pimp.StatSearch_FilterFocus(this, got_focus)
 end
 
 function Pimp.StatSearch_ListUpdate()
-
-     for i=1,STATSEARCH_FIELD do
+    for i=1,STATSEARCH_FIELD do
         local d = Pimp.Stats[i + CPStatSearchItemSB:GetValue()]
         local line = "CPStatSearchItem"..i
         if d then
-
             _G[line.."Name"]:SetText(d[2])
             _G[line.."Value"]:SetText(table.concat(d[3],", "))
             _G[line]:Show()

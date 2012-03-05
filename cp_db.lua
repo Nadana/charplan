@@ -34,6 +34,16 @@ local function LoadTable(fname)
     return fn()
 end
 
+local function LoadEffects()
+	local eff = {}
+	for i=0,300 do
+		local n = "SYS_WEAREQTYPE_" .. i
+		local t = TEXT(n)
+		eff[i] = t
+	end
+	return eff
+end
+
 function DB.Load()
 
     if DB.LoadCount then
@@ -53,6 +63,7 @@ function DB.Load()
     DB.archievements = LoadTable("archievements")
     
     DB.GenerateItemSetCache()
+    DB.effects = LoadEffects()
 end
 
 function DB.Release()
@@ -388,7 +399,44 @@ function DB.GetBonusGroupList(runes, filter)
     return res
 end
 
-
+function DB.GetBonusFilteredList(is_rune, statName, name1, name2, minValue)
+	is_runs = is_rune and true or false
+	minValue = minValue and tonumber(minValue)
+	local result, done = {},{}
+	for id,rdata in pairs(DB.bonus) do
+		local group = rdata[B_GROUP]
+		if group and not done[group] then
+			if DB.IsRuneGroup(group) == is_rune then
+				local name = GetBonusName(id)
+				local found, found1, found2 = (not statName) or name:lower():find(statName)		-- filter by stat name
+				local eff = {}
+				local bonus = rdata[B_EFFECT]
+				for i=1,#bonus,2 do
+					local effect = DB.effects[ bonus[i] ]
+					local value = bonus[i+1]
+					if not effect then break end
+					table.insert(eff, effect)
+					if name1 and i == 1 then								-- filter by effect1
+						found1 = effect:lower():find(name1)
+					end
+					if name2 and i == 3 then								-- filter by effect2
+						found2 = effect:lower():find(name2)
+					end
+					if minValue and value < minValue then
+						found = false
+						break
+					end
+				end
+				if found and (not name1 or found1) and (not name2 or found2) then
+					table.insert(result,{id,name,eff})
+				end
+			end
+			done[group] = 1
+		end
+	end
+	table.sort(result, function (a,b) return a[2]<b[2] end)
+	return result
+end
 
 function DB.GetBonusGroupLevels(grp)
     local res={}
