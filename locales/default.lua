@@ -39,14 +39,16 @@ local rom_text ={
     SEARCH_ONLYSET = "itemsets only",
     SEARCH_TYPE = "Type",
     SEARCH_POWER_MODIFY = "%i Dura",
-	SEARCH_FILTER_NIL = "All",
+    SEARCH_FILTER_NIL = "All",
 
     SEARCH_USE_SLOT1 = "Put into Slot 1",
     SEARCH_USE_SLOT2 = "Put into Slot 2",
     SEARCH_CONTEXT_TAKE = "Equip Item",
+    SEARCH_CONTEXT_SUIT = "Equip Suit",
     SEARCH_CONTEXT_SKIN = "Apply Skin",
     SEARCH_CONTEXT_WEB = "Open in Webbrowser",
     SEARCH_WEBSITE = "http://www.runesdatabase.com/item/%i",
+    SEARCH_DROPPED = "Dropped in: %s by %s",
 
     BY_CLASS = "Base",
     BY_SKILL = "Skill",

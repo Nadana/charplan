@@ -149,15 +149,16 @@ function Search.OnSlotFilterShow(this)
     local slots={-1,0,1,2,3,4,5,6,7,8,10,11,13,15,16,21}
 
     for _,id in ipairs(slots) do
-		local info={}
-		if  id==-1 then info.text=TEXT(string.format(CP.L.SEARCH_FILTER_NIL,id))id=nil
-		else
-			info.text=TEXT(string.format("SYS_EQWEARPOS_%02i",id))
-		end
-        info.checked = (Search.slot==id)
-        info.value = id
-        info.func = Search.OnSlotFilterSelect
-		UIDropDownMenu_AddButton( info, 1 )
+      local info={}
+      if  id==-1 then
+        info.text=TEXT(string.format(CP.L.SEARCH_FILTER_NIL,id))id=nil
+      else
+        info.text=TEXT(string.format("SYS_EQWEARPOS_%02i",id))
+      end
+      info.checked = (Search.slot==id)
+      info.value = id
+      info.func = Search.OnSlotFilterSelect
+      UIDropDownMenu_AddButton( info, 1 )
     end
 end
 
@@ -557,6 +558,12 @@ function Search.ShowContextMenu(this)
                     Search.OnTakeIt(nil,true)
                 end
     UIDropDownMenu_AddButton(info)
+    
+    info.text = CP.L.SEARCH_CONTEXT_SUIT
+    info.func = function()
+                    Search.ApplySuit(this.item_id)
+                end
+    UIDropDownMenu_AddButton(info)
 
     local skin = CP.DB.ItemSkinPosition(this.item_id)
     if skin then
@@ -598,7 +605,7 @@ function Search.FindInDungeonLoots(item_id)
             for _,boss in pairs(zone.Boss or {}) do
                 for _,loot in pairs(boss.Loots or {}) do
                     if loot==item_id then
-                        table.insert(res, string.format("Dropped in: %s by %s",
+                        table.insert(res, string.format(CP.L.SEARCH_DROPPED,
                                 GetZoneLocalName(zone.Zone) or "unknown",
                                 TEXT("Sys"..boss.Name.."_name")
                             ))
@@ -611,29 +618,45 @@ function Search.FindInDungeonLoots(item_id)
     return res
 end
 
+function Search.ApplySuit(id)
+  id = id or Search.selection
+  if not id then return end
+  if not (id >= 610000 and id < 620000) then
+    local lvl, suit = CP.DB.GetItemInfo(id)
+    if not suit then return end
+    id = suit
+  end
+  local items = CP.DB.GetSuitItems(id)
+  if not items then return end
+  for i,item_id in pairs(items) do
+    Search.selection = item_id -- its bad
+    Search.OnTakeIt(nil, true)
+  end
+  CPSearch:Hide()
+end
 
 function Search.OnTakeIt(slot1or2,dont_close)
 
     if not Search.selection then return end
+    local item_id = Search.selection
 
     local slot
     if slot1or2 then
-        local s1,s2 = CP.DB.GetItemPositions(Search.selection)
+        local s1,s2 = CP.DB.GetItemPositions(item_id)
         slot = slot1or2==2 and s2 or s1
     else
-        slot = CP.FindSlotForItem(Search.selection)
+        slot = CP.FindSlotForItem(item_id)
     end
 
-
-    local item_data = CP.DB.GenerateItemDataByID(Search.selection)
-    item_data.plus= UIDropDownMenu_GetSelectedValue(CPSearchFilterPlus) or 0
-    item_data.tier= UIDropDownMenu_GetSelectedValue(CPSearchFilterTier) or 0
-	if CPSearchPowerModify:IsChecked() then
-		item_data.dura = OVERDURA
-		item_data.max_dura = CP.DB.CalcMaxDura(item_data.id, OVERDURA)
-	end
+    local item_data = CP.DB.GenerateItemDataByID(item_id)
+    item_data.plus = UIDropDownMenu_GetSelectedValue(CPSearchFilterPlus) or 0
+    item_data.tier = UIDropDownMenu_GetSelectedValue(CPSearchFilterTier) or 0
+    if CPSearchPowerModify:IsChecked() then
+      item_data.dura = OVERDURA
+      item_data.max_dura = CP.DB.CalcMaxDura(item_data.id, OVERDURA)
+    end
     CP.ApplyItem(item_data, slot, false)
-	if not  dont_close then CPSearch:Hide() end
+    if not sdont_close then CPSearch:Hide() end
 end
 
 
