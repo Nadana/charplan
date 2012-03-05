@@ -425,7 +425,7 @@ function DB.FindBonus(text, cur_level, is_rune)
 end
 
 function DB.IsRuneGroup(id)
-    return id>10000
+    return id>=10000
 end
 
 --------

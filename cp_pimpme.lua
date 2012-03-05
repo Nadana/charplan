@@ -286,7 +286,7 @@ function Pimp.OnStatCtrlSetValue(button, id)
 
     if id>0 then
         local name,level, grp = CP.DB.GetBonusInfo(id)
-        assert( grp and (CP.DB.IsRuneGroup(grp) == button.isRune))
+        assert( grp and (CP.DB.IsRuneGroup(grp) == button.isRune),"CP-Err001")-- tried placing a rune in a stat-field or oppositely
 
         namebtn.level = level
         tierbtn.levels = CP.DB.GetBonusGroupLevels(grp)
