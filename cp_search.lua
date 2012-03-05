@@ -563,14 +563,13 @@ function Search.ShowContextMenu(this)
 
     info.text = CP.L.SEARCH_CONTEXT_TAKE
     info.func = function()
-                    Search.selection=this.item_id
-                    Search.OnTakeIt(nil,true)
+                    Search.ApplyItem(this.item_id)
                 end
     UIDropDownMenu_AddButton(info)
 
     if CP.DB.IsSuitItem(this.item_id) then
       info.text = CP.L.SEARCH_CONTEXT_SUIT
-      info.func = function() Search.ApplySuit(this.item_id) end
+      info.func = function() Search.ApplySuitOfItem(this.item_id) end
       UIDropDownMenu_AddButton(info)
     end
 
@@ -605,7 +604,6 @@ function Search.ShowContextMenu(this)
     end
 end
 
-
 function Search.FindInDungeonLoots(item_id)
     local res = {}
 
@@ -627,27 +625,32 @@ function Search.FindInDungeonLoots(item_id)
     return res
 end
 
-function Search.ApplySuit(id)
-  id = id or Search.selection
-  if not id then return end
-  if not (id >= 610000 and id < 620000) then
-    local lvl, suit = CP.DB.GetItemInfo(id)
-    if not suit then return end
-    id = suit
-  end
-  local items = CP.DB.GetSuitItems(id)
-  if not items then return end
-  for i,item_id in pairs(items) do
-    Search.selection = item_id -- its bad
-    Search.OnTakeIt(nil, true)
-  end
-  CPSearch:Hide()
+function Search.ApplySuitOfItem(item_id)
+    local lvl, suit_id = CP.DB.GetItemInfo(item_id)
+    if not suit_id then return end
+    Search.ApplySuit(suit_id)
+end
+
+function Search.ApplySuit(suit_id)
+    local items = CP.DB.GetSuitItems(id)
+    if not items then return end
+
+    for i,item_id in pairs(items) do
+        Search.ApplyItem(item_id)
+    end
+
+    CPSearch:Hide()
 end
 
 function Search.OnTakeIt(slot1or2,dont_close)
 
     if not Search.selection then return end
-    local item_id = Search.selection
+    Search.ApplyItem(Search.selection, slot1or2)
+
+    if not dont_close then CPSearch:Hide() end
+end
+
+function Search.ApplyItem(item_id, slot1or2)
 
     local slot
     if slot1or2 then
@@ -661,13 +664,11 @@ function Search.OnTakeIt(slot1or2,dont_close)
     item_data.plus = UIDropDownMenu_GetSelectedValue(CPSearchFilterPlus) or 0
     item_data.tier = UIDropDownMenu_GetSelectedValue(CPSearchFilterTier) or 0
     if CPSearchPowerModify:IsChecked() then
-      item_data.dura = OVERDURA
-      item_data.max_dura = CP.DB.CalcMaxDura(item_data.id, OVERDURA)
+        item_data.dura = OVERDURA
+        item_data.max_dura = CP.DB.CalcMaxDura(item_data.id, OVERDURA)
     end
     CP.ApplyItem(item_data, slot, false)
-    if not sdont_close then CPSearch:Hide() end
 end
-
 
 function Search.OnCancel()
     CPSearch:Hide()
