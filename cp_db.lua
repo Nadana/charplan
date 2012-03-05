@@ -580,6 +580,6 @@ function DB.GetSuitItems(suit_id)
 end
 
 function DB.IsSuitItem(item_id)
-  local lvl, suit = DB.GetItemInfo(id)
+  local lvl, suit = DB.GetItemInfo(item_id)
   return suit
 end
