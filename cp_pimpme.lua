@@ -109,7 +109,7 @@ function Pimp.FillFields()
     CPPimpMeAttrTierText:SetText(data.tier)
 
     CPPimpMeAttrDura:SetText(math.floor(data.dura))
-	CPPimpMeAttrMaxDura:SetText(CP.DB.GetItemMaxDura(data.id, data.max_dura))
+    CPPimpMeAttrMaxDura:SetText(CP.DB.GetItemMaxDura(data.id, data.max_dura))
     if CP.DB.HasFixedMaxDura(data.id) then
         CPPimpMeAttrMaxDura:Disable()
         CPPimpMeAttrMaxDura:SetTextColor(0.6,0.6,0.6)
@@ -129,7 +129,6 @@ function Pimp.FillFields()
     Pimp.OnStatCtrlSetValue(CPPimpMeAttrRune2, data.runes[2])
     Pimp.OnStatCtrlSetValue(CPPimpMeAttrRune3, data.runes[3])
     Pimp.OnStatCtrlSetValue(CPPimpMeAttrRune4, data.runes[4])
-
 
     Pimp.UpdateInfo()
 end
@@ -259,6 +258,11 @@ function Pimp.OnMaxDura_Changed(this)
 	Pimp.data.max_dura =  CP.DB.CalcMaxDura(Pimp.data.id, edit_max_dura)
     Pimp.UpdateInfo()
 end
+
+function Pimp.ShareAllEnchancements()
+  CP.ShareAllEnchancements(Pimp.data)
+end
+
 
 -----------------------------------
 function Pimp.GetStatLable(id)
@@ -478,7 +482,6 @@ end
 function Pimp.StatSearch_ItemOnLeave()
     GameTooltip:Hide()
 end
-
 
 
 -----------------------------------

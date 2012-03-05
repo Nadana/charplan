@@ -276,6 +276,16 @@ function DB.GetItemTypesForSlot(slot)
     return slot
 end
 
+function DB.IsWeapon(id)
+  if id and id >= 200000 then
+    -- its item_id
+    local s1,s2 = DB.GetItemPositions(id)
+    return DB.IsWeapon(s1) or DB.IsWeapon(s2)
+  end
+  -- its slot_id
+  return id == 10 or id == 15 or id == 16
+end
+
 function DB.IsWeapon2Hand(item_id)
     local item = DB.items[item_id]
     if item then
@@ -542,7 +552,7 @@ function DB.GenerateItemDataByID(item_id)
         dura = 100,
         max_dura = 100,
         stats = {0,0,0,0,0,0},
-        rune_slots = 0,
+        rune_slots = 0,       -- used slots
         runes = {0,0,0,0},
         unk1 = 0, -- INVALID/UNKNOWN
     }
@@ -559,6 +569,7 @@ function DB.GenerateItemDataByID(item_id)
     return data
 end
 
+
 function DB.GenerateItemSetCache()
   local sets = {}
   for item, v in pairs(DB.items) do
@@ -573,4 +584,9 @@ end
 
 function DB.GetSuitItems(suit_id)
   return DB.suit_items[suit_id]
+end
+
+function DB.IsSuitItem(item_id)
+  local lvl, suit = DB.GetItemInfo(id)
+  return suit
 end

@@ -234,6 +234,21 @@
 							<OnClick>CP.Pimp.OnCancel(this)</OnClick>
 						</Scripts>
 					</Button>
+					<Button name="$parentBtnShare" inherits="UIPanelButtonTemplate" text="Share">
+						<Size><AbsDimension x="60" y="24"></AbsDimension></Size>
+						<Anchors>
+							<Anchor point="BOTTOMLEFT" relativeTo="$parentBtnCancel" relativePoint="TOPLEFT"><Offset><AbsDimension x="0" y="-10"></AbsDimension></Offset></Anchor>
+						</Anchors>
+						<Scripts>
+							<OnClick>CP.Pimp.ShareAllEnchancements()</OnClick>
+							<OnEnter>
+								GameTooltip:SetOwner(this, "ANCHOR_TOPLEFT", -5, 0);
+								GameTooltip:SetText(CP.L.PIMP_SHARE_TIP);
+								GameTooltip:Show()
+							</OnEnter>
+							<OnLeave>GameTooltip:Hide()</OnLeave>
+						</Scripts>
+					</Button>
 				</Frames>
 			</Frame>
 		</Frames>

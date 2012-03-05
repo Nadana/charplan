@@ -28,7 +28,7 @@ function Search.OnLoad(this)
 
     CPSearchPimpPlus:SetText(CP.L.PIMP_PLUS)
     CPSearchPimpTier:SetText(CP.L.PIMP_TIER)
-	CPSearchPowerModifyText:SetText(string.format(CP.L.SEARCH_POWER_MODIFY , OVERDURA))
+    CPSearchPowerModifyText:SetText(string.format(CP.L.SEARCH_POWER_MODIFY , OVERDURA))
 
     CPSearchTakeIt1:SetText(CP.L.SEARCH_USE_SLOT1)
     CPSearchTakeIt2:SetText(CP.L.SEARCH_USE_SLOT2)
@@ -42,7 +42,7 @@ function Search.ForSlot(slot_id, item_id)
     	Search.ClearSettings()
 		end
 
-    --CPSearchFilterSlotMenu:Disable()
+    -- CPSearchFilterSlotMenu:Disable()
     Search.FindItems()
     CPSearchTitle:SetText(TEXT(string.format("SYS_EQWEARPOS_%02i",slot_id)))
     CPSearch:Show()
@@ -85,7 +85,7 @@ function Search.OnTypeFilterShow(this)
             [TEXT("SYS_ARMORTYPE_07")]=7, -- Jewelery
             },
         [4]= { -- Primary Weapon
-            [TEXT("SYS_WEAPON_TYPE00")]=8,  --="Waffenlos"
+            -- [TEXT("SYS_WEAPON_TYPE00")]=8,  --="Waffenlos"
             [TEXT("SYS_WEAPON_TYPE01")]=9,  --="Schwert"
             [TEXT("SYS_WEAPON_TYPE02")]=10, --="Dolch"
             [TEXT("SYS_WEAPON_TYPE03")]=11, --="Stab"
@@ -100,7 +100,7 @@ function Search.OnTypeFilterShow(this)
         [5]= { -- Secondary Weapon
             [TEXT("SYS_ARMORTYPE_05")]=5,   -- Shield
             [TEXT("SYS_ARMORTYPE_06")]=6,   -- Talisman
-            [TEXT("SYS_WEAPON_TYPE00")]=8,  --="Waffenlos"
+            -- [TEXT("SYS_WEAPON_TYPE00")]=8,  --="Waffenlos"
             [TEXT("SYS_WEAPON_TYPE01")]=9,  --="Schwert"
             [TEXT("SYS_WEAPON_TYPE02")]=10, --="Dolch"
             [TEXT("SYS_WEAPON_TYPE03")]=11, --="Stab"
@@ -474,6 +474,7 @@ function Search.UpdateSlotInfo()
         CPSearchTakeIt1Item:Hide()
     end
 
+    CPSearchTakeIt1:SetText(CP.L.SEARCH_USE_SLOT1)
     if s2 then
         CPSearchTakeIt2:Show()
         CPSearchTakeIt2Item:Show()
@@ -481,6 +482,9 @@ function Search.UpdateSlotInfo()
     else
         CPSearchTakeIt2:Hide()
         CPSearchTakeIt2Item:Hide()
+        if Search.slot == 16 then   -- "Slot 2" for right hand
+          CPSearchTakeIt1:SetText(CP.L.SEARCH_USE_SLOT2)
+        end
     end
 end
 
@@ -494,28 +498,31 @@ end
 
 function Search.OnItemClick(this, key)
 
-    local top_pos = CPSearchItemsSB:GetValue()
-    local new_item = Search.Items[this:GetID()+top_pos]
-    if key == "RBUTTON" then
-        GameTooltip:Hide()
-        CPSearchItemMenu.item_id = new_item
-        ToggleDropDownMenu(CPSearchItemMenu, 1,this,"cursor", 1 ,1 );
-        return
+  local top_pos = CPSearchItemsSB:GetValue()
+  local new_item = Search.Items[this:GetID()+top_pos]
+  if key == "RBUTTON" then
+    GameTooltip:Hide()
+    CPSearchItemMenu.item_id = new_item
+    ToggleDropDownMenu(CPSearchItemMenu, 1,this,"cursor", 1 ,1 );
+    return
+  elseif key == "LBUTTON" and (IsShiftKeyDown() or IsCtrlKeyDown()) then
+    local item_data = CP.DB.GenerateItemDataByID(new_item)
+    item_data.plus= UIDropDownMenu_GetSelectedValue(CPSearchFilterPlus) or 0
+    item_data.tier= UIDropDownMenu_GetSelectedValue(CPSearchFilterTier) or 0
+    if CPSearchPowerModify:IsChecked() then
+      item_data.dura = OVERDURA
+      item_data.max_dura =  CP.DB.CalcMaxDura(item_data.id, OVERDURA)
     end
-	if key== "LBUTTON" and IsShiftKeyDown() then
-		local  item_data = CP.DB.GenerateItemDataByID(new_item)
-		item_data.plus= UIDropDownMenu_GetSelectedValue(CPSearchFilterPlus) or 0
-		item_data.tier= UIDropDownMenu_GetSelectedValue(CPSearchFilterTier) or 0
-		if  CPSearchPowerModify:IsChecked() then
-			item_data.dura = OVERDURA
-			item_data.max_dura =  CP.DB.CalcMaxDura(item_data.id, OVERDURA)
-		end
-
-        CP.PostItemLink(item_data)
+    if IsCtrlKeyDown() then
+      local link = CP.Pimp.GenerateLink(item_data, "CP: ")
+      ItemPreviewFrame_SetItemLink(ItemPreviewFrame, link)
+    else
+      CP.PostItemLink(item_data)
+    end
 		return
-	end
-    Search.SelectItem(new_item)
-    Search.UpdateList()
+  end
+  Search.SelectItem(new_item)
+  Search.UpdateList()
 end
 
 function Search.OnItemDblClick(this)
@@ -559,11 +566,11 @@ function Search.ShowContextMenu(this)
                 end
     UIDropDownMenu_AddButton(info)
     
-    info.text = CP.L.SEARCH_CONTEXT_SUIT
-    info.func = function()
-                    Search.ApplySuit(this.item_id)
-                end
-    UIDropDownMenu_AddButton(info)
+    if CP.DB.IsSuitItem(this.item_id) then
+      info.text = CP.L.SEARCH_CONTEXT_SUIT
+      info.func = function() Search.ApplySuit(this.item_id) end
+      UIDropDownMenu_AddButton(info)
+    end
 
     local skin = CP.DB.ItemSkinPosition(this.item_id)
     if skin then

@@ -248,6 +248,40 @@ function CP.UpdatePoints()
     end
 end
 
+function CP.ShareAllEnchancements(item_data)
+  CP.ShareEnchancements(item_data, true, true, true)
+end
+
+function CP.ShareEnchancements(item_data, sharePlus, shareStats, shareRunes)
+  assert(item_data ~= nil)
+  -- for items in CP do: merge item data
+  -- 1. don't share from weapons
+  -- 2. don't share to weapons
+  local from_weapon = CP.DB.IsWeapon(item_data.id)
+  for slot,item in pairs(CP.Items) do
+    local to_weapon = CP.DB.IsWeapon(slot)
+    if from_weapon == to_weapon then
+      if shareStats then
+        for i = 1,6 do
+          item.stats[i] = item_data.stats[i]
+        end
+      end
+      if shareRunes then
+        for i = 1,4 do
+          item.runes[i] = item_data.runes[i]
+        end
+        item.rune_slots = CP.Pimp.UsedRunes(item)
+      end
+      if sharePlus then
+        item.plus = item_data.plus
+        item.tier = item_data.tier
+        item.dura = item_data.dura
+        item.max_dura = item_data.max_dura
+      end
+    end
+  end
+  CP.UpdateEquipment()
+end
 
 
 
@@ -294,16 +328,15 @@ function CP.OnModelLoad(this)
 end
 
 function CP.ModelShow()
-    local model = CPEquipmentFrameModel
-    model:SetUnit("player")
-	model:InserLinkFrame("p_top",0,20,0)
-	model:InserLinkFrame("p_down",0,0,0)
-	model:Show()
+  local model = CPEquipmentFrameModel
+  model:SetUnit("player")
+  model:InserLinkFrame("p_top",0,20,0)
+  model:InserLinkFrame("p_down",0,0,0)
+  model:Show()
 
-	model:SetCameraPosition(0, 0.10, -1.2)
-	model:SetTargetRotate(0)
-
-    CP.UpdateModel()
+  model:SetCameraPosition(0, 0.10, -1.2)
+  model:SetTargetRotate(0)
+  CP.UpdateModel()
 end
 
 function CP.UpdateModel()
@@ -576,11 +609,15 @@ function CP.EquipItem_ShowMenu( this )
         info.text = CP.L.CONTEXT_SEARCH
         info.func = function() CP.Search.ForSlot(CPEquipButtonMenu.Slot) end
         UIDropDownMenu_AddButton(info)
+        
+        if data and not CP.DB.IsWeapon(CPEquipButtonMenu.Slot) then
+          info.text = CP.L.CONTEXT_SHARE
+          info.func = function() CP.ShareAllEnchancements(data) end
+          UIDropDownMenu_AddButton(info)
+        end
 
         info.text = CP.L.CONTEXT_CLEAR
-        info.func = function()
-                CP.ClearItem(CPEquipButtonMenu.Slot)
-            end
+        info.func = function() CP.ClearItem(CPEquipButtonMenu.Slot) end
         UIDropDownMenu_AddButton(info)
     end
 
