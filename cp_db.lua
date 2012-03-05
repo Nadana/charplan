@@ -308,11 +308,10 @@ function DB.IsSlotType(slot_id)
 end
 
 function DB.ItemSkinPosition(item_id)
-    local item = DB.items[item_id]
-    if not item then return end
+    local item_pos = DB.GetItemPositions(item_id)
+    if not item_pos then return end
 
     local mslots={0,1,2,3,4,5,6,7,10,15,16,21}
-    local item_pos = item[I_SLOT]
     for _,i in ipairs(mslots) do
         if  i==item_pos then
             return i
