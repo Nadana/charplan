@@ -403,9 +403,7 @@ function CP.OnMenuShow(this)
 		info.text = CP.L.MENU_CLEARALL
         info.disabled = is_empty
 		info.func = function()
-                for id=0,21  do
-                    CP.ClearItem(id,true)
-                end
+                CP.Items={}
                 CP.UpdateEquipment()
 			end
 		UIDropDownMenu_AddButton( info, 1 )
@@ -609,7 +607,7 @@ function CP.EquipItem_ShowMenu( this )
         info.text = CP.L.CONTEXT_SEARCH
         info.func = function() CP.Search.ForSlot(CPEquipButtonMenu.Slot) end
         UIDropDownMenu_AddButton(info)
-        
+
         if data and not CP.DB.IsWeapon(CPEquipButtonMenu.Slot) then
           info.text = CP.L.CONTEXT_SHARE
           info.func = function() CP.ShareAllEnchancements(data) end

@@ -125,6 +125,8 @@ function Storage.LoadCurrentEquipment()
     }
     StaticPopup_Show("CP_LOADS_INV")
 
+    CP.Items={}
+
     Storage.Timer = WaitTimer.Wait(0.1, Storage.OnUpdate)
 end
 
