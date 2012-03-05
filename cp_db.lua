@@ -51,8 +51,6 @@ function DB.Load()
     DB.spells = LoadTable("spells")
     DB.sets = LoadTable("sets")
     DB.archievements = LoadTable("archievements")
-    
-    DB.GenerateItemSetCache()
 end
 
 function DB.Release()
@@ -569,21 +567,16 @@ function DB.GenerateItemDataByID(item_id)
     return data
 end
 
-
-function DB.GenerateItemSetCache()
-  local sets = {}
-  for item, v in pairs(DB.items) do
-    if v[I_SET] then
-      local set = v[I_SET]
-      if not sets[set] then sets[set] = {} end
-      table.insert(sets[set], item)
-    end
-  end
-  DB.suit_items = sets
-end
-
 function DB.GetSuitItems(suit_id)
-  return DB.suit_items[suit_id]
+    assert(suit_id)
+    local set = {}
+    for item_id, v in pairs(DB.items) do
+        if suit_id == v[I_SET] then
+            table.insert(set, item_id)
+        end
+    end
+
+    return set
 end
 
 function DB.IsSuitItem(item_id)

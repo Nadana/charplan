@@ -632,10 +632,10 @@ function Search.ApplySuitOfItem(item_id)
 end
 
 function Search.ApplySuit(suit_id)
-    local items = CP.DB.GetSuitItems(id)
-    if not items then return end
+    local set_items = CP.DB.GetSuitItems(suit_id)
+    if not set_items then return end
 
-    for i,item_id in pairs(items) do
+    for _,item_id in ipairs(set_items) do
         Search.ApplyItem(item_id)
     end
 
