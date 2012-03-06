@@ -4,4 +4,6 @@
 -equipment compare
 -bevorzugte pimp-history (speichern von bevorzugtem statanordnungen auf einem item)
 
-- Alpiset prüfen
+- Alpiset prÃ¼fen
+
+tasquer: translate this plz :D
