@@ -1,9 +1,8 @@
--waffen bonis tooltip
+-tooltip weapon bonuses 
 -hp/mana calculation
--item-history
+-item-history 
 -equipment compare
--bevorzugte pimp-history (speichern von bevorzugtem statanordnungen auf einem item)
+-stat/rune -saved-list, like store_items(to safe/load a preferred order of 'stats and runes' on an item in pimp-dialog)
+- check Alpiset 
 
-- Alpiset prüfen
 
-tasquer: translate this plz :D
