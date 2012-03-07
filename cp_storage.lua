@@ -84,8 +84,6 @@ end
 function Storage.DeleteItems(name)
     assert(CP_Storage[name])
 
-    -- TODO: add 'are you sure?'
-
     if Storage.LoadedItems == name then
         Storage.LoadedItems = nil
     end
