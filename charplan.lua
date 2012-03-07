@@ -270,7 +270,7 @@ function CP.ShareEnchancements(item_data, sharePlus, shareStats, shareRunes)
         for i = 1,4 do
           item.runes[i] = item_data.runes[i]
         end
-        item.rune_slots = CP.Pimp.UsedRunes(item)
+        item.max_runes = CP.Pimp.UsedRunes(item)
       end
       if sharePlus then
         item.plus = item_data.plus
