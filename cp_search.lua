@@ -16,6 +16,8 @@ function Search.OnLoad(this)
 
     UIPanelBackdropFrame_SetTexture( this, "Interface/Common/PanelCommonFrame", 256, 256 )
 
+    CPSearchTitle:SetText(CP.L.SEARCH_TITLE)
+
     CPSearchHead1:SetText(CP.L.SEARCH_NAME)
     CPSearchHead2:SetText(CP.L.SEARCH_LEVEL)
     CPSearchHead3:SetText(CP.L.SEARCH_BASE_STATS)

@@ -37,6 +37,7 @@ local rom_text ={
     PIMP_SHARE = "Share",
     PIMP_SHARE_TIP = "Share this enchancements to all items",
 
+    SEARCH_TITLE = "Item search",
     SEARCH_NAME = C_NAME,
     SEARCH_LEVEL = C_LEVEL,
     SEARCH_BASE_STATS = "Dmg/Def",
