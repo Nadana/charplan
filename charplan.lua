@@ -581,12 +581,12 @@ function CP.EquipItem_OnClick(this, key)
 			if( IsShiftKeyDown() ) then
                 CP.PostItemLink(item_data)
 			elseif(IsCtrlKeyDown()) then
-				CP.Search.ForSlot(this:GetID())
+				CP.Search.ShowSearch(this:GetID())
 			else
 				CP.Pimp.PimpItem(item_data)
 			end
         else
-            CP.Search.ForSlot(this:GetID())
+            CP.Search.ShowSearch(this:GetID())
         end
      end
 end
@@ -605,7 +605,7 @@ function CP.EquipItem_ShowMenu( this )
         end
 
         info.text = CP.L.CONTEXT_SEARCH
-        info.func = function() CP.Search.ForSlot(CPEquipButtonMenu.Slot) end
+        info.func = function() CP.Search.ShowSearch(CPEquipButtonMenu.Slot) end
         UIDropDownMenu_AddButton(info)
 
         if data and not CP.DB.IsWeapon(CPEquipButtonMenu.Slot) then
