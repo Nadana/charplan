@@ -581,7 +581,7 @@ function CP.EquipItem_OnClick(this, key)
 			if( IsShiftKeyDown() ) then
                 CP.PostItemLink(item_data)
 			elseif(IsCtrlKeyDown()) then
-				CP.Search.ShowSearch(this:GetID())
+				CP.Search.ShowSearch(this:GetID(),item_data.id)
 			else
 				CP.Pimp.PimpItem(item_data)
 			end
