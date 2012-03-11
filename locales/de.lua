@@ -29,6 +29,7 @@ CP.L ={
     PIMP_PLUS = "Plus",
     PIMP_FILTER = "<Filter>",
 
+    SEARCH_TITLE = "Gegenstandssuche",
     SEARCH_BASE_STATS = "Dmg/Def",
     SEARCH_STATS = "Stats",
     SEARCH_NOSTATLESS = "keine Leeren Gegenst.",

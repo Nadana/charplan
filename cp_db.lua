@@ -61,7 +61,7 @@ function DB.Load()
     DB.spells = LoadTable("spells")
     DB.sets = LoadTable("sets")
     DB.archievements = LoadTable("archievements")
-    
+
     DB.effects = LoadEffects()
 end
 
@@ -605,7 +605,7 @@ function DB.GenerateItemDataByID(item_id)
         dura = 100,
         max_dura = 100,
         stats = {0,0,0,0,0,0},
-        rune_slots = 0,       -- used slots
+        max_runes = 0,
         runes = {0,0,0,0},
         unk1 = 0, -- INVALID/UNKNOWN
     }

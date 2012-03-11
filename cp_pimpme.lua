@@ -22,7 +22,7 @@ Item data = {
     dura
     max_dura  --  !! Percent of base-dura !!
     stats[6]
-    rune_slots
+    max_runes
     runes[4]
     unk1      -- unknown itemlink data
 }
@@ -235,8 +235,8 @@ function Pimp.SetStat(nr, id)
             Pimp.OnStatCtrlSetValue(_G["CPPimpMeAttrRune"..(nr-6)], id)
 
             local used_slots = Pimp.UsedRunes(Pimp.data)
-            if used_slots > Pimp.data.rune_slots then
-                Pimp.data.rune_slots = used_slots
+            if used_slots > Pimp.data.max_runes then
+                Pimp.data.max_runes = used_slots
             end
         end
     end
@@ -514,8 +514,8 @@ end
 
 function Pimp.GenerateLink(item_data, prefix)
 
-    local free_slots = item_data.rune_slots - Pimp.UsedRunes(item_data)
-    assert(free_slots>=0 and item_data.rune_slots<5)
+    local free_slots = item_data.max_runes - Pimp.UsedRunes(item_data)
+    assert(free_slots>=0 and item_data.max_runes<5)
 
     local temphex= string.format("%x%02x%02x%02x",
         item_data.unk1,
@@ -609,7 +609,7 @@ function Pimp.ExtractLink(itemlink)
             tonumber( data[ 9], 16) or 0,
             tonumber( data[10], 16) or 0 }
 
-    item_data.rune_slots = free_slots + Pimp.UsedRunes(item_data)
+    item_data.max_runes = free_slots + Pimp.UsedRunes(item_data)
 
     if item_data.max_dura==0 then item_data.max_dura=100 end
     if item_data.tier<0 then item_data.tier=0 end

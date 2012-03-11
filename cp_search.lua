@@ -16,7 +16,8 @@ function Search.OnLoad(this)
 
     UIPanelBackdropFrame_SetTexture( this, "Interface/Common/PanelCommonFrame", 256, 256 )
 
-    -- TODO: localize
+    CPSearchTitle:SetText(CP.L.SEARCH_TITLE)
+
     CPSearchHead1:SetText(CP.L.SEARCH_NAME)
     CPSearchHead2:SetText(CP.L.SEARCH_LEVEL)
     CPSearchHead3:SetText(CP.L.SEARCH_BASE_STATS)
@@ -35,16 +36,21 @@ function Search.OnLoad(this)
 end
 
 
-function Search.ForSlot(slot_id, item_id)
+function Search.ShowSearch(slot_id, item_id)
+    if CP.DB.IsSlotType(slot_id) ~= CP.DB.IsSlotType(Search.slot) then
+        Search.ClearSettings()
+    end
     Search.slot = slot_id
     Search.selection = item_id
-    if CP.DB.IsSlotType(slot_id) ~= Search.itype then
-    	Search.ClearSettings()
-		end
 
-    -- CPSearchFilterSlotMenu:Disable()
+    local text = CP.L.SEARCH_FILTER_NIL
+    if Search.slot then
+        text = TEXT(string.format("SYS_EQWEARPOS_%02i",slot_id))
+    end
+
+    UIDropDownMenu_SetText(CPSearchFilterSlot,text)
+
     Search.FindItems()
-    CPSearchTitle:SetText(TEXT(string.format("SYS_EQWEARPOS_%02i",slot_id)))
     CPSearch:Show()
 end
 
@@ -63,13 +69,15 @@ function Search.OnHide()
 end
 
 function Search.OnLoadFilterTypeMenu(this)
+    Search.ClearSettings()
+
     UIDropDownMenu_SetWidth(this, 100)
     UIDropDownMenu_Initialize( this, Search.OnTypeFilterShow)
     UIDropDownMenu_SetText(this, CP.L.SEARCH_TYPE)
 end
 
 function Search.OnTypeFilterShow(this)
-    Search.itype = CP.DB.IsSlotType(Search.slot)
+    local slot_type = CP.DB.IsSlotType(Search.slot)
 
     local filters={
         [1]= { -- Armor
@@ -119,7 +127,17 @@ function Search.OnTypeFilterShow(this)
             },
     }
 
-    for name,id in pairs(filters[Search.itype] or {}) do
+    local vals = filters[slot_type] or {}
+    if not Search.slot then
+        vals = {}
+        for _,data in pairs(filters) do
+            for name,id in pairs(data) do
+                vals[name] = id
+            end
+        end
+    end
+
+    for name,id in pairs(vals) do
         local info={}
         info.text=name
         info.checked = Search.type_filter[id]
