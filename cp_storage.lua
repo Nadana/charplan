@@ -76,9 +76,19 @@ function Storage.LoadItems(name)
 
     Storage.LoadedItems = name
     CP.Utils.TableCopy(CP_Storage[name], CP.Items)
+    Storage.ItemVersionUpdate()
 
     CP.UpdateTitle()
     CP.UpdateEquipment()
+end
+
+function Storage.ItemVersionUpdate()
+    for _,data in pairs(CP.Items) do
+        if data.rune_slots then
+            data.max_runes = data.rune_slots
+            data.rune_slots=nil
+        end
+    end
 end
 
 function Storage.DeleteItems(name)
