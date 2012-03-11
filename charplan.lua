@@ -126,7 +126,7 @@ end
 local function FindSkin(path, id)
     local skins = CP.DB.FindItemsOfIcon(path)
     for _, skin in ipairs(skins) do
-        if skin == id then return end
+        if skin == id then return nil end
     end
     if #skins>1 then
         CP.Output(CP.L.ERROR_SEARCH_SKIN)
