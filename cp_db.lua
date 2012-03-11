@@ -515,6 +515,7 @@ local function GetFilterFunction(info)
  info.slot
  info.types
  info.name
+ info.rarity
  info.level_min
  info.level_max
  info.no_empty_items
@@ -525,38 +526,42 @@ local function GetFilterFunction(info)
     if info.slot then
         local slots = CP.DB.GetItemTypesForSlot(info.slot)
         if type(slots)=="number" then
-            table.insert(code, 'if data[1]~='..slots..' then return false end')
+            table.insert(code, string.format('if data[%i]~=%i then return false end',I_SLOT,slots))
         else
             assert(type(slots)=="table")
             table.insert(code, 'if data[1]~='..table.concat(slots,' and data[1]~=')..' then return false end')
         end
     end
 
+    if info.itemset_only then
+        table.insert(code, 'if not data['..I_SET..'] then return false end')
+    end
+
     if info.types then
         table.insert(code, 'if data[2]~='..table.concat(info.types,' and data[2]~=')..' then return false end')
     end
 
-    if info.name and info.name~="" then
-        local name = string.lower(info.name)
-        table.insert(code, 'if not string.find(TEXT("Sys"..id.."_name"):lower(),"'..name..'") then return false end')
-    end
-
     if info.level_min then
-        table.insert(code, 'if data[3]<'..tostring(info.level_min)..' then return false end')
+        table.insert(code, string.format('if data[%i]<%i then return false end',I_LEVEL,info.level_min))
     end
 
     if info.level_max then
-        table.insert(code, 'if data[3]>'..tostring(info.level_max)..' then return false end')
+        table.insert(code, string.format('if data[%i]>%i then return false end',I_LEVEL,info.level_max))
     end
 
     if info.no_empty_items then
         table.insert(code, 'if not CP.DB.GetItemEffect(id) then return false end')
     end
 
-    if info.itemset_only then
-        table.insert(code, 'if not data[9] then return false end')
+    if info.rarity then
+        table.insert(code, 'if GetQualityByGUID(id)~='..info.rarity..' then return false end')
     end
 
+    if info.name and info.name~="" then
+        local name = string.lower(info.name)
+        local suit_test = string.format('if not data[%i] or not string.find(TEXT("Sys"..data[%i].."_name"):lower(),"%s") then return false end',I_SET,I_SET,name)
+        table.insert(code, 'if not string.find(TEXT("Sys"..id.."_name"):lower(),"'..name..'") then '..suit_test..' end')
+    end
 
     table.insert(code,"return true end")
 
