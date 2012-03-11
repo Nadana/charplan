@@ -110,9 +110,9 @@ function Search.OnTypeFilterShow(this)
             [TEXT("SYS_WEAPON_TYPE11")]=19, --="Bogen"
             [TEXT("SYS_WEAPON_TYPE12")]=20, --="Armbrust"
             [TEXT("SYS_WEAPON_TYPE13")]=21, --="Feuerwaffe"
-            [TEXT("SYS_WEAPON_TYPE14")]=22, --="Pfeil"
-            [TEXT("SYS_WEAPON_TYPE15")]=23, --="Kugeln"
-            [TEXT("SYS_WEAPON_TYPE16")]=24, --="Wurfwaffen"
+            --[TEXT("SYS_WEAPON_TYPE14")]=22, --="Pfeil"
+            --[TEXT("SYS_WEAPON_TYPE15")]=23, --="Kugeln"
+            --[TEXT("SYS_WEAPON_TYPE16")]=24, --="Wurfwaffen"
             },
         [7]= { -- Back
             [TEXT("SYS_ARMORTYPE_03")]=3, -- Cloth
