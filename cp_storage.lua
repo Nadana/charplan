@@ -146,7 +146,10 @@ function Storage.FindFreeSlot()
     for bagIndex=1,totalSlots  do
         local slot_idx, icon = GetBagItemInfo ( bagIndex )
         if icon == "" then
+          local let, letTime = GetBagPageLetTime(math.ceil(bagIndex/30));
+          if not let or letTime > -1 then
             return slot_idx
+          end
         end
     end
 end
