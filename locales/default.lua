@@ -10,7 +10,7 @@ local rom_text ={
     MENU_DEL= "Delete saved",
     MENU_CLEARALL = "Clear Items",
 
-    DLG_WAIT_INV= "Please wait while we enumerate you equipment…",
+    DLG_WAIT_INV= "Please wait while we enumerate your equipment…",
     DLG_SAVENAME= "Enter Name",
     ENUMERATE_CANCELED = "Enumeration canceled!",
 
