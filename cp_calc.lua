@@ -56,7 +56,8 @@ Calc.STATS={
     MACC = 195,
 
 	PCRITDMG = 19,
-	MCRITDMG = 21,
+	MCRITDMG = 21,	
+	
 }
 
 
@@ -288,10 +289,7 @@ function Calc.GetBases()
     v.WIS = GetPlayerAbility("MND")
 
 	--Melee
-	v.PCRITMH = GetPlayerAbility("MAGIC_CRITICAL") -- not correct ability but correct numbers
-
-	--Range
-	v.PCRITR = GetPlayerAbility("RANGE_CRITICAL")
+	v.PCRITMH = GetPlayerAbility("MAGIC_CRITICAL") -- not correct ability but correct numbers	
 
 	--Magic
 	v.MCRIT = GetPlayerAbility("MAGIC_CRITICAL")
@@ -445,6 +443,7 @@ function Calc.DependingStats(values)
     Calc.StatRelations(values)
     Calc.CharDepended(values)
     Calc.CharIndepended(values)
+	Calc.WeaponDepended(values)
 end
 
 function Calc.Explain_DependingStats(res)
@@ -485,7 +484,8 @@ function Calc.StatRelations(values)
         [52]=s.PDMGR,  -- "% Fernkampfwaffen-Schadensrate"
         [134]=s.PATK, -- "% physische Angriffe"
         [173]={s.PDMGMH, s.PDMGOH, s.PDMGR}, -- "% Schaden"
-        [56] ={s.PDMGMH, s.PDMGOH}, -- "% Nahkampfwaffen-Schadensrate"
+        [56] ={s.PDMGMH, s.PDMGOH}, -- "% Nahkampfwaffen-Schadensrate"	
+		
     }
 
     for p_stat,inc_stat in pairs(perc) do
@@ -543,7 +543,50 @@ local CLASS_VARS={
     ["WARRIOR"]={   PDEF=2.3, MDEF=2.2,
                     PATKint=0  ,PATKdex=0  ,PATKstr=2  },
 }
+   
+   
 
+function Calc.WeaponDepended(values)	
+	local weapon={	
+    [0]=58 , -- "% Schwert-Schadensrate",
+    [1]=59 , -- "% Dolch-Schadensrate",
+    [2]=60 , -- "% Stab-Schadensrate",
+    [3]=61 , -- "% Axt-Schadensrate",
+    [4]=62 , -- "% Einhandhammer-Schadensrate",
+    [5]=63 , -- "% Zweihandschwert-Schadensrate",
+    [6]=64 , -- "% Zweihandstab-Schadensrate",
+    [7]=65 , -- "% Zweihandaxt-Schadensrate",
+    [8]=66 , -- "% 'Beidhändiger Hammer'-Schadensrate",
+	[10]=53 , -- "% Bogen-Schadensrate",
+    [11]=54 , -- "% Armbrust-Schadensrate",
+    --[]55 , -- "% Feuerwaffen-Schadensrate",  
+    --[]67 , -- "% Feuerwaffen-Schadensrate",
+	}
+	for _,slot in ipairs( {10,15,16} ) do
+        local item = CP.Items[slot]
+		if item then
+			local weapon_type = CP.DB.GetWeaponType(item.id) 		
+			if slot== 10 then				
+				values.PDMGR = values.PDMGR * (1+ values[weapon[weapon_type]]/100)
+			elseif slot == 15 then			
+				if weapon_type~=2 and weapon_type~=6 then					
+						values.PDMGMH = values.PDMGMH * (1+ values[weapon[weapon_type]]/100)				
+				else						
+						values.MDMG = values.MDMG * (1+ values[weapon[weapon_type]]/100)
+				end
+				
+			else
+				if weapon_type~=2 then
+					values.PDMGOH = values.PDMGOH * (1+ values[weapon[weapon_type]]/100)
+				else
+					values.MDMG = values.MDMG * (1+ values[weapon[weapon_type]]/100)
+				end
+			end	
+            
+		end
+	end
+	
+end
 function Calc.CharDepended(values)
     local cname = UnitClassToken("player")
     local d = CLASS_VARS[cname]

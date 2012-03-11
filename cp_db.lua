@@ -274,6 +274,7 @@ function DB.GetItemPositions(item_id)
     end
 end
 
+
 function DB.GetItemTypesForSlot(slot)
 
     if slot==15 then     return {32,34,35}
@@ -302,6 +303,11 @@ function DB.IsWeapon2Hand(item_id)
         return (item[I_SLOT] == 35)
     end
 end
+
+function DB.GetWeaponType(item_id)  
+	local item = DB.items[item_id]	
+	return item[I_TYPE]-9 
+end 
 
 function DB.IsSlotType(slot_id)
     local slots={
