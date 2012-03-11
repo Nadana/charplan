@@ -3,16 +3,16 @@ local rom_text ={
 
     TITLE_EMPTY = "<unnamed>",
     MENU_TITLE = "Menu",
-    MENU_IMPORT= "Import current equipment",
+    MENU_IMPORT= "Import current equipment…",
     MENU_LOAD= "Load Items",
     MENU_SAVE= "Save Items",
-    MENU_SAVEAS= "Save Items as ...",
+    MENU_SAVEAS= "Save Items as…",
     MENU_DEL= "Delete saved",
     MENU_CLEARALL = "Clear Items",
 
-    DLG_WAIT_INV= "Please wait while we enumerate you equipment",
+    DLG_WAIT_INV= "Please wait while we enumerate your equipment…",
     DLG_SAVENAME= "Enter Name",
-    ENUMERATE_CANCELED = "Enumeration canceled",
+    ENUMERATE_CANCELED = "Enumeration canceled!",
 
     CONTEXT_MENU = "|cffb0b030[CharPlan]|r Add to plan",
     CONTEXT_PIMPME= "Pimp: %s",
@@ -20,7 +20,7 @@ local rom_text ={
     CONTEXT_SHARE = "Share to all equip",
     CONTEXT_CLEAR = "Clear",
 
-    ERROR_NOSLOT = "A free Bag Slot is needed to import your current equipment",
+    ERROR_NOSLOT = "A free Bag Slot is needed to import your current equipment!",
     ERROR_PICKEDUPITEM = "There was a problem while scanning equipment! Check your current equipment!",
     ERROR_SEARCH_SKIN = "Skin is ambiguous and could be wrong!",
     ERROR_NO_VALID_ITEM= "Not a valid equipment.",
