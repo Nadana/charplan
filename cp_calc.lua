@@ -514,7 +514,7 @@ function Calc.CharIndepended(values)
 
 	values.PACCR = values.PACCR+ values.PACC*1
 	values.PACCOH= values.PACCOH+values.PACC*0.5
-	values.PDMGOH= values.PDMGOH+values.PDMGOH*0.7
+	values.PDMGOH= values.PDMGOH*0.7
 	values.PATKR = values.PATKR+ values.PATK* 1
 
     values.HP= values.HP + values.STA* 5
