@@ -28,7 +28,7 @@ local rom_text ={
     PIMP_TIER = TEXT("_glossary_00703"),
     PIMP_STAT = "Stat %i",
     PIMP_RUNE = "Rune %i",  -- SYS_ITEMTYPE_24
-    PIMP_DURA = TEXT("SYS_ITEM_DURABLE"), -- "Dura",   --TEXT("_glossary_01188"),  -- Haltbarkeit
+    PIMP_DURA = TEXT("SYS_ITEM_DURABLE"),
     PIMP_PLUS = "Plus",
     PIMP_FILTER1 = "<Name>",
     PIMP_FILTER2 = "<Stat1>",
@@ -72,7 +72,6 @@ local rom_text ={
 
     STAT_NAMES= {
         -- categories
-		--PLAYERTITEL = CharacterAttributeFrame_UpdatePlayerTitle(),
         BASE = TEXT("TOOLTIPS_LIMIT_ATTR"),
         MAGIC = TEXT("MAGIC"),
         MELEE = TEXT("MELEE"),
@@ -80,7 +79,7 @@ local rom_text ={
         MAGICDEFENCE = TEXT("MAGIC_DEFENCE"),
         PHYSICALDEFENCE = TEXT("PHYSICAL_DEFENCE"),
 		MELEEOFFHAND = (TEXT("MELEE").." - "..TEXT("SYS_EQWEARPOS_16")),
-		
+
 		--Base
         STR =C_STR,
         STA =C_STA,
