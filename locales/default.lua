@@ -72,13 +72,15 @@ local rom_text ={
 
     STAT_NAMES= {
         -- categories
+		--PLAYERTITEL = CharacterAttributeFrame_UpdatePlayerTitle(),
         BASE = TEXT("TOOLTIPS_LIMIT_ATTR"),
         MAGIC = TEXT("MAGIC"),
         MELEE = TEXT("MELEE"),
         RANGE = TEXT("RANGE"),
         MAGICDEFENCE = TEXT("MAGIC_DEFENCE"),
         PHYSICALDEFENCE = TEXT("PHYSICAL_DEFENCE"),
-
+		MELEEOFFHAND = (TEXT("MELEE").." - "..TEXT("SYS_EQWEARPOS_16")),
+		
 		--Base
         STR =C_STR,
         STA =C_STA,

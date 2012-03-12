@@ -65,16 +65,26 @@ end
 
 
 function CP.OnShow(this)
-
+	
     CPFrameClassFrameLeftText:SetText(UnitClass("player"))
     CPFrameClassFrameRightText:SetText(UnitLevel("player"))
-    CPFrameMenuBtn:SetText(CP.L.MENU_TITLE)
-
+    CPFrameMenuBtn:SetText(CP.L.MENU_TITLE)	
+	
     CP.UpdateTitle()
     CP.DB.Load()
     CP.Calc.Init()
     CP.UpdateEquipment()
     CP.ModelShow()
+	--CP.PlayerTitle()
+	
+end
+function CP.PlayerTitle()
+	local nID , szTitle = GetCurrentTitle()	
+	
+	if( nID == 0 ) then 
+		szTitle = C_TITLE_NIL
+	end	 
+    --CPAttributePlayerTitle:SetText(szTitle)
 end
 
 function CP.UpdateTitle()
@@ -660,7 +670,8 @@ end
 function CP.AttributeTitle_OnLoad( this )
 
     local name = string.sub(this:GetName(), string.len("CPAttributeTitle")+1)
-    _G[this:GetName().."Label"]:SetText(CP.L.STAT_NAMES[name])
+    _G[this:GetName().."Label"]:SetText(CP.L.STAT_NAMES[name])	
+	
 end
 
 

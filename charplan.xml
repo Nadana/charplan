@@ -45,7 +45,7 @@
 			<OnLeave>GameTooltip:Hide()</OnLeave>
 		</Scripts>
 	</Frame>
-	<!-- Attribute Title display !-->
+	<!-- Attribute Title display !-->	
 	<Frame name="CPAttributeTitleTemplate" virtual="true">
 		<Size>
 			<AbsDimension x="136" y="14"/>
@@ -69,7 +69,7 @@
 			<OnLoad>CP.AttributeTitle_OnLoad( this )</OnLoad>
 		</Scripts>
 	</Frame>
-	<!-- Main Dialog!-->
+	<!-- Main Dialog!-->	
 	<Frame name="CPFrame" parent="UIParent" enableMouse="true" inherits="UICommonFrameTemplate">
 		<Size>
 			<AbsDimension x="636" y="433"/>
@@ -107,26 +107,26 @@
 								</Anchor>
 							</Anchors>
 						</Texture>
-						<!--Texture file="Interface\Common\PanelSeparate-HorizontalLine">
+						<Texture file="Interface\Common\PanelSeparate-HorizontalLine">
 							<Size>
-								<AbsDimension x="142" y="4"/>
+								<AbsDimension x="290" y="4"/>
 							</Size>
 							<Anchors>
-								<Anchor point="TOP">
+								<Anchor point="TOPLEFT">
 									<Offset>
-										<AbsDimension x="2" y="108"/>
+										<AbsDimension x="2" y="19"/>
 									</Offset>
 								</Anchor>
 							</Anchors>
-						</Texture !-->
+						</Texture>						
 					</Layer>
-        		</Layers>
-				<Frames>
+        		</Layers>						
+				<Frames>					
 					<Frame name="CPAttributeFrameValueHP" inherits="CPAttributeFrameTemplate">
 						<Anchors>
 							<Anchor point="TOPLEFT">
 								<Offset>
-									<AbsDimension x="6" y="6"/>
+									<AbsDimension x="6" y="23"/>
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -135,7 +135,7 @@
 						<Anchors>
 							<Anchor point="TOPLEFT">
 								<Offset>
-									<AbsDimension x="150" y="6"/>
+									<AbsDimension x="150" y="23"/>
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -144,7 +144,7 @@
 						<Anchors>
 							<Anchor point="TOPLEFT">
 								<Offset>
-									<AbsDimension x="6" y="30"/>
+									<AbsDimension x="6" y="47"/>
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -198,7 +198,7 @@
 						<Anchors>
 							<Anchor point="TOPLEFT">
 								<Offset>
-									<AbsDimension x="150" y="30"/>
+									<AbsDimension x="150" y="47"/>
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -242,7 +242,7 @@
 						<Anchors>
 							<Anchor point="TOPLEFT">
 								<Offset>
-									<AbsDimension x="6" y="140"/>
+									<AbsDimension x="6" y="155"/>
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -255,7 +255,7 @@
 								</Offset>
 							</Anchor>
 						</Anchors>
-					</Frame>
+					</Frame>					
 					<Frame name="CPAttributeFrameValuePATK" inherits="CPAttributeFrameTemplate">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValuePDMGMH" relativePoint="BOTTOMLEFT">
@@ -273,10 +273,47 @@
 								</Offset>
 							</Anchor>
 						</Anchors>
-					</Frame>
+					</Frame>					
 					<Frame name="CPAttributeFrameValuePACC" inherits="CPAttributeFrameTemplate">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValuePCRITMH" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					
+					<Frame name="CPAttributeTitleMELEEOFFHAND" inherits="CPAttributeTitleTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset>
+									<AbsDimension x="6" y="250"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="CPAttributeFrameValuePDMGOH" inherits="CPAttributeFrameTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="CPAttributeTitleMELEEOFFHAND" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="CPAttributeFrameValuePCRITOH" inherits="CPAttributeFrameTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValuePDMGOH" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="2"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="CPAttributeFrameValuePACCOH" inherits="CPAttributeFrameTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValuePCRITOH" relativePoint="BOTTOMLEFT">
 								<Offset>
 									<AbsDimension x="0" y="2"/>
 								</Offset>
@@ -287,7 +324,7 @@
 						<Anchors>
 							<Anchor point="TOPLEFT">
 								<Offset>
-									<AbsDimension x="150" y="140"/>
+									<AbsDimension x="150" y="155"/>
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -332,7 +369,7 @@
 						<Anchors>
 							<Anchor point="TOPLEFT">
 								<Offset>
-									<AbsDimension x="6" y="233"/>
+									<AbsDimension x="150" y="250"/>
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -368,7 +405,7 @@
 						<Anchors>
 							<Anchor point="TOPLEFT">
 								<Offset>
-									<AbsDimension x="150" y="233"/>
+									<AbsDimension x="150" y="330"/>
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -395,16 +432,16 @@
 						<Anchors>
 							<Anchor point="TOPLEFT">
 								<Offset>
-									<AbsDimension x="6" y="310"/>
+									<AbsDimension x="6" y="346"/>
 								</Offset>
 							</Anchor>
 						</Anchors>
 					</Frame>
 					<Frame name="CPAttributeFrameValueMCRITDMG" inherits="CPAttributeFrameTemplate">
 						<Anchors>
-							<Anchor point="TOPLEFT">
+							<Anchor point="TOPLEFT" relativeTo="CPAttributeFrameValuePCRITDMG" relativePoint="BOTTOMLEFT" >
 								<Offset>
-									<AbsDimension x="150" y="310"/>
+									<AbsDimension x="0" y="2"/>
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -440,7 +477,7 @@
 								</Offset>
 							</Anchor>
 						</Anchors>
-					</Frame>
+					</Frame>					
 					<Button name="CPFrameMenuBtn" enableMouse="true" inherits="UIPanelButtonTemplate" text="Menu">
 						<Size>
 							<AbsDimension x="132" y="24"/>
