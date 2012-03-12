@@ -4,5 +4,6 @@
 -equipment compare
 -stat/rune -saved-list, like store_items(to safe/load a preferred order of 'stats and runes' on an item in pimp-dialog)
 - check Alpiset 
+-Reload PlayerTitle,Skills (also skilllvl.) etc. if equip is changed (new or loaded)
 
 
