@@ -222,18 +222,16 @@ function Calc.Explain(stat)
 
     local res = {left={}, right={} }
 
-
     local s = Calc.STATS
---~     if stat == s.PDMGR or stat == s.PDMGMH or stat == s.PDMGOH then
---~         res.left, res.right= Calc.Explain(s.PDMG)
---~         AddDescription(res, "",0)
---~     end
+    if stat == s.PDMGR or stat == s.PDMGMH or stat == s.PDMGOH then
+        res.left, res.right= Calc.Explain(s.PDMG)
+        AddDescription(res, "",0)
+    end
 
---~     if stat == s.PCRITR or stat == s.PCRITMH or stat == s.PCRITOH then
---~         res.left, res.right= Calc.Explain(s.PCRIT)
---~         AddDescription(res, "",0)
---~     end
-
+    if stat == s.PCRITR or stat == s.PCRITMH or stat == s.PCRITOH then
+        res.left, res.right= Calc.Explain(s.PCRIT)
+        AddDescription(res, "",0)
+    end
 
     local values = Calc.GetBases()
     values = values + Calc.GetBasesCalced()
@@ -265,19 +263,7 @@ function Calc.Explain(stat)
 		end
 	end
 
-    Calc.Explain_DependingStats(res)
-
-    if stat == s.PDMG then
-        AddDescription(res, "",0)
-        local l,r = Calc.Explain(s.PDMGMH)
-        for _,t in ipairs(l) do table.insert(res.left,t) end
-        for _,t in ipairs(r) do table.insert(res.right,t) end
-
-        AddDescription(res, "",0)
-        local l,r = Calc.Explain(s.PDMGOH)
-        for _,t in ipairs(l) do table.insert(res.left,t) end
-        for _,t in ipairs(r) do table.insert(res.right,t) end
-    end
+    Calc.Explain_DependingStats(res, total, stat)
 
     return res.left,res.right
 end
@@ -350,13 +336,13 @@ function Calc.GetAllItemsBonus()
     items[15] = items[15] or Calc.NewStats()
     items[16] = items[16] or Calc.NewStats()
 
-    values.PDMG = values.PDMG   -items[10].PDMG-items[15].PDMG -items[16].PDMG
-    values.PCRIT= values.PCRIT  -items[10].PCRIT-items[15].PCRIT-items[16].PCRIT
+    values.PDMG = values.PDMG  -items[10].PDMG -items[15].PDMG -items[16].PDMG
+    values.PCRIT= values.PCRIT -items[10].PCRIT-items[15].PCRIT-items[16].PCRIT
 
-    values.PDMGR  = values.PDMG   +items[10].PDMG
+    values.PDMGR  = values.PDMG  +items[10].PDMG
     values.PDMGMH = values.PDMG  +items[15].PDMG
     values.PDMGOH = values.PDMG  +items[16].PDMG
-    values.PCRITR = values.PCRIT  +items[10].PCRIT
+    values.PCRITR = values.PCRIT +items[10].PCRIT
     values.PCRITMH= values.PCRIT +items[15].PCRIT
     values.PCRITOH= values.PCRIT +items[16].PCRIT
 
@@ -451,10 +437,11 @@ function Calc.DependingStats(values)
 	Calc.WeaponDepended(values)
 end
 
-function Calc.Explain_DependingStats(res)
-    local values = Calc.Clear()
-    CP.Calc.StatRelations(values)
-    AddDescription(res, TEXT("SYS_WEAREQTYPE_7"), values[stat])
+function Calc.Explain_DependingStats(res, cur_values,stat)
+    local values = Calc.Clear() + cur_values
+    -- TODO: split explanations
+    CP.Calc.DependingStats(values)
+    AddDescription(res, CP.L.BY_CALC, values[stat]-cur_values[stat])
 end
 
 function Calc.StatRelations(values)
@@ -489,8 +476,7 @@ function Calc.StatRelations(values)
         [52]=s.PDMGR,  -- "% Fernkampfwaffen-Schadensrate"
         [134]=s.PATK, -- "% physische Angriffe"
         [173]={s.PDMGMH, s.PDMGOH, s.PDMGR}, -- "% Schaden"
-        [56] ={s.PDMGMH, s.PDMGOH}, -- "% Nahkampfwaffen-Schadensrate"	
-		
+        [56] ={s.PDMGMH, s.PDMGOH}, -- "% Nahkampfwaffen-Schadensrate"
     }
 
     for p_stat,inc_stat in pairs(perc) do
@@ -506,7 +492,6 @@ function Calc.StatRelations(values)
             end
         end
     end
-
 end
 
 function Calc.CharIndepended(values)

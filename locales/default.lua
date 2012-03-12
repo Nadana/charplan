@@ -1,5 +1,5 @@
 -- coding: utf-8
-local rom_text ={
+local default_text={
 
     TITLE_EMPTY = "<unnamed>",
     MENU_TITLE = "Menu",
@@ -62,6 +62,7 @@ local rom_text ={
     BY_CARD = TEXT("AC_ITEMTYPENAME_6"),
     BY_SET = "Sets",
     BY_TITLE = C_TITLE,
+    BY_CALC = "|cffffffffInteraction",
 
     STAT_SHORTS = {
         PDMG="PDMG",
@@ -134,10 +135,10 @@ local rom_text ={
     },
 }
 
-CP.L = CP.L or rom_text
+CP.L = CP.L or default_text
 CP.L.STAT_NAMES = CP.L.STAT_NAMES or {}
 CP.L.STAT_SHORTS = CP.L.STAT_SHORTS or {}
-setmetatable(CP.L, {__index = rom_text})
-setmetatable(CP.L.STAT_NAMES, {__index = rom_text.STAT_NAMES})
-setmetatable(CP.L.STAT_SHORTS, {__index = rom_text.STAT_SHORTS})
+setmetatable(CP.L, {__index = default_text})
+setmetatable(CP.L.STAT_NAMES, {__index = default_text.STAT_NAMES})
+setmetatable(CP.L.STAT_SHORTS, {__index = default_text.STAT_SHORTS})
 
