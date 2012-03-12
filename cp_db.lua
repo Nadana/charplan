@@ -81,6 +81,7 @@ function DB.Release()
             DB.spells = nil
             DB.sets = nil
             DB.archievements = nil
+            DB.effects = nil
         collectgarbage("collect")
         -- local mem2 = collectgarbage("count")
         -- CP.Debug("DB Released. Freed memory: "..(math.floor(mem1-mem2)/1000).."mb")
@@ -304,10 +305,10 @@ function DB.IsWeapon2Hand(item_id)
     end
 end
 
-function DB.GetWeaponType(item_id)  
-	local item = DB.items[item_id]	
-	return item[I_TYPE]-9 
-end 
+function DB.GetWeaponType(item_id)
+	local item = DB.items[item_id]
+	return item[I_TYPE]-9
+end
 
 function DB.IsSlotType(slot_id)
     local slots={
