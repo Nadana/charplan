@@ -173,6 +173,7 @@ function Calc.GetListOfSkills()
 
         local count = GetNumSkill( page ) or 0
         for index = 1,count do
+        		local link = GetSkillHyperLink( page, index )
         		local id, lvl = link:match(":(%d+) (%d+)")
         		skills[tonumber(id)] = tonumber(lvl)
         		--[[
