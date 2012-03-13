@@ -151,16 +151,20 @@ function Calc.ReadSkills()
     local skills = Calc.GetListOfSkills()
     for skill_id, level in pairs(skills) do
 
-        local effect = CP.DB.GetSkillEffect(skill_id)
-        for i=1,#effect,2 do
-            local ev = effect[i+1]
-            -- TODO: calc real value with ability_skilllvarg
-            -- local val = (varg*level+100) * ev / 100
-            
-            -- NOTE: a approximation - real value can differ by 0.1 (related to rounding borders)
-            local val = ev*(1+level/10)- math.floor(ev*level/10+0.49)/10
+        local spells = CP.DB.GetSkillSpells(skill_id)
+        for _,spell_id in ipairs(spells) do
 
-            Calc.SkillBonus[effect[i]] = Calc.SkillBonus[effect[i]] + val
+            local skill_arg, effects = CP.DB.GetSkillSpellEffect(spell_id)
+            if skill_arg then
+                for i=1,#effects,2 do
+                    local ev = effects[i+1]
+
+                    local val = (skill_arg*level+100) * ev / 100
+                    val = math.floor(val*10+0.5)/10
+
+                    Calc.SkillBonus[effects[i]] = Calc.SkillBonus[effects[i]] + val
+                end
+            end
         end
     end
 end
@@ -173,16 +177,9 @@ function Calc.GetListOfSkills()
 
         local count = GetNumSkill( page ) or 0
         for index = 1,count do
-        		local link = GetSkillHyperLink( page, index )
-        		local id, lvl = link:match(":(%d+) (%d+)")
-        		skills[tonumber(id)] = tonumber(lvl)
-        		--[[
-            local _, _, _, _, PLV, _, _, _ = GetSkillDetail( page,  index )
             local link = GetSkillHyperLink( page, index )
-            local _type, _data, _name = ParseHyperlink(link)
-            local _,_,skill_id = string.find(_data, "(%d+)")
-            skills[tonumber(skill_id)] = PLV
-            --]]
+            local id, lvl = link:match(":(%d+) (%d+)")
+            skills[tonumber(id)] = tonumber(lvl)
         end
     end
 

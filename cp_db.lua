@@ -99,20 +99,15 @@ function DB.GetCardEffect(card_id)
     end
 end
 
-function DB.GetSkillEffect(skill_id)
+function DB.GetSkillSpells(skill_id)
+    return DB.skills[skill_id] or {}
+end
 
-    local effect={}
-    local skills = DB.skills[skill_id]
-    for _,spell_id in ipairs(skills or {}) do
-        local boni = DB.spells[spell_id]
-        if boni then
-            for _,v in ipairs(boni) do
-                table.insert(effect,v)
-            end
-        end
+function DB.GetSkillSpellEffect(spell_id)
+    local boni = DB.spells[spell_id]
+    if boni then
+        return boni[1],boni[2]
     end
-
-    return effect
 end
 
 function DB.GetArchievementEffect(title_id)

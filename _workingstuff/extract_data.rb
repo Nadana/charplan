@@ -587,6 +587,8 @@ class ArmorEntry < ItemEntry
 
         raise "illegal pos:"+@inv_pos.to_s if @inv_pos>21
 
+# TODO: check supported @armor_typ s
+
         #raise "stop2: #{@id}" if @bonus.eqtypes.size()>1 and (@bonus.eqtypes[1]!=13 or @bonus.eqtypes[2]!=14)
     end
 
@@ -695,7 +697,7 @@ class WeaponEntry < ItemEntry
         @weapontype = csv_row['weapontype'].to_i # 0-20 -> 1-Schwert; 2-Dolch; 6-Zweihandschwert; 11-Bogen
 
         raise "unkown weapon_pos:"+@weaponpos.to_s if @weaponpos<0 || @weaponpos>6
-
+# TODO: check supported @weapontype s
         #raise "stop2" if @bonus.eqtypes[1]!=25
     end
 
@@ -974,10 +976,13 @@ class MagicObjectEntry < Table
 
     FILENAME = "magicobject"
     attr_accessor :bonus
+    attr_accessor :skilllvarg
+
 
     def initialize(csv_row)
         super(csv_row)
         @bonus = BonusStuff.new(csv_row)
+        @skilllvarg = csv_row['ability_skilllvarg'].to_i
     end
 
     def SkipThisItem?
@@ -985,11 +990,13 @@ class MagicObjectEntry < Table
     end
 
     def ExportDesc(data)
+        data.push( "skilllvarg")
         @bonus.ExportDesc(data)
     end
 
     def ExportData(data)
-        @bonus.ExportDataPlain(data)
+        data.push(@skilllvarg)
+        @bonus.ExportData(data)
     end
 end
 
