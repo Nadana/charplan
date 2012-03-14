@@ -68,15 +68,15 @@ function Search.OnHide()
     Search.Items=nil
 end
 
-function Search.OnLoadFilterTypeMenu(this)
+function Search.FilterTypeMenu_OnLoad(this)
     Search.ClearSettings()
 
     UIDropDownMenu_SetWidth(this, 100)
-    UIDropDownMenu_Initialize( this, Search.OnTypeFilterShow)
+    UIDropDownMenu_Initialize( this, Search.FilterTypeMenu_OnShow)
     UIDropDownMenu_SetText(this, CP.L.SEARCH_TYPE)
 end
 
-function Search.OnTypeFilterShow(this)
+function Search.FilterTypeMenu_OnShow(this)
     local slot_type = CP.DB.IsSlotType(Search.slot)
 
     local filters={
@@ -118,9 +118,6 @@ function Search.OnTypeFilterShow(this)
             [TEXT("SYS_WEAPON_TYPE11")]=19, --="Bogen"
             [TEXT("SYS_WEAPON_TYPE12")]=20, --="Armbrust"
             [TEXT("SYS_WEAPON_TYPE13")]=21, --="Feuerwaffe"
-            --[TEXT("SYS_WEAPON_TYPE14")]=22, --="Pfeil"
-            --[TEXT("SYS_WEAPON_TYPE15")]=23, --="Kugeln"
-            --[TEXT("SYS_WEAPON_TYPE16")]=24, --="Wurfwaffen"
             },
         [7]= { -- Back
             [TEXT("SYS_ARMORTYPE_03")]=3, -- Cloth
@@ -142,33 +139,33 @@ function Search.OnTypeFilterShow(this)
         info.text=name
         info.checked = Search.type_filter[id]
         info.value = id
-        info.func = Search.OnTypeFilterSelect
+        info.func = Search.FilterTypeMenu_OnSelect
         info.keepShownOnClick = 1
 		UIDropDownMenu_AddButton( info, 1 )
     end
 end
 
-function Search.OnTypeFilterSelect(this)
+function Search.FilterTypeMenu_OnSelect(this)
     Search.type_filter[this.value] = not Search.type_filter[this.value]
     Search.FindItems()
 end
 
 
-function Search.OnLoadFilterSlotMenu(this)
+function Search.FilterSlotMenu_OnLoad(this)
     UIDropDownMenu_SetWidth(this, 100)
-    UIDropDownMenu_Initialize( this, Search.OnSlotFilterShow)
+    UIDropDownMenu_Initialize( this, Search.FilterSlotMenu_OnShow)
     UIDropDownMenu_Refresh(this)
 end
 
 
-function Search.OnSlotFilterShow(this)
+function Search.FilterSlotMenu_OnShow(this)
     local slots={0,1,2,3,4,5,6,7,8,10,11,13,15,16,21}
 
     local info={
         text=CP.L.SEARCH_FILTER_NIL,
         checked = (Search.slot==nil),
         value = nil,
-        func = Search.OnSlotFilterSelect,
+        func = Search.FilterSlotMenu_OnSelect,
     }
     UIDropDownMenu_AddButton( info, 1 )
 
@@ -180,52 +177,52 @@ function Search.OnSlotFilterShow(this)
     end
 end
 
-function Search.OnSlotFilterSelect(this)
+function Search.FilterSlotMenu_OnSelect(this)
     UIDropDownMenu_SetSelectedID(CPSearchFilterSlot, this:GetID())
     Search.slot=this.value
     Search.FindItems()
 end
 
-function Search.OnLoadFilterPlusMenu(this)
+function Search.PlusMenu_OnLoad(this)
     UIDropDownMenu_SetWidth(this, 40)
-    UIDropDownMenu_Initialize(this, Search.OnLoadFilterPlusShow)
+    UIDropDownMenu_Initialize(this, Search.PlusMenu_OnShow)
     UIDropDownMenu_SetSelectedValue(this, 0)
 end
 
-function Search.OnLoadFilterPlusShow(button)
+function Search.PlusMenu_OnShow(button)
     local info={}
     for i=0,16 do
         info.text = "+"..i
         info.value = i
         info.notCheckable=1
-        info.func = Search.OnLoadFilterPlusClicked
+        info.func = Search.PlusMenu_OnClicked
         UIDropDownMenu_AddButton(info)
     end
 end
 
-function Search.OnLoadFilterPlusClicked(button)
+function Search.PlusMenu_OnClicked(button)
     UIDropDownMenu_SetSelectedValue(CPSearchFilterPlus, button.value)
     Search.UpdateList()
 end
 
-function Search.OnLoadFilterTierMenu(this)
+function Search.TierMenu_OnLoad(this)
     UIDropDownMenu_SetWidth(this, 40)
-    UIDropDownMenu_Initialize(this, Search.OnLoadFilterTierShow)
+    UIDropDownMenu_Initialize(this, Search.TierMenu_OnShow)
     UIDropDownMenu_SetSelectedValue(this, 0)
 end
 
-function Search.OnLoadFilterTierShow(button)
+function Search.TierMenu_OnShow(button)
     local info={}
     for i=0,20 do
         info.text = "+"..i
         info.value = i
         info.notCheckable=1
-        info.func = Search.OnLoadFilterTierClicked
+        info.func = Search.TierMenu_OnClicked
         UIDropDownMenu_AddButton(info)
     end
 end
 
-function Search.OnLoadFilterTierClicked(button)
+function Search.TierMenu_OnClicked(button)
     UIDropDownMenu_SetSelectedValue(CPSearchFilterTier, button.value)
     Search.UpdateList()
 end

@@ -252,7 +252,7 @@
 					</Anchor>
 				</Anchors>
 				<Scripts>
-					<OnLoad>CP.Search.OnLoadFilterTypeMenu(this)</OnLoad>
+					<OnLoad>CP.Search.FilterTypeMenu_OnLoad(this)</OnLoad>
 				</Scripts>
 			</Frame>
 			<Frame name="$parentFilterSlot" inherits="UIDropDownMenuTemplate">
@@ -267,7 +267,7 @@
 					</Anchor>
 				</Anchors>
 				<Scripts>
-					<OnLoad>CP.Search.OnLoadFilterSlotMenu(this)</OnLoad>
+					<OnLoad>CP.Search.FilterSlotMenu_OnLoad(this)</OnLoad>
 				</Scripts>
 			</Frame>
 			<Frame name="$parentFilterPlus" inherits="UIDropDownMenuTemplate">
@@ -282,7 +282,7 @@
 					</Anchor>
 				</Anchors>
 				<Scripts>
-					<OnLoad>CP.Search.OnLoadFilterPlusMenu(this)</OnLoad>
+					<OnLoad>CP.Search.PlusMenu_OnLoad(this)</OnLoad>
 				</Scripts>
 			</Frame>
 			<Frame name="$parentFilterTier" inherits="UIDropDownMenuTemplate">
@@ -297,7 +297,7 @@
 					</Anchor>
 				</Anchors>
 				<Scripts>
-					<OnLoad>CP.Search.OnLoadFilterTierMenu(this)</OnLoad>
+					<OnLoad>CP.Search.TierMenu_OnLoad(this)</OnLoad>
 				</Scripts>
 			</Frame>
 			<!-- item list !-->
