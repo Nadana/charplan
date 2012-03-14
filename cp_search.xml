@@ -233,6 +233,21 @@
 					</Anchor>
 				</Anchors>
 			</CheckButton>
+			<Frame name="$parentFilterRarity" inherits="UIDropDownMenuTemplate">
+				<Size>
+					<AbsDimension x="132" y="24"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="344" y="35"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>CP.Search.FilterRarityMenu_OnLoad(this)</OnLoad>
+				</Scripts>
+			</Frame>
 			<CheckButton name="$parentPowerModify" inherits="CPSearchCheckbox">
 				<Anchors>
 					<Anchor point="TOPLEFT">

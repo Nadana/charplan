@@ -33,6 +33,8 @@ function Search.OnLoad(this)
 
     CPSearchTakeIt1:SetText(CP.L.SEARCH_USE_SLOT1)
     CPSearchTakeIt2:SetText(CP.L.SEARCH_USE_SLOT2)
+
+    UIDropDownMenu_SetText(CPSearchFilterRarity,TEXT("C_ALL"))
 end
 
 
@@ -227,6 +229,41 @@ function Search.TierMenu_OnClicked(button)
     Search.UpdateList()
 end
 
+function Search.FilterRarityMenu_OnLoad(this)
+    UIDropDownMenu_SetWidth(this, 100)
+    UIDropDownMenu_Initialize(this, Search.FilterRarityMenu_OnShow)
+    UIDropDownMenu_SetSelectedValue(this, 0)
+end
+
+function Search.FilterRarityMenu_OnShow(button)
+    local info
+	info = {}
+	info.text = TEXT("C_ALL")
+	info.func = Search.FilterRarityMenu_OnClicked
+	UIDropDownMenu_AddButton(info)
+
+	for i = 0, 10 do
+		info = {}
+        if i>0 and i<6 then
+            info.text = TEXT("ITEM_QUALITY"..i.."_DESC")
+        elseif i==8 then
+            info.text = TEXT("ACCOUNT_SHOP")
+        else
+            info.text = TEXT("UNUSUAL_LV"..i)
+        end
+        info.textR, info.textG, info.textB = GetItemQualityColor(i)
+		info.func = Search.FilterRarityMenu_OnClicked
+        info.value=i
+		UIDropDownMenu_AddButton(info)
+	end
+end
+
+function Search.FilterRarityMenu_OnClicked(button)
+    UIDropDownMenu_SetSelectedID(CPSearchFilterRarity, button:GetID())
+    Search.rarity=button.value
+    Search.FindItems()
+end
+
 local function GetFilterInfo()
 
     local info={}
@@ -237,6 +274,7 @@ local function GetFilterInfo()
     info.level_max = tonumber(CPSearchFilterLevelMax:GetText())
     info.no_empty_items = CPSearchFilterStatLess:IsChecked()
     info.itemset_only = CPSearchFilterSets:IsChecked()
+    info.rarity = Search.rarity
 
     info.types = {}
     for id,v in pairs(CP.Search.type_filter) do
