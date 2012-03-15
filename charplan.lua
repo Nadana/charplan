@@ -54,15 +54,44 @@ function CP.OnLoad(this)
     UIPanelBackdropFrame_SetTexture( this, "Interface/Common/PanelCommonFrame", 256 , 256 )
 
     this:RegisterEvent("VARIABLES_LOADED")
+    this:RegisterEvent("PLAYER_TITLE_ID_CHANGED")
+    this:RegisterEvent("SKILL_UPDATE")
+    this:RegisterEvent("CARDBOOKFRAME_UPDATE")
+    this:RegisterEvent("PLAYER_LEVEL_UP")
  end
 
 
 function CP.OnEvent(this,event)
-    if CP[event] then
-        CP[event]()
+    assert(CP[event])
+    CP[event]()
+end
+
+function CP.PLAYER_TITLE_ID_CHANGED()
+    if CPFrame:IsVisible() then
+        CP.PlayerTitle()
+        CP.UpdatePoints()
     end
 end
 
+function CP.SKILL_UPDATE()
+    if CPFrame:IsVisible() then
+        CP.Calc.ReadSkills()
+        CP.UpdatePoints()
+    end
+end
+
+function CP.CARDBOOKFRAME_UPDATE()
+    if CPFrame:IsVisible() then
+        CP.Calc.ReadCards()
+        CP.UpdatePoints()
+    end
+end
+
+function CP.PLAYER_LEVEL_UP()
+    if CPFrame:IsVisible() then
+        CP.UpdatePoints()
+    end
+end
 
 function CP.OnShow(this)
 
