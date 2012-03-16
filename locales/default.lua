@@ -14,7 +14,7 @@ local default_text={
     DLG_SAVENAME= "Enter Name",
     ENUMERATE_CANCELED = "Enumeration canceled!",
 
-    CONTEXT_MENU = "|cffb0b030[CharPlan]|r Add to plan",
+    CONTEXT_MENU = "Add to plan",
     CONTEXT_PIMPME= "Pimp: %s",
     CONTEXT_SEARCH= "Search",
     CONTEXT_SHARE = "Share to all equip",
@@ -42,7 +42,8 @@ local default_text={
     SEARCH_LEVEL = C_LEVEL,
     SEARCH_BASE_STATS = "Dmg/Def",
     SEARCH_STATS = "Stats",
-    SEARCH_NOSTATLESS = "no empty items",
+    SEARCH_NOSTATLESS = "hide costumes",
+    SEARCH_NOSTATLESS_TIP = "Don't show items without attributes (e.g. costumes, wings)",
     SEARCH_ONLYSET = "itemsets only",
     SEARCH_TYPE = "Type",
     SEARCH_POWER_MODIFY = "%i Dura",
@@ -62,7 +63,7 @@ local default_text={
     BY_CARD = TEXT("AC_ITEMTYPENAME_6"),
     BY_SET = "Sets",
     BY_TITLE = C_TITLE,
-    BY_CALC = "|cffffffffInteraction",
+    BY_CALC = "Interaction",
 
     STAT_SHORTS = {
         PDMG="PDMG",

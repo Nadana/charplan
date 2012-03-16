@@ -469,11 +469,12 @@ function CP.Hooked_Hyperlink_Assign(link, key)
 
 	local _type, _data, _name = ParseHyperlink(link)
 	if(_type=="item") then
+		local menu_label = "|cffb0b030[CharPlan]|r " .. CP.L.CONTEXT_MENU;
 
         if not CP.DB.IsLoaded() then
             -- a simple method if dialog is not open (performance)
             local info = {}
-		    info.text = CP.L.CONTEXT_MENU
+		    info.text = menu_label
             info.notCheckable = 1
 		    info.func = function()
                 CP.DB.Load()
@@ -495,8 +496,8 @@ function CP.Hooked_Hyperlink_Assign(link, key)
 
             if s1 then
   	    	    local info = {}
-		        info.text = CP.L.CONTEXT_MENU
-                if s2 then info.text = CP.L.CONTEXT_MENU.. " - "..CP.L.SEARCH_USE_SLOT1 end
+		        info.text = menu_label
+                if s2 then info.text = menu_label .. " - "..CP.L.SEARCH_USE_SLOT1 end
                 info.notCheckable = 1
 		        info.func = function()
                     CP.DB.Load()
@@ -507,7 +508,7 @@ function CP.Hooked_Hyperlink_Assign(link, key)
             end
 
             if s2 then
-    		    info.text = CP.L.CONTEXT_MENU.. " - "..CP.L.SEARCH_USE_SLOT2
+    		    info.text = menu_label .. " - "..CP.L.SEARCH_USE_SLOT2
         	    info.func = function()
                     CP.DB.Load()
 			        CP.ApplyItem(item_data, s2)

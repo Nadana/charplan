@@ -438,7 +438,7 @@ function Calc.Explain_DependingStats(res, cur_values,stat)
     local values = Calc.Clear() + cur_values
     -- TODO: split explanations
     CP.Calc.DependingStats(values)
-    AddDescription(res, CP.L.BY_CALC, values[stat]-cur_values[stat])
+    AddDescription(res, string.format("|cffffffff%s|r",CP.L.BY_CALC), values[stat]-cur_values[stat])
 end
 
 function Calc.StatRelations(values)
@@ -510,6 +510,7 @@ function Calc.CharIndepended(values)
     values.MANA= values.MANA + values.WIS* 5
     values.MANA= values.MANA + values.INT* 1
 end
+
 
 local CLASS_VARS={
 	["AUGUR"]  ={   PDEF=1.5, MDEF=3.2,
