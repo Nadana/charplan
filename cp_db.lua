@@ -546,7 +546,7 @@ local function GetFilterFunction(info)
     end
 
     if info.no_empty_items then
-        table.insert(code, 'if not CP.DB.GetItemEffect(id) then return false end')
+        table.insert(code, 'local eff=CP.DB.GetItemEffect(id) if not eff or #eff==0 then return false end')
     end
 
     if info.rarity then
