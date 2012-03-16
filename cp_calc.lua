@@ -511,7 +511,6 @@ function Calc.CharIndepended(values)
     values.MANA= values.MANA + values.INT* 1
 end
 
-
 local CLASS_VARS={
 	["AUGUR"]  ={   PDEF=1.5, MDEF=3.2,
                     PATKint=0.5, PATKdex=0  ,PATKstr=0.8},
@@ -531,7 +530,17 @@ local CLASS_VARS={
                     PATKint=0  ,PATKdex=0  ,PATKstr=2  },
 }
 
+function Calc.CharDepended(values)
+    local cname = UnitClassToken("player")
+    local d = CLASS_VARS[cname]
 
+    values.PDEF = values.PDEF + values.STA* d.PDEF
+    values.MDEF = values.MDEF + math.floor(values.WIS* d.MDEF)
+
+    values.PATK = values.PATK + values.INT* d.PATKint
+    values.PATK = values.PATK + values.DEX* d.PATKdex
+    values.PATK = values.PATK + values.STR* d.PATKstr
+end
 
 function Calc.WeaponDepended(values)
 	local weapon={
@@ -573,17 +582,6 @@ function Calc.WeaponDepended(values)
 		end
 	end
 
-end
-function Calc.CharDepended(values)
-    local cname = UnitClassToken("player")
-    local d = CLASS_VARS[cname]
-
-    values.PDEF = values.PDEF + values.STA* d.PDEF
-    values.MDEF = values.MDEF + math.floor(values.WIS* d.MDEF)
-
-    values.PATK = values.PATK + values.INT* d.PATKint
-    values.PATK = values.PATK + values.DEX* d.PATKdex
-    values.PATK = values.PATK + values.STR* d.PATKstr
 end
 
 
