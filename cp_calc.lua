@@ -56,8 +56,8 @@ Calc.STATS={
     MACC = 195,
 
 	PCRITDMG = 19,
-	MCRITDMG = 21,	
-	
+	MCRITDMG = 21,
+
 }
 
 
@@ -277,7 +277,7 @@ function Calc.GetBases()
     v.WIS = GetPlayerAbility("MND")
 
 	--Melee
-	v.PCRITMH = GetPlayerAbility("MAGIC_CRITICAL") -- not correct ability but correct numbers	
+	v.PCRITMH = GetPlayerAbility("MAGIC_CRITICAL") -- not correct ability but correct numbers
 
 	--Magic
 	v.MCRIT = GetPlayerAbility("MAGIC_CRITICAL")
@@ -530,11 +530,11 @@ local CLASS_VARS={
     ["WARRIOR"]={   PDEF=2.3, MDEF=2.2,
                     PATKint=0  ,PATKdex=0  ,PATKstr=2  },
 }
-   
-   
 
-function Calc.WeaponDepended(values)	
-	local weapon={	
+
+
+function Calc.WeaponDepended(values)
+	local weapon={
     [0]=58 , -- "% Schwert-Schadensrate",
     [1]=59 , -- "% Dolch-Schadensrate",
     [2]=60 , -- "% Stab-Schadensrate",
@@ -546,33 +546,33 @@ function Calc.WeaponDepended(values)
     [8]=66 , -- "% 'Beidhändiger Hammer'-Schadensrate",
 	[10]=53 , -- "% Bogen-Schadensrate",
     [11]=54 , -- "% Armbrust-Schadensrate",
-    --[]55 , -- "% Feuerwaffen-Schadensrate",  
+    --[]55 , -- "% Feuerwaffen-Schadensrate",
     --[]67 , -- "% Feuerwaffen-Schadensrate",
 	}
 	for _,slot in ipairs( {10,15,16} ) do
         local item = CP.Items[slot]
 		if item then
-			local weapon_type = CP.DB.GetWeaponType(item.id) 		
-			if slot== 10 then				
+			local weapon_type = CP.DB.GetWeaponType(item.id)
+			if slot== 10 then
 				values.PDMGR = values.PDMGR * (1+ values[weapon[weapon_type]]/100)
-			elseif slot == 15 then			
-				if weapon_type~=2 and weapon_type~=6 then					
-						values.PDMGMH = values.PDMGMH * (1+ values[weapon[weapon_type]]/100)				
-				else						
+			elseif slot == 15 then
+				if weapon_type~=2 and weapon_type~=6 then
+						values.PDMGMH = values.PDMGMH * (1+ values[weapon[weapon_type]]/100)
+				else
 						values.MDMG = values.MDMG * (1+ values[weapon[weapon_type]]/100)
 				end
-				
+
 			else
 				if weapon_type~=2 then
 					values.PDMGOH = values.PDMGOH * (1+ values[weapon[weapon_type]]/100)
 				else
 					values.MDMG = values.MDMG * (1+ values[weapon[weapon_type]]/100)
 				end
-			end	
-            
+			end
+
 		end
 	end
-	
+
 end
 function Calc.CharDepended(values)
     local cname = UnitClassToken("player")
