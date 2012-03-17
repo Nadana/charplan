@@ -201,7 +201,11 @@ function DB.GetItemIcon(item_id)
 end
 
 function DB.FindItemsOfIcon(icon_path)
-    local name = string.gsub(icon_path,"^/?interface/icons/",""):lower()
+		-- 1. replace '\' to '/'
+		-- 2. lower
+		-- 3. remove 'interface/icons' prefix
+		-- 4. remove file extension
+    local name = icon_path:gsub('\\','/'):lower():gsub("^/?interface/icons/",""):gsub("%.(%w+)$", "")
     local res = {}
     for id,data in pairs(DB.items) do
         if name == DB.images[data[I_ICON]] then
