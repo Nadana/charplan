@@ -278,7 +278,8 @@ function Calc.GetBases()
 
 	--Melee
 	v.PCRITMH = GetPlayerAbility("MAGIC_CRITICAL") -- not correct ability but correct numbers
-
+	v.PCRITDMG = v.PCRITDMG + 30
+	v.MCRITDMG = v.MCRITDMG + 30
 	--Magic
 	v.MCRIT = GetPlayerAbility("MAGIC_CRITICAL")
 
