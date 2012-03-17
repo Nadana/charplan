@@ -200,11 +200,11 @@ function Calc.Calculate()
     return values
 end
 
-local function AddDescription(res_tab, text,value, value_prefix)
-    if value~=0 then
-        table.insert(res_tab.left, text)
+local function AddDescription(stat, text,value, value_prefix)
+    if Calc.exp_tab and Calc.exp_stat==stat and value~=0 then
+        table.insert(Calc.exp_tab.left, text)
         value_prefix = value_prefix or "+"
-        table.insert(res_tab.right,value_prefix..value)
+        table.insert(Calc.exp_tab.right,value_prefix..value)
     end
 end
 
@@ -217,50 +217,57 @@ function Calc.Explain(stat)
     local COLOR_ITEM = "|cffe0e0e0"
     local COLOR_TITLE= "|cffe0e0e0"
 
-    local res = {left={}, right={} }
+
+    local res  = {left={}, right={} }
+    Calc.exp_tab = res
+    Calc.exp_stat = stat
 
     local s = Calc.STATS
     if stat == s.PDMGR or stat == s.PDMGMH or stat == s.PDMGOH then
         res.left, res.right= Calc.Explain(s.PDMG)
-        AddDescription(res, "",0)
+        AddDescription(stat,"",0)
     end
 
     if stat == s.PCRITR or stat == s.PCRITMH or stat == s.PCRITOH then
         res.left, res.right= Calc.Explain(s.PCRIT)
-        AddDescription(res, "",0)
+        AddDescription(stat,"",0)
     end
 
     local values = Calc.GetBases()
     values = values + Calc.GetBasesCalced()
     local total = values
-    AddDescription(res, COLOR_CLASS..CP.L.BY_CLASS, values[stat],"")
+    AddDescription(stat, COLOR_CLASS..CP.L.BY_CLASS, values[stat],"")
 
     values = Calc.GetSkillBonus()
     total = total + values
-    AddDescription(res, COLOR_SKILL..CP.L.BY_SKILL, values[stat])
+    AddDescription(stat, COLOR_SKILL..CP.L.BY_SKILL, values[stat])
 
     values = Calc.GetCardBonus()
     total = total + values
-    AddDescription(res, COLOR_CARD..CP.L.BY_CARD, values[stat])
+    AddDescription(stat, COLOR_CARD..CP.L.BY_CARD, values[stat])
 
     values = Calc.GetSetBonus()
     total = total + values
-    AddDescription(res, COLOR_SET..CP.L.BY_SET, values[stat])
+    AddDescription(stat, COLOR_SET..CP.L.BY_SET, values[stat])
 
     values = Calc.GetArchievementBonus()
     total = total + values
-    AddDescription(res, COLOR_SET..CP.L.BY_TITLE, values[stat])
+    AddDescription(stat, COLOR_SET..CP.L.BY_TITLE, values[stat])
 
 	for _,slot in ipairs( {0,1,2,3,4,5,6,7,8,9,11,12,13,14,21,10,15,16} ) do
         local item = CP.Items[slot]
 		if item then
             values = Calc.GetItemBonus(item)
             total = total + values
-            AddDescription(res, COLOR_ITEM..TEXT("Sys"..item.id.."_name"), values[stat])
+            AddDescription(stat, COLOR_ITEM..TEXT("Sys"..item.id.."_name"), values[stat])
 		end
 	end
 
-    Calc.Explain_DependingStats(res, total, stat)
+    Calc.DependingStats(total)
+
+
+    Calc.exp_tab = nil
+    Calc.exp_stat = nil
 
     return res.left,res.right
 end
@@ -435,15 +442,32 @@ function Calc.DependingStats(values)
 	Calc.WeaponDepended(values)
 end
 
-function Calc.Explain_DependingStats(res, cur_values,stat)
-    local values = Calc.Clear() + cur_values
-    -- TODO: split explanations
-    CP.Calc.DependingStats(values)
-    AddDescription(res, string.format("|cffffffff%s|r",CP.L.BY_CALC), values[stat]-cur_values[stat])
-end
+local STATS_PERC_VALUES={
+    [161]={Calc.STATS.STR},   -- "% Stärke"
+    [162]={Calc.STATS.STA},   -- "% Ausdauer"
+    [163]={Calc.STATS.INT},   -- "% Intelligenz"
+    [164]={Calc.STATS.WIS},   -- "% Weisheit"
+    [165]={Calc.STATS.DEX},   -- "% Geschicklichkeit"
+    [166]={Calc.STATS.STR, Calc.STATS.STA, Calc.STATS.INT, Calc.STATS.WIS, Calc.STATS.DEX}, -- "% Alle Hauptattribute"
+    [167]={Calc.STATS.HP},    -- "% LP-Maximums"
+    [168]={Calc.STATS.MP},    -- "% MP-Maximums"
+    [170]={Calc.STATS.MDEF},  -- "% Magische Verteidigung"
+    [171]={Calc.STATS.MATK},  -- "% Magische Angriffskraft"
+    [192]={Calc.STATS.MDMG},  -- "% magische Schadensrate"
+    [199]={Calc.STATS.MACC},  -- "% Magische Präzision"
+    [149]={Calc.STATS.MHEAL}, -- "% Heilung"
+    [135]={Calc.STATS.PDEF},  -- "% Verteidigung"
+    [37] ={Calc.STATS.PDMGOH}, -- "% Nebenhand-Schadensrate"
+    [36] ={Calc.STATS.PACCOH}, -- "% Nebenhand-Präzision"
+    [52] ={Calc.STATS.PDMGR},  -- "% Fernkampfwaffen-Schadensrate"
+    [134]={Calc.STATS.PATK}, -- "% physische Angriffe"
+    [173]={Calc.STATS.PDMGMH, Calc.STATS.PDMGOH, Calc.STATS.PDMGR}, -- "% Schaden"
+    [56] ={Calc.STATS.PDMGMH, Calc.STATS.PDMGOH}, -- "% Nahkampfwaffen-Schadensrate"
+}
 
-function Calc.StatRelations(values)
+function Calc.StatRelations(values, res_tab, res_stat)
 
+    local s = Calc.STATS
     local all = values.ALL_ATTRIBUTES
     if all then
         values.STR = values.STR+all
@@ -451,65 +475,54 @@ function Calc.StatRelations(values)
         values.DEX = values.DEX+all
         values.INT = values.INT+all
         values.WIS = values.WIS+all
+
+        AddDescription(s.STR, TEXT("SYS_WEAREQTYPE_7"),all)
+        AddDescription(s.STA, TEXT("SYS_WEAREQTYPE_7"),all)
+        AddDescription(s.DEX, TEXT("SYS_WEAREQTYPE_7"),all)
+        AddDescription(s.INT, TEXT("SYS_WEAREQTYPE_7"),all)
+        AddDescription(s.WIS, TEXT("SYS_WEAREQTYPE_7"),all)
     end
 
-    local s = Calc.STATS
-    local perc={
-        [161]=s.STR,   -- "% Stärke"
-        [162]=s.STA,   -- "% Ausdauer"
-        [163]=s.INT,   -- "% Intelligenz"
-        [164]=s.WIS,   -- "% Weisheit"
-        [165]=s.DEX,   -- "% Geschicklichkeit"
-        [166]={s.STR, s.STA, s.INT, s.WIS, s.DEX}, -- "% Alle Hauptattribute"
-        [167]=s.HP,    -- "% LP-Maximums"
-        [168]=s.MP,    -- "% MP-Maximums"
-        [170]=s.MDEF,  -- "% Magische Verteidigung"
-        [171]=s.MATK,  -- "% Magische Angriffskraft"
-        [192]=s.MDMG,  -- "% magische Schadensrate"
-        [199]=s.MACC,  -- "% Magische Präzision"
-        [149]=s.MHEAL, -- "% Heilung"
-        [135]=s.PDEF,  -- "% Verteidigung"
-        [37]=s.PDMGOH, -- "% Nebenhand-Schadensrate"
-        [36]=s.PACCOH, -- "% Nebenhand-Präzision"
-        [52]=s.PDMGR,  -- "% Fernkampfwaffen-Schadensrate"
-        [134]=s.PATK, -- "% physische Angriffe"
-        [173]={s.PDMGMH, s.PDMGOH, s.PDMGR}, -- "% Schaden"
-        [56] ={s.PDMGMH, s.PDMGOH}, -- "% Nahkampfwaffen-Schadensrate"
-    }
-
-    for p_stat,inc_stat in pairs(perc) do
+    for p_stat,inc_stat in pairs(STATS_PERC_VALUES) do
         if values[p_stat]~=0 then
-            local percent = 1 + values[p_stat]/100
+            local percent = values[p_stat]/100
 
-            if type(inc_stat)=="table" then
-                for _,i_stat in ipairs(inc_stat) do
-                    values[i_stat] = math.floor(values[i_stat]*percent)
-                end
-            else
-                values[inc_stat] = math.floor(values[inc_stat]*percent)
+            for _,i_stat in ipairs(inc_stat) do
+                local inc = math.floor(values[i_stat]*percent)
+                values[i_stat] = values[i_stat] + inc
+
+                AddDescription(i_stat, TEXT("SYS_WEAREQTYPE_"..p_stat),inc)
             end
         end
     end
 end
 
+local function AddValue(values, stat,val, by_stat)
+    values[stat] = values[stat] + val
+    AddDescription(stat, TEXT("SYS_WEAREQTYPE_"..by_stat), math.floor(val))
+end
+
 function Calc.CharIndepended(values)
-    values.MATK = values.MATK + values.INT* 2
-    values.EVADE= values.EVADE+ math.floor(values.DEX* 0.78)
-    values.MRES = values.MRES + values.WIS* 0.6
-    values.MACC = values.MACC + values.WIS* 0.9
-    values.PACC = values.PACC + values.DEX* 0.9
-    values.MHEAL= values.MHEAL+ values.MDMG*0.5
+    local s = Calc.STATS
 
-	values.PACCR = values.PACCR+ values.PACC*1
-	values.PACCOH= values.PACCOH+values.PACC*0.5
-	values.PDMGOH= values.PDMGOH*0.7
-	values.PATKR = values.PATKR+ values.PATK* 1
+    AddValue(values, s.EVADE, math.floor(values.DEX* 0.78), s.DEX)
 
-    values.HP= values.HP + values.STA* 5
-    values.HP= values.HP + values.STR* 0.2
+    AddValue(values, s.MATK,  values.INT* 2, s.INT)
+    AddValue(values, s.MRES,  values.WIS* 0.6, s.WIS)
+    AddValue(values, s.MACC,  values.WIS* 0.9, s.WIS)
+    AddValue(values, s.PACC,  values.DEX* 0.9, s.DEX)
+    AddValue(values, s.MHEAL, values.MDMG*0.5, s.MDMG)
+    AddValue(values, s.PACCR, values.PACC*1  , s.PACC)
+    AddValue(values, s.PACCOH,values.PACC*0.5, s.PACC)
+    AddValue(values, s.PATKR, values.PATKR*1 , s.PATK)
 
-    values.MANA= values.MANA + values.WIS* 5
-    values.MANA= values.MANA + values.INT* 1
+    AddValue(values, s.HP, values.STA*5  , s.STA)
+    AddValue(values, s.HP, values.STR*0.2, s.STR)
+
+    AddValue(values, s.HP, values.WIS*5, s.WIS)
+    AddValue(values, s.HP, values.INT*1, s.INT)
+
+    AddValue(values, s.PDMGOH, values.PDMGOH*(-0.3), s.PDMG)
 end
 
 
@@ -533,19 +546,18 @@ local CLASS_VARS={
 }
 
 function Calc.CharDepended(values)
+    local s = Calc.STATS
     local cname = UnitClassToken("player")
     local d = CLASS_VARS[cname]
 
-    values.PDEF = values.PDEF + values.STA* d.PDEF
-    values.MDEF = values.MDEF + math.floor(values.WIS* d.MDEF)
-
-    values.PATK = values.PATK + values.INT* d.PATKint
-    values.PATK = values.PATK + values.DEX* d.PATKdex
-    values.PATK = values.PATK + values.STR* d.PATKstr
+    AddValue(values, s.MDEF,  math.floor(values.WIS* d.MDEF), s.WIS)
+    AddValue(values, s.PDEF,  values.STA* d.PDEF, s.STA)
+    AddValue(values, s.PATK,  values.INT* d.PATKint, s.INT)
+    AddValue(values, s.PATK,  values.DEX* d.PATKdex, s.DEX)
+    AddValue(values, s.PATK,  values.STR* d.PATKstr, s.STR)
 end
 
-function Calc.WeaponDepended(values)
-	local weapon={
+local WEAPON_STATS={
     [0]=58 , -- "% Schwert-Schadensrate",
     [1]=59 , -- "% Dolch-Schadensrate",
     [2]=60 , -- "% Stab-Schadensrate",
@@ -559,31 +571,42 @@ function Calc.WeaponDepended(values)
     [11]=54 , -- "% Armbrust-Schadensrate",
     --[]55 , -- "% Feuerwaffen-Schadensrate",
     --[]67 , -- "% Feuerwaffen-Schadensrate",
-	}
-	for _,slot in ipairs( {10,15,16} ) do
-        local item = CP.Items[slot]
-		if item then
-			local weapon_type = CP.DB.GetWeaponType(item.id)
-			if slot== 10 then
-				values.PDMGR = values.PDMGR * (1+ values[weapon[weapon_type]]/100)
-			elseif slot == 15 then
-				if weapon_type~=2 and weapon_type~=6 then
-						values.PDMGMH = values.PDMGMH * (1+ values[weapon[weapon_type]]/100)
-				else
-						values.MDMG = values.MDMG * (1+ values[weapon[weapon_type]]/100)
-				end
+}
 
-			else
-				if weapon_type~=2 then
-					values.PDMGOH = values.PDMGOH * (1+ values[weapon[weapon_type]]/100)
-				else
-					values.MDMG = values.MDMG * (1+ values[weapon[weapon_type]]/100)
-				end
-			end
+function Calc.WeaponDepended(values)
+    local s = Calc.STATS
 
-		end
+	if CP.Items[10] then
+        local weapon_type = CP.DB.GetWeaponType(CP.Items[10].id)
+        local wstat = WEAPON_STATS[weapon_type]
+        if wstat then
+            AddValue(values, s.PDMGR, values[wstat]/100, wstat)
+        end
 	end
 
+	if CP.Items[15] then
+        local weapon_type = CP.DB.GetWeaponType(CP.Items[15].id)
+        local wstat = WEAPON_STATS[weapon_type]
+        if wstat then
+            if weapon_type==2 or weapon_type==6 then
+                AddValue(values, s.MDMG, values[wstat]/100, wstat)
+            else
+                AddValue(values, s.PDMGMH, values[wstat]/100, wstat)
+            end
+        end
+	end
+
+	if CP.Items[16] then
+        local weapon_type = CP.DB.GetWeaponType(CP.Items[16].id)
+        local wstat = WEAPON_STATS[weapon_type]
+        if wstat then
+            if weapon_type==2 then
+                AddValue(values, s.MDMG, values[wstat]/100, wstat)
+            else
+                AddValue(values, s.PDMGOH, values[wstat]/100, wstat)
+            end
+        end
+    end
 end
 
 

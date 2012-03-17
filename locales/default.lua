@@ -63,7 +63,6 @@ local default_text={
     BY_CARD = TEXT("AC_ITEMTYPENAME_6"),
     BY_SET = "Sets",
     BY_TITLE = C_TITLE,
-    BY_CALC = "Interaction",
 
     STAT_SHORTS = {
         PDMG="PDMG",
