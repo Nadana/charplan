@@ -436,20 +436,23 @@ function Calc.GetSetBonus()
 end
 
 function Calc.DependingStats(values)
-    Calc.StatRelations(values)
+    Calc.StatRelationsAttributes(values)
     Calc.CharDepended(values)
     Calc.CharIndepended(values)
+	Calc.StatRelations(values)
 	Calc.WeaponDepended(values)
 end
 
-local STATS_PERC_VALUES={
+local STATS_PERC_VALUES_ATTRIBUTES={
     [161]={Calc.STATS.STR},   -- "% Stärke"
     [162]={Calc.STATS.STA},   -- "% Ausdauer"
     [163]={Calc.STATS.INT},   -- "% Intelligenz"
     [164]={Calc.STATS.WIS},   -- "% Weisheit"
     [165]={Calc.STATS.DEX},   -- "% Geschicklichkeit"
     [166]={Calc.STATS.STR, Calc.STATS.STA, Calc.STATS.INT, Calc.STATS.WIS, Calc.STATS.DEX}, -- "% Alle Hauptattribute"
-    [167]={Calc.STATS.HP},    -- "% LP-Maximums"
+}
+local STATS_PERC_VALUES={
+   [167]={Calc.STATS.HP},    -- "% LP-Maximums"
     [168]={Calc.STATS.MP},    -- "% MP-Maximums"
     [170]={Calc.STATS.MDEF},  -- "% Magische Verteidigung"
     [171]={Calc.STATS.MATK},  -- "% Magische Angriffskraft"
@@ -460,12 +463,12 @@ local STATS_PERC_VALUES={
     [37] ={Calc.STATS.PDMGOH}, -- "% Nebenhand-Schadensrate"
     [36] ={Calc.STATS.PACCOH}, -- "% Nebenhand-Präzision"
     [52] ={Calc.STATS.PDMGR},  -- "% Fernkampfwaffen-Schadensrate"
-    [134]={Calc.STATS.PATK}, -- "% physische Angriffe"
+    [134]={Calc.STATS.PATK, Calc.STATS.PATKR}, -- "% physische Angriffe"
     [173]={Calc.STATS.PDMGMH, Calc.STATS.PDMGOH, Calc.STATS.PDMGR}, -- "% Schaden"
     [56] ={Calc.STATS.PDMGMH, Calc.STATS.PDMGOH}, -- "% Nahkampfwaffen-Schadensrate"
 }
 
-function Calc.StatRelations(values, res_tab, res_stat)
+function Calc.StatRelationsAttributes(values, res_tab, res_stat)
 
     local s = Calc.STATS
     local all = values.ALL_ATTRIBUTES
@@ -482,8 +485,15 @@ function Calc.StatRelations(values, res_tab, res_stat)
         AddDescription(s.INT, TEXT("SYS_WEAREQTYPE_7"),all)
         AddDescription(s.WIS, TEXT("SYS_WEAREQTYPE_7"),all)
     end
-
-    for p_stat,inc_stat in pairs(STATS_PERC_VALUES) do
+	local perc_list = STATS_PERC_VALUES_ATTRIBUTES
+	Calc.Perc_Values(values, perc_list)   
+end
+function Calc.StatRelations(values)
+	local perc_list = STATS_PERC_VALUES
+	Calc.Perc_Values(values, perc_list)
+end
+function Calc.Perc_Values(values, perc_list)	
+	for p_stat,inc_stat in pairs(perc_list) do
         if values[p_stat]~=0 then
             local percent = values[p_stat]/100
 
@@ -514,13 +524,13 @@ function Calc.CharIndepended(values)
     AddValue(values, s.MHEAL, values.MDMG*0.5, s.MDMG)
     AddValue(values, s.PACCR, values.PACC*1  , s.PACC)
     AddValue(values, s.PACCOH,values.PACC*0.5, s.PACC)
-    AddValue(values, s.PATKR, values.PATKR*1 , s.PATK)
+    AddValue(values, s.PATKR, values.PATK*1 , s.PATK)
 
     AddValue(values, s.HP, values.STA*5  , s.STA)
     AddValue(values, s.HP, values.STR*0.2, s.STR)
 
-    AddValue(values, s.HP, values.WIS*5, s.WIS)
-    AddValue(values, s.HP, values.INT*1, s.INT)
+    AddValue(values, s.MANA, values.WIS*5, s.WIS)
+    AddValue(values, s.MANA, values.INT*1, s.INT)
 
     AddValue(values, s.PDMGOH, values.PDMGOH*(-0.3), s.PDMG)
 end
