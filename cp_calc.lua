@@ -580,7 +580,7 @@ function Calc.WeaponDepended(values)
         local weapon_type = CP.DB.GetWeaponType(CP.Items[10].id)
         local wstat = WEAPON_STATS[weapon_type]
         if wstat then
-            AddValue(values, s.PDMGR, values[wstat]/100, wstat)
+            AddValue(values, s.PDMGR, values.PDMGR*values[wstat]/100, wstat)
         end
 	end
 
@@ -589,9 +589,9 @@ function Calc.WeaponDepended(values)
         local wstat = WEAPON_STATS[weapon_type]
         if wstat then
             if weapon_type==2 or weapon_type==6 then
-                AddValue(values, s.MDMG, values[wstat]/100, wstat)
+                AddValue(values, s.MDMG, values.MDMG*values[wstat]/100, wstat)
             else
-                AddValue(values, s.PDMGMH, values[wstat]/100, wstat)
+                AddValue(values, s.PDMGMH, values.PDMGMH*values[wstat]/100, wstat)
             end
         end
 	end
@@ -601,9 +601,9 @@ function Calc.WeaponDepended(values)
         local wstat = WEAPON_STATS[weapon_type]
         if wstat then
             if weapon_type==2 then
-                AddValue(values, s.MDMG, values[wstat]/100, wstat)
+                AddValue(values, s.MDMG, values.MDMG*values[wstat]/100, wstat)
             else
-                AddValue(values, s.PDMGOH, values[wstat]/100, wstat)
+                AddValue(values, s.PDMGOH, values.PDMGOH*values[wstat]/100, wstat)
             end
         end
     end
