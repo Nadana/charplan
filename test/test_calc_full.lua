@@ -501,15 +501,15 @@ end
 ------------------------------------------
 -- SnapShot Tests
 ------------------------------------------
-local fct,err = loadfile('interface/addons/charplan/test/test_calc_full_data.lua')
-local snapshots = fct()
-for nid,data in pairs(snapshots) do
-    local name=string.format("testSnap%s_%s",(data.name or ""),nid)
-    TestCP_CalcFull[name]=function()
-        TestCP_CalcFull:DoFullCharCheck(data)
+if false then
+    local fct,err = loadfile('interface/addons/charplan/test/test_calc_full_data.lua')
+    local snapshots = fct()
+    for nid,data in pairs(snapshots) do
+        local name=string.format("testSnap%s_%s",(data.name or ""),nid)
+        TestCP_CalcFull[name]=function()
+            TestCP_CalcFull:DoFullCharCheck(data)
+        end
     end
 end
-
-
 
 

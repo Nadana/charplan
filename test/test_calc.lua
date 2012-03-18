@@ -5,7 +5,7 @@ function TestCP_Calc:testSkillBonus()
     local s = CP.Calc.STATS
 
     TestCP_Calc:CheckSkill({[s.INT]=78}, {[490222]=0}, {[s.INT]=78+11}) -- Weisheit+0
-    TestCP_Calc:CheckSkill({[s.INT]=78}, {[490222]=7}, {[s.INT]=78+19}) -- Weisheit+7
+    TestCP_Calc:CheckSkill({[s.INT]=78}, {[490222]=7}, {[s.INT]=78+18.9}) -- Weisheit+7
 end
 
 function TestCP_Calc:CheckSkill(base_val, skills, result)

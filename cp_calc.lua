@@ -354,12 +354,18 @@ function Calc.GetAllItemsBonus()
     return values
 end
 
+
+local function IsStandardAttribut(stat)
+    local s = CP.Calc.STATS
+    return  stat==s.PDMG or stat==s.MDMG or
+            stat==s.PDEF or stat==s.MDEF;
+end
+
 function Calc.GetItemBonus(item)
 
     local values = Calc.NewStats()
     if not item then return values end
 
-    local attA,attB = CP.DB.PrimarAttributes(item.id)
     local effect = CP.DB.GetItemEffect(item.id)
     local dura_factor = Calc.GetItemDuraFactor(item)
     local plus_effect, plus_base = CP.DB.GetPlusEffect(item.id, item.plus)
@@ -369,7 +375,7 @@ function Calc.GetItemBonus(item)
     for i=1,#effect,2 do
         local ef = effect[i]
         local val = effect[i+1]
-        if ef==attA or ef==attB then
+        if IsStandardAttribut(ef) then
             -- NB: based on float/rounding errors we may have a +/- 0.1
             local v = math.floor(val*(1+plus_base/100))
             local dif = math.floor( (v-val)*(item.tier*0.1*dura_factor) *10)/10

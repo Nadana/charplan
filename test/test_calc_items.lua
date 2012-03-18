@@ -1,7 +1,5 @@
 TestCP_CalcItems={}
 
-
-
 function TestCP_CalcItems:testSetBonus()
     local s = CP.Calc.STATS
 
@@ -81,6 +79,15 @@ function TestCP_CalcItems:testItemCalc_ID_212615()
  	self:CheckItemPlusGrad(212615, 100,0, 1, {[s.PDMG]=2516.8, [s.PATK]=1073.6})
  	self:CheckItemPlusGrad(212615, 100,0, 2, {[s.PDMG]=2745.6, [s.PATK]=1171.2})
  	self:CheckItemPlusGrad(212615, 100,1, 1, {[s.PDMG]=2560.8, [s.PATK]=1113.6})
+end
+
+function TestCP_CalcItems:testItemCalc_ID_227845() -- jennys-robe
+    local s = CP.Calc.STATS
+
+    -- http://de.runesdatabase.com/item/227845
+	self:CheckItemPlusGrad(227845, 100,0, 0, {[s.MDMG]=200})
+	self:CheckItemPlusGrad(227845, 100,7, 0, {[s.MDMG]=246})
+	self:CheckItemPlusGrad(227845, 100,7, 7, {[s.MDMG]=386})
 end
 
 function TestCP_CalcItems:testItemCalc_without_BasePLUS()
