@@ -177,9 +177,13 @@ function Calc.GetListOfSkills()
 
         local count = GetNumSkill( page ) or 0
         for index = 1,count do
-            local link = GetSkillHyperLink( page, index )
-            local id, lvl = link:match(":(%d+) (%d+)")
-            skills[tonumber(id)] = tonumber(lvl)
+            local _, _, _, _, PLV, _, _, _bLearned  = GetSkillDetail( page,  index )
+            if _bLearned then
+                local link = GetSkillHyperLink( page, index )
+                local id, lvl = link:match(":(%d+) (%d+)")
+                assert(PLV==tonumber(lvl))
+                skills[tonumber(id)] = PLV
+            end
         end
     end
 
@@ -492,13 +496,13 @@ function Calc.StatRelationsAttributes(values, res_tab, res_stat)
         AddDescription(s.WIS, TEXT("SYS_WEAREQTYPE_7"),all)
     end
 	local perc_list = STATS_PERC_VALUES_ATTRIBUTES
-	Calc.Perc_Values(values, perc_list)   
+	Calc.Perc_Values(values, perc_list)
 end
 function Calc.StatRelations(values)
 	local perc_list = STATS_PERC_VALUES
 	Calc.Perc_Values(values, perc_list)
 end
-function Calc.Perc_Values(values, perc_list)	
+function Calc.Perc_Values(values, perc_list)
 	for p_stat,inc_stat in pairs(perc_list) do
         if values[p_stat]~=0 then
             local percent = values[p_stat]/100
