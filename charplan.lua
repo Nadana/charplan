@@ -168,7 +168,7 @@ local function FindSkin(path, id)
         if skin == id then return nil end
     end
     if #skins>1 then
-        CP.Output(string.format(CP.L.ERROR_SEARCH_SKIN, TEXT("Sys"..id.."_name")))
+        CP.Output(string.format(CP.L.ERROR_SEARCH_SKIN, CP.DB.GetItemName(id)))
     end
     return skins[1]
 end
