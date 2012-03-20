@@ -399,7 +399,7 @@ end
 function Pimp.StatSearch_UpdateList()
 		if Pimp.Initiaizing then return end
 		local trim = function(s)
-			if(s and s ~= '') then return s:lower() else return nil end
+			if(s and s ~= '') then return s:lower() else return false end
 		end
 		local filters = Pimp.statFilters
 		for i=1,4 do
