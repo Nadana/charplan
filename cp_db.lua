@@ -404,13 +404,25 @@ function DB.GetBonusGroupList(runes, filter)
     return res
 end
 
-function DB.GetBonusFilteredList(is_rune, statName, name1, name2, minValue)
+function DB.GetBonusFilteredList(is_rune, existingStats, statName, name1, name2, minValue)
 	is_runs = is_rune and true or false
 	minValue = minValue and tonumber(minValue)
+	
+	-- convert existing stats to lookup table
+	local exists = {}
+	if existingStats then
+		for i,v in pairs(existingStats) do
+			if v then
+				exists[v] = true
+			end
+		end
+	end
+	
+	-- filter out stat and bonus names
 	local result, done = {},{}
 	for id,rdata in pairs(DB.bonus) do
 		local group = rdata[B_GROUP]
-		if group and not done[group] then
+		if group and not done[group] and not exists[id] then
 			if DB.IsRuneGroup(group) == is_rune then
 				local name = GetBonusName(id)
 				local found, found1, found2 = (not statName) or name:lower():find(statName)		-- filter by stat name
@@ -427,34 +439,85 @@ function DB.GetBonusFilteredList(is_rune, statName, name1, name2, minValue)
 					if name2 and i == 3 then								-- filter by effect2
 						found2 = effect:lower():find(name2)
 					end
-					if minValue and value < minValue then
-						found = false
-						break
-					end
 				end
 				if found and (not name1 or found1) and (not name2 or found2) then
 					table.insert(result,{id,name,eff})
 				end
 			end
-			done[group] = 1
+			done[group] = true
 		end
 	end
-	table.sort(result, function (a,b) return a[2]<b[2] end)
-	return result
+	
+	-- filter out min values and existing stats
+	local first_of_group = function(id)
+		local group = DB.bonus[id][B_GROUP]
+		for i = id-1,(520000-1),-1 do
+			local stat = DB.bonus[i]
+			if not stat or stat[B_GROUP] ~= group then
+				return i + 1
+			end
+		end
+		return id
+	end
+	
+	local is_include_stat = function(id)
+		if exists[id] then
+			return false
+		elseif not minValue then
+			return true
+		else
+			local bonus = DB.bonus[id][B_EFFECT]
+			for i=2,#bonus,2 do
+				local v = bonus[i]
+				if v >= minValue then
+					return true
+				end
+			end
+			return false
+		end
+	end
+
+	done = {}
+	for i,stat in pairs(result) do
+		local id = stat[1]
+		local group = DB.bonus[id][B_GROUP]
+		local include = false
+		if not is_rune then
+			-- item stats always are single
+			include = is_include_stat(id)
+		else
+			-- its a random-choosed rune from list, and we must enumerate all similar of same group
+			local rid = first_of_group(id)
+			while DB.bonus[rid] do
+				if DB.bonus[rid][B_GROUP] ~= group then
+					break
+				elseif exists[rid] then
+					-- force exclude
+					include = false
+					break
+				end
+				include = is_include_stat(rid)
+				rid = rid + 1
+			end
+		end
+		if include then
+			table.insert(done, stat)
+		end
+	end
+	
+	table.sort(done, function (a,b) return a[2]<b[2] end)
+	return done
 end
 
 function DB.GetBonusGroupLevels(grp)
     local res={}
     for id,rdata in pairs(DB.bonus) do
-
         if rdata[B_GROUP]==grp then
             local name, lvl = GetBonusName(id)
             table.insert(res,{lvl,id})
         end
     end
-
     table.sort(res, function (a,b) return CP.Utils.RomanToNum(a[1])<CP.Utils.RomanToNum(b[1]) end)
-
     return res
 end
 

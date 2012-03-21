@@ -407,7 +407,8 @@ function Pimp.StatSearch_UpdateList()
 			filters[i] = trim(val)
 		end
     local isrune = (CPStatSearch.slot>6)
-    Pimp.Stats = CP.DB.GetBonusFilteredList(isrune, unpack(filters))
+		local existing = (isrune and Pimp.data.runes) or Pimp.data.stats;
+    Pimp.Stats = CP.DB.GetBonusFilteredList(isrune, existing, unpack(filters))
 
     CPStatSearchItemSB:SetValueStepMode("INT")
     CPStatSearchItemSB:SetMinMaxValues(0,math.max(0,(#Pimp.Stats)-STATSEARCH_FIELD))
