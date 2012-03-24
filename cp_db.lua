@@ -23,8 +23,7 @@ CP.DB = DB
 
     -- Bonus
     local B_EFFECT=1 -- optional
-    local B_GROUP=2  -- optional
-
+    local B_GROUP=2 -- optional
 --[[ ] ]]
 
 
@@ -407,7 +406,7 @@ end
 function DB.GetBonusFilteredList(is_rune, existingStats, statName, name1, name2, minValue)
 	is_runs = is_rune and true or false
 	minValue = minValue and tonumber(minValue)
-	
+
 	-- convert existing stats to lookup table
 	local exists = {}
 	if existingStats then
@@ -417,7 +416,7 @@ function DB.GetBonusFilteredList(is_rune, existingStats, statName, name1, name2,
 			end
 		end
 	end
-	
+
 	-- filter out stat and bonus names
 	local result, done = {},{}
 	for id,rdata in pairs(DB.bonus) do
@@ -447,7 +446,7 @@ function DB.GetBonusFilteredList(is_rune, existingStats, statName, name1, name2,
 			done[group] = true
 		end
 	end
-	
+
 	-- filter out min values and existing stats
 	local first_of_group = function(id)
 		local group = DB.bonus[id][B_GROUP]
@@ -459,7 +458,7 @@ function DB.GetBonusFilteredList(is_rune, existingStats, statName, name1, name2,
 		end
 		return id
 	end
-	
+
 	local is_include_stat = function(id)
 		if exists[id] then
 			return false
@@ -504,7 +503,7 @@ function DB.GetBonusFilteredList(is_rune, existingStats, statName, name1, name2,
 			table.insert(done, stat)
 		end
 	end
-	
+
 	table.sort(done, function (a,b) return a[2]<b[2] end)
 	return done
 end

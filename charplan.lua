@@ -681,7 +681,7 @@ function CP.Attribute_OnEnter(this)
     local stat = CP.Calc.ID2StatName(stat_id)
 
     local txt = string.format("%s%s%s (%i)", NORMAL_FONT_COLOR_CODE,
-                CP.L.STAT_NAMES[stat], FONT_COLOR_CODE_CLOSE, CP.Stats[stat_id] or 0)
+    CP.L.STAT_NAMES[stat], FONT_COLOR_CODE_CLOSE, CP.Stats[stat_id] or 0)
 
 	GameTooltip:SetText(txt)
     local left,right = CP.Calc.Explain(stat_id)

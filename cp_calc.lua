@@ -7,6 +7,27 @@ local CP = _G.CP
 local Calc= {}
 CP.Calc = Calc
 
+--[[ [ DataBase ]]
+    -- Classes
+    local CLASS_BASE=1
+    local CLASS_ADD=8
+    local CLASS_MUL=15
+    local CLASS_PATK_STR=22
+    local CLASS_PATK_INT=23
+    local CLASS_PATK_DEX=24
+    local CLASS_PDEF_STA=25
+
+local CLASS_VAR=  {
+  ["WARRIOR"]={14,13,5,6,12,60,20,5,4.5,1.9,2.1,4.25,2,2,0.02,0.02,0.02,0.02,0.02,0.02,0.02,2,0,0,2.3},
+  ["RANGER"]={11,10,10,9,13,60,20,3.85,3.65,3.6,3.4,4.5,2,2,0.02,0.02,0.02,0.02,0.02,0.02,0.02,1,0,1,1.8},
+  ["THIEF"]={12,11,7,7,14,60,20,4.15,3.9,2.6,2.4,5,2,2,0.02,0.02,0.02,0.02,0.02,0.02,0.02,1.2,0,1.3,1.8},
+  ["MAGE"]={5,9,14,12,10,60,20,1.9,3.4,5,4.25,3.5,2,2,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.8,0.5,0,1.5},
+  ["AUGUR"]={7,10,13,14,10,60,20,2.5,3.6,4.5,5,3.5,2,2,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.8,0.5,0,1.5},
+  ["KNIGHT"]={13,14,11,11,11,60,20,4.5,5,3.75,4.1,3.9,2,2,0.02,0.02,0.02,0.02,0.02,0.02,0.02,1.5,0.5,0,3},
+  ["WARDEN"]={14,12,10,10,10,60,20,5,4.2,3.8,4,3.5,2,2,0.02,0.02,0.02,0.02,0.02,0.02,0.02,1.5,0.5,0,2},
+  ["DRUID"]={7,11,13,13,10,60,20,2.5,3.7,4.5,4.9,3.65,2,2,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.8,0.5,0,1.5},
+}
+--[[ ] ]]
 
 Calc.STATS={
     -- Base
@@ -193,7 +214,6 @@ end
 function Calc.Calculate()
 
     local values = Calc.GetBases()
-    values = values + Calc.GetBasesCalced()
     values = values + Calc.GetSkillBonus()
     values = values + Calc.GetCardBonus()
     values = values + Calc.GetArchievementBonus()
@@ -238,9 +258,8 @@ function Calc.Explain(stat)
     end
 
     local values = Calc.GetBases()
-    values = values + Calc.GetBasesCalced()
     local total = values
-    AddDescription(stat, COLOR_CLASS..CP.L.BY_CLASS, values[stat],"")
+    AddDescription(stat, COLOR_CLASS..CP.L.BY_CLASS, math.floor(values[stat]),"")
 
     values = Calc.GetSkillBonus()
     total = total + values
@@ -276,35 +295,47 @@ function Calc.Explain(stat)
     return res.left,res.right
 end
 
+
+local function CalcBase(class_var,stat,level)
+    if not class_var then return 0 end
+
+    local base,add,mul = class_var[CLASS_BASE+stat], class_var[CLASS_ADD+stat], class_var[CLASS_MUL+stat]
+
+    local p = (1+mul)^(level-1)
+    return base*p + add*(p-1)/mul
+end
+
 function Calc.GetBases()
+    local s = Calc.STATS
 
     local v = Calc.NewStats()
+    local pclass, sclass = UnitClassToken("player")
+    local lvl = UnitLevel("player")
+    local pclassvar, sclassvar = CLASS_VAR[pclass], CLASS_VAR[sclass]
 
-	--Base
-    v.STR = GetPlayerAbility("STR")
-    v.STA = GetPlayerAbility("STA")
-    v.DEX = GetPlayerAbility("AGI")
-    v.INT = GetPlayerAbility("INT")
-    v.WIS = GetPlayerAbility("MND")
+    v.STR = CalcBase(pclassvar,0,lvl) + CalcBase(sclassvar,0,lvl)/10
+    v.STA = CalcBase(pclassvar,1,lvl) + CalcBase(sclassvar,1,lvl)/10
+    v.INT = CalcBase(pclassvar,2,lvl) + CalcBase(sclassvar,2,lvl)/10
+    v.WIS = CalcBase(pclassvar,3,lvl) + CalcBase(sclassvar,3,lvl)/10
+    v.DEX = CalcBase(pclassvar,4,lvl) + CalcBase(sclassvar,4,lvl)/10
+
+    if math.floor(v.STR) ~= GetPlayerAbility("STR") then CP.Debug("Calc STR: "..v.STR.." != "..GetPlayerAbility("STR")) end
+    if math.floor(v.STA) ~= GetPlayerAbility("STA") then CP.Debug("Calc STA: "..v.STA.." != "..GetPlayerAbility("STA")) end
+    if math.floor(v.INT) ~= GetPlayerAbility("INT") then CP.Debug("Calc INT: "..v.INT.." != "..GetPlayerAbility("INT")) end
+    if math.floor(v.MND) ~= GetPlayerAbility("MND") then CP.Debug("Calc MND: "..v.MND.." != "..GetPlayerAbility("MND")) end
+    if math.floor(v.AGI) ~= GetPlayerAbility("AGI") then CP.Debug("Calc AGI: "..v.STR.." != "..GetPlayerAbility("AGI")) end
+
 
 	--Melee
 	v.PCRITMH = GetPlayerAbility("MAGIC_CRITICAL") -- not correct ability but correct numbers
 	v.PCRITDMG = v.PCRITDMG + 30
 	v.MCRITDMG = v.MCRITDMG + 30
+
 	--Magic
 	v.MCRIT = GetPlayerAbility("MAGIC_CRITICAL")
 
-    return v
-end
-
-function Calc.GetBasesCalced()
-
-    local v = Calc.NewStats()
-
     -- HP
-    -- TODO: that's wrong but atleast a lower border
-    local lvl = UnitLevel("player")
-    v.HP = 64 + 6.5*lvl
+    v.HP = CalcBase(pclassvar,5,lvl) + CalcBase(sclassvar,5,lvl)/10
 
     return v
 end
@@ -445,24 +476,15 @@ function Calc.GetSetBonus()
     return v
 end
 
-function Calc.DependingStats(values)
-    Calc.StatRelationsAttributes(values)
-    Calc.CharDepended(values)
-    Calc.CharIndepended(values)
-	Calc.StatRelations(values)
-	Calc.WeaponDepended(values)
-end
-
-local STATS_PERC_VALUES_ATTRIBUTES={
+local STATS_PERC_VALUES={
     [161]={Calc.STATS.STR},   -- "% Stärke"
     [162]={Calc.STATS.STA},   -- "% Ausdauer"
     [163]={Calc.STATS.INT},   -- "% Intelligenz"
     [164]={Calc.STATS.WIS},   -- "% Weisheit"
     [165]={Calc.STATS.DEX},   -- "% Geschicklichkeit"
     [166]={Calc.STATS.STR, Calc.STATS.STA, Calc.STATS.INT, Calc.STATS.WIS, Calc.STATS.DEX}, -- "% Alle Hauptattribute"
-}
-local STATS_PERC_VALUES={
-   [167]={Calc.STATS.HP},    -- "% LP-Maximums"
+
+    [167]={Calc.STATS.HP},    -- "% LP-Maximums"
     [168]={Calc.STATS.MP},    -- "% MP-Maximums"
     [170]={Calc.STATS.MDEF},  -- "% Magische Verteidigung"
     [171]={Calc.STATS.MATK},  -- "% Magische Angriffskraft"
@@ -478,11 +500,18 @@ local STATS_PERC_VALUES={
     [56] ={Calc.STATS.PDMGMH, Calc.STATS.PDMGOH}, -- "% Nahkampfwaffen-Schadensrate"
 }
 
-function Calc.StatRelationsAttributes(values, res_tab, res_stat)
+function Calc.DependingStats(values)
+    Calc.AllAttributes(values)
+	Calc.Perc_Values(values, STATS_PERC_VALUES)
+    Calc.StatInteraction(values)
+	Calc.WeaponDepended(values)
+end
 
-    local s = Calc.STATS
+function Calc.AllAttributes(values)
+
     local all = values.ALL_ATTRIBUTES
-    if all then
+    if all>0 then
+        local s = Calc.STATS
         values.STR = values.STR+all
         values.STA = values.STA+all
         values.DEX = values.DEX+all
@@ -495,13 +524,10 @@ function Calc.StatRelationsAttributes(values, res_tab, res_stat)
         AddDescription(s.INT, TEXT("SYS_WEAREQTYPE_7"),all)
         AddDescription(s.WIS, TEXT("SYS_WEAREQTYPE_7"),all)
     end
-	local perc_list = STATS_PERC_VALUES_ATTRIBUTES
-	Calc.Perc_Values(values, perc_list)
+
 end
-function Calc.StatRelations(values)
-	local perc_list = STATS_PERC_VALUES
-	Calc.Perc_Values(values, perc_list)
-end
+
+
 function Calc.Perc_Values(values, perc_list)
 	for p_stat,inc_stat in pairs(perc_list) do
         if values[p_stat]~=0 then
@@ -522,7 +548,18 @@ local function AddValue(values, stat,val, by_stat)
     AddDescription(stat, TEXT("SYS_WEAREQTYPE_"..by_stat), math.floor(val))
 end
 
-function Calc.CharIndepended(values)
+local CLASS_VARS_old={
+	["AUGUR"]  ={   MDEF=3.2},
+	["MAGE"]   ={   MDEF=3 },
+	["DRUID"]  ={   MDEF=3 },
+	["RANGER"] ={   MDEF=2.6 },
+	["KNIGHT"] ={   MDEF=2.4},
+	["WARDEN"] ={   MDEF=2.4},
+	["THIEF"]  ={   MDEF=2.3},
+    ["WARRIOR"]={   MDEF=2.2},
+}
+
+function Calc.StatInteraction(values)
     local s = Calc.STATS
 
     AddValue(values, s.EVADE, math.floor(values.DEX* 0.78), s.DEX)
@@ -543,38 +580,17 @@ function Calc.CharIndepended(values)
     AddValue(values, s.MANA, values.INT*1, s.INT)
 
     AddValue(values, s.PDMGOH, values.PDMGOH*(-0.3), s.PDMG)
-end
 
 
-local CLASS_VARS={
-	["AUGUR"]  ={   PDEF=1.5, MDEF=3.2,
-                    PATKint=0.5, PATKdex=0  ,PATKstr=0.8},
-	["MAGE"]   ={   PDEF=1.5, MDEF=3  ,
-                    PATKint=0.5,PATKdex=0  ,PATKstr=0.8},
-	["DRUID"]  ={   PDEF=1.5, MDEF=3  ,
-                    PATKint=0.5,PATKdex=0  ,PATKstr=0.8},
-	["RANGER"] ={   PDEF=1.8, MDEF=2.6,
-                    PATKint=0  ,PATKdex=1  ,PATKstr=1  },
-	["KNIGHT"] ={   PDEF=3  , MDEF=2.4,
-                    PATKint=0.5,PATKdex=0  ,PATKstr=1.5},
-	["WARDEN"] ={   PDEF=2  , MDEF=2.4,
-                    PATKint=0.5,PATKdex=0  ,PATKstr=1.5},
-	["THIEF"]  ={   PDEF=1.8, MDEF=2.3,
-                    PATKint=0  ,PATKdex=1.3,PATKstr=1.2},
-    ["WARRIOR"]={   PDEF=2.3, MDEF=2.2,
-                    PATKint=0  ,PATKdex=0  ,PATKstr=2  },
-}
-
-function Calc.CharDepended(values)
-    local s = Calc.STATS
     local cname = UnitClassToken("player")
-    local d = CLASS_VARS[cname]
-
+    local d = CLASS_VARS_old[cname]
     AddValue(values, s.MDEF,  math.floor(values.WIS* d.MDEF), s.WIS)
-    AddValue(values, s.PDEF,  values.STA* d.PDEF, s.STA)
-    AddValue(values, s.PATK,  values.INT* d.PATKint, s.INT)
-    AddValue(values, s.PATK,  values.DEX* d.PATKdex, s.DEX)
-    AddValue(values, s.PATK,  values.STR* d.PATKstr, s.STR)
+
+    local d = CLASS_VAR[cname]
+    AddValue(values, s.PDEF,  values.STA* d[CLASS_PDEF_STA], s.STA)
+    AddValue(values, s.PATK,  values.INT* d[CLASS_PATK_INT], s.INT)
+    AddValue(values, s.PATK,  values.DEX* d[CLASS_PATK_DEX], s.DEX)
+    AddValue(values, s.PATK,  values.STR* d[CLASS_PATK_STR], s.STR)
 end
 
 local WEAPON_STATS={

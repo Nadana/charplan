@@ -438,7 +438,6 @@ function  TestCP_CalcFull:DoFullCharCheck(info)
     -- !Same as in calculate
     local values = CP.Calc.NewStats()
     values = values + info.bases
-    values = values + CP.Calc.GetBasesCalced()
     values = values + CP.Calc.GetSkillBonus()
     values = values + info.cards
     values = values + CP.Calc.GetArchievementBonus()

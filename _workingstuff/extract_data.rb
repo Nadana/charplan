@@ -480,7 +480,7 @@ class Table
 
                 while not line_data.empty? and (line_data.last=="nil" or line_data.last.to_s.empty?) do line_data.pop end
 
-                outf.write( "  [%i]={%s},\n" % [id, line_data.join(",")])
+                outf.write( "  [%s]={%s},\n" % [id, line_data.join(",")])
                 }
             outf.write("}\n")
         }
@@ -1055,6 +1055,56 @@ class TitleEntry < Table
     end
 end
 
+class VocTable < Table
+
+    FILENAME = "voctable"
+    CLASSES = { 301003=>"WARRIOR",301005=>"RANGER", 301007=>"THIEF", 301009=>"MAGE",
+                301011=>"AUGUR", 301013=>"KNIGHT", 301015=>"WARDEN", 301017=>"DRUID"}
+
+    def initialize(csv_row)
+        super(csv_row)
+        @id = CLASSES[csv_row['GUID'].to_i]
+        @id = '"'+@id+'"' unless @id.nil?
+        @row = csv_row
+    end
+
+    def SkipThisItem?
+        return @id.nil?
+    end
+
+    def ExportDesc(data)
+    end
+
+    def ExportData(data)
+        data.push(@row['STR']) #1
+        data.push(@row['STA'])
+        data.push(@row['INT'])
+        data.push(@row['WIS'])
+        data.push(@row['DEX'])
+        data.push(@row['hp_base'])
+        data.push(@row['mp_base'])
+        data.push(@row['STR_ADD']) #8
+        data.push(@row['STA_ADD'])
+        data.push(@row['INT_ADD'])
+        data.push(@row['WIS_ADD'])
+        data.push(@row['DEX_ADD'])
+        data.push(@row['HP_ADD'])
+        data.push(@row['MP_ADD'])
+        data.push(@row['STR_MUL']) # 15
+        data.push(@row['STA_MUL'])
+        data.push(@row['INT_MUL'])
+        data.push(@row['WIS_MUL'])
+        data.push(@row['DEX_MUL'])
+        data.push(@row['HP_MUL'])
+        data.push(@row['MP_MUL'])
+
+        data.push(@row['PATK_STR_FAKTOR'])
+        data.push(@row['PATK_INT_FAKTOR'])
+        data.push(@row['PATK_DEX_FAKTOR'])
+        data.push(@row['PDEF_STA_FAKTOR'])
+    end
+end
+
 class FullDB
 
     attr_accessor :images
@@ -1063,6 +1113,7 @@ class FullDB
     attr_accessor :refines, :cards
     attr_accessor :skills, :spells
     attr_accessor :title
+    attr_accessor :Vocs
 
     def Load
 
@@ -1101,6 +1152,9 @@ class FullDB
         p "Load Archievements"
         @title = TitleEntry.Load()
 
+        p "Load VocTable"
+        @Vocs = VocTable.Load()
+
     end
 
     def Export
@@ -1117,6 +1171,8 @@ class FullDB
 
         MagicCollectionEntry.Export("../item_data/skills.lua", @skills)
         MagicObjectEntry.Export("../item_data/spells.lua", @spells)
+
+        VocTable.Export("../item_data/_classes.lua", @Vocs)
 
         #ArmorEntry.TestWrite(armor)
     end
