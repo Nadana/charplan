@@ -319,12 +319,12 @@ function Calc.GetBases()
     v.WIS = CalcBase(pclassvar,3,lvl) + CalcBase(sclassvar,3,lvl)/10
     v.DEX = CalcBase(pclassvar,4,lvl) + CalcBase(sclassvar,4,lvl)/10
 
-    if math.floor(v.STR) ~= GetPlayerAbility("STR") then CP.Debug("Calc STR: "..v.STR.." != "..GetPlayerAbility("STR")) end
-    if math.floor(v.STA) ~= GetPlayerAbility("STA") then CP.Debug("Calc STA: "..v.STA.." != "..GetPlayerAbility("STA")) end
-    if math.floor(v.INT) ~= GetPlayerAbility("INT") then CP.Debug("Calc INT: "..v.INT.." != "..GetPlayerAbility("INT")) end
-    if math.floor(v.WIS) ~= GetPlayerAbility("MND") then CP.Debug("Calc MND: "..v.WIS.." != "..GetPlayerAbility("MND")) end
-    if math.floor(v.DEX) ~= GetPlayerAbility("AGI") then CP.Debug("Calc AGI: "..v.DEX.." != "..GetPlayerAbility("AGI")) end
-
+    -- temporary test code .. remove before v4.0.9.2 release
+    if math.abs(v.STR- GetPlayerAbility("STR"))>=1 then CP.Debug("Calc STR DIFF: "..v.STR.." != "..GetPlayerAbility("STR")) end
+    if math.abs(v.STA- GetPlayerAbility("STA"))>=1 then CP.Debug("Calc STA DIFF: "..v.STA.." != "..GetPlayerAbility("STA")) end
+    if math.abs(v.INT- GetPlayerAbility("INT"))>=1 then CP.Debug("Calc INT DIFF: "..v.INT.." != "..GetPlayerAbility("INT")) end
+    if math.abs(v.WIS- GetPlayerAbility("MND"))>=1 then CP.Debug("Calc MND DIFF: "..v.WIS.." != "..GetPlayerAbility("MND")) end
+    if math.abs(v.DEX- GetPlayerAbility("AGI"))>=1 then CP.Debug("Calc AGI DIFF: "..v.DEX.." != "..GetPlayerAbility("AGI")) end
 
 	--Melee
 	v.PCRITMH = GetPlayerAbility("MAGIC_CRITICAL") -- not correct ability but correct numbers
@@ -336,6 +336,7 @@ function Calc.GetBases()
 
     -- HP
     v.HP = CalcBase(pclassvar,5,lvl) + CalcBase(sclassvar,5,lvl)/10
+    v.MANA = CalcBase(pclassvar,6,lvl) + CalcBase(sclassvar,6,lvl)/10
 
     return v
 end
