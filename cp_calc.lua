@@ -322,8 +322,8 @@ function Calc.GetBases()
     if math.floor(v.STR) ~= GetPlayerAbility("STR") then CP.Debug("Calc STR: "..v.STR.." != "..GetPlayerAbility("STR")) end
     if math.floor(v.STA) ~= GetPlayerAbility("STA") then CP.Debug("Calc STA: "..v.STA.." != "..GetPlayerAbility("STA")) end
     if math.floor(v.INT) ~= GetPlayerAbility("INT") then CP.Debug("Calc INT: "..v.INT.." != "..GetPlayerAbility("INT")) end
-    if math.floor(v.MND) ~= GetPlayerAbility("MND") then CP.Debug("Calc MND: "..v.MND.." != "..GetPlayerAbility("MND")) end
-    if math.floor(v.AGI) ~= GetPlayerAbility("AGI") then CP.Debug("Calc AGI: "..v.STR.." != "..GetPlayerAbility("AGI")) end
+    if math.floor(v.WIS) ~= GetPlayerAbility("MND") then CP.Debug("Calc MND: "..v.WIS.." != "..GetPlayerAbility("MND")) end
+    if math.floor(v.DEX) ~= GetPlayerAbility("AGI") then CP.Debug("Calc AGI: "..v.DEX.." != "..GetPlayerAbility("AGI")) end
 
 
 	--Melee
