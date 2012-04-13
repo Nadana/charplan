@@ -6,10 +6,12 @@ charplan.lua
 cp_calc.lua
 cp_db.lua
 cp_pimpme.lua
+cp_statsearch.lua
 cp_search.lua
 cp_storage.lua
 cp_utils.lua
 
 charplan.xml
 cp_pimpme.xml
+cp_statsearch.xml
 cp_search.xml
