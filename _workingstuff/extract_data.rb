@@ -15,7 +15,7 @@ $log.formatter = proc { |severity, datetime, progname, msg|  "#{severity}: #{msg
 # Pathes
 $temp_path="e:/Temp/ro/"  # will be deleted !
 
-MAX_LEVEL = 70
+MAX_LEVEL = 75
 $log.info("max level is: #{MAX_LEVEL}")
 
 $STATLIST={# SYS_WEAREQTYPE_xxx
