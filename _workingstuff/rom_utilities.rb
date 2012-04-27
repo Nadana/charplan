@@ -66,9 +66,18 @@ def RoMPath()
     begin
         dir = Win32::Registry::HKEY_LOCAL_MACHINE.open('SOFTWARE\Frogster Interactive Pictures\Runes of Magic')["RootDir"]
     rescue
-        dir = "d:/Program Files (x86)/Runes of Magic/"
+        dir = File.join(ENV['ProgramFiles'], "Runes of Magic/")
     end
-
+		dir.gsub!('\\','/')
+		unless File.exists?(dir)
+			# go to parent path and check for Client.exe
+			pc = Dir.pwd.split('/')
+			dir = pc.shift
+			while(tmp = pc.shift) do
+				dir = File.join(dir, tmp)
+				break if File.exists?(File.join(dir, 'Client.exe'))
+			end
+		end
     raise "RoM not found" unless File.exists?(dir)
 
     return dir
