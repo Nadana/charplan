@@ -51,6 +51,7 @@ function DB.Load()
     end
     DB.LoadCount = 1
 
+		DB.classes= LoadTable("_classes");
     DB.images = LoadTable("images")
     DB.items = LoadTable("items")
     DB.bonus = LoadTable("addpower")
@@ -81,6 +82,7 @@ function DB.Release()
             DB.sets = nil
             DB.archievements = nil
             DB.effects = nil
+						DB.classes = nil
         collectgarbage("collect")
         -- local mem2 = collectgarbage("count")
         -- CP.Debug("DB Released. Freed memory: "..(math.floor(mem1-mem2)/1000).."mb")
@@ -704,4 +706,8 @@ end
 function DB.IsSuitItem(item_id)
   local lvl, suit = DB.GetItemInfo(item_id)
   return suit
+end
+
+function DB.GetClassInfo(token)
+	return DB.classes[token]
 end
