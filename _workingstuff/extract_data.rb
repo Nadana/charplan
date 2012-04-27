@@ -13,7 +13,7 @@ $log.formatter = proc { |severity, datetime, progname, msg|  "#{severity}: #{msg
 
 
 # Pathes
-$temp_path="e:/Temp/ro/"  # will be deleted !
+$temp_path=File.join(ENV['TEMP'], 'rom')  # will be deleted !
 
 MAX_LEVEL = 75
 $log.info("max level is: #{MAX_LEVEL}")
@@ -434,14 +434,18 @@ class Table
         @id = csv_row['guid'].to_i
     end
 
-    def Table.Load(filename=nil)
+    def Table.Load(filename=nil, update=true)
         items=Hash.new
         filename = self::FILENAME if filename.nil?
 
-        base_dir = $temp_path+"data\\"
-        base_dir = Extract("data\\","#{filename}.db",{:fdb_filter=>"data.fdb"})  unless File.exists?(base_dir+"#{filename}.db.csv")
+				if update
+					base_dir = $temp_path+"data\\"
+					base_dir = Extract("data\\","#{filename}.db",{:fdb_filter=>"data.fdb"})  unless File.exists?(base_dir+"#{filename}.db.csv")
+				else
+					base_dir = ''
+				end
 
-        csv = CSV.read(base_dir+"#{filename}.db.csv", {:col_sep=>";", :headers=>true})
+        csv = CSV.read(base_dir+"#{filename}.db.csv", {:col_sep=>";", :headers=>true, :converters => :numeric})
 
         csv.each { |row|
             r = self.new(row)
@@ -1059,7 +1063,9 @@ class VocTable < Table
 
     FILENAME = "voctable"
     CLASSES = { 301003=>"WARRIOR",301005=>"RANGER", 301007=>"THIEF", 301009=>"MAGE",
-                301011=>"AUGUR", 301013=>"KNIGHT", 301015=>"WARDEN", 301017=>"DRUID"}
+                301011=>"AUGUR", 301013=>"KNIGHT", 301015=>"WARDEN", 301017=>"DRUID",
+                301019=>"HARPSYN", 301021=>"PSYRON"
+                }
 
     def initialize(csv_row)
         super(csv_row)
@@ -1102,6 +1108,8 @@ class VocTable < Table
         data.push(@row['PATK_INT_FAKTOR'])
         data.push(@row['PATK_DEX_FAKTOR'])
         data.push(@row['PDEF_STA_FAKTOR'])
+        data.push(@row['MDEF_WIS_FAKTOR'])
+				#print("%d: str+ %f, sta+ %f, wis %f\n" % [@row['GUID'], @row['STR_ADD'],@row['STA_ADD'], @row['MDEF_WIS_FAKTOR'] ])
     end
 end
 
@@ -1227,7 +1235,13 @@ end
 
 
 ######################################
+p "Load VocTable only"
+Vocs = VocTable.Load(nil, false)
+VocTable.Export("../item_data/_classes.lua", Vocs)
+exit 0
+
 CheckTempPath()
+
 
 db = FullDB.new
 db.Load
