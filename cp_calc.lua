@@ -16,29 +16,7 @@ CP.Calc = Calc
     local CLASS_PATK_INT=23
     local CLASS_PATK_DEX=24
     local CLASS_PDEF_STA=25
-		local CLASS_MDEF_WIS=26
-
-local CLASS_VAR=  {	-- outdated, use DB.GetClassInfo(token)
-  ["WARRIOR"]={14,13,5,6,12,60,20,5,4.5,1.9,2.1,4.25,2,2,0.02,0.02,0.02,0.02,0.02,0.02,0.02,2,0,0,2.3},
-  ["RANGER"]={11,10,10,9,13,60,20,3.85,3.65,3.6,3.4,4.5,2,2,0.02,0.02,0.02,0.02,0.02,0.02,0.02,1,0,1,1.8},
-  ["THIEF"]={12,11,7,7,14,60,20,4.15,3.9,2.6,2.4,5,2,2,0.02,0.02,0.02,0.02,0.02,0.02,0.02,1.2,0,1.3,1.8},
-  ["MAGE"]={5,9,14,12,10,60,20,1.9,3.4,5,4.25,3.5,2,2,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.8,0.5,0,1.5},
-  ["AUGUR"]={7,10,13,14,10,60,20,2.5,3.6,4.5,5,3.5,2,2,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.8,0.5,0,1.5},
-  ["KNIGHT"]={13,14,11,11,11,60,20,4.5,5,3.75,4.1,3.9,2,2,0.02,0.02,0.02,0.02,0.02,0.02,0.02,1.5,0.5,0,3},
-  ["WARDEN"]={14,12,10,10,10,60,20,5,4.2,3.8,4,3.5,2,2,0.02,0.02,0.02,0.02,0.02,0.02,0.02,1.5,0.5,0,2},
-  ["DRUID"]={7,11,13,13,10,60,20,2.5,3.7,4.5,4.9,3.65,2,2,0.02,0.02,0.02,0.02,0.02,0.02,0.02,0.8,0.5,0,1.5},
-}
-local CLASS_VARS_old={
-	["AUGUR"]  ={   MDEF=3.2},
-	["MAGE"]   ={   MDEF=3 },
-	["DRUID"]  ={   MDEF=3 },
-	["RANGER"] ={   MDEF=2.6 },
-	["KNIGHT"] ={   MDEF=2.4},
-	["WARDEN"] ={   MDEF=2.4},
-	["THIEF"]  ={   MDEF=2.3},
-  ["WARRIOR"]={   MDEF=2.2},
-}
-
+    local CLASS_MDEF_WIS=26
 --[[ ] ]]
 
 Calc.STATS={
@@ -599,11 +577,9 @@ function Calc.StatInteraction(values)
 
 
     local cname = UnitClassToken("player")
-		local d = CP.DB.GetClassInfo(cname)
-    -- local d = CLASS_VARS_old[cname]
+    local d = CP.DB.GetClassInfo(cname)
     AddValue(values, s.MDEF,  math.floor(values.WIS* d[CLASS_MDEF_WIS]), s.WIS)
 
-    -- local d = CLASS_VAR[cname]
     AddValue(values, s.PDEF,  values.STA* d[CLASS_PDEF_STA], s.STA)
     AddValue(values, s.PATK,  values.INT* d[CLASS_PATK_INT], s.INT)
     AddValue(values, s.PATK,  values.DEX* d[CLASS_PATK_DEX], s.DEX)

@@ -13,7 +13,7 @@ $log.formatter = proc { |severity, datetime, progname, msg|  "#{severity}: #{msg
 
 
 # Pathes
-$temp_path=File.join(ENV['TEMP'], 'rom')  # will be deleted !
+$temp_path=File.join(ENV['TEMP'], 'rom/')  # will be deleted !
 
 MAX_LEVEL = 75
 $log.info("max level is: #{MAX_LEVEL}")
@@ -438,12 +438,12 @@ class Table
         items=Hash.new
         filename = self::FILENAME if filename.nil?
 
-				if update
-					base_dir = $temp_path+"data\\"
-					base_dir = Extract("data\\","#{filename}.db",{:fdb_filter=>"data.fdb"})  unless File.exists?(base_dir+"#{filename}.db.csv")
-				else
-					base_dir = ''
-				end
+        if update
+            base_dir = $temp_path+"data\\"
+            base_dir = Extract("data\\","#{filename}.db",{:fdb_filter=>"data.fdb"})  unless File.exists?(base_dir+"#{filename}.db.csv")
+        else
+            base_dir = ''
+        end
 
         csv = CSV.read(base_dir+"#{filename}.db.csv", {:col_sep=>";", :headers=>true, :converters => :numeric})
 
@@ -1180,7 +1180,7 @@ class FullDB
         MagicCollectionEntry.Export("../item_data/skills.lua", @skills)
         MagicObjectEntry.Export("../item_data/spells.lua", @spells)
 
-        VocTable.Export("../item_data/_classes.lua", @Vocs)
+        VocTable.Export("../item_data/classes.lua", @Vocs)
 
         #ArmorEntry.TestWrite(armor)
     end
@@ -1235,11 +1235,6 @@ end
 
 
 ######################################
-p "Load VocTable only"
-Vocs = VocTable.Load(nil, false)
-VocTable.Export("../item_data/_classes.lua", Vocs)
-exit 0
-
 CheckTempPath()
 
 
