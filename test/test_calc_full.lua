@@ -452,6 +452,10 @@ function TestCP_CalcFull.HOOKED_GetCurrentTitle()
     return TestCP_CalcFull.cur_data.title
 end
 
+function TestCP_CalcFull.HOOKED_GetArchievementCount()
+    return TestCP_CalcFull.cur_data.title_count or 0
+end
+
 function TestCP_CalcFull.HOOKED_UnitClassToken(unit)
     return TestCP_CalcFull.cur_data.class
 end
@@ -473,6 +477,8 @@ function TestCP_CalcFull:classSetUp()
 
     self.old_GetCurrentTitle = GetCurrentTitle
     GetCurrentTitle = TestCP_CalcFull.HOOKED_GetCurrentTitle
+    self.old_GetArchievementCount = CP.Calc.GetArchievementCount
+    CP.Calc.GetArchievementCount = TestCP_CalcFull.HOOKED_GetArchievementCount
 
     self.old_UnitClassToken = UnitClassToken
     UnitClassToken = TestCP_CalcFull.HOOKED_UnitClassToken
@@ -488,6 +494,7 @@ end
 
 function TestCP_CalcFull:classTearDown()
     GetCurrentTitle = self.old_GetCurrentTitle
+    CP.Calc.GetArchievementCount = self.old_GetArchievementCount
     UnitClassToken = self.old_UnitClassToken
     UnitLevel = self.old_UnitLevel
     CP.Calc.GetListOfSkills = self.old_GetListOfSkills

@@ -287,7 +287,7 @@ function Calc.Explain(stat)
 
     values = Calc.GetArchievementBonus()
     total = total + values
-    AddDescription(stat, COLOR_SET..CP.L.BY_TITLE, values[stat])
+    AddDescription(stat, COLOR_TITLE..CP.L.BY_TITLE, values[stat])
 
 	for _,slot in ipairs( {0,1,2,3,4,5,6,7,8,9,11,12,13,14,21,10,15,16} ) do
         local item = CP.Items[slot]
@@ -361,6 +361,17 @@ function Calc.GetSkillBonus()
     return Calc.SkillBonus
 end
 
+
+function Calc.GetArchievementCount()
+    local count = GetTitleCount()-1
+    local tc = 0
+	for i = 0, count do
+		local _,_,getted = GetTitleInfoByIndex(i)
+        if getted then tc=tc+1 end
+    end
+    return tc
+end
+
 function Calc.GetArchievementBonus()
 
     local values = Calc.NewStats()
@@ -370,6 +381,8 @@ function Calc.GetArchievementBonus()
         local effect = CP.DB.GetArchievementEffect(titel_id)
         ApplyBonus(values, effect)
     end
+
+    values.HP = values.HP + Calc.GetArchievementCount()*5
 
     return values
 end

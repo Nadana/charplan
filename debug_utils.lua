@@ -134,6 +134,7 @@ function CP.SlashCMD_SnapShot()
     CP_FullCharInfo.bases=CP.Calc.GetBases()
     CP_FullCharInfo.cards=CP.Calc.GetCardBonus()
     CP_FullCharInfo.title=GetCurrentTitle()
+    CP_FullCharInfo.title_count=CP.Calc.GetArchievementCount()
     CP_FullCharInfo.item_links=GetCurrentCPItems()
     CP_FullCharInfo.skills=CP.Calc.GetListOfSkills()
 
@@ -180,25 +181,5 @@ function CP.DumpCharacterSkills()
 
 end
 
-function CP.DumpCharacterTitles()
 
--- /run CP.DumpCharacterTitles()
-    -- only titles with bonus
-
-    CP.DB.Load()
-
-    local count = GetTitleCount()
-    for i = 1 , count do
-		local name, titleID, geted, icon,classify1, classify2,note,brief,rare = GetTitleInfoByIndex( i - 1 )
-        if geted then
-            local v = CP.DB.GetArchievementEffect(titel_id)
-            if #v>0 then
-                CP.Debug(name)
-            end
-        end
-    end
-
-    CP.DB.Release()
-
-end
 
