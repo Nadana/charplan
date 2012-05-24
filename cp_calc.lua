@@ -299,22 +299,16 @@ function Calc.GetBases()
     local s = Calc.STATS
 
     local v = Calc.NewStats()
-    local pclass, sclass = UnitClassToken("player")
-    local lvl = UnitLevel("player")
-    local pclassvar, sclassvar = CP.DB.GetClassInfo(pclass), CP.DB.GetClassInfo(sclass)
+
+    local lvl = CP.Unit.level
+    local pclassvar = CP.DB.GetClassInfo(CP.Unit.class)
+    local sclassvar = CP.DB.GetClassInfo(CP.Unit.sec_class)
 
     v.STR = CalcBase(pclassvar,0,lvl) + CalcBase(sclassvar,0,lvl)/10
     v.STA = CalcBase(pclassvar,1,lvl) + CalcBase(sclassvar,1,lvl)/10
     v.INT = CalcBase(pclassvar,2,lvl) + CalcBase(sclassvar,2,lvl)/10
     v.WIS = CalcBase(pclassvar,3,lvl) + CalcBase(sclassvar,3,lvl)/10
     v.DEX = CalcBase(pclassvar,4,lvl) + CalcBase(sclassvar,4,lvl)/10
-
-    -- temporary test code .. remove before v4.0.9.2 release
-    if math.abs(v.STR- GetPlayerAbility("STR"))>=1 then CP.Debug("Calc STR DIFF: "..v.STR.." != "..GetPlayerAbility("STR")) end
-    if math.abs(v.STA- GetPlayerAbility("STA"))>=1 then CP.Debug("Calc STA DIFF: "..v.STA.." != "..GetPlayerAbility("STA")) end
-    if math.abs(v.INT- GetPlayerAbility("INT"))>=1 then CP.Debug("Calc INT DIFF: "..v.INT.." != "..GetPlayerAbility("INT")) end
-    if math.abs(v.WIS- GetPlayerAbility("MND"))>=1 then CP.Debug("Calc MND DIFF: "..v.WIS.." != "..GetPlayerAbility("MND")) end
-    if math.abs(v.DEX- GetPlayerAbility("AGI"))>=1 then CP.Debug("Calc AGI DIFF: "..v.DEX.." != "..GetPlayerAbility("AGI")) end
 
 	--Melee
 	v.PCRITMH = GetPlayerAbility("MAGIC_CRITICAL") -- not correct ability but correct numbers
@@ -339,28 +333,17 @@ function Calc.GetSkillBonus()
     return Calc.SkillBonus
 end
 
-
-function Calc.GetArchievementCount()
-    local count = GetTitleCount()-1
-    local tc = 0
-	for i = 0, count do
-		local _,_,getted = GetTitleInfoByIndex(i)
-        if getted then tc=tc+1 end
-    end
-    return tc
-end
-
 function Calc.GetArchievementBonus()
 
     local values = Calc.NewStats()
 
-    local titel_id = GetCurrentTitle()
+    local titel_id = CP.Unit.GetCurrentTitle()
     if titel_id>0 then
         local effect = CP.DB.GetArchievementEffect(titel_id)
         ApplyBonus(values, effect)
     end
 
-    values.HP = values.HP + Calc.GetArchievementCount()*5
+    values.HP = values.HP + CP.Unit.title_count*5
 
     return values
 end
@@ -576,8 +559,7 @@ function Calc.StatInteraction(values)
     AddValue(values, s.PDMGOH, values.PDMGOH*(-0.3), s.PDMG)
 
 
-    local cname = UnitClassToken("player")
-    local d = CP.DB.GetClassInfo(cname)
+    local d = CP.DB.GetClassInfo( CP.Unit.class )
     AddValue(values, s.MDEF,  math.floor(values.WIS* d[CLASS_MDEF_WIS]), s.WIS)
 
     AddValue(values, s.PDEF,  values.STA* d[CLASS_PDEF_STA], s.STA)

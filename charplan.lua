@@ -13,7 +13,7 @@ _G.CP = CP
 
 CP.version       = "@project-version@"
 --@do-not-package@
-CP.version       = "v4.0.10"
+CP.version       = "v4.0.11"
 dofile("interface/addons/charplan/debug_utils.lua")
 --@end-do-not-package@
 
@@ -53,70 +53,47 @@ end
 function CP.OnLoad(this)
     UIPanelBackdropFrame_SetTexture( this, "Interface/Common/PanelCommonFrame", 256 , 256 )
 
-    this:RegisterEvent("VARIABLES_LOADED")
-    this:RegisterEvent("PLAYER_TITLE_ID_CHANGED")
-    this:RegisterEvent("SKILL_UPDATE")
-    this:RegisterEvent("CARDBOOKFRAME_UPDATE")
-    this:RegisterEvent("PLAYER_LEVEL_UP")
+    CP.Unit.Init(this)
+    CP.RegisterEvent("VARIABLES_LOADED", CP.VARIABLES_LOADED)
  end
 
+function CP.RegisterEvent(event, fct)
+    CP.events = CP.events or {}
+    assert(not CP.events[event]) -- rework if required
+    CP.events[event]=fct
+    CPFrame:RegisterEvent(event)
+end
 
 function CP.OnEvent(this,event)
-    assert(CP[event])
-    CP[event]()
-end
-
-function CP.PLAYER_TITLE_ID_CHANGED()
-    if CPFrame:IsVisible() then
-        CP.PlayerTitle()
-        CP.UpdatePoints()
-    end
-end
-
-function CP.SKILL_UPDATE()
-    if CPFrame:IsVisible() then
-        CP.Calc.ReadSkills()
-        CP.UpdatePoints()
-    end
-end
-
-function CP.CARDBOOKFRAME_UPDATE()
-    if CPFrame:IsVisible() then
-        CP.Calc.ReadCards()
-        CP.UpdatePoints()
-    end
-end
-
-function CP.PLAYER_LEVEL_UP()
-    if CPFrame:IsVisible() then
-        CP.UpdatePoints()
-    end
+    assert(CP.events[event])
+    CP.events[event](this)
 end
 
 function CP.OnShow(this)
 
+    CP.Unit.ReadCurrent()
+
     CPFrameClassFrameLeftText:SetText(UnitClass("player"))
-    CPFrameClassFrameRightText:SetText(UnitLevel("player"))
+    CPFrameClassFrameRightText:SetText(CP.Unit.level)
     CPFrameMenuBtn:SetText(CP.L.MENU_TITLE)
 
-    CP.UpdateTitle()
+    CP.UpdateFrameTitle()
+
     CP.DB.Load()
     CP.Calc.Init()
+
     CP.UpdateEquipment()
     CP.ModelShow()
+
 	CP.PlayerTitle()
 end
 
 function CP.PlayerTitle()
-	local nID , szTitle = GetCurrentTitle()
-
-	if( nID == 0 ) then
-		szTitle = C_TITLE_NIL
-	end
+	local _, szTitle = CP.Unit.GetCurrentTitle()
     CPAttributePlayerTitle:SetText(szTitle)
 end
 
-function CP.UpdateTitle()
+function CP.UpdateFrameTitle()
     local stored = CP.Storage.GetLoadedName()
     local name = "CharPlan "..CP.version.." - " .. (stored or CP.L.TITLE_EMPTY)
 

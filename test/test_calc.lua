@@ -48,10 +48,6 @@ function TestCP_Calc.HOOKED_GetListOfSkills()
     return TestCP_Calc.cur_list_of_skills
 end
 
-function TestCP_Calc.HOOKED_UnitClassToken(unit)
-    return "WARDEN"
-end
-
 function TestCP_Calc:CompareStats(actual, expected, msg, tolerance)
     tolerance = tolerance or 0.01
     for stat, value in pairs(expected) do
@@ -78,18 +74,22 @@ end
 
 
 function TestCP_Calc:classSetUp()
+
+    self.old_unit = CP.Utils.TableCopy(CP.Unit)
+    CP.Unit.class = "WARDEN"
+    CP.Unit.sec_class = nil
+
     self.old_GetListOfSkills = CP.Calc.GetListOfSkills
     CP.Calc.GetListOfSkills = TestCP_Calc.HOOKED_GetListOfSkills
-
-    self.old_UnitClassToken = UnitClassToken
-    UnitClassToken = TestCP_Calc.HOOKED_UnitClassToken
 
     CP.DB.Load()
 end
 
 function TestCP_Calc:classTearDown()
+
+    CP.Utils.TableCopy(self.old_unit, CP.Unit)
     CP.Calc.GetListOfSkills = self.old_GetListOfSkills
-    UnitClassToken = self.old_UnitClassToken
+
     CP.Calc.Init()
     CP.DB.Release()
 end

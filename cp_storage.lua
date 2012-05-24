@@ -57,14 +57,14 @@ function Storage.SaveItems(name)
     CP_Storage[name]={}
     CP.Utils.TableCopy(CP.Items,CP_Storage[name])
 
-    CP.UpdateTitle()
+    CP.UpdateFrameTitle()
 end
 
 function Storage.SaveSuggestion()
-    local name = UnitName("player")
+    local name = CP.Unit.name
     local i = 1
     while CP_Storage[name] do
-        name = UnitName("player").."_"..i
+        name = CP.Unit.name.."_"..i
         i = i +1
     end
 
@@ -78,7 +78,7 @@ function Storage.LoadItems(name)
     CP.Utils.TableCopy(CP_Storage[name], CP.Items)
     Storage.ItemVersionUpdate()
 
-    CP.UpdateTitle()
+    CP.UpdateFrameTitle()
     CP.UpdateEquipment()
 end
 

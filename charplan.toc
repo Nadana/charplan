@@ -9,6 +9,7 @@ cp_pimpme.lua
 cp_statsearch.lua
 cp_search.lua
 cp_storage.lua
+cp_unit.lua
 cp_utils.lua
 
 charplan.xml

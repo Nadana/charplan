@@ -423,15 +423,26 @@ local function ApplyBonus(stats, effect)
     end
 end
 
-function  TestCP_CalcFull:DoFullCharCheck(info)
-
-    -- data prepase
+local function LoadStoredData(info)
     TestCP_CalcFull.cur_data = info
 
     CP.Items={}
     for _,item in pairs(info.item_links) do
         CP.ApplyLinkItem(item,nil,true)
     end
+
+    CP.Unit.title_id = info.title
+    CP.Unit.title_count = info.title_count
+    CP.Unit.level = info.level
+    CP.Unit.sec_level = sec_level
+    CP.Unit.class = info.class
+    CP.Unit.sec_class = info.sec_class
+end
+
+function  TestCP_CalcFull:DoFullCharCheck(info)
+
+    -- data prepase
+    LoadStoredData(info)
 
     CP.Calc.Init()
 
@@ -448,23 +459,6 @@ function  TestCP_CalcFull:DoFullCharCheck(info)
     TestCP_Calc:CompareStats(values, info.result,nil,0.9) -- TODO: tolerance (last value) should be 0
 end
 
-function TestCP_CalcFull.HOOKED_GetCurrentTitle()
-    return TestCP_CalcFull.cur_data.title
-end
-
-function TestCP_CalcFull.HOOKED_GetArchievementCount()
-    return TestCP_CalcFull.cur_data.title_count or 0
-end
-
-function TestCP_CalcFull.HOOKED_UnitClassToken(unit)
-    return TestCP_CalcFull.cur_data.class
-end
-
-function TestCP_CalcFull.HOOKED_UnitLevel(unit)
-    return  TestCP_CalcFull.cur_data.level,
-            TestCP_CalcFull.cur_data.sec_level
-end
-
 function TestCP_CalcFull.HOOKED_GetListOfSkills()
     if TestCP_CalcFull.cur_data and TestCP_CalcFull.cur_data.skills then
         return TestCP_CalcFull.cur_data.skills
@@ -474,17 +468,7 @@ end
 
 function TestCP_CalcFull:classSetUp()
     self.old_data = CP.Utils.TableCopy(CP.Items)
-
-    self.old_GetCurrentTitle = GetCurrentTitle
-    GetCurrentTitle = TestCP_CalcFull.HOOKED_GetCurrentTitle
-    self.old_GetArchievementCount = CP.Calc.GetArchievementCount
-    CP.Calc.GetArchievementCount = TestCP_CalcFull.HOOKED_GetArchievementCount
-
-    self.old_UnitClassToken = UnitClassToken
-    UnitClassToken = TestCP_CalcFull.HOOKED_UnitClassToken
-
-    self.old_UnitLevel = UnitLevel
-    UnitLevel = TestCP_CalcFull.HOOKED_UnitLevel
+    self.old_unit = CP.Utils.TableCopy(CP.Unit)
 
     self.old_GetListOfSkills = CP.Calc.GetListOfSkills
     CP.Calc.GetListOfSkills = TestCP_CalcFull.HOOKED_GetListOfSkills
@@ -493,11 +477,11 @@ function TestCP_CalcFull:classSetUp()
 end
 
 function TestCP_CalcFull:classTearDown()
-    GetCurrentTitle = self.old_GetCurrentTitle
-    CP.Calc.GetArchievementCount = self.old_GetArchievementCount
-    UnitClassToken = self.old_UnitClassToken
-    UnitLevel = self.old_UnitLevel
+
     CP.Calc.GetListOfSkills = self.old_GetListOfSkills
+
+    CP.Utils.TableCopy(self.old_unit, CP.Unit)
+
     CP.Items = self.old_data
     CP.Calc.Init()
     CP.DB.Release()
