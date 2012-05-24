@@ -287,43 +287,6 @@ function CP.UpdatePoints()
     end
 end
 
-function CP.ShareAllEnchancements(item_data)
-  CP.ShareEnchancements(item_data, true, true, true)
-end
-
-function CP.ShareEnchancements(item_data, sharePlus, shareStats, shareRunes)
-  assert(item_data ~= nil)
-  -- for items in CP do: merge item data
-  -- 1. don't share from weapons
-  -- 2. don't share to weapons
-  local from_weapon = CP.DB.IsWeapon(item_data.id)
-  for slot,item in pairs(CP.Items) do
-    local to_weapon = CP.DB.IsWeapon(slot)
-    if from_weapon == to_weapon then
-      if shareStats then
-        for i = 1,6 do
-          item.stats[i] = item_data.stats[i]
-        end
-      end
-      if shareRunes then
-        for i = 1,4 do
-          item.runes[i] = item_data.runes[i]
-        end
-        item.max_runes = CP.Pimp.UsedRunes(item)
-      end
-      if sharePlus then
-        item.plus = item_data.plus
-        item.tier = item_data.tier
-        item.dura = item_data.dura
-        item.max_dura = item_data.max_dura
-      end
-    end
-  end
-  CP.UpdateEquipment()
-end
-
-
-
 function CP.PimpStart(slot)
     local data = CP.Items[CPEquipButtonMenu.Slot]
     assert(data)

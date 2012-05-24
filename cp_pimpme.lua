@@ -145,10 +145,15 @@ function Pimp.StatName(id)
 end
 
 
-function Pimp.OnShow(this)
-    this:ResetFrameOrder()
+function Pimp.OnLoad(this)
+    UIPanelBackdropFrame_SetTexture( this, "Interface/Common/PanelCommonFrame", 256, 256 )
 
     CPPimpMeAttrDuraLabel:SetText(CP.L.PIMP_DURA)
+    CPPimpMeAttrCopyMenuBtn:SetText(CP.L.PIMP_COPY)
+end
+
+function Pimp.OnShow(this)
+    this:ResetFrameOrder()
 end
 
 function Pimp.OnHide(this)
@@ -256,8 +261,86 @@ function Pimp.OnMaxDura_Changed(this)
     Pimp.UpdateInfo()
 end
 
-function Pimp.ShareAllEnchancements()
-    CP.ShareAllEnchancements(Pimp.data)
+function Pimp.ShowCopyMenu()
+
+    local info
+
+    info = {}
+    info.text = CP.L.PIMP_COPY_TO_ALL
+    info.func = function() Pimp.CopyToAll(Pimp.data) end
+    UIDropDownMenu_AddButton( info, 1 )
+
+    for slot,item in pairs(CP.Items) do
+        if item then
+            info = {}
+            info.text = item.name
+            info.checked = Pimp.CompareItemEnchancement(Pimp.data, item)
+            info.keepShownOnClick = 1
+            info.func = function() Pimp.CopyItemEnchancement(Pimp.data, item) end
+            UIDropDownMenu_AddButton( info, 1 )
+        end
+    end
+
+end
+
+function Pimp.CopyToAll(item_data)
+    for slot,item in pairs(CP.Items) do
+        if item then
+            Pimp.CopyItemEnchancement(item_data, item)
+        end
+    end
+end
+
+function Pimp.CopyItemEnchancement(src_data, dest_data)
+
+    assert(src_data)
+    assert(dest_data)
+
+    local src_is_weapon = CP.DB.IsWeapon(src_data.id)
+    local dest_is_weapon = CP.DB.IsWeapon(dest_data.id)
+    if src_is_weapon~=dest_is_weapon then return end
+
+    for i = 1,6 do
+        dest_data.stats[i] = src_data.stats[i]
+    end
+
+    for i = 1,4 do
+        dest_data.runes[i] = src_data.runes[i]
+    end
+    dest_data.max_runes = CP.Pimp.UsedRunes(src_data)
+
+    dest_data.plus = src_data.plus
+    dest_data.tier = src_data.tier
+    dest_data.dura = src_data.dura
+    --dest_data.max_dura = src_data.max_dura
+
+    CP.UpdateEquipment()
+end
+
+function Pimp.CompareItemEnchancement(src_data, dest_data)
+
+    assert(src_data)
+    assert(dest_data)
+
+    local src_is_weapon = CP.DB.IsWeapon(src_data.id)
+    local dest_is_weapon = CP.DB.IsWeapon(dest_data.id)
+    if src_is_weapon~=dest_is_weapon then return false end
+
+    for i = 1,6 do
+        if dest_data.stats[i] ~= src_data.stats[i] then return false end
+    end
+
+    for i = 1,4 do
+        if dest_data.runes[i] ~= src_data.runes[i] then return false end
+    end
+
+    if  dest_data.plus ~= src_data.plus or
+        dest_data.tier ~= src_data.tier or
+        dest_data.dura ~= src_data.dura
+        --or dest_data.max_dura ~= src_data.max_dura
+        then return false end
+
+    return true
 end
 
 

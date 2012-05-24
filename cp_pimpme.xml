@@ -215,7 +215,7 @@
 						<Anchors><Anchor point="TOPLEFT" relativeTo="$parentRune3" relativePoint="BOTTOMLEFT" /></Anchors>
 					</Frame>
 					<Button name="$parentBtnOK" inherits="UIPanelButtonTemplate" text="OK">
-						<Size><AbsDimension x="60" y="24"></AbsDimension></Size>
+						<Size><AbsDimension x="70" y="24"></AbsDimension></Size>
 						<Anchors>
 							<Anchor point="BOTTOM"><Offset><AbsDimension x="-45" y="-10"></AbsDimension></Offset></Anchor>
 						</Anchors>
@@ -224,7 +224,7 @@
 						</Scripts>
 					</Button>
 					<Button name="$parentBtnCancel" inherits="UIPanelButtonTemplate" text="CANCEL">
-						<Size><AbsDimension x="60" y="24"></AbsDimension></Size>
+						<Size><AbsDimension x="70" y="24"></AbsDimension></Size>
 						<Anchors>
 							<Anchor point="BOTTOM"><Offset><AbsDimension x="55" y="-10"></AbsDimension></Offset></Anchor>
 						</Anchors>
@@ -232,25 +232,28 @@
 							<OnClick>CP.Pimp.OnCancel(this)</OnClick>
 						</Scripts>
 					</Button>
-					<Button name="$parentBtnShare" inherits="UIPanelButtonTemplate" text="Share">
-						<Size><AbsDimension x="60" y="24"></AbsDimension></Size>
+					<Button name="$parentCopyMenuBtn" inherits="UIPanelButtonTemplate">
+						<Size><AbsDimension x="120" y="24"></AbsDimension></Size>
 						<Anchors>
-							<Anchor point="BOTTOMLEFT" relativeTo="$parentBtnCancel" relativePoint="TOPLEFT"><Offset><AbsDimension x="0" y="-10"></AbsDimension></Offset></Anchor>
+							<Anchor point="BOTTOM"><Offset><AbsDimension x="0" y="-60"></AbsDimension></Offset></Anchor>
 						</Anchors>
 						<Scripts>
-							<OnClick>CP.Pimp.ShareAllEnchancements()</OnClick>
-							<OnEnter>
-								GameTooltip:SetOwner(this, "ANCHOR_TOPLEFT", -5, 0);
-								GameTooltip:SetText(CP.L.PIMP_SHARE_TIP);
-								GameTooltip:Show()
-							</OnEnter>
-							<OnLeave>GameTooltip:Hide()</OnLeave>
+							<OnClick>ToggleDropDownMenu(CPPimpMeAttrCopyMenu)</OnClick>
 						</Scripts>
 					</Button>
+					<Frame name="$parentCopyMenu" inherits="UIDropDownMenuTemplate">
+						<Anchors><Anchor point="TOP" relativeTo="$parentCopyMenuBtn">
+							<Offset><AbsDimension y="-4" x="-20"></AbsDimension></Offset></Anchor>
+						</Anchors>
+						<Scripts>
+							<OnLoad>UIDropDownMenu_Initialize(this, CP.Pimp.ShowCopyMenu, "MENU")</OnLoad>
+						</Scripts>
+					</Frame>
 				</Frames>
 			</Frame>
 		</Frames>
 		<Scripts>
+			<OnLoad>CP.Pimp.OnLoad(this)</OnLoad>
 			<OnShow>CP.Pimp.OnShow(this)</OnShow>
 			<OnHide>CP.Pimp.OnHide(this)</OnHide>
 		</Scripts>

@@ -32,8 +32,8 @@ CP.L ={
     PIMP_FILTER2 = "<Stat1>",
     PIMP_FILTER3 = "<Stat2>",
     PIMP_FILTER4 = "min",
-    PIMP_SHARE = "Kopieren",
-    PIMP_SHARE_TIP = "Kopiert dieses upgrade auf alle Gegenstände",
+    PIMP_COPY = "Kopieren nach…",
+    PIMP_COPY_TO_ALL = "… allen Gegenständen",
 
     SEARCH_TITLE = "Gegenstandssuche",
     SEARCH_BASE_STATS = "Dmg/Def",

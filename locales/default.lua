@@ -34,8 +34,8 @@ local default_text={
     PIMP_FILTER2 = "<Stat1>",
     PIMP_FILTER3 = "<Stat2>",
     PIMP_FILTER4 = "min",
-    PIMP_SHARE = "Share",
-    PIMP_SHARE_TIP = "Share this enchancements to all items",
+    PIMP_COPY = "Copy to…",
+    PIMP_COPY_TO_ALL = "… all items",
 
     SEARCH_TITLE = "Item search",
     SEARCH_NAME = C_NAME,
