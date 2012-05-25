@@ -75,9 +75,12 @@ end
 
 function TestCP_Calc:classSetUp()
 
-    self.old_unit = CP.Utils.TableCopy(CP.Unit)
+    self.old_unit={}
+    CP.Unit.Store(self.old_unit)
+
     CP.Unit.class = "WARDEN"
     CP.Unit.sec_class = nil
+
 
     self.old_GetListOfSkills = CP.Calc.GetListOfSkills
     CP.Calc.GetListOfSkills = TestCP_Calc.HOOKED_GetListOfSkills
@@ -87,7 +90,8 @@ end
 
 function TestCP_Calc:classTearDown()
 
-    CP.Utils.TableCopy(self.old_unit, CP.Unit)
+    CP.Unit.Load(self.old_unit)
+
     CP.Calc.GetListOfSkills = self.old_GetListOfSkills
 
     CP.Calc.Init()

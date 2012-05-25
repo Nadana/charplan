@@ -31,6 +31,26 @@ function Unit.ReadCurrent()
     Unit.class, Unit.sec_class=UnitClassToken("player")
 end
 
+function Unit.Store(data_tab)
+    data_tab.name = Unit.name
+    data_tab.title_id = Unit.title
+    data_tab.title_count = Unit.title_count
+    data_tab.level = Unit.level
+    data_tab.sec_level = Unit.sec_level
+    data_tab.class = Unit.class
+    data_tab.sec_class = Unit.sec_class
+end
+
+function Unit.Load(data_tab)
+    Unit.name = data_tab.name
+    Unit.title_id = data_tab.title
+    Unit.title_count = data_tab.title_count or 0
+    Unit.level = data_tab.level
+    Unit.sec_level = data_tab.sec_level
+    Unit.class = data_tab.class
+    Unit.sec_class = data_tab.sec_class
+end
+
 function Unit.GetCurrentTitle()
     if Unit.title_id==0 then return 0,C_TITLE_NIL end
 

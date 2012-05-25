@@ -128,15 +128,9 @@ function CP.SlashCMD_SnapShot()
     CP.Calc.ReadCards()
 
     CP_FullCharInfo = {}
-    CP_FullCharInfo.name= CP.Unit.name
-    CP_FullCharInfo.level = CP.Unit.level
-    CP_FullCharInfo.sec_level=CP.Unit.sec_level
-    CP_FullCharInfo.class = CP.Unit.class
-    CP_FullCharInfo.sec_class = CP.Unit.sec_class
+    CP.Unit.Store(CP_FullCharInfo)
     CP_FullCharInfo.bases=CP.Calc.GetBases()
     CP_FullCharInfo.cards=CP.Calc.GetCardBonus()
-    CP_FullCharInfo.title= CP.Unit.title_id
-    CP_FullCharInfo.title_count= CP.Unit.title_count
     CP_FullCharInfo.item_links=GetCurrentCPItems()
     CP_FullCharInfo.skills=CP.Calc.GetListOfSkills()
 

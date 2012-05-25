@@ -431,12 +431,7 @@ local function LoadStoredData(info)
         CP.ApplyLinkItem(item,nil,true)
     end
 
-    CP.Unit.title_id = info.title
-    CP.Unit.title_count = info.title_count
-    CP.Unit.level = info.level
-    CP.Unit.sec_level = sec_level
-    CP.Unit.class = info.class
-    CP.Unit.sec_class = info.sec_class
+    CP.Unit.Load(info)
 end
 
 function  TestCP_CalcFull:DoFullCharCheck(info)
@@ -468,7 +463,8 @@ end
 
 function TestCP_CalcFull:classSetUp()
     self.old_data = CP.Utils.TableCopy(CP.Items)
-    self.old_unit = CP.Utils.TableCopy(CP.Unit)
+    self.old_unit={}
+    CP.Unit.Store(self.old_unit)
 
     self.old_GetListOfSkills = CP.Calc.GetListOfSkills
     CP.Calc.GetListOfSkills = TestCP_CalcFull.HOOKED_GetListOfSkills
@@ -480,7 +476,7 @@ function TestCP_CalcFull:classTearDown()
 
     CP.Calc.GetListOfSkills = self.old_GetListOfSkills
 
-    CP.Utils.TableCopy(self.old_unit, CP.Unit)
+    CP.Unit.Load(self.old_unit)
 
     CP.Items = self.old_data
     CP.Calc.Init()

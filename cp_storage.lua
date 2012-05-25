@@ -56,6 +56,7 @@ function Storage.SaveItems(name)
     Storage.LoadedItems = name
     CP_Storage[name]={}
     CP.Utils.TableCopy(CP.Items,CP_Storage[name])
+    CP.Unit.Store(CP_Storage[name])
 
     CP.UpdateFrameTitle()
 end
@@ -71,25 +72,33 @@ function Storage.SaveSuggestion()
     return name
 end
 
-function Storage.LoadItems(name)
-    assert(CP_Storage[name])
 
-    Storage.LoadedItems = name
-    CP.Utils.TableCopy(CP_Storage[name], CP.Items)
-    Storage.ItemVersionUpdate()
-
-    CP.UpdateFrameTitle()
-    CP.UpdateEquipment()
-end
-
-function Storage.ItemVersionUpdate()
+function StoreageVersionUpdate()
     for _,data in pairs(CP.Items) do
         if data.rune_slots then
             data.max_runes = data.rune_slots
             data.rune_slots=nil
         end
     end
+
+    if not CP.Unit.name then
+        CP.Unit.ReadCurrent()
+    end
 end
+
+function Storage.LoadItems(name)
+    assert(CP_Storage[name])
+
+    Storage.LoadedItems = name
+    CP.Utils.TableCopy(CP_Storage[name], CP.Items)
+    CP.Unit.Load(CP_Storage[name])
+    StoreageVersionUpdate()
+
+    CP.UpdateFrameTitle()
+    CP.UpdateEquipment()
+end
+
+
 
 function Storage.DeleteItems(name)
     assert(CP_Storage[name])
