@@ -52,8 +52,6 @@ function Unit.Load(data_tab)
 end
 
 function Unit.GetCurrentTitle()
-    if Unit.title_id==0 then return 0,C_TITLE_NIL end
-
     local count = GetTitleCount()
 	for i = 1 , count do
         local name,id = GetTitleInfoByIndex( i - 1 )
@@ -61,6 +59,12 @@ function Unit.GetCurrentTitle()
             return id,name
         end
     end
+
+    if Unit.title_id~=0 then
+        CP.Debug("title not found: id="..tostring(Unit.title_id))
+    end
+
+    return 0,C_TITLE_NIL
 end
 
 function Unit.Init(this)
