@@ -11,10 +11,6 @@ $log.level = Logger::WARN
 #$log.level = Logger::INFO
 $log.formatter = proc { |severity, datetime, progname, msg|  "#{severity}: #{msg}\n" }
 
-
-# Pathes
-$temp_path=File.join(ENV['TEMP'], 'rom/')  # will be deleted !
-
 MAX_LEVEL = 75
 $log.info("max level is: #{MAX_LEVEL}")
 
@@ -257,7 +253,7 @@ class Images
     attr_accessor :used
 
     def Load
-        base_dir = $temp_path+"data/"
+        base_dir = TempPath()
         base_dir = Extract("data\\","imageobject.db",{:fdb_filter=>"data.fdb"})  unless File.exists?(base_dir+"imageobject.db.csv")
 
         if CHECK_IF_FILE_EXISTS then
@@ -281,7 +277,7 @@ class Images
                 next if filename=~/\/$/ # rom bug? icon is a directory
 
                 if CHECK_IF_FILE_EXISTS then
-                    if not ImageExists?($temp_path+filename) then
+                    if not ImageExists?(TempPath()+filename) then
                         $log << "Image #{id}: file not exists: #{filename}\n"
                         # p "file not exists: "+filename
                         next
@@ -439,7 +435,7 @@ class Table
         filename = self::FILENAME if filename.nil?
 
         if update
-            base_dir = $temp_path+"data\\"
+            base_dir = TempPath()+"data\\"
             base_dir = Extract("data\\","#{filename}.db",{:fdb_filter=>"data.fdb"})  unless File.exists?(base_dir+"#{filename}.db.csv")
         else
             base_dir = ''

@@ -10,8 +10,13 @@ require 'win32/registry'
 require "Win32API"
 
 # Tools
-$fdb_ex="e:/Projekte/fdb_ex2/bin/FDB_ex2.exe " # ask McBen for it :)
-$lua="e:/Tools/lua/lua5.1.exe " # www.lua.org
+$fdb_ex="e:/Projekte/fdb_ex2/bin/FDB_ex2.exe " # http://github.com/McBen/FDB_Extractor2
+$lua="e:/Tools/lua/lua5.1.exe " # http://www.lua.org
+
+###############
+def TempPath()
+    return File.join(ENV['TEMP'], 'rom/')
+end
 
 ###############
 def LUA_Execute(script)
@@ -24,8 +29,8 @@ end
 def Extract(path, filter="", options=Hash.new)
 
     # prepare options
-    temp_path = options.fetch(:export_path,$temp_path)
-    raise "requires '$temp_path' or option:export_path" if temp_path.nil? || temp_path.empty?
+    temp_path = options.fetch(:export_path,TempPath())
+    raise "export_path is invalid" if TempPath().nil? || TempPath().empty?
 
     fdb_filters = options.fetch(:fdb_filter,"*.fdb")
 
@@ -56,7 +61,7 @@ end
 ###############
 def GetStringList(lang)
     fname = "string_"+lang+".db"
-    base_dir = $temp_path+"data/"
+    base_dir = TempPath()+"data/"
     base_dir = Extract("data\\",fname,{:fdb_filter=>"data.fdb"}) unless File.exists?(base_dir+fname)
     return ParseConfig.new(base_dir+fname)
 end
@@ -120,7 +125,7 @@ end
 def CheckTempPath()
     version = ""
     begin
-        open($temp_path+"version","rt")  {|f| version=f.gets }
+        open(TempPath()+"version","rt")  {|f| version=f.gets }
     rescue
     end
 
@@ -128,9 +133,9 @@ def CheckTempPath()
 
     if game_version.to_s != version then
         p "removing old temp files"
-        FileUtils.rm_rf $temp_path
+        FileUtils.rm_rf TempPath()
     end
 
-    FileUtils.mkdir_p($temp_path)
-    open($temp_path+"version","wt+")  {|f| f << game_version }
+    FileUtils.mkdir_p(TempPath())
+    open(TempPath()+"version","wt+")  {|f| f << game_version }
 end
