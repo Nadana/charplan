@@ -273,7 +273,7 @@ function Pimp.ShowCopyMenu()
     for slot,item in pairs(CP.Items) do
         if item then
             info = {}
-            info.text = item.name
+            info.text = CP.DB.GetItemName(item.id)
             info.checked = Pimp.CompareItemEnchancement(Pimp.data, item)
             info.keepShownOnClick = 1
             info.func = function() Pimp.CopyItemEnchancement(Pimp.data, item) end
