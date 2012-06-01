@@ -406,16 +406,47 @@ function Pimp.StatName_Tab(this)
     local id = this:GetParent():GetID()
     if IsShiftKeyDown() then
         id = id-1
-        if id<1 then id=10 end
+        if id<1 then
+            if CPPimpMeAttrMaxDura:IsEnable() then
+                _G["CPPimpMeAttrMaxDura"]:SetFocus()
+            else
+                _G["CPPimpMeAttrDura"]:SetFocus()
+            end
+            return
+        end
     else
         id = id+1
-        if id>10 then id=1 end
+        if id>10 then
+            this:ClearFocus()
+            return
+        end
     end
 
     if id<7 then
         _G["CPPimpMeAttrStat"..id.."Name"]:SetFocus()
     else
         _G["CPPimpMeAttrRune"..(id-6).."Name"]:SetFocus()
+    end
+end
+
+function Pimp.OnDura_TabClick(this)
+    if IsShiftKeyDown() then
+        this:ClearFocus()
+        return
+    end
+
+    if CPPimpMeAttrMaxDura:IsEnable() then
+        _G["CPPimpMeAttrMaxDura"]:SetFocus()
+    else
+        _G["CPPimpMeAttrStat1Name"]:SetFocus()
+    end
+end
+
+function Pimp.OnMaxDura_TabClick(this)
+    if IsShiftKeyDown() then
+        _G["CPPimpMeAttrDura"]:SetFocus()
+    else
+        _G["CPPimpMeAttrStat1Name"]:SetFocus()
     end
 end
 

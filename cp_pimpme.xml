@@ -163,6 +163,7 @@
 							</Anchor>
 						</Anchors>
 						<Scripts>
+							<OnTabPressed>CP.Pimp.OnDura_TabClick(this)</OnTabPressed>
 							<OnTextChanged>CP.Pimp.OnDura_Changed(this)</OnTextChanged>
 						</Scripts>
 						<TextInsets><AbsInset top="8" right="4" left="4" bottom="0"></AbsInset></TextInsets>
@@ -176,6 +177,7 @@
 							</Anchor>
 						</Anchors>
 						<Scripts>
+							<OnTabPressed>CP.Pimp.OnMaxDura_TabClick(this)</OnTabPressed>
 							<OnTextChanged>CP.Pimp.OnMaxDura_Changed(this)</OnTextChanged>
 						</Scripts>
 						<TextInsets><AbsInset top="8" right="4" left="4" bottom="0"></AbsInset></TextInsets>
