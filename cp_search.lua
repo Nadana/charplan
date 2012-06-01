@@ -291,7 +291,7 @@ local function GetFilterInfo()
     info.name = CPSearchFilterName:GetText()
     info.level_min = tonumber(CPSearchFilterLevelMin:GetText())
     info.level_max = tonumber(CPSearchFilterLevelMax:GetText())
-    if info.level_min>info.level_max then
+    if info.level_min and info.level_max and info.level_min>info.level_max then
         info.level_min,info.level_max = info.level_max,info.level_min
     end
     info.no_empty_items = CPSearchFilterStatLess:IsChecked()
