@@ -489,7 +489,7 @@ function Pimp.GenerateLink(item_data, prefix)
         item_data.runes[2],
         item_data.runes[3],
         item_data.runes[4],
-        item_data.dura*100
+        math.min(item_data.dura,9999999)*100
     }
 
     data[12] = CP.Utils.CalculateItemLinkHash(data)

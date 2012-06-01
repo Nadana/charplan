@@ -154,7 +154,7 @@
 								<Offset><AbsDimension x="0" y="6"/></Offset></Anchor>
 						</Anchors>
 					</Frame>
-					<EditBox name="$parentDura" inherits="UIPanelEditBoxTemplate" numeric="true">
+					<EditBox name="$parentDura" inherits="UIPanelEditBoxTemplate" numeric="true" letters="3">
 						<Size>
 							<AbsDimension x="40" y="32"/>
 						</Size>
@@ -167,7 +167,7 @@
 						</Scripts>
 						<TextInsets><AbsInset top="8" right="4" left="4" bottom="0"></AbsInset></TextInsets>
 					</EditBox>
-					<EditBox name="$parentMaxDura" inherits="UIPanelEditBoxTemplate" numeric="true">
+					<EditBox name="$parentMaxDura" inherits="UIPanelEditBoxTemplate" numeric="true" letters="3">
 						<Size>
 							<AbsDimension x="40" y="32"/>
 						</Size>
