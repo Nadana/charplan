@@ -528,9 +528,24 @@ function DB.GetBonusInfo(id)
     return name, lvl, grp
 end
 
+function ReplaceNumbersWithRomans(text,cur_level)
+
+    local level = tonumber(string.match(text,".*[^%d](%d+)%s*$"))
+    if level then
+        local match_canidate = string.gsub(text, "^(.*[^%d])%d+%s*$","%1")
+        text = match_canidate..CP.Utils.ToRoman(level):lower()
+
+        return  text, "^"..match_canidate, level
+    end
+
+    return text, "^"..text,cur_level
+end
+
 function DB.FindBonus(text, cur_level, is_rune)
 
     text = text:lower()
+
+    text,match_canidate,cur_level = ReplaceNumbersWithRomans(text,cur_level)
 
     local good_match = nil
     local good_match_name = nil
@@ -543,7 +558,7 @@ function DB.FindBonus(text, cur_level, is_rune)
 
             if text==fulltext then
                 return id
-            elseif string.find(fulltext, "^"..text) then
+            elseif string.find(fulltext, match_canidate) then
                 if lvl == cur_level then
                     return id
                 else
