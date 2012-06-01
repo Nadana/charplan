@@ -70,6 +70,25 @@ function Search.OnHide()
     Search.Items=nil
 end
 
+function Search.OnTab(this)
+    local tab_order={"CPSearchFilterName","CPSearchFilterLevelMin","CPSearchFilterLevelMax"}
+
+    local idx
+    for i,name in ipairs(tab_order) do if this:GetName()==name then idx=i break end end
+
+    if idx then
+        if IsShiftKeyDown() then
+            idx = idx-1
+            if idx<1 then idx = #tab_order end
+        else
+            idx = idx+1
+            if idx>#tab_order then idx=1 end
+        end
+
+        _G[tab_order[idx]]:SetFocus()
+    end
+end
+
 function Search.FilterTypeMenu_OnLoad(this)
     Search.ClearSettings()
 
@@ -272,6 +291,9 @@ local function GetFilterInfo()
     info.name = CPSearchFilterName:GetText()
     info.level_min = tonumber(CPSearchFilterLevelMin:GetText())
     info.level_max = tonumber(CPSearchFilterLevelMax:GetText())
+    if info.level_min>info.level_max then
+        info.level_min,info.level_max = info.level_max,info.level_min
+    end
     info.no_empty_items = CPSearchFilterStatLess:IsChecked()
     info.itemset_only = CPSearchFilterSets:IsChecked()
     info.rarity = Search.rarity

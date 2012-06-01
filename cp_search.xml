@@ -194,24 +194,30 @@
 						<Offset><AbsDimension x="190" y="45" /></Offset></Anchor>
 				</Anchors>
 				<Scripts>
+					<OnEnterPressed>CP.Search.OnTab(this)</OnEnterPressed>
+					<OnTabPressed>CP.Search.OnTab(this)</OnTabPressed>
 					<OnTextChanged>CP.Search.FindItems()</OnTextChanged>
 				</Scripts>
 			</EditBox>
-		    <EditBox name="$parentFilterLevelMin" inherits="UIPanelEditBoxTemplate" numeric="true">
+		    <EditBox name="$parentFilterLevelMin" inherits="UIPanelEditBoxTemplate" numeric="true" letters="2">
 				<Size><AbsDimension x="40" y="20"/></Size>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativePoint="TOPLEFT"><Offset><AbsDimension x="200" y="65" /></Offset></Anchor>
 				</Anchors>
 				<Scripts>
+					<OnEnterPressed>CP.Search.OnTab(this)</OnEnterPressed>
+					<OnTabPressed>CP.Search.OnTab(this)</OnTabPressed>
 					<OnTextChanged>CP.Search.FindItems()</OnTextChanged>
 				</Scripts>
 			</EditBox>
-		    <EditBox name="$parentFilterLevelMax" inherits="UIPanelEditBoxTemplate" numeric="true">
+		    <EditBox name="$parentFilterLevelMax" inherits="UIPanelEditBoxTemplate" numeric="true" letters="2">
 				<Size><AbsDimension x="40" y="20"/></Size>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentFilterLevelMin" relativePoint="TOPRIGHT"><Offset><AbsDimension x="12" y="0" /></Offset></Anchor>
 				</Anchors>
 				<Scripts>
+					<OnEnterPressed>CP.Search.OnTab(this)</OnEnterPressed>
+					<OnTabPressed>CP.Search.OnTab(this)</OnTabPressed>
 					<OnTextChanged>CP.Search.FindItems()</OnTextChanged>
 				</Scripts>
 			</EditBox>
