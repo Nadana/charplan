@@ -12,7 +12,11 @@ $log.level = Logger::WARN
 $log.formatter = proc { |severity, datetime, progname, msg|  "#{severity}: #{msg}\n" }
 
 MAX_LEVEL = 75
-$log.info("max level is: #{MAX_LEVEL}")
+MAX_RARE = [0,1,2,3,4,5,8]
+$log << "FILTER RULES:\n"
+$log << "max level is: #{MAX_LEVEL}\n"
+$log << "max rariry is: #{MAX_RARE.to_s}\n"
+$log << "\n"
 
 $STATLIST={# SYS_WEAREQTYPE_xxx
     0 => "Keine Wirkung.",
@@ -507,6 +511,7 @@ class ItemEntry < Table
         @isfixdurable = csv_row['isfixdurable'].to_i
         @runeslots = csv_row['holebase'].to_i      #### looks like max holes?
         @runeminlvl = csv_row['runelimetlv'].to_i  #### minimum rune level ?
+        @rare = csv_row['rare'].to_i
 
         @bonus = BonusStuff.new(csv_row)
         @base_stats = StatsStuff.new(csv_row)
@@ -526,6 +531,11 @@ class ItemEntry < Table
         name = $de.get_value("\"Sys#{@id}_name\"")
         if (name=="" or name==nil or name=~/^Sys\d+_name$/) then
             $log.info("Item #{@id}: has no name")
+            return true
+        end
+
+        if MAX_RARE.index(@rare).nil? then
+            $log.info("Item #{@id}: has rarity #{@rare}")
             return true
         end
 

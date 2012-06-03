@@ -261,20 +261,21 @@ function Search.FilterRarityMenu_OnShow(button)
 	info.func = Search.FilterRarityMenu_OnClicked
 	UIDropDownMenu_AddButton(info)
 
-	for i = 0, 10 do
+	for i = 0, 5 do
 		info = {}
-        if i>0 and i<6 then
-            info.text = TEXT("ITEM_QUALITY"..i.."_DESC")
-        elseif i==8 then
-            info.text = TEXT("ACCOUNT_SHOP")
-        else
-            info.text = TEXT("UNUSUAL_LV"..i)
-        end
+        info.text = TEXT("ITEM_QUALITY"..i.."_DESC")
         info.textR, info.textG, info.textB = GetItemQualityColor(i)
 		info.func = Search.FilterRarityMenu_OnClicked
         info.value=i
 		UIDropDownMenu_AddButton(info)
 	end
+
+    info = {}
+    info.text = TEXT("ACCOUNT_SHOP")
+    info.textR, info.textG, info.textB = GetItemQualityColor(8)
+    info.func = Search.FilterRarityMenu_OnClicked
+    info.value=8
+    UIDropDownMenu_AddButton(info)
 end
 
 function Search.FilterRarityMenu_OnClicked(button)

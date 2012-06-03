@@ -1392,7 +1392,6 @@ return {
   [576778]="hm_male_hand_69_mob-kleeon-cloth-02",
   [576777]="hm_male_torso_69_mob-kleeon-cloth-02",
   [576720]="eq_back_c040_004",
-  [576754]="mana stone10",
   [570413]="eq_torso-robe040-03",
   [570630]="eq_hand-leather060-01",
   [570615]="eq_head-leather070-01",
