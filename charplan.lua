@@ -86,6 +86,11 @@ function CP.OnShow(this)
     CP.ModelShow()
 
 	CP.PlayerTitle()
+
+    local att=CP.Calc.STATS
+    for id,frame in pairs(CP.AttributeFields) do
+        assert(att[id], "stat:"..id.." not defined "..frame:GetName())
+    end
 end
 
 function CP.PlayerTitle()
@@ -260,12 +265,29 @@ function CP.UpdatePoints()
 
     CP.Stats = CP.Calc.Calculate()
 
-    local att=CP.Calc.STATS
 
     for id,frame in pairs(CP.AttributeFields) do
-        ctrl = _G[frame:GetName().."Value"]
-        assert(att[id], "stat:"..id.." not defined "..frame:GetName())
-        ctrl:SetText(math.floor(CP.Stats[att[id]] or 0))
+        ctrl1 = _G[frame:GetName().."Value"]
+        ctrl1:SetText(math.floor(CP.Stats[id]))
+
+        ctrl2 = _G[frame:GetName().."DifValue"]
+        if CP.compare_stats then
+            local dif = CP.Stats[id]-CP.compare_stats[id]
+
+            if dif<0 then
+                ctrl2:SetText(math.floor(dif))
+                ctrl2:SetColor(1,0.2,0.2)
+                ctrl2:Show()
+            elseif dif>0 then
+                ctrl2:SetText("+"..math.floor(dif))
+                ctrl2:SetColor(0.0,0.9,0.0)
+                ctrl2:Show()
+            else
+                ctrl2:Hide()
+            end
+        else
+            ctrl2:Hide()
+        end
     end
 end
 
@@ -365,6 +387,12 @@ function CP.OnMenuShow(this)
         info.value="load"
         UIDropDownMenu_AddButton( info, 1 )
 
+        info = {notCheckable = 1, hasArrow = 1}
+        info.text = CP.L.MENU_COMPARE
+        info.disabled = (#save_list==0)
+        info.value="compare"
+        UIDropDownMenu_AddButton( info, 1 )
+
         info = {notCheckable = 1}
         info.text = CP.L.MENU_SAVE
         info.disabled = is_empty
@@ -400,12 +428,32 @@ function CP.OnMenuShow(this)
 
             if UIDROPDOWNMENU_MENU_VALUE=="load" then
                 info.func = function() CP.Storage.LoadItems(name) CloseDropDownMenus() end
+            elseif UIDROPDOWNMENU_MENU_VALUE=="compare" then
+                info.notCheckable=nil
+                if name==CP.compare_equipname then
+                    info.checked=1
+                    info.func = function() CP.CompareEquipClear() CloseDropDownMenus() end
+                else
+                    info.func = function() CP.CompareEquipSet(name) CloseDropDownMenus() end
+                end
             elseif UIDROPDOWNMENU_MENU_VALUE=="del" then
                 info.func = function() CP.Storage.DeleteItems(name) CloseDropDownMenus() end
             end
             UIDropDownMenu_AddButton( info, 2 )
         end
     end
+end
+
+function CP.CompareEquipClear(name)
+    CP.compare_equipname=nil
+    CP.compare_stats=nil
+    CP.UpdatePoints()
+end
+
+function CP.CompareEquipSet(name)
+    CP.compare_equipname=name
+    CP.compare_stats=CP.Storage.CalcStatsOf(name)
+    CP.UpdatePoints()
 end
 
 function CP.Hooked_Hyperlink_Assign(link, key)

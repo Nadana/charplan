@@ -37,6 +37,16 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
+				<FontString name="$parentDifValue" inherits="NumberFontNormal" justifyH="RIGHT">
+					<Anchors>
+						<Anchor point="RIGHT">
+							<Offset>
+								<AbsDimension x="-40" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+					<Color r="1.0" g="0.3" b="0.3"/>
+				</FontString>
 			</Layer>
 		</Layers>
 		<Scripts>

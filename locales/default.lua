@@ -7,6 +7,7 @@ local default_text={
     MENU_LOAD= "Load Items",
     MENU_SAVE= "Save Items",
     MENU_SAVEAS= "Save Items as…",
+    MENU_COMPARE= "Compare stats",
     MENU_DEL= "Delete saved",
     MENU_CLEARALL = "Clear Items",
 

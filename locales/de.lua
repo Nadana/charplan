@@ -7,6 +7,7 @@ CP.L ={
     MENU_LOAD= "Ausrüstung laden",
     MENU_SAVE= "Ausrüstung speichern",
     MENU_SAVEAS= "Ausrüstung speichern unter...",
+    MENU_COMPARE= "Vergleichswerte",
     MENU_DEL= "Speicherstand löschen",
 	MENU_CLEARALL = "Ausrüstung leeren",
 

@@ -109,9 +109,22 @@ function Storage.DeleteItems(name)
     CP_Storage[name] = nil
 end
 
+function Storage.CalcStatsOf(name)
+    local temp_items = CP.Utils.TableCopy(CP.Items)
+    local temp_unit={}
+    CP.Unit.Store(temp_unit)
 
+    CP.Utils.TableCopy(CP_Storage[name], CP.Items)
+    CP.Items.unit=nil
+    CP.Unit.Load(CP_Storage[name].unit)
 
+    local res = CP.Calc.Calculate()
 
+    CP.Utils.TableCopy(temp_items, CP.Items)
+    CP.Unit.Load(temp_unit)
+
+    return res
+end
 -----------------------------------
 -- Inventory getter
 function Storage.LoadCurrentEquipment()
