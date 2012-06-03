@@ -34,6 +34,8 @@ CP.L ={
     PIMP_FILTER4 = "min",
     PIMP_COPY = "Kopieren nach…",
     PIMP_COPY_TO_ALL = "… allen Gegenständen",
+    PIMP_CLEAR = "Löschen",
+    PIMP_CLEAR_TIP = "benötigt Doppelklick",
 
     SEARCH_TITLE = "Gegenstandssuche",
     SEARCH_BASE_STATS = "Dmg/Def",

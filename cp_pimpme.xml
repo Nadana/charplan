@@ -234,10 +234,25 @@
 							<OnClick>CP.Pimp.OnCancel(this)</OnClick>
 						</Scripts>
 					</Button>
+					<Button name="$parentClearBtn" inherits="UIPanelButtonTemplate">
+						<Size><AbsDimension x="60" y="24"></AbsDimension></Size>
+						<Anchors>
+							<Anchor point="BOTTOM"><Offset><AbsDimension x="70" y="-90"></AbsDimension></Offset></Anchor>
+						</Anchors>
+						<Scripts>
+							<OnDoubleClick>CP.Pimp.OnClear()
+										GameTooltip:Hide()</OnDoubleClick>
+							<OnClick>GameTooltip:SetOwner(this, "ANCHOR_TOPLEFT", -5, 0)
+										GameTooltip:SetText(CP.L.PIMP_CLEAR_TIP)
+										GameTooltip:Show()
+							</OnClick>
+							<OnLeave>GameTooltip:Hide()</OnLeave>
+						</Scripts>
+					</Button>					
 					<Button name="$parentCopyMenuBtn" inherits="UIPanelButtonTemplate">
 						<Size><AbsDimension x="120" y="24"></AbsDimension></Size>
 						<Anchors>
-							<Anchor point="BOTTOM"><Offset><AbsDimension x="0" y="-60"></AbsDimension></Offset></Anchor>
+							<Anchor point="BOTTOM"><Offset><AbsDimension x="0" y="-55"></AbsDimension></Offset></Anchor>
 						</Anchors>
 						<Scripts>
 							<OnClick>ToggleDropDownMenu(CPPimpMeAttrCopyMenu)</OnClick>

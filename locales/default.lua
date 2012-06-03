@@ -36,6 +36,8 @@ local default_text={
     PIMP_FILTER4 = "min",
     PIMP_COPY = "Copy to…",
     PIMP_COPY_TO_ALL = "… all items",
+    PIMP_CLEAR = "Clear",
+    PIMP_CLEAR_TIP = "requires double click",
 
     SEARCH_TITLE = "Item search",
     SEARCH_NAME = C_NAME,

@@ -150,6 +150,7 @@ function Pimp.OnLoad(this)
 
     CPPimpMeAttrDuraLabel:SetText(CP.L.PIMP_DURA)
     CPPimpMeAttrCopyMenuBtn:SetText(CP.L.PIMP_COPY)
+    CPPimpMeAttrClearBtn:SetText(CP.L.PIMP_CLEAR)
 end
 
 function Pimp.OnShow(this)
@@ -173,6 +174,15 @@ end
 
 function Pimp.OnCancel(this)
     CPPimpMe:Hide()
+end
+
+function CP.Pimp.OnClear()
+    Pimp.data.dura = CP.DB.GetItemMaxDura(Pimp.data.id, Pimp.data.max_dura)
+    Pimp.data.plus = 0
+    Pimp.data.tier = 0
+    Pimp.data.stats={0,0,0,0,0,0}
+    Pimp.data.runes={0,0,0,0}
+    Pimp.FillFields()
 end
 
 function Pimp.OnCtrlLoad(this)
@@ -250,7 +260,10 @@ function Pimp.OnDura_Changed(this)
     local text = this:GetText()
     if not text or text=="" then return end
 
-    Pimp.data.dura=tonumber(text) or (Pimp.data.max_dura)
+    Pimp.data.dura=tonumber(text)
+    if not Pimp.data.dura then
+        Pimp.data.dura = CP.DB.GetItemMaxDura(Pimp.data.id, Pimp.data.max_dura)
+    end
     Pimp.UpdateInfo()
 end
 
