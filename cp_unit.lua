@@ -33,7 +33,7 @@ end
 
 function Unit.Store(data_tab)
     data_tab.name = Unit.name
-    data_tab.title_id = Unit.title
+    data_tab.title_id = Unit.title_id
     data_tab.title_count = Unit.title_count
     data_tab.level = Unit.level
     data_tab.sec_level = Unit.sec_level
@@ -43,7 +43,7 @@ end
 
 function Unit.Load(data_tab)
     Unit.name = data_tab.name
-    Unit.title_id = data_tab.title
+    Unit.title_id = data_tab.title_id
     Unit.title_count = data_tab.title_count or 0
     Unit.level = data_tab.level
     Unit.sec_level = data_tab.sec_level

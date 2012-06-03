@@ -56,7 +56,8 @@ function Storage.SaveItems(name)
     Storage.LoadedItems = name
     CP_Storage[name]={}
     CP.Utils.TableCopy(CP.Items,CP_Storage[name])
-    CP.Unit.Store(CP_Storage[name])
+    CP_Storage[name].unit={}
+    CP.Unit.Store(CP_Storage[name].unit)
 
     CP.UpdateFrameTitle()
 end
@@ -71,7 +72,6 @@ function Storage.SaveSuggestion()
 
     return name
 end
-
 
 function StoreageVersionUpdate()
     for _,data in pairs(CP.Items) do
@@ -91,14 +91,13 @@ function Storage.LoadItems(name)
 
     Storage.LoadedItems = name
     CP.Utils.TableCopy(CP_Storage[name], CP.Items)
-    CP.Unit.Load(CP_Storage[name])
+    CP.Items.unit=nil
+    CP.Unit.Load(CP_Storage[name].unit)
     StoreageVersionUpdate()
 
     CP.UpdateFrameTitle()
     CP.UpdateEquipment()
 end
-
-
 
 function Storage.DeleteItems(name)
     assert(CP_Storage[name])
