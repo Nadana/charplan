@@ -49,7 +49,6 @@ function Search.ShowSearch(slot_id, item_id)
     if Search.slot then
         text = TEXT(string.format("SYS_EQWEARPOS_%02i",slot_id))
     end
-
     UIDropDownMenu_SetText(CPSearchFilterSlot,text)
 
     Search.FindItems()

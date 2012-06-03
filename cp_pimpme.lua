@@ -275,25 +275,26 @@ function Pimp.OnMaxDura_Changed(this)
 end
 
 function Pimp.ShowCopyMenu()
+    Pimp.FillCopyMenu(1, Pimp.data)
+end
 
-    local info
+function Pimp.FillCopyMenu(level, src_item)
 
-    info = {}
+    local info = {}
     info.text = CP.L.PIMP_COPY_TO_ALL
-    info.func = function() Pimp.CopyToAll(Pimp.data) end
-    UIDropDownMenu_AddButton( info, 1 )
+    info.func = function() Pimp.CopyToAll(src_item) end
+    UIDropDownMenu_AddButton( info, level )
 
     for slot,item in pairs(CP.Items) do
         if item then
             info = {}
             info.text = CP.DB.GetItemName(item.id)
-            info.checked = Pimp.CompareItemEnchancement(Pimp.data, item)
+            info.checked = Pimp.CompareItemEnchancement(src_item, item)
             info.keepShownOnClick = 1
-            info.func = function() Pimp.CopyItemEnchancement(Pimp.data, item) end
-            UIDropDownMenu_AddButton( info, 1 )
+            info.func = function() Pimp.CopyItemEnchancement(src_item, item) end
+            UIDropDownMenu_AddButton( info, level )
         end
     end
-
 end
 
 function Pimp.CopyToAll(item_data)

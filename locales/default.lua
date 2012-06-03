@@ -17,7 +17,7 @@ local default_text={
     CONTEXT_MENU = "Add to plan",
     CONTEXT_PIMPME= "Pimp: %s",
     CONTEXT_SEARCH= "Search",
-    CONTEXT_SHARE = "Share to all equip",
+    CONTEXT_SHARE = "Copy stats to…",
     CONTEXT_CLEAR = "Clear",
 
     ERROR_NOSLOT = "A free Bag Slot is needed to import your current equipment!",

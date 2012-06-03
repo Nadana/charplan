@@ -595,15 +595,20 @@ function CP.EquipItem_ShowMenu( this )
 
         if data and not CP.DB.IsWeapon(CPEquipButtonMenu.Slot) then
           info.text = CP.L.CONTEXT_SHARE
-          info.func = function() CP.ShareAllEnchancements(data) end
+          info.hasArrow = true
           UIDropDownMenu_AddButton(info)
+
+          info.hasArrow = nil
         end
 
         info.text = CP.L.CONTEXT_CLEAR
         info.func = function() CP.ClearItem(CPEquipButtonMenu.Slot) end
         UIDropDownMenu_AddButton(info)
-    end
 
+    elseif( UIDROPDOWNMENU_MENU_LEVEL == 2 ) then
+        local data = CP.Items[CPEquipButtonMenu.Slot]
+        CP.Pimp.FillCopyMenu(2, data)
+    end
 end
 
 -----------------------------------

@@ -17,7 +17,7 @@ CP.L ={
     CONTEXT_MENU = "Zum Plan hinzufügen",
     CONTEXT_PIMPME= "Pimp: %s",
     CONTEXT_SEARCH= "Suche",
-    CONTEXT_SHARE = "Kopiere zu allen Gegenst.",
+    CONTEXT_SHARE = "Kopiere Werte zu…",
     CONTEXT_CLEAR = "Leeren",
 
     ERROR_NOSLOT = "Ein freier Rucksack platz wird für das Importieren benötigt.",
@@ -32,7 +32,7 @@ CP.L ={
     PIMP_FILTER2 = "<Stat1>",
     PIMP_FILTER3 = "<Stat2>",
     PIMP_FILTER4 = "min",
-    PIMP_COPY = "Kopieren nach…",
+    PIMP_COPY = "Kopiere zu…",
     PIMP_COPY_TO_ALL = "… allen Gegenständen",
     PIMP_CLEAR = "Löschen",
     PIMP_CLEAR_TIP = "benötigt Doppelklick",
