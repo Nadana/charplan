@@ -176,7 +176,7 @@ function Pimp.OnCancel(this)
     CPPimpMe:Hide()
 end
 
-function CP.Pimp.OnClear()
+function Pimp.OnClear()
     Pimp.data.dura = CP.DB.GetItemMaxDura(Pimp.data.id, Pimp.data.max_dura)
     Pimp.data.plus = 0
     Pimp.data.tier = 0
@@ -325,9 +325,24 @@ function Pimp.CopyItemEnchancement(src_data, dest_data)
     dest_data.plus = src_data.plus
     dest_data.tier = src_data.tier
     dest_data.dura = src_data.dura
-    --dest_data.max_dura = src_data.max_dura
 
     CP.UpdateEquipment()
+end
+
+function Pimp.IsItemPimped(item)
+
+    if item.plus~=0 then return true end
+    if item.tier~=0 then return true end
+
+    for i = 1,6 do
+        if item.stats[i]~=0 then return true end
+    end
+
+    for i = 1,4 do
+        if item.runes[i]~=0 then return true end
+    end
+
+    if item.dura> CP.DB.GetItemMaxDura(item.id, item.max_dura) then return true end
 end
 
 function Pimp.CompareItemEnchancement(src_data, dest_data)

@@ -185,6 +185,11 @@ function CP.ApplyItem(item_data, inv_slot, hidden)
         if inv_slot==16 then inv_slot=15 end
     end
 
+    local old_data = CP.Items[inv_slot]
+    if old_data and CP.Pimp.IsItemPimped(old_data) and not CP.Pimp.IsItemPimped(item_data) then
+        CP.Pimp.CopyItemEnchancement(CP.Items[inv_slot], item_data)
+    end
+
     CP.Items[inv_slot] = item_data
 
     if not hidden then
