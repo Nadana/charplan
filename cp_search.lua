@@ -507,20 +507,22 @@ function Search.UpdateItem(base_name, item)
     end
     _G[base_name.."Effect"]:SetText(txt)
 
-    local txt=""
-    local txt2=""
+    local boni_txt={}
     local i=0
     for eff,value in pairs(boni) do
-        if i<3 then
-            txt = txt.."+"..value.." "..TEXT("SYS_WEAREQTYPE_"..eff).."\n"
-        else
-            txt2 = txt2.."+"..value.." "..TEXT("SYS_WEAREQTYPE_"..eff).."\n"
+        if value~=0 then
+            local idx = 1+math.floor(i/3)
+            local txt = "+"..value.." "..TEXT("SYS_WEAREQTYPE_"..eff)
+            if string.len(txt)>36 then
+                txt = string.sub(txt,1,35).."…"
+            end
+            boni_txt[idx] = (boni_txt[idx] or "")..txt.."\n"
+            i=i+1
         end
-        i=i+1
     end
 
-    _G[base_name.."Boni"]:SetText(txt)
-    _G[base_name.."Boni2"]:SetText(txt2)
+    _G[base_name.."Boni"]:SetText(boni_txt[1] or "")
+    _G[base_name.."Boni2"]:SetText(boni_txt[2] or "")
 end
 
 

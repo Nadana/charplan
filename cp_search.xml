@@ -1,7 +1,7 @@
 <Ui xmlns="http://www.runewaker.com/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.runewaker.com/ ../../worldxml/ui.xsd">
 	<Frame name="CPSearchItemTemplate" enableMouse="true" virtual="true">
 		<Size>
-			<AbsDimension x="630" y="34" />
+			<AbsDimension x="650" y="34" />
 		</Size>
 		<Layers>
 			<Layer>
@@ -16,7 +16,7 @@
 			</FontString>
 			<FontString name="$parentSet" inherits="GameFontNormal" justifyH="LEFT">
 					<Size>
-						<AbsDimension x="96" y="14"/>
+						<AbsDimension x="200" y="14"/>
 					</Size>
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="$parentName" relativePoint="BOTTOMLEFT">
@@ -40,7 +40,7 @@
 				<FontHeight><AbsValue val="12"></AbsValue></FontHeight>
 			</FontString>
 			<FontString name="$parentEffect" inherits="GameFontNormal" justifyH="LEFT">
-				<Size><AbsDimension x="90" y="34"/></Size>
+				<Size><AbsDimension x="75" y="34"/></Size>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentName" relativePoint="TOPRIGHT">
 						<Offset><AbsDimension x="30" y="0" /></Offset>
@@ -49,19 +49,17 @@
 				<FontHeight><AbsValue val="10"></AbsValue></FontHeight>
 			</FontString>
 			<FontString name="$parentBoni" inherits="GameFontGreen" justifyH="LEFT">
-				<Size>
-					<AbsDimension x="110" y="34"/>
-				</Size>
+				<Size><AbsDimension x="160" y="34"/></Size>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentEffect" relativePoint="TOPRIGHT" />
 				</Anchors>
 				<FontHeight><AbsValue val="10"></AbsValue></FontHeight>
 			</FontString>
 			<FontString name="$parentBoni2" inherits="GameFontGreen" justifyH="LEFT">
-				<Size><AbsDimension x="110" y="34"/></Size>
+				<Size><AbsDimension x="118" y="34"/></Size>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentBoni" relativePoint="TOPRIGHT" ><Offset>
-						<AbsDimension x="5" y="0"></AbsDimension></Offset></Anchor>
+						<AbsDimension x="2" y="0"></AbsDimension></Offset></Anchor>
 				</Anchors>
 				<FontHeight><AbsValue val="10"></AbsValue></FontHeight>
 			</FontString>
@@ -155,7 +153,7 @@
 
 	<Frame name="CPSearch" parent="CPFrame"  inherits="UICommonFrameTemplate">
 		<Size>
-			<AbsDimension x="660" y="550"/>
+			<AbsDimension x="680" y="550"/>
 		</Size>
 		<Anchors>
 			<Anchor point="TOPLEFT" relativePoint="TOP" >
@@ -332,7 +330,7 @@
 			<!-- item list !-->
 			<Frame name="CPSearchItems">
 				<Size>
-					<AbsDimension x="640"  y="368"></AbsDimension>
+					<AbsDimension x="660"  y="368"></AbsDimension>
 				</Size>
 				<Anchors>
 					<Anchor point="TOPLEFT"><Offset><AbsDimension x="10" y="100" /></Offset></Anchor>
