@@ -641,7 +641,7 @@ function CP.EquipItem_ShowMenu( this )
         info.func = function() CP.Search.ShowSearch(CPEquipButtonMenu.Slot) end
         UIDropDownMenu_AddButton(info)
 
-        if data and not CP.DB.IsWeapon(CPEquipButtonMenu.Slot) then
+        if data and not CP.DB.IsWeaponSlot(CPEquipButtonMenu.Slot) then
           info.text = CP.L.CONTEXT_SHARE
           info.hasArrow = true
           UIDropDownMenu_AddButton(info)

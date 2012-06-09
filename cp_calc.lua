@@ -34,7 +34,7 @@ Calc.STATS={
 
     -- pdef
 	PDEF = 13,
-  PARRY = 22,
+    PARRY = 22,
 	EVADE = 17,
 
 	-- melee/range
@@ -463,6 +463,33 @@ function Calc.GetSetBonus()
     return v
 end
 
+function Calc.DependingStats(values)
+    Calc.AllAttributes(values)
+    Calc.Perc_Values(values)
+    Calc.StatInteraction(values)
+    Calc.WeaponDepended(values)
+end
+
+function Calc.AllAttributes(values)
+
+    local all = values.ALL_ATTRIBUTES
+    if all>0 then
+        local s = Calc.STATS
+        values.STR = values.STR+all
+        values.STA = values.STA+all
+        values.DEX = values.DEX+all
+        values.INT = values.INT+all
+        values.WIS = values.WIS+all
+
+        AddDescription(s.STR, TEXT("SYS_WEAREQTYPE_7"),all)
+        AddDescription(s.STA, TEXT("SYS_WEAREQTYPE_7"),all)
+        AddDescription(s.DEX, TEXT("SYS_WEAREQTYPE_7"),all)
+        AddDescription(s.INT, TEXT("SYS_WEAREQTYPE_7"),all)
+        AddDescription(s.WIS, TEXT("SYS_WEAREQTYPE_7"),all)
+    end
+
+end
+
 local STATS_PERC_VALUES={
     [161]={Calc.STATS.STR},   -- "% Stärke"
     [162]={Calc.STATS.STA},   -- "% Ausdauer"
@@ -487,46 +514,30 @@ local STATS_PERC_VALUES={
     [56] ={Calc.STATS.PDMGMH, Calc.STATS.PDMGOH}, -- "% Nahkampfwaffen-Schadensrate"
 }
 
-function Calc.DependingStats(values)
-    Calc.AllAttributes(values)
-	Calc.Perc_Values(values, STATS_PERC_VALUES)
-    Calc.StatInteraction(values)
-	Calc.WeaponDepended(values)
+local function AddPerc(values, stat, percent, by_stat)
+    if percent==0 then return end
+
+    local inc = math.floor(values[stat]*percent)
+    values[stat] = values[stat] + inc
+
+    AddDescription(stat, TEXT("SYS_WEAREQTYPE_"..by_stat),inc)
 end
 
-function Calc.AllAttributes(values)
-
-    local all = values.ALL_ATTRIBUTES
-    if all>0 then
-        local s = Calc.STATS
-        values.STR = values.STR+all
-        values.STA = values.STA+all
-        values.DEX = values.DEX+all
-        values.INT = values.INT+all
-        values.WIS = values.WIS+all
-
-        AddDescription(s.STR, TEXT("SYS_WEAREQTYPE_7"),all)
-        AddDescription(s.STA, TEXT("SYS_WEAREQTYPE_7"),all)
-        AddDescription(s.DEX, TEXT("SYS_WEAREQTYPE_7"),all)
-        AddDescription(s.INT, TEXT("SYS_WEAREQTYPE_7"),all)
-        AddDescription(s.WIS, TEXT("SYS_WEAREQTYPE_7"),all)
-    end
-
-end
-
-
-function Calc.Perc_Values(values, perc_list)
-	for p_stat,inc_stat in pairs(perc_list) do
+function Calc.Perc_Values(values)
+	for p_stat,inc_stat in pairs(STATS_PERC_VALUES) do
         if values[p_stat]~=0 then
             local percent = values[p_stat]/100
 
             for _,i_stat in ipairs(inc_stat) do
-                local inc = math.floor(values[i_stat]*percent)
-                values[i_stat] = values[i_stat] + inc
-
-                AddDescription(i_stat, TEXT("SYS_WEAREQTYPE_"..p_stat),inc)
+                AddPerc(values, i_stat, percent, p_stat)
             end
         end
+    end
+
+    -- "Schildbonus"
+    if CP.Items[16] and CP.DB.IsShield(CP.Items[16]) then
+        local percent = values[48]/100
+        AddPerc(values, Calc.STATS.PDEF, percent, 48)
     end
 end
 

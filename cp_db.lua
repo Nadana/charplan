@@ -12,6 +12,8 @@ CP.DB = DB
 --[[ [ DataBase Format ]]
     -- Items
     local I_SLOT=1
+    -- Armor: 0=Head; 1=Hands; 2=Feets; 3=Breast; 4=Legs; 5=Cape; 6=Wraist; 7=Shoulder; 8=kette; 11=Ring; 13=earring; 16=shield; 12=amulet; 21=back
+    -- Weapon: 32-Haupthand; 33-Nebenhand; 34-Einhand; 35-Zweihand; 36-Munition; 37-Fernkampf; 38-Fertigungswerkzeuge
     local I_TYPE=2
     local I_LEVEL=3
     local I_ICON=4
@@ -289,14 +291,14 @@ function DB.GetItemTypesForSlot(slot)
 end
 
 function DB.IsWeapon(id)
-  if id and id >= 200000 then
-    -- its item_id
     local s1,s2 = DB.GetItemPositions(id)
-    return DB.IsWeapon(s1) or DB.IsWeapon(s2)
-  end
-  -- its slot_id
+    return DB.IsWeaponSlot(s1) or DB.IsWeaponSlot(s2)
+end
+
+function DB.IsWeaponSlot(id)
   return id == 10 or id == 15 or id == 16
 end
+
 
 function DB.IsWeapon2Hand(item_id)
     local item = DB.items[item_id]
@@ -308,6 +310,13 @@ end
 function DB.GetWeaponType(item_id)
 	local item = DB.items[item_id]
 	return item[I_TYPE]-9
+end
+
+function DB.IsShield(item_id)
+    local item = DB.items[item_id]
+    if item then
+        return (item[I_TYPE] == 5)
+    end
 end
 
 function DB.IsSlotType(slot_id)
