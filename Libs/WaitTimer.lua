@@ -72,7 +72,7 @@
 WaitTimerUpdateFrame = nil
 
 
-local Timer = LibStub:NewLibrary("WaitTimer", 2)
+local Timer = LibStub:NewLibrary("WaitTimer", 3)
 if not Timer then return end
 
 
@@ -80,7 +80,6 @@ if not Timer then return end
 
 Timer.events={}
 Timer.last_id=1000
-
 
 local function FindID(id)
     for i,data in ipairs(Timer.events) do
@@ -110,14 +109,19 @@ function WaitTimerOnUpdate(this,elapsedTime)
         data[1] = data[1]-elapsedTime
 
         if data[1]<=0 then
-            local next_delay = data[3](data[4])
-            if next_delay then
+            local good, next_delay = pcall(data[3],data[4])
+
+            if good and type(next_delay)=="number" then
                 data[1] = next_delay
             else
                 table.remove(Timer.events,i)
                 if #Timer.events==0 then
                     this:Hide()
                 end
+            end
+
+            if not good then
+                error("error in update call (id='"..tostring(data[2]).."'): "..next_delay)
             end
         end
     end
