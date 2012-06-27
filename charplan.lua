@@ -135,7 +135,7 @@ function CP.Register3rdParty()
             author       = "McBen, 19Lestat88",
             icon         = "interface/AddOns/charplan/icon.dds",
             category     = "Inventory",
-            slashCommand = "/cp",
+            slashCommands= "/cp",
             version      = CP.version,
             configFrame  = CPFrame,
             miniButton   = CharplanMiniButton,
