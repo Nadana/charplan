@@ -13,6 +13,7 @@ function TestCP_PimpMe:testLinks()
     i = TestCP_PimpMe:ExtractLink("|Hitem:3736c 3 a55 d206 0 0 0 0 0 0 2134 19d4|h|cff00ff00["..TEXT("Sys226156_name").."]|r|h")
     i = TestCP_PimpMe:ExtractLink("|Hitem:36df1 1 60b72 d241c9a1 d205c875 c876c9a2 7f034 7f084 7f1d8 0 2c68 94dd|h|cffffffff["..TEXT("Sys224753_name").."]|r|h")
     i = TestCP_PimpMe:ExtractLink("|Hitem:33b07 3 40a6c c8adcc31 0 0 0 0 0 0 2a30 4299|h|cfff68e56["..TEXT("Sys211719_name").."]|r|h")
+    i = TestCP_PimpMe:ExtractLink("|Hitem:377b1 2 77500d64 d5a5d577 d5a4d4d6 d4c7d4c8 7f1b6 7f18e 0 0 3536 a47c|h|cffc805f8["..TEXT("Sys227249_name").."]|r|h")
 end
 
 function TestCP_PimpMe:ExtractLink(itemlink)
