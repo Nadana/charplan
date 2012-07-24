@@ -69,22 +69,29 @@
             WaitTimer.toc
 
 --]]
-WaitTimerUpdateFrame = nil
-
-
-local Timer = LibStub:NewLibrary("WaitTimer", 3)
+local Timer = LibStub:NewLibrary("WaitTimer", 4)
 if not Timer then return end
 
+WaitTimerUpdateFrame = nil
 
-
-
-Timer.events={}
-Timer.last_id=1000
+local Timer_events={}
+local last_id=1000
 
 local function FindID(id)
-    for i,data in ipairs(Timer.events) do
+    for i,data in ipairs(Timer_events) do
         if data[2]==id then return i,data end
     end
+end
+
+local function NextID()
+    local id
+
+    repeat
+        id = last_id
+        last_id = last_id+1
+    until FindID(id)==nil
+
+    return id
 end
 
 local function StartUpdate()
@@ -102,9 +109,14 @@ local function StopUpdate()
     end
 end
 
-function WaitTimerOnUpdate(this,elapsedTime)
+local function TestIfAllDone()
+    if #Timer_events==0 then
+        StopUpdate()
+    end
+end
 
-    for i,data in ipairs(Timer.events) do
+local function TriggerEvent(events, elapsedTime)
+    for i,data in ipairs(events) do
 
         data[1] = data[1]-elapsedTime
 
@@ -114,10 +126,7 @@ function WaitTimerOnUpdate(this,elapsedTime)
             if good and type(next_delay)=="number" then
                 data[1] = next_delay
             else
-                table.remove(Timer.events,i)
-                if #Timer.events==0 then
-                    this:Hide()
-                end
+                table.remove(events,i)
             end
 
             if not good then
@@ -127,21 +136,25 @@ function WaitTimerOnUpdate(this,elapsedTime)
     end
 end
 
+function WaitTimerOnUpdate(this,elapsedTime)
+
+    TriggerEvent(Timer_events, elapsedTime)
+
+    TestIfAllDone()
+end
+
 function Timer.Wait(seconds, fct, id, data)
     local _,cur_data = FindID(id)
     if cur_data then
         cur_data[1]=seconds
+        cur_data[3]=fct
+        cur_data[4]=data
         return
     end
 
-    if not id then
-        repeat
-            id = Timer.last_id
-            Timer.last_id = Timer.last_id+1
-        until FindID(id)==nil
-    end
+    id = id or NextID()
 
-    table.insert(Timer.events, {seconds, id, fct, data} )
+    table.insert(Timer_events, {seconds, id, fct, data} )
 
     StartUpdate()
 
@@ -165,10 +178,8 @@ end
 function Timer.Stop(id)
     local idx = FindID(id)
     if idx then
-        table.remove(Timer.events,idx)
+        table.remove(Timer_events,idx)
 
-        if #Timer.events==0 then
-            StopUpdate()
-        end
+        TestIfAllDone()
     end
 end
