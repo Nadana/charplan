@@ -1,5 +1,24 @@
 -- coding: utf-8
 
+--[[
+-- PLEASE DO "NOT" EDIT THIS FILE!
+-- This file was automatically created.
+--
+-- If you won't to apply correction go to:
+-- http://rom.curseforge.com/addons/charplan/localization/
+--]]
+
+CP.L =
+--@localization(locale="deDE", format="lua_table", handle-unlocalized="ignore")@
+
+CP.L.STAT_SHORTS =
+--@localization(locale="deDE", namespace="STAT_SHORTS", format="lua_table", handle-unlocalized="ignore")@
+
+CP.L.STAT_NAMES =
+--@localization(locale="deDE", namespace="STATS", format="lua_table", handle-unlocalized="ignore")@
+
+--@do-not-package@
+----- DEVELOPER VERSION
 CP.L ={
     TITLE_EMPTY = "<unbenannt>",
     MENU_TITLE = "Menu",
@@ -62,3 +81,4 @@ CP.L ={
     STAT_SHORTS= {},
     STAT_NAMES= {},
 }
+--@end-do-not-package@
