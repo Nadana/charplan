@@ -476,14 +476,15 @@ function DB.GetBonusFilteredList(is_rune, existingStats, statName, name1, name2,
 		elseif not minValue then
 			return true
 		else
+			-- filter by min of all stat values to prevent 105+700 with minValue 116
 			local bonus = DB.bonus[id][B_EFFECT]
 			for i=2,#bonus,2 do
 				local v = bonus[i]
-				if v >= minValue then
-					return true
+				if v < minValue then
+					return false
 				end
 			end
-			return false
+			return true
 		end
 	end
 
