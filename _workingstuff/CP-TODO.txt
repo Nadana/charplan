@@ -1,6 +1,4 @@
 -tooltip: weapon bonuses
--hp/mana calculation
 -item-history
--equipment compare
 -stat/rune -saved-list, like store_items(to safe/load a preferred order of 'stats and runes' on an item in pimp-dialog)
 -craftet items

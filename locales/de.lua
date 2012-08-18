@@ -10,12 +10,22 @@
 
 CP.L =
 --@localization(locale="deDE", format="lua_table", handle-unlocalized="ignore")@
+--@do-not-package@
+{}
+--@end-do-not-package@
+
 
 CP.L.STAT_SHORTS =
 --@localization(locale="deDE", namespace="STAT_SHORTS", format="lua_table", handle-unlocalized="ignore")@
+--@do-not-package@
+nil
+--@end-do-not-package@
 
 CP.L.STAT_NAMES =
 --@localization(locale="deDE", namespace="STATS", format="lua_table", handle-unlocalized="ignore")@
+--@do-not-package@
+nil
+--@end-do-not-package@
 
 --@do-not-package@
 ----- DEVELOPER VERSION
