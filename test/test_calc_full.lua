@@ -40,7 +40,8 @@ function  TestCP_CalcFull:DoFullCharCheck(info)
     values = values + CP.Calc.GetSkillBonus()
     values = values + info.cards
     values = values + CP.Calc.GetArchievementBonus()
-    values = values + CP.Calc.GetAllItemsBonus()
+
+    values = CP.Calc.AddItemsBonus(values)
     CP.Calc.DependingStats(values)
     -- !end
 

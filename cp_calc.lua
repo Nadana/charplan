@@ -207,8 +207,8 @@ function Calc.Calculate()
     values = values + Calc.GetSkillBonus()
     values = values + Calc.GetCardBonus()
     values = values + Calc.GetArchievementBonus()
-    values = values + Calc.GetAllItemsBonus()
 
+    values = Calc.AddItemsBonus(values)
   	Calc.DependingStats(values)
 
     return values
@@ -312,6 +312,7 @@ function Calc.GetBases()
 
 	--Melee
 	v.PCRITMH = GetPlayerAbility("MAGIC_CRITICAL") -- not correct ability but correct numbers
+	v.PCRITOH = GetPlayerAbility("MAGIC_CRITICAL") -- not correct ability but correct numbers
 	v.PCRITDMG = v.PCRITDMG + 30
 	v.MCRITDMG = v.MCRITDMG + 30
 
@@ -348,9 +349,8 @@ function Calc.GetArchievementBonus()
     return values
 end
 
-function Calc.GetAllItemsBonus()
+function Calc.AddItemsBonus(values)
 
-    local values = Calc.NewStats()
     values = values + Calc.GetSetBonus()
 
     local items = {}
@@ -365,13 +365,18 @@ function Calc.GetAllItemsBonus()
 
     values.PDMG = values.PDMG  -items[10].PDMG -items[15].PDMG -items[16].PDMG
     values.PCRIT= values.PCRIT -items[10].PCRIT-items[15].PCRIT-items[16].PCRIT
+    values.PACC = values.PACC  -items[10].PACC -items[15].PACC -items[16].PACC
+
 
     values.PDMGR  = values.PDMG  +items[10].PDMG
     values.PDMGMH = values.PDMG  +items[15].PDMG
     values.PDMGOH = values.PDMG  +items[16].PDMG
-    values.PCRITR = values.PCRIT +items[10].PCRIT
-    values.PCRITMH= values.PCRIT +items[15].PCRIT
-    values.PCRITOH= values.PCRIT +items[16].PCRIT
+    values.PCRITR = values.PCRITR + values.PCRIT +items[10].PCRIT
+    values.PCRITMH= values.PCRITMH+ values.PCRIT +items[15].PCRIT
+    values.PCRITOH= values.PCRITOH+ values.PCRIT +items[16].PCRIT
+    values.PACCR  = values.PACC +items[10].PACC
+    values.PACCMH = values.PACC +items[15].PACC
+    values.PACCOH = values.PACC +items[16].PACC
 
     return values
 end
