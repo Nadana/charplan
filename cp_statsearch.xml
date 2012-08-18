@@ -1,16 +1,16 @@
 <Ui xmlns="http://www.runewaker.com/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.runewaker.com/ ../../worldxml/ui.xsd">
 	<Frame name="CPStatSearchItemTemplate" enableMouse="true" virtual="true">
-		<Size><AbsDimension x="315" y="15"></AbsDimension></Size>
+		<Size><AbsDimension x="415" y="15"></AbsDimension></Size>
 		<Layers>
 			<Layer>
 				<FontString name="$parentName" inherits="GameFontHighlight" justifyH="LEFT">
 					<Size>
-						<AbsDimension x="140" y="14"></AbsDimension>
+						<AbsDimension x="210" y="14"></AbsDimension>
 					</Size>
 					<FontHeight><AbsValue val="12"/></FontHeight>
 				</FontString>
 				<FontString name="$parentValue" inherits="GameFontNormalSmall"  justifyH="LEFT">
-					<Size><AbsDimension x="155" y="14"></AbsDimension></Size>
+					<Size><AbsDimension x="210" y="14"></AbsDimension></Size>
 					<Anchors>
 						<Anchor point="LEFT" relativeTo="$parentName" relativePoint="RIGHT"></Anchor>
 					</Anchors>
@@ -60,25 +60,25 @@
 	</EditBox>
 
 	<Frame name="CPStatSearch" hidden="true" parent="CPPimpMe" inherits="UICommonFrameTemplate" frameStrata="TOOLTIP" frameLevel="1000">
-		<Size><AbsDimension x="340" y="300"></AbsDimension></Size>
+		<Size><AbsDimension x="450" y="300"></AbsDimension></Size>
 		<Frames>
 		  <!-- filter -->
 		  <EditBox name="$parentSearchBox1" inherits="CPStatSearch_FilterBox">
-				<Size><AbsDimension x="95" y="20"/></Size>
+				<Size><AbsDimension x="170" y="20"/></Size>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativePoint="TOPLEFT"><Offset><AbsDimension x="5" y="29" /></Offset></Anchor>
+					<Anchor point="TOPLEFT" relativePoint="TOPLEFT"><Offset><AbsDimension x="15" y="29" /></Offset></Anchor>
 				</Anchors>
 			</EditBox>
 		  <EditBox name="$parentSearchBox2" inherits="CPStatSearch_FilterBox">
-				<Size><AbsDimension x="90" y="20"/></Size>
+				<Size><AbsDimension x="100" y="20"/></Size>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentSearchBox1" relativePoint="TOPRIGHT"><Offset><AbsDimension x="5" y="0" /></Offset></Anchor>
 				</Anchors>
 			</EditBox>
 		  <EditBox name="$parentSearchBox3" inherits="CPStatSearch_FilterBox">
-				<Size><AbsDimension x="90" y="20"/></Size>
+				<Size><AbsDimension x="100" y="20"/></Size>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentSearchBox2" relativePoint="TOPRIGHT"><Offset><AbsDimension x="0" y="0" /></Offset></Anchor>
+					<Anchor point="TOPLEFT" relativeTo="$parentSearchBox2" relativePoint="TOPRIGHT"><Offset><AbsDimension x="5" y="0" /></Offset></Anchor>
 				</Anchors>
 			</EditBox>
 		  <EditBox name="$parentSearchBox4" inherits="CPStatSearch_FilterBox">
@@ -90,7 +90,7 @@
 
 			<Frame name="$parentItem" enableMouse="true">
 				<Size>
-					<AbsDimension x="320" y="210"></AbsDimension>
+					<AbsDimension x="420" y="210"></AbsDimension>
 				</Size>
 				<Anchors>
 					<Anchor point="TOP"><Offset><AbsDimension y="50" x="0"></AbsDimension></Offset></Anchor>
