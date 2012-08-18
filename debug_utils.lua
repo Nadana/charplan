@@ -73,7 +73,7 @@ local function GetCurrentStats()
 	    --Melee
         [s.PATK] =  GetOri("MELEE_ATTACK"),
         [s.PDEF] = GetOri("PHYSICAL_DEFENCE"),
-	    [s.PCRITOH] = GetOri("MELEE_CRITICAL"),
+	    [s.PCRIT] = GetOri("MELEE_CRITICAL"),
 	    [s.PCRITMH] = GetOri("MELEE_MAIN_CRITICAL"),
 	    [s.PCRITOH] = GetOri("MELEE_OFF_CRITICAL"),
 	    [s.PACCMH] = GetOri("PHYSICAL_MAIN_HIT"),

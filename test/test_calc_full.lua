@@ -27,7 +27,7 @@ local function LoadStoredData(info)
     CP.Unit.Load(info)
 end
 
-function  TestCP_CalcFull:DoFullCharCheck(info)
+function TestCP_CalcFull:DoFullCharCheck(info)
 
     -- data prepase
     LoadStoredData(info)

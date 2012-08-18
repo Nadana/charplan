@@ -52,7 +52,7 @@ function TestCP_Calc:CompareStats(actual, expected, msg, tolerance)
     tolerance = tolerance or 0.01
     for stat, value in pairs(expected) do
         if math.abs(1-value/actual[stat])*100>tolerance then
-            assertEquals(actual[stat],value, msg)
+            assertEquals(actual[stat],value, stat.."/"..TEXT("SYS_WEAREQTYPE_"..stat)..": is "..actual[stat].." should "..value)
         end
     end
 end
