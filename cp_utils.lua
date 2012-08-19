@@ -69,7 +69,7 @@ end
 -- Author: Valacar (aka Duppy of the Runes of Magic US Osha server)
 -- Release Date: September 12th, 2010
 
--- Credit goes to Neil Richardson for the xor, lshift, and rshift function
+-- Credit goes to Neil Richardson for the xor, and rshift function
 -- which I slightly modified. The original code can be found at:
 -- http://luamemcached.googlecode.com/svn/trunk/CRC32.lua
 
@@ -108,11 +108,6 @@ local function xor(a, b)
      return calc
 end
 
--- binary shift left
-local function lshift(num, left)
-     local res = num * (2 ^ left)
-     return res % (2 ^ 32)
-end
 
 -- binary shift right
 local function rshift(num, right)
@@ -123,22 +118,23 @@ end
 
 -- get lower word of a 32-bit number
 local function loword(num)
-    return rshift(lshift(num, 16), 16)
+    return num % 2^16
 end
 
 -- get high word of a 32-bit number
 local function hiword(num)
-    return rshift(num, 16) % 2^16
+    return math.floor(num/2^16) % 2^16
 end
 
 -- multiply two 32-bit numbers, but returns only the low dword of the 64-bit result
 local function mymul(num1, num2)
+    -- Note: required for accuraty
     local x = loword(num2) * num1
     local y = (hiword(num2) * num1) * 2^16
     local a = hiword(x) + hiword(y)
     local b = loword(x)
 
-    return (a * 2^16) + b
+    return ((a * 2^16) + b) % 2^32
 end
 
 
@@ -149,47 +145,31 @@ function Utils.CalculateItemLinkHash(num)
     assert(#num == 11, "11 values required!")
 
     local sum = 0
-    for s = 1, 11 do
-        sum = sum + num[s]
+    for _,w in ipairs(num) do
+        sum = sum + w
     end
 
     local a,b,c,d,e,x,i = sum,0,0,0,0,0,0
 
-    repeat
-        d = num[x+1]
-        b = d
-        b = b * x
-        b = b % 2^32
-        e = d
-        e = rshift(e, i)
-        i = i + 0x10
-        x = x + 1
-        e = e + a
-        e = e % 2^32
-        b = b + e
-        b = b % 2^32
-        b = xor(b, d)
-        a = b
-    until (i >= 0xB0)
+    for x,d in ipairs(num) do
+        b = (d * (x-1)) % 2^32
+        e = rshift(d, (x-1)*16)
+        b = (b + e + a) % 2^32
+        a = xor(b, d)
+    end
 
-    local j = 0
-
-    repeat
-        d = num[j+1]
+    for _,d in ipairs(num) do
         c = d + 1
         c = mymul(c, a)
-        c = c % 2^32
-        a = d
-        a = mymul(a, c)
-        a = a % 2^32
-        a = rshift(a, 16)
+        a = mymul(d, c)
+        a = math.floor(a/2^16)
         a = a + c
-        j = j + 1
         a = xor(a, d)
-    until (j >= 0x0B)
+    end
 
     hash = loword(a)
 
     return hash
 end
 --[[ ] Runes of Magic item link hash calculation code ]]
+
