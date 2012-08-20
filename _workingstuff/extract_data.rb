@@ -321,9 +321,6 @@ class Images
     end
 end
 
-
-
-
 class BonusStuff
     attr_accessor :eqtypes, :eqvalues
 
@@ -429,9 +426,27 @@ end
 
 class Table
     attr_accessor :id
+    attr_accessor :unused
 
     def initialize(csv_row)
         @id = csv_row['guid'].to_i
+        @unused = false
+    end
+
+    def SkipThisItem?
+        return @unused
+    end
+
+    def Used()
+        @unused = false
+    end
+
+    def NotUsed()
+        @unused = true
+    end
+
+    def Table.MarkAllUnused(db)
+        db.each { |id, data| data.unused=true }
     end
 
     def Table.Load(filename=nil, update=true)
@@ -479,6 +494,8 @@ class Table
 
             outf.write("return {\n")
             db.each { |id, data|
+                next if data.SkipThisItem?
+
                 line_data = []
                 data.ExportData(line_data)
 
@@ -730,6 +747,56 @@ class WeaponEntry < ItemEntry
     end
 end
 
+class FoodEntry < Table
+
+    FILENAME = "itemobject"
+    attr_accessor :type
+    attr_accessor :spell
+
+
+    def initialize(csv_row)
+        super(csv_row)
+        @type = csv_row['itemtype'].to_i
+        @spell = csv_row['incmagic_onuse'].to_i
+    end
+
+    def SkipThisItem?
+        return true if not [2,3,4].include?(@type)  # 2="Nahrung";3="Nachspeise";4="Trank"
+
+        return super() || (@spell==0)
+    end
+
+    def ExportDesc(data)
+        data.push("magic")
+    end
+
+    def ExportData(data)
+        data.push(@spell)
+    end
+
+    def FoodEntry.MarkSpells(db,spells)
+        db.each { |id, data|
+            if not data.SkipThisItem? then
+                if spells.include?(data.spell)
+                    spells[data.spell].Used
+                else
+                    data.NotUsed
+                end
+            end
+        }
+    end
+
+    # no more additional data
+    def FoodEntry.Export(filename, db)
+        File.open(filename, 'wt') { |outf|
+            outf.write("return {\n")
+            db.each { |id, data|
+                outf.write( "  [%i]=%i,\n" % [id, data.spell])
+                }
+            outf.write("}\n")
+        }
+    end
+end
 
 class AddPowerEntry < Table
 
@@ -968,7 +1035,8 @@ class MagicCollectionEntry < Table
     end
 
     def SkipThisItem?
-        return ( @magics.size==0 or @effecttype!=2 ) # passive spells only
+        return true if @effecttype!=2  # passive spells only
+        return true if @magics.size==0
     end
 
     def ExportDesc(data)
@@ -980,6 +1048,23 @@ class MagicCollectionEntry < Table
             data.push(d)
         }
     end
+
+    def MagicCollectionEntry.MarkSpells(db,spells)
+        db.each { |id, data|
+            if not data.SkipThisItem? then
+                undefined = []
+                data.magics.each {|d|
+                    if spells.include?(d)
+                        spells[d].Used
+                    else
+                        undefined.push(d)
+                    end
+                }
+                data.magics = data.magics-undefined
+            end
+        }
+    end
+
 end
 
 class MagicObjectEntry < Table
@@ -996,7 +1081,7 @@ class MagicObjectEntry < Table
     end
 
     def SkipThisItem?
-        return (not @bonus.HasStats?)
+        return super() || (not @bonus.HasStats?)
     end
 
     def ExportDesc(data)
@@ -1126,6 +1211,7 @@ class FullDB
     attr_accessor :addpower, :suits
     attr_accessor :refines, :cards
     attr_accessor :skills, :spells
+    attr_accessor :food
     attr_accessor :title
     attr_accessor :Vocs
 
@@ -1157,8 +1243,11 @@ class FullDB
         @refines = RefineEntry.Load()
 
         p "Load Spells"
-        @skills = MagicCollectionEntry.Load()
         @spells = MagicObjectEntry.Load()
+        @skills = MagicCollectionEntry.Load()
+
+        p "Load Food"
+        @food = FoodEntry.Load()
 
         p "Load Cards"
         @cards = CardEntry.Load()
@@ -1186,6 +1275,8 @@ class FullDB
         MagicCollectionEntry.Export("../item_data/skills.lua", @skills)
         MagicObjectEntry.Export("../item_data/spells.lua", @spells)
 
+        FoodEntry.Export("../item_data/food.lua", @food)
+
         VocTable.Export("../item_data/classes.lua", @Vocs)
 
         #ArmorEntry.TestWrite(armor)
@@ -1196,8 +1287,14 @@ class FullDB
         p "Checking & cleanup"
         CheckSetItems(@suits, @items)
         CheckImages(@items, @images)
+        FilterSpells()
     end
 
+    def FilterSpells
+        Table.MarkAllUnused(@spells)
+        MagicCollectionEntry.MarkSpells(@skills,@spells)
+        FoodEntry.MarkSpells(@food,@spells)
+    end
 
     def CheckImages(items, images)
         items.each { |id,r|
