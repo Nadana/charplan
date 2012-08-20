@@ -58,6 +58,7 @@ local function GetCurrentStats()
 
     local mana = UnitMaxMana("player")
     if mana==100 then mana = UnitMaxSkill("player") end
+    if mana==100 then mana = nil end
 
     return
     {
