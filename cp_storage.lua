@@ -214,13 +214,10 @@ end
 
 
 function Storage.InvPickInv()
-    if CursorHasItem() then return end
-
     if Storage.InvGetCancel then
         Storage.InventoryStopStrip(CP.L.ENUMERATE_CANCELED)
         return
     end
-
 
     Storage.InvLastItem = Storage.InvLastItem+1
     while not CP.EquipButtons[Storage.InvLastItem] or
@@ -234,34 +231,28 @@ function Storage.InvPickInv()
         end
     end
 
-    PickupEquipmentItem(Storage.InvLastItem)
+    EquipItem(Storage.InvLastItem+1,Storage.StripSlot)
     return true
 end
 
 function Storage.InvDropInv()
-    if not CursorHasItem() then return end
+    local texture = GetGoodsItemInfo(Storage.StripSlot)
+    if texture == "" then return end
 
-    PickupBagItem(Storage.StripSlot)
     return true
 end
 
 function Storage.InvPickBag()
-
-    local texture = GetGoodsItemInfo(Storage.StripSlot)
-    if texture == "" then return end
-
-    assert(not CursorHasItem())
-
     CP.ApplyBagItem(Storage.InvLastItem, Storage.StripSlot, true)
 
-    PickupBagItem(Storage.StripSlot)
+    EquipItem(Storage.InvLastItem+1,Storage.StripSlot)
     return true
 end
 
 function Storage.InvDropBag()
-    if not CursorHasItem() then return end
+    local texture = GetGoodsItemInfo(Storage.StripSlot)
+    if texture ~= "" then return end
 
-    PickupEquipmentItem(Storage.InvLastItem)
     return true
 end
 
