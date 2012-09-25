@@ -522,7 +522,7 @@ local STATS_PERC_VALUES={
 local function AddPerc(values, stat, percent, by_stat)
     if percent==0 then return end
 
-    local inc = math.floor(values[stat]*percent)
+    local inc = math.floor(values[stat]*percent*0.01)
     values[stat] = values[stat] + inc
 
     AddDescription(stat, TEXT("SYS_WEAREQTYPE_"..by_stat),inc)
@@ -530,19 +530,11 @@ end
 
 function Calc.Perc_Values(values)
 	for p_stat,inc_stat in pairs(STATS_PERC_VALUES) do
-        if values[p_stat]~=0 then
-            local percent = values[p_stat]/100
+        local percent = values[p_stat]
 
-            for _,i_stat in ipairs(inc_stat) do
-                AddPerc(values, i_stat, percent, p_stat)
-            end
+        for _,i_stat in ipairs(inc_stat) do
+            AddPerc(values, i_stat, percent, p_stat)
         end
-    end
-
-    -- "Schildbonus"
-    if CP.Items[16] and CP.DB.IsShield(CP.Items[16]) then
-        local percent = values[48]/100
-        AddPerc(values, Calc.STATS.PDEF, percent, 48)
     end
 end
 
@@ -607,7 +599,7 @@ function Calc.WeaponDepended(values)
         local weapon_type = CP.DB.GetWeaponType(CP.Items[10].id)
         local wstat = WEAPON_STATS[weapon_type]
         if wstat then
-            AddValue(values, s.PDMGR, values.PDMGR*values[wstat]/100, wstat)
+            AddPerc(values, s.PDMGR, values[wstat], wstat)
         end
 	end
 
@@ -616,9 +608,9 @@ function Calc.WeaponDepended(values)
         local wstat = WEAPON_STATS[weapon_type]
         if wstat then
             if weapon_type==2 or weapon_type==6 then
-                AddValue(values, s.MDMG, values.MDMG*values[wstat]/100, wstat)
+                AddPerc(values, s.MDMG, values[wstat], wstat)
             else
-                AddValue(values, s.PDMGMH, values.PDMGMH*values[wstat]/100, wstat)
+                AddPerc(values, s.PDMGMH, values[wstat], wstat)
             end
         end
 	end
@@ -628,12 +620,19 @@ function Calc.WeaponDepended(values)
         local wstat = WEAPON_STATS[weapon_type]
         if wstat then
             if weapon_type==2 then
-                AddValue(values, s.MDMG, values.MDMG*values[wstat]/100, wstat)
+                AddPerc(values, s.MDMG, values[wstat], wstat)
             else
-                AddValue(values, s.PDMGOH, values.PDMGOH*values[wstat]/100, wstat)
+                AddPerc(values, s.PDMGOH, values[wstat], wstat)
             end
         end
+
+        -- "Schildbonus"
+        if CP.DB.IsShield(CP.Items[16]) then
+            local percent = values[43]
+            AddPerc(values, Calc.STATS.PDEF, percent, 43)
+        end
     end
+
 end
 
 
