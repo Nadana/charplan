@@ -11,7 +11,7 @@ $log.level = Logger::WARN
 #$log.level = Logger::INFO
 $log.formatter = proc { |severity, datetime, progname, msg|  "#{severity}: #{msg}\n" }
 
-MAX_LEVEL = 75
+MAX_LEVEL = 80
 MAX_RARE = [0,1,2,3,4,5,8]
 $log << "FILTER RULES:\n"
 $log << "max level is: #{MAX_LEVEL}\n"
@@ -235,16 +235,6 @@ $STATLIST={# SYS_WEAREQTYPE_xxx
 }
 
 
-
-def NameIsInvalid?(id)
-    return GetName(id).nil?
-end
-
-def GetName(id)
-    name = $de.get_value("\"Sys#{id}_name\"")
-    return nil if (name.nil? or name =~/^Sys\d{6}_name$/)
-    return name
-end
 
 
 class Images
@@ -545,8 +535,8 @@ class ItemEntry < Table
             return true
         end
 
-        name = $de.get_value("\"Sys#{@id}_name\"")
-        if (name=="" or name==nil or name=~/^Sys\d+_name$/) then
+        name = $de[@id]
+        if name==nil then
             $log.info("Item #{@id}: has no name")
             return true
         end
@@ -809,7 +799,7 @@ class AddPowerEntry < Table
         @bonus = BonusStuff.new(csv_row)
 
         raise "unknown bonus stat" if @bonus.HasInvalidStat?
-        $log.info("addpower #{@id} has no name") if NameIsInvalid?(@id)
+        $log.info("addpower #{@id} has no name") if $de[@id].nil?
     end
 
     def SkipThisItem?
@@ -822,7 +812,7 @@ class AddPowerEntry < Table
         grp_idx = 1
         db.each { |id,r|
 
-            name = GetName(id)
+            name = $de[id]
             next if name.nil?
             matchdata = /^(.+)\s+(\w+)$/.match(name)
             name = matchdata[1] if not matchdata.nil?
@@ -870,7 +860,7 @@ class RunesEntry < Table
         @group = 10000+csv_row['runegroup'].to_i
 
         raise "unknown bonus stat" if @bonus.HasInvalidStat?
-        $log.info("rune #{@id} has no name") if NameIsInvalid?(@id)
+        $log.info("rune #{@id} has no name") if $de[@id].nil?
     end
 
    def RunesEntry.AfterLoad(db)
@@ -878,7 +868,7 @@ class RunesEntry < Table
         groups = Hash.new
         db.each { |id,r|
 
-            name = GetName(id)
+            name = $de[id]
             matchdata = /^(.+)\s+(\w+)$/.match(name)
 
             if groups.key?(r.group) then
@@ -892,7 +882,7 @@ class RunesEntry < Table
 
 
     def SkipThisItem?
-        return @bonus.HasInvalidStat? || (not @bonus.HasStats?) || (NameIsInvalid?(@id))
+        return @bonus.HasInvalidStat? || (not @bonus.HasStats?) || $de[@id].nil?
     end
 
     def ExportDesc(data)
@@ -964,13 +954,13 @@ class SuitEntry < Table
     end
 
     def SkipThisItem?
-        name = $de.get_value("\"Sys#{@id}_name\"")
+        name = $de[@id]
 
         $log << "set #{id} -> without set items\n" if @totalcount==0
 
         return  (@has_unknown_stat or @totalcount==0 or
                 (not HasBonis?) or
-                (name=="" or name==nil or name=~/^Sys\d+_name$/) )
+                 name.nil? )
     end
 
     def ExportDesc(data)
@@ -1218,7 +1208,7 @@ class FullDB
     def Load
 
         p "Load Strings"
-        $de = GetStringList("de")
+        $de = Locales.new("de")
 
         p "Load Images"
         @images = Images.new()

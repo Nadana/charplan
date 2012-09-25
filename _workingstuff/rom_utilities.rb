@@ -1,13 +1,15 @@
 require 'pathname'
 require 'fileutils'
-begin
-    require 'parseconfig'
-rescue LoadError
-    raise "requires 'parseconfig'\nDo 'gem install parseconfig'"
-end
-
 require 'win32/registry'
 require "Win32API"
+
+begin
+    require 'parseconfig'
+    raise "ParseConfig v1.0.2 required - please update (#{ParseConfig::Version})" if ParseConfig::Version<"1.0.2"
+rescue LoadError
+    raise "requires 'ParseConfig'\nDo 'gem install parseconfig'"
+end
+
 
 # Tools
 $fdb_ex="e:/Projekte/fdb_ex2/bin/FDB_ex2.exe " # http://github.com/McBen/FDB_Extractor2
@@ -22,7 +24,6 @@ end
 def LUA_Execute(script)
     system("#{$lua} "+script)
 end
-
 
 ###############
 # Options are: export_path, fdb_filter, silent, sql, regex
@@ -59,11 +60,34 @@ end
 
 
 ###############
-def GetStringList(lang)
-    fname = "string_"+lang+".db"
-    base_dir = TempPath()+"data/"
-    base_dir = Extract("data\\",fname,{:fdb_filter=>"data.fdb"}) unless File.exists?(base_dir+fname)
-    return ParseConfig.new(base_dir+fname)
+class Locales
+    attr_accessor :db
+
+    def initialize(lang)
+        fname = "string_"+lang+".db"
+        base_dir = TempPath()+"data/"
+        base_dir = Extract("data\\",fname,{:fdb_filter=>"data.fdb"}) unless File.exists?(base_dir+fname)
+        @db = ParseConfig.new(base_dir+fname)
+    end
+
+    def [](id)
+        if id.is_a?(String) then
+            name = @db["\"#{id}\""]
+        else
+            name = @db["\"Sys#{id}_name\""]
+            name=nil if name=="" or name=="Sys#{id}_name"
+        end
+
+        return if name.nil?
+
+        name.gsub!('\\\\','\\')
+        name.gsub!('"','\\"')
+        return name
+    end
+
+    def each
+        @db.params.each { |k,v| yield k,v}
+    end
 end
 
 ###############
