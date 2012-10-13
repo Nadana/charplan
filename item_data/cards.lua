@@ -1,3 +1,4 @@
+-- CardEntry: addpower
 return {
   [770000]=512792,
   [770001]=512792,

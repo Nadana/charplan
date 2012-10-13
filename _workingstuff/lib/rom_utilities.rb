@@ -50,45 +50,27 @@ def Extract(path, filter="", options=Hash.new)
     escaped = escaped+filter
 
     # do it
-    Dir.chdir( Pathname($fdb_ex).dirname ) {
-        #p ("#{$fdb_ex} #{foptions.join(" ")} -y -o \"#{temp_path}\" #{escaped} #{src}")
-        system("#{$fdb_ex} #{foptions.join(" ")} -y -o \"#{temp_path}\" #{escaped} #{src}")
-    }
+    if options[:list] then
+        Dir.chdir( Pathname($fdb_ex).dirname ) {
+
+            data=[]
+            output = IO.popen("#{$fdb_ex} #{foptions.join(" ")} -l #{escaped} #{src}")
+            output.each_line {|s|
+                next if s=~/^using RoM.*/
+                data.push(s.chop.match(/^\"(.*)\"$/)[1])
+            }
+            return data
+        }
+    else
+        Dir.chdir( Pathname($fdb_ex).dirname ) {
+            #p ("#{$fdb_ex} #{foptions.join(" ")} -y -o \"#{temp_path}\" #{escaped} #{src}")
+            system("#{$fdb_ex} #{foptions.join(" ")} -y -o \"#{temp_path}\" #{escaped} #{src}")
+        }
+    end
 
     return temp_path+path
 end
 
-
-###############
-class Locales
-    attr_accessor :db
-
-    def initialize(lang)
-        fname = "string_"+lang+".db"
-        base_dir = TempPath()+"data/"
-        base_dir = Extract("data\\",fname,{:fdb_filter=>"data.fdb"}) unless File.exists?(base_dir+fname)
-        @db = ParseConfig.new(base_dir+fname)
-    end
-
-    def [](id)
-        if id.is_a?(String) then
-            name = @db["\"#{id}\""]
-        else
-            name = @db["\"Sys#{id}_name\""]
-            name=nil if name=="" or name=="Sys#{id}_name"
-        end
-
-        return if name.nil?
-
-        name.gsub!('\\\\','\\')
-        name.gsub!('"','\\"')
-        return name
-    end
-
-    def each
-        @db.params.each { |k,v| yield k,v}
-    end
-end
 
 ###############
 def RoMPath()

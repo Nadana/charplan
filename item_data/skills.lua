@@ -1,4 +1,4 @@
--- MagicCollectionEntry: {magics}
+-- MagicCollectionEntry: {magics},
 return {
   [490028]={500060},
   [490029]={500061},

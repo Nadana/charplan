@@ -3,7 +3,8 @@ require 'set'
 require 'csv'
 require 'logger'
 
-require_relative 'rom_utilities'
+require_relative 'lib/rom_utilities'
+require_relative 'lib/locales'
 
 
 $log = Logger.new(open('logfile.txt', File::WRONLY | File::CREAT))
