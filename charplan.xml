@@ -794,6 +794,8 @@
 		</Size>
 		<Scripts>
 			<OnClick>ToggleUIFrame(CPFrame)</OnClick>
+			<OnEnter>AddonManager.MiniButton_OnEnter(this)</OnEnter>
+			<OnLeave>AddonManager.MiniButton_OnLeave(this)</OnLeave>
 		</Scripts>
 		<NormalTexture file="interface/AddOns/charplan/icon"/>
 		<PushedTexture file="interface/AddOns/charplan/icon"/>
