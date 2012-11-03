@@ -706,12 +706,14 @@ class WeaponEntry < ItemEntry
     FILENAME = "weaponobject"
     attr_accessor :weapon
     attr_accessor :weapontype
+    attr_accessor :attackspeed
 
 
     def initialize(csv_row)
         super(csv_row)
         @weaponpos = csv_row['weaponpos'].to_i # 0-6 -> 0-Haupthand; 1-Nebenhand; 2-Einhand; 3-Zweihand; 4-Munition; 5-Fernkampf; 6-Fertigungswerkzeuge
         @weapontype = csv_row['weapontype'].to_i # 0-20 -> 1-Schwert; 2-Dolch; 6-Zweihandschwert; 11-Bogen
+        @attackspeed = csv_row['attackspeed'].to_i
 
         raise "unkown weapon_pos:"+@weaponpos.to_s if @weaponpos<0 || @weaponpos>6
 # TODO: check supported @weapontype s
@@ -728,12 +730,14 @@ class WeaponEntry < ItemEntry
         data.push( "slot")
         data.push( "type")
         super(data)
+        data.push( "attackspeed")
     end
 
     def ExportData(data)
         data.push(32+@weaponpos)
         data.push(8+@weapontype)
         super(data)
+        data.push(@attackspeed)
     end
 end
 
