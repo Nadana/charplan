@@ -417,6 +417,8 @@ function CP.OnMenuShow(this)
 		info.func = function()
                 CP.Items={}
                 CP.UpdateEquipment()
+                CPEquipmentFrameModel:TakeOffAll()
+                CPEquipmentFrameModel:TakeOffWeapon()
 			end
 		UIDropDownMenu_AddButton( info, 1 )
 
