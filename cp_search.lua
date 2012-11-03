@@ -496,7 +496,14 @@ function Search.UpdateItem(base_name, item)
     local txt = ""
     local attA,attB = CP.DB.PrimarAttributes(item.id)
     if attA and boni[attA]~=0 then
+    		-- add DPS
         local n = CP.Calc.ID2StatName(attA)
+        if n == 'PDMG' then
+        	local dps = CP.Calc.WeaponDps(item.id, boni)
+        	if dps then
+						txt = txt..string.format("%s: %.1f\n", CP.L.STAT_SHORTS.DPS, dps)
+        	end
+        end
         txt = txt..(CP.L.STAT_SHORTS[n])..": "..boni[attA].."\n"
         boni[attA] = nil
     end

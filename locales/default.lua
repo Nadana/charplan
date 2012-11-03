@@ -71,7 +71,8 @@ local default_text={
         PDMG="PDMG",
         PDEF="PDEF",
         MDEF="MDEF",
-        MDMG="MDMG"
+        MDMG="MDMG",
+        DPS="DPS"
         },
 
     STAT_NAMES= {

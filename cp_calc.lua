@@ -635,4 +635,11 @@ function Calc.WeaponDepended(values)
 
 end
 
-
+function Calc.WeaponDps(item_id, item_bonus)
+	if not item_bonus then return nil end
+	local dmg = item_bonus[Calc.STATS.PDMG]
+	local speed = CP.DB.GetWeaponSpeed(item_id)
+	if dmg and speed then
+		return (dmg*10) / speed
+	end
+end

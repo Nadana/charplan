@@ -22,6 +22,7 @@ CP.DB = DB
     local I_EFFECT=7 -- optional
     local I_STATS=8 -- optional
     local I_SET=9 -- optional
+    local I_WEAPONSPEED = 10 -- optional
 
     -- Bonus
     local B_EFFECT=1 -- optional
@@ -735,4 +736,10 @@ end
 
 function DB.GetClassInfo(token)
 	return DB.classes[token]
+end
+
+function DB.GetWeaponSpeed(item_id)
+	-- weapon speed stored as integer value like `24` for speed `2.4`
+	local item = DB.items[item_id]
+	if item then return item[I_WEAPONSPEED] end
 end
