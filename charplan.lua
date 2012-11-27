@@ -349,6 +349,7 @@ function CP.UpdateModel()
     local model = CPEquipmentFrameModel
 
     model:TakeOffAll()
+    model:TakeOffWeapon()
     for _,slot in ipairs({0,1,2,3,4,5,6,7,21,10,15,16}) do
         if CP.Items[slot] then
             local link
@@ -417,8 +418,6 @@ function CP.OnMenuShow(this)
 		info.func = function()
                 CP.Items={}
                 CP.UpdateEquipment()
-                CPEquipmentFrameModel:TakeOffAll()
-                CPEquipmentFrameModel:TakeOffWeapon()
 			end
 		UIDropDownMenu_AddButton( info, 1 )
 
