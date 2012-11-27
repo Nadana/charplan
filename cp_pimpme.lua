@@ -537,10 +537,12 @@ function Pimp.GenerateLink(item_data, prefix)
         return a + (2^16)*b
     end
 
+    local bind = item_data.bind+256*item_data.bind_flag
+
     local data=
     {
         item_data.id,
-        item_data.bind,
+        bind,
         tonumber(temphex,16),
         s(item_data.stats[1],item_data.stats[2]),
         s(item_data.stats[3],item_data.stats[4]),

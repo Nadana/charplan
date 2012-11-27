@@ -470,9 +470,9 @@ function CP.Hooked_Hyperlink_Assign(link, key)
 			_type = nil
 		end
 	end
-	
+
 	if(_type=="item") then
-	
+
 		local menu_label = "|cffb0b030[CharPlan]|r " .. CP.L.CONTEXT_MENU;
 		if not CP.DB.IsLoaded() then
 			-- a simple method if dialog is not open (performance)
@@ -493,7 +493,7 @@ function CP.Hooked_Hyperlink_Assign(link, key)
 			UIDropDownMenu_AddButton(info, 1)
 
 		else
-		
+
 			local item_data = CP.Pimp.ExtractLink(link)
 			local s1,s2, force1 = CP.DB.GetItemPositions(item_data.id)
 			if force1 then s2=nil end
