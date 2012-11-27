@@ -8,12 +8,40 @@
 --  License: MIT/X
 -----------------------------------------------------------------------------
 
-local Nyx = LibStub:NewLibrary("Nyx", 8)
+local Nyx = LibStub:NewLibrary("Nyx", 15)
 if not Nyx then return end
 
+
 ------------------------------
-function Nyx.LoadLocalesAuto(directory)  -- Example: Nyx.LoadLocalesAuto("Interface/Addons/dailynotes/Locales/")
-    Nyx.LoadLocales(directory, string.sub(GetLanguage(),1,2))
+-- locales
+------------------------------
+local function TableMerge(dest, src)
+    for k,v in pairs(src) do
+        if type(v)=="table" then
+            dest[k]=dest[k] or {}
+            TableMerge(dest[k], v)
+        else
+            dest[k]=dest[k] or v
+        end
+    end
+end
+
+-- Example: Nyx.LoadLocalesAuto("Interface/Addons/dailynotes/Locales/")
+-- Example: Nyx.LoadLocalesAuto("Interface/Addons/dailynotes/Locales/","default")
+function Nyx.LoadLocalesAuto(directory, default)
+    local func, err = loadfile(directory..string.sub(GetLanguage(),1,2)..".lua")
+    local lang={}
+    if not err then
+        lang = func()
+    end
+
+    if default then
+        local lang2 = Nyx.LoadFile(directory..default..".lua")
+        lang = lang or {}
+        TableMerge(lang, lang2 or {})
+    end
+
+    return lang
 end
 
 function Nyx.LoadLocales(directory, locales)
@@ -22,7 +50,7 @@ function Nyx.LoadLocales(directory, locales)
         Nyx.LoadFile(directory.."en.lua")
         return
     end
-    func()
+    return func()
 end
 
 function Nyx.LoadFile(filename)
@@ -31,7 +59,7 @@ function Nyx.LoadFile(filename)
         DEFAULT_CHAT_FRAME:AddMessage("|cffff0000Error loading: "..filename.." -> "..tostring(err))
         return
     end
-    func()
+    return func()
 end
 
 ------------------------------
@@ -52,8 +80,6 @@ function Nyx.GetBagItem(index)
         return Nyx.GetItemID(GetBagItemLink( index )), itemCount
     end
 end
-
-
 
 function Nyx.GetItemID( itemLk )
 
@@ -130,14 +156,6 @@ function Nyx.GetPlayerLevel() -- (secondary not depending on current main-class)
 end
 
 ------------------------------
-function Nyx.IsOnFriendlist(name)
-    for i=1, GetFriendCount("Friend") do
-	    if name == GetFriendInfo("Friend", i) then
-            return true
-        end
-    end
-end
-
 function Nyx.IsInMyGuild(name)
     local numGuildNodes = GetNumGuildMembers()
 
@@ -149,37 +167,107 @@ function Nyx.IsInMyGuild(name)
 end
 
 ------------------------------
-function Nyx.GetQuestBookText(Quest_ID)
-
-    local desc = TEXT("Sys"..Quest_ID.."_szquest_desc")
-
-    local catcher=20 -- prevent infinitive loop
-    while catcher>0 do
-        catcher=catcher-1
-        local ls,le = desc:find("%[.-%]")
+local function ReplaceTags(desc, fct_on_id_tag, fct_on_name_tag, fct_on_color_tag)
+    local max_loops=20
+    local ls=1,le
+    repeat
+        ls,le = desc:find("%[.-%]",ls)
         if not ls then break end
 
         local newtext= string.match(desc:sub(ls+1,le-1), "^([^|]+)")
 
         if newtext:find("^<[sS]>") then
-            newtext = "|cffb0b0b0"..TEXT("Sys"..string.sub(newtext,4).."_name_plural").."|r"
+            newtext = fct_on_id_tag(string.sub(newtext,4),true)
         elseif tonumber(newtext) then
-            newtext = "|cffb0b0b0"..TEXT("Sys"..newtext.."_name").."|r"
+            newtext = fct_on_id_tag(newtext)
         else
-            newtext = "|cffb0b0b0"..TEXT(newtext).."|r"
+            newtext = fct_on_name_tag(newtext)
         end
 
         desc = desc:sub(1,ls-1)..newtext..desc:sub(le+1)
+        ls = ls + newtext:len()
+
+        max_loops=max_loops-1
+    until max_loops<0
+
+    if fct_on_color_tag then
+        desc = desc:gsub("<(/?)C(.-)>",fct_on_color_tag)
+    else
+        desc = desc:gsub("</?C.->","")
     end
 
-    desc = desc:gsub("</?C[PS]>","")
+    desc = desc:gsub("$PLAYERNAME",UnitName("player"))
 
-    assert(catcher>0,"Quest Text error for QID="..tostring(Quest_ID))
+    assert(max_loops>0,"Quest Text error for QID="..tostring(Quest_ID))
 
     return desc
 end
 
+local function FullFunctionTags(text)
 
+   return ReplaceTags(text,
+
+        function (id,plural)
+            local postfix = "_name"
+            if plural then postfix = postfix.."_plural" end
+
+            id = tonumber(id)
+            if id>199999 then
+                -- ITEM
+                return string.format("|Hitem:%x|h%s[%s]|r|h",
+                    id, TEXT("SYS_COLOR_ITEM"), TEXT("Sys"..id..postfix))
+            else
+                -- NPC
+                return string.format("|Hnpc:%s|h%s[%s]|r|h",
+                    id, TEXT("SYS_COLOR_NPC"), TEXT("Sys"..id..postfix))
+            end
+        end,
+
+        function (text)
+            return TEXT("SYS_COLOR_ZONE")..TEXT(text).."|r"
+        end,
+
+        function (closed_text,id)
+            if closed_text~="" then
+                return "|r"
+            end
+
+            return "|cffff0000"
+        end
+    )
+end
+
+local function SmallFunctionTags(text)
+    return ReplaceTags(text,
+
+        function (id,plural)
+            local postfix = "_name"
+            if plural then postfix = postfix.."_plural" end
+
+            return "|cffb0b0b0"..TEXT("Sys"..id..postfix).."|r"
+        end,
+
+        function (text)
+            return "|cffb0b0b0"..TEXT(text).."|r"
+        end
+    )
+end
+
+function Nyx.GetQuestBookText(Quest_ID)
+    return SmallFunctionTags(TEXT("Sys"..Quest_ID.."_szquest_desc"))
+end
+
+function Nyx.GetFullQuestBookText(Quest_ID)
+    return SmallFunctionTags(TEXT("Sys"..Quest_ID.."_szquest_accept_detail"))
+end
+
+function Nyx.GetQuestBookTextWithLinks(Quest_ID)
+   return FullFunctionTags(TEXT("Sys"..Quest_ID.."_szquest_desc") )
+end
+
+function Nyx.GetFullQuestBookTextWithLinks(Quest_ID)
+   return FullFunctionTags(TEXT("Sys"..Quest_ID.."_szquest_accept_detail") )
+end
 ------------------------------
 function Nyx.TableSize(tab)
     local s = 0
