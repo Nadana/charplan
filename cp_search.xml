@@ -435,6 +435,8 @@
 					<Anchor point="TOP" relativeTo="CPSearchTakeIt1" relativePoint="BOTTOM"><Offset><AbsDimension x="0" y="0"></AbsDimension></Offset></Anchor>
 				</Anchors>
 				<Scripts>
+					<OnEnter>CP.Search.OnTakeItEnter(this, 1)</OnEnter>
+					<OnLeave>CP.Search.OnTakeItLeave(1)</OnLeave>
 					<OnClick>CP.Search.OnTakeIt()</OnClick>
 				</Scripts>
 			</Button>
@@ -456,6 +458,8 @@
 					<Anchor point="TOP" relativeTo="CPSearchTakeIt2" relativePoint="BOTTOM"><Offset><AbsDimension x="0" y="0"></AbsDimension></Offset></Anchor>
 				</Anchors>
 				<Scripts>
+					<OnEnter>CP.Search.OnTakeItEnter(this, 2)</OnEnter>
+					<OnLeave>CP.Search.OnTakeItLeave(2)</OnLeave>
 					<OnClick>CP.Search.OnTakeIt(2)</OnClick>
 				</Scripts>
 			</Button>

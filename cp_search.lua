@@ -543,10 +543,12 @@ function Search.UpdateSlotInfo()
         if s1==13 or s1==14 then s1,s2=13,14 end
     end
 
+		Search.slots = {}
     if s1 then
         CPSearchTakeIt1:Show()
         CPSearchTakeIt1Item:Show()
         SetItemButtonTexture(CPSearchTakeIt1Item, CP.GetSlotTexture(s1))
+        Search.slots[1] = CP.Items[s1]
     else
         CPSearchTakeIt1:Hide()
         CPSearchTakeIt1Item:Hide()
@@ -557,6 +559,7 @@ function Search.UpdateSlotInfo()
         CPSearchTakeIt2:Show()
         CPSearchTakeIt2Item:Show()
         SetItemButtonTexture(CPSearchTakeIt2Item, CP.GetSlotTexture(s2))
+        Search.slots[2] = CP.Items[s2]
     else
         CPSearchTakeIt2:Hide()
         CPSearchTakeIt2Item:Hide()
@@ -718,6 +721,20 @@ function Search.OnTakeIt(slot1or2,dont_close)
     Search.ApplyItem(Search.selection, slot1or2)
 
     if not dont_close then CPSearch:Hide() end
+end
+
+function Search.OnTakeItEnter(this, item_id)
+	local item = Search.slots[item_id]
+	if item then
+		GameTooltip:SetOwner(this, "ANCHOR_TOPRIGHT", -10, 0)
+		GameTooltip:SetHyperLink(CP.Pimp.GenerateLink(item))
+	end
+end
+
+function Search.OnTakeItLeave(item_id)
+	GameTooltip1:Hide()
+	GameTooltip2:Hide()
+	GameTooltip:Hide()
 end
 
 function Search.ApplyItem(item_id, slot1or2)
