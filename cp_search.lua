@@ -682,13 +682,15 @@ function Search.FindInDungeonLoots(item_id)
 
     if DungeonLoot and DungeonLoot.tables then
         for _,zone in pairs(DungeonLoot.tables) do
-            for _,boss in pairs(zone.Boss or {}) do
+            for bossNum,boss in pairs(zone.Boss or {}) do
                 for _,loot in pairs(boss.Loots or {}) do
                     if loot==item_id then
-                        table.insert(res, string.format(CP.L.SEARCH_DROPPED,
+                    		local where = string.format(CP.L.SEARCH_DROPPED,
                                 GetZoneLocalName(zone.Zone) or "unknown",
                                 TEXT("Sys"..boss.Name.."_name")
-                            ))
+                            		);
+                        where = where .. string.format(" (%d)", bossNum)
+                        table.insert(res, where)
                     end
                 end
             end
