@@ -461,11 +461,12 @@ function CP.Hooked_Hyperlink_Assign(link, key)
 	CP.ori_Hyperlink_Assign(link, key)
 	if (key ~= "RBUTTON" ) then return 	end
 
+	local itemID = nil
 	local _type, _data, _name = ParseHyperlink(link)
 	if _type == 'item' then
 		-- prevent adding menu to unacceptable items
-		local id = tonumber(link:match("^|H.-:(%x+)") or '', 16)
-		if not (id and id > 210000 and id < 240000) then
+		itemID = tonumber(link:match("^|H.-:(%x+)") or '', 16)
+		if not (itemID and itemID > 210000 and itemID < 240000) then
 			_type = nil
 		end
 	end
@@ -499,9 +500,9 @@ function CP.Hooked_Hyperlink_Assign(link, key)
 
 			if s1 then
 				local info = {}
+				info.notCheckable = 1
 				info.text = menu_label
 				if s2 then info.text = menu_label .. " - "..CP.L.SEARCH_USE_SLOT1 end
-				info.notCheckable = 1
 				info.func = function()
 					CP.DB.Load()
 					CP.ApplyItem(item_data, s1)
@@ -511,11 +512,29 @@ function CP.Hooked_Hyperlink_Assign(link, key)
 			end
 
 			if s2 then
+				local info = {}
+				info.notCheckable = 1
 				info.text = menu_label .. " - "..CP.L.SEARCH_USE_SLOT2
 				info.func = function()
 					CP.DB.Load()
 					CP.ApplyItem(item_data, s2)
 					CP.DB.Release()
+				end
+				UIDropDownMenu_AddButton(info, 1)
+			end
+		end
+		
+		-- show drop source
+		if itemID then
+			local drop = CP.Search.FindInDungeonLoots(itemID)
+			if drop and #drop > 0 then
+				local info = {}
+				info.notCheckable = 1
+				info.text = "|cffb0b030[CharPlan]|r " .. "from..."
+				info.func = function()
+					for _,text in pairs(drop) do
+						DEFAULT_CHAT_FRAME:AddMessage(link .. ' ' .. text)
+					end
 				end
 				UIDropDownMenu_AddButton(info, 1)
 			end
