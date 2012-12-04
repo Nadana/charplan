@@ -362,13 +362,32 @@ function Search.DoSort(column)
         local item = CP.DB.GenerateItemDataByID(item_id)
         item.plus= UIDropDownMenu_GetSelectedValue(CPSearchFilterPlus) or 0
         item.tier= UIDropDownMenu_GetSelectedValue(CPSearchFilterTier) or 0
-		if CPSearchPowerModify:IsChecked() then
-			item.dura = OVERDURA
-			item.max_dura = CP.DB.CalcMaxDura(item.id, OVERDURA)
-		end
+        if CPSearchPowerModify:IsChecked() then
+          item.dura = OVERDURA
+          item.max_dura = CP.DB.CalcMaxDura(item.id, OVERDURA)
+        end
 
         local effect = CP.Calc.GetItemBonus(item)
-        local boni=effect[att1] + (att2 and effect[att2])
+        local effect1, effect2 = effect[att1], effect[att2]
+        local weapon = att1 == CP.Calc.STATS.PDMG
+        local boni
+        if weapon then
+        	if effect1 > effect2 then
+        		-- sort by dps for pdmg-based weapons
+        		local speed = CP.DB.GetWeaponSpeed(item_id)
+        		if speed and speed ~= 0 then
+        			boni = effect1 / speed
+        		else
+        			boni = effect1
+        		end
+        	else
+        		-- or sort by mdmg
+        		boni = effect2	
+        	end
+        else
+        	-- sort armor by pdef+mdef
+        	boni = effect1 + effect2
+        end
         cache[item_id] = boni
         return boni
     end
@@ -382,10 +401,10 @@ function Search.DoSort(column)
         local item = CP.DB.GenerateItemDataByID(item_id)
         item.plus= UIDropDownMenu_GetSelectedValue(CPSearchFilterPlus) or 0
         item.tier= UIDropDownMenu_GetSelectedValue(CPSearchFilterTier) or 0
-		if CPSearchPowerModify:IsChecked() then
-			item.dura = OVERDURA
-			item.max_dura = CP.DB.CalcMaxDura(item.id, OVERDURA)
-		end
+        if CPSearchPowerModify:IsChecked() then
+          item.dura = OVERDURA
+          item.max_dura = CP.DB.CalcMaxDura(item.id, OVERDURA)
+        end
         local boni=0
         local effect = CP.Calc.GetItemBonus(item)
         for id,val in pairs(effect) do
