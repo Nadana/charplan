@@ -138,6 +138,9 @@ end
 ######################################
 CheckTempPath()
 
+@learnmagic = Learnmagic.new()
+@learnmagic.Export("../item_data/learn.lua")
+raise "stop"
 
 db = FullDB.new
 db.Load

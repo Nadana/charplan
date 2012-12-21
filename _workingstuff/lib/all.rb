@@ -18,5 +18,6 @@ require_relative 'food'
 require_relative 'cards'
 require_relative 'titles'
 require_relative 'voc'
+require_relative 'learnmagic'
 
 
