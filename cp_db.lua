@@ -91,7 +91,6 @@ function DB.Release()
     DB.LoadCount = DB.LoadCount-1
 
     if DB.LoadCount ==0 then
-        -- collectgarbage("collect")
         -- local mem1 = collectgarbage("count")
             DB.LoadCount = nil
             DB.images = nil
@@ -105,6 +104,7 @@ function DB.Release()
             DB.archievements = nil
             DB.effects = nil
             DB.classes = nil
+            DB.learn = nil
             DB.shop_items = nil
             DB.shop_index = nil
             DB.recipe_items = nil

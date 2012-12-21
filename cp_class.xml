@@ -1,0 +1,338 @@
+<Ui xmlns="http://www.runewaker.com/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.runewaker.com/ ../../worldxml/ui.xsd">
+
+	<Frame name="CPClassTemplate" virtual="true">
+		<Size><AbsDimension x="250" y="30"></AbsDimension></Size>
+		<Frames>
+			<Frame name="$parentClassDropDown" inherits="UIDropDownMenuTemplate">
+				<Size><AbsDimension x="140" y="25"/></Size>
+				<Anchors><Anchor point="LEFT" /></Anchors>
+				<Scripts>
+					<OnLoad>UIDropDownMenu_SetWidth(this, 110)
+								UIDropDownMenu_Initialize(this, CP.Classes.OnClassDropDownShow)
+					</OnLoad>
+				</Scripts>
+			</Frame>
+			<EditBox name="$parentLevelEdit"  inherits="UIPanelEditBoxTemplate" numeric="true" letters="2">
+				<Size><AbsDimension x="50" y="24"></AbsDimension></Size>
+				<Anchors>
+					<Anchor point="LEFT"><Offset><AbsDimension x="152"  y="0"></AbsDimension></Offset></Anchor>
+				</Anchors>
+				<TextInsets><AbsInset top="4" right="3" left="10" bottom="0"></AbsInset></TextInsets>
+			</EditBox>
+		</Frames>
+	</Frame>
+
+	<Button name="CPClassTabTemplate" inherits="UIPanelTopTabTemplate" virtual="true">
+		<Scripts>
+			<OnClick>CP.Classes.OnTabClicked( this)</OnClick>
+			<OnShow>PanelTemplates_TabResize(this, 12)</OnShow>
+		</Scripts>	
+	</Button>
+
+	<Frame name="CPClassDialog" inherits="UICommonFrameTemplate" enableMouse="true" frameStrata="MEDIUM" hidden="true">
+		<Size>
+			<AbsDimension x="349" y="545"/>
+		</Size>
+		<Anchors>
+			<Anchor point="CENTER">
+				<Offset>
+					<AbsDimension x="0" y="0"/>
+				</Offset>
+			</Anchor>
+		</Anchors>
+		<Layers>
+			<Layer>
+				<FontString name="$parentClassLabel" inherits="GameFontHighlight">
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="110" y="30"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentLevelLabel" inherits="GameFontHighlight">
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="255" y="30"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentClassMainLabel" inherits="GameFontHighlight">
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="10" y="50"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentClassSubLabel" inherits="GameFontHighlight">
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="10" y="81"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		
+		<Frames>
+			<Frame name="$parentClassMain" inherits="CPClassTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT"><Offset><AbsDimension x="100" y="43"></AbsDimension></Offset></Anchor>
+				</Anchors>
+			</Frame>
+			<Frame name="$parentClassSub" inherits="CPClassTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT"><Offset><AbsDimension x="100" y="73"></AbsDimension></Offset></Anchor>
+				</Anchors>
+			</Frame>
+			<EditBox name="$parentSkillPoints"  inherits="UIPanelEditBoxTemplate" numeric="true" letters="10">
+				<Size><AbsDimension x="100" y="24"></AbsDimension></Size>
+				<Anchors>
+					<Anchor point="TOPLEFT"><Offset><AbsDimension x="200"  y="110"></AbsDimension></Offset></Anchor>
+				</Anchors>
+				<TextInsets><AbsInset top="4" right="3" left="10" bottom="0"></AbsInset></TextInsets>
+			</EditBox>
+			
+			<Frame name="$parentSkills">
+				<Anchors>
+					<Anchor point="TOPLEFT"><Offset><AbsDimension x="10" y="156"></AbsDimension></Offset></Anchor>
+					<Anchor point="BOTTOMRIGHT"><Offset><AbsDimension x="-10" y="-13"></AbsDimension></Offset></Anchor>
+				</Anchors>
+				<Backdrop edgeFile="Interface\Tooltips\Tooltip-border" bgFile="Interface\Tooltips\Tooltip-background">
+					<BackgroundInsets>
+						<AbsInset top="6" left="6" bottom="6" right="6"/>
+					</BackgroundInsets>
+					<EdgeSize>
+						<AbsValue val="16"/>
+					</EdgeSize>
+					<TileSize>
+						<AbsValue val="16"/>
+					</TileSize>
+				</Backdrop>	
+				
+				<Frames>
+					<Button name="$parentTab1" inherits="CPClassTabTemplate">
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset>
+									<AbsDimension x="16" y="-23"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="$parentTab2" inherits="CPClassTabTemplate">
+						<Anchors>
+							<Anchor point="LEFT" relativeTo="$parentTab1" relativePoint="RIGHT">
+								<Offset>
+									<AbsDimension x="0" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="$parentTab3" inherits="CPClassTabTemplate">
+						<Anchors>
+							<Anchor point="LEFT" relativeTo="$parentTab2" relativePoint="RIGHT">
+								<Offset>
+									<AbsDimension x="0" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="$parentTab4" inherits="CPClassTabTemplate">
+						<Anchors>
+							<Anchor point="LEFT" relativeTo="$parentTab3" relativePoint="RIGHT">
+								<Offset>
+									<AbsDimension x="0" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+					<Button name="$parentTab5" inherits="CPClassTabTemplate">
+						<Anchors>
+							<Anchor point="LEFT" relativeTo="$parentTab4" relativePoint="RIGHT">
+								<Offset>
+									<AbsDimension x="0" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Button>
+				
+					<Frame name="$parentSkillButton_1" inherits="OBJ_SkillButton" id="1">
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset>
+									<AbsDimension x="20" y="20"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentSkillButton_2" inherits="OBJ_SkillButton" id="2">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentSkillButton_1" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="10"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentSkillButton_3" inherits="OBJ_SkillButton" id="3">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentSkillButton_2" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="10"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentSkillButton_4" inherits="OBJ_SkillButton" id="4">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentSkillButton_3" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="10"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentSkillButton_5" inherits="OBJ_SkillButton" id="5">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentSkillButton_4" relativePoint="BOTTOMLEFT">
+								<Offset>
+									<AbsDimension x="0" y="10"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentSkillButton_6" inherits="OBJ_SkillButton" id="6">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentSkillButton_1" relativePoint="TOPRIGHT">
+								<Offset>
+									<AbsDimension x="30" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentSkillButton_7" inherits="OBJ_SkillButton" id="7">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentSkillButton_2" relativePoint="TOPRIGHT">
+								<Offset>
+									<AbsDimension x="30" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentSkillButton_8" inherits="OBJ_SkillButton" id="8">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentSkillButton_3" relativePoint="TOPRIGHT">
+								<Offset>
+									<AbsDimension x="30" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentSkillButton_9" inherits="OBJ_SkillButton" id="9">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentSkillButton_4" relativePoint="TOPRIGHT">
+								<Offset>
+									<AbsDimension x="30" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentSkillButton_10" inherits="OBJ_SkillButton" id="10">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentSkillButton_5" relativePoint="TOPRIGHT">
+								<Offset>
+									<AbsDimension x="30" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					
+			<Frame name="$parentPageBar">
+				<Size>
+					<AbsDimension x="295" y="29"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="15" y="-10"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Layers>
+					<Layer>
+						<Texture name="$parentLeftBar" file="Interface\Buttons\PanelFloatBar">
+							<Size>
+								<AbsDimension x="17" y="29"/>
+							</Size>
+							<Anchors>
+								<Anchor point="LEFT"/>
+							</Anchors>
+							<TexCoords left="0" right="0.2656" top="0" bottom="0.9062"/>
+						</Texture>
+						<Texture name="$parentRightBar" file="Interface\Buttons\PanelFloatBar">
+							<Size>
+								<AbsDimension x="17" y="29"/>
+							</Size>
+							<Anchors>
+								<Anchor point="RIGHT"/>
+							</Anchors>
+							<TexCoords left="0.5156" right="0.7656" top="0" bottom="0.9062"/>
+						</Texture>
+						<Texture file="Interface\Buttons\PanelFloatBar">
+							<Anchors>
+								<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" relativeTo="$parentLeftBar"/>
+								<Anchor point="BOTTOMRIGHT" relativePoint="BOTTOMLEFT" relativeTo="$parentRightBar"/>
+							</Anchors>
+							<TexCoords left="0.25" right="0.5" top="0" bottom="0.9062"/>
+						</Texture>
+						<FontString name="$parentPage" inherits="Font_ItemButton_Desc" justifyH="CENTER" justifyV="MIDDLE">
+							<Anchors>
+								<Anchor point="CENTER"/>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+				<Frames>
+					<Button name="$parentLeftPage" inherits="SkillBookLeftPageButton" text="C_LAST_PAGE">
+						<Anchors>
+							<Anchor point="LEFT">
+								<Offset>
+									<AbsDimension x="10" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnClick>CP.Classes.ShowPage(CP.Classes.page-1)</OnClick>
+						</Scripts>
+					</Button>
+					<Button name="$parentRightPage" inherits="SkillBookRightPageButton" text="C_NEXT_PAGE">
+						<Anchors>
+							<Anchor point="RIGHT">
+								<Offset>
+									<AbsDimension x="-10" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+						<Scripts>
+							<OnClick>CP.Classes.ShowPage(CP.Classes.page+1)</OnClick>
+						</Scripts>
+					</Button>
+				</Frames>
+			</Frame>
+				</Frames>
+			</Frame>
+
+		</Frames>
+		<Scripts>
+			<OnShow>CP.Classes.OnShow( this )</OnShow>
+		</Scripts>
+	</Frame>
+</Ui>

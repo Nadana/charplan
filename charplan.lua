@@ -34,6 +34,8 @@ end
 
 ------------------------------
 
+local MAX_LEVEL=70
+
 local WaitTimer = LibStub("WaitTimer")
 local Nyx = LibStub("Nyx")
 
@@ -73,10 +75,8 @@ function CP.OnShow(this)
 
     CP.Unit.ReadCurrent()
 
-    CPFrameClassFrameLeftText:SetText(UnitClass("player"))
-    CPFrameClassFrameRightText:SetText(CP.Unit.level)
     CPFrameMenuBtn:SetText(CP.L.MENU_TITLE)
-
+    CP.UpdateClassBotton()
     CP.UpdateFrameTitle()
 
     CP.DB.Load()
@@ -363,6 +363,7 @@ function CP.UpdateModel()
     end
 end
 
+
 -----------------------------------
 -- Menu
 function CP.OnMenuLoad(this)
@@ -523,7 +524,7 @@ function CP.Hooked_Hyperlink_Assign(link, key)
 				UIDropDownMenu_AddButton(info, 1)
 			end
 		end
-		
+
 		-- show drop source
 		if itemID then
 			-- CP possible not loaded, so delay item search

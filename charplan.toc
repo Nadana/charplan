@@ -11,8 +11,10 @@ cp_search.lua
 cp_storage.lua
 cp_unit.lua
 cp_utils.lua
+cp_class.lua
 
 charplan.xml
 cp_pimpme.xml
 cp_statsearch.xml
 cp_search.xml
+cp_class.xml

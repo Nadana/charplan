@@ -83,3 +83,26 @@ function Unit.Updated()
         CP.UpdatePoints()
     end
 end
+
+
+function Unit.GetClassNameByToken(token)
+    for i=1,GetClassCount() do
+        local name, class_token = GetClassInfoByID(GetClassID(i))
+        if token == class_token then
+            return name
+        end
+    end
+end
+
+function Unit.GetClassIDByToken(token)
+    for i=1,GetClassCount() do
+        local name, class_token = GetClassInfoByID(GetClassID(i))
+        if token == class_token then
+            return i
+        end
+    end
+end
+
+function Unit.GetClassName()
+    return Unit.GetClassNameByToken(Unit.class), Unit.GetClassNameByToken(Unit.sec_class)
+end

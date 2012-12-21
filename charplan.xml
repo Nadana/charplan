@@ -1,5 +1,5 @@
 <Ui xmlns="http://www.runewaker.com/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.runewaker.com/ ../../worldxml/ui.xsd">
-	<!-- Equipment Buttons !-->
+	<!-- Equipment Buttons -->
 	<Button name="CPEquipItemButtonTemplate" inherits="ItemButtonTemplate" virtual="true">
 		<Scripts>
 			<OnClick>CP.EquipItem_OnClick(this, key)</OnClick>
@@ -9,7 +9,7 @@
 			<OnReceiveDrag>CP.EquipItem_OnReceiveDrag( this )</OnReceiveDrag>
 		</Scripts>
 	</Button>
-	<!-- Attribute Displays !-->
+	<!-- Attribute Displays -->
 	<Frame name="CPAttributeFrameTemplate" enableMouse="true" virtual="true">
 		<Size>
 			<AbsDimension x="136" y="14"/>
@@ -55,7 +55,7 @@
 			<OnLeave>GameTooltip:Hide()</OnLeave>
 		</Scripts>
 	</Frame>
-	<!-- Attribute Title display !-->
+	<!-- Attribute Title display -->
 	<Frame name="CPAttributeTitleTemplate" virtual="true">
 		<Size>
 			<AbsDimension x="136" y="14"/>
@@ -79,7 +79,37 @@
 			<OnLoad>CP.AttributeTitle_OnLoad( this )</OnLoad>
 		</Scripts>
 	</Frame>
-	<!-- Main Dialog!-->
+	<!-- class diaplay button -->
+	<Button name="CPClassButtonTemplate" inherits="UIPanelButtonTemplate" virtual="true">
+		<Size>
+			<AbsDimension x="134" y="32"/>
+		</Size>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentLeftText" inherits="GameFontNormal" text="blub">
+					<Anchors>
+						<Anchor point="LEFT">
+							<Offset>
+								<AbsDimension x="8" y="-1"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentRightText" inherits="GameFontNormal" text="99">
+					<Anchors>
+						<Anchor point="RIGHT">
+							<Offset>
+								<AbsDimension x="-10" y="-1"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Button>
+
+	
+	<!-- Main Dialog -->
 	<Frame name="CPFrame" parent="UIParent" enableMouse="true" inherits="UICommonFrameTemplate">
 		<Size>
 			<AbsDimension x="636" y="433"/>
@@ -500,16 +530,22 @@
 					</Anchor>
 				</Anchors>
 				<Frames>
-					<Frame name="CPFrameClassFrame" inherits="CharacterClassFrameTempate" frameStrata="BACKGROUND" frameLevel="-100">
+					<Button name="CPFrameClassBtn" inherits="CPClassButtonTemplate">
+						<Size>
+							<AbsDimension x="132" y="24"/>
+						</Size>
 						<Anchors>
 							<Anchor point="TOPLEFT">
 								<Offset>
-									<AbsDimension x="8" y="0"/>
+									<AbsDimension x="8" y="5"/>
 								</Offset>
 							</Anchor>
 						</Anchors>
-					</Frame>
-					<Button name="CPFrameMenuBtn" enableMouse="true" inherits="UIPanelButtonTemplate" text="Menu">
+						<Scripts>
+							<OnClick>CP.ChangeClass()</OnClick>
+						</Scripts>
+					</Button>					
+					<Button name="CPFrameMenuBtn" inherits="UIPanelButtonTemplate" text="Menu">
 						<Size>
 							<AbsDimension x="132" y="24"/>
 						</Size>
@@ -801,7 +837,7 @@
 		<PushedTexture file="interface/AddOns/charplan/icon"/>
 		<HighlightTexture file="Interface\Buttons\PanelSmallButtonHighlight" alphaMode="ADD"/>
 	</Button>
-
+	<!-- Minimap Button -->
     <Button name="CharplanMinimapButton" hidden="false" inherits="MinimapButtonTemplate" parent="UIParent" >
 		<Size>
 			<AbsDimension y="24" x="24"/>
