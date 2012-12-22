@@ -158,8 +158,7 @@ end
 function Calc.ReadSkills()
 
     Calc.SkillBonus = Calc.NewStats()
-
-    local skills = Calc.GetListOfSkills()
+    local skills = CP.Unit.skills
     for skill_id, level in pairs(skills) do
 
         local spells = CP.DB.GetSkillSpells(skill_id)
@@ -178,27 +177,6 @@ function Calc.ReadSkills()
             end
         end
     end
-end
-
-function Calc.GetListOfSkills()
-
-    local skills = {}
-
-    for page=2,4 do
-
-        local count = GetNumSkill( page ) or 0
-        for index = 1,count do
-            local _, _, _, _, PLV, _, _, _bLearned  = GetSkillDetail( page,  index )
-            if _bLearned then
-                local link = GetSkillHyperLink( page, index )
-                local id, lvl = link:match(":(%d+) (%d+)")
-                assert(PLV==tonumber(lvl))
-                skills[tonumber(id)] = PLV
-            end
-        end
-    end
-
-    return skills
 end
 
 function Calc.Calculate()

@@ -29,6 +29,8 @@ function Unit.ReadCurrent()
     Unit.name = UnitName("player")
     Unit.level, Unit.sec_level=UnitLevel("player")
     Unit.class, Unit.sec_class=UnitClassToken("player")
+
+    Unit.skills = Unit.GetListOfSkills()
 end
 
 function Unit.Store(data_tab)
@@ -39,6 +41,7 @@ function Unit.Store(data_tab)
     data_tab.sec_level = Unit.sec_level
     data_tab.class = Unit.class
     data_tab.sec_class = Unit.sec_class
+    data_tab.skills = Unit.skills
 end
 
 function Unit.Load(data_tab)
@@ -49,6 +52,7 @@ function Unit.Load(data_tab)
     Unit.sec_level = data_tab.sec_level
     Unit.class = data_tab.class
     Unit.sec_class = data_tab.sec_class
+    Unit.skills = data_tab.skills or {}
 end
 
 function Unit.GetCurrentTitle()
@@ -84,6 +88,26 @@ function Unit.Updated()
     end
 end
 
+function Unit.GetListOfSkills()
+
+    local skills = {}
+
+    for page=2,4 do
+
+        local count = GetNumSkill( page ) or 0
+        for index = 1,count do
+            local _, _, _, _, PLV, _, _, _bLearned  = GetSkillDetail( page,  index )
+            if _bLearned then
+                local link = GetSkillHyperLink( page, index )
+                local id, lvl = link:match(":(%d+) (%d+)")
+                assert(PLV==tonumber(lvl))
+                skills[tonumber(id)] = PLV
+            end
+        end
+    end
+
+    return skills
+end
 
 function Unit.GetClassNameByToken(token)
     for i=1,GetClassCount() do

@@ -10,7 +10,7 @@ end
 
 function TestCP_Calc:CheckSkill(base_val, skills, result)
 
-    TestCP_Calc.cur_list_of_skills = skills
+    CP.Unit.skills = skills
     CP.Calc.ReadSkills()
 
     local values = CP.Calc.NewStats()
@@ -44,9 +44,6 @@ function TestCP_Calc:testStats()
     assertEquals(c.INT, 5)
 end
 
-function TestCP_Calc.HOOKED_GetListOfSkills()
-    return TestCP_Calc.cur_list_of_skills
-end
 
 function TestCP_Calc:CompareStats(actual, expected, msg, tolerance)
     tolerance = tolerance or 0.01
@@ -81,18 +78,12 @@ function TestCP_Calc:classSetUp()
     CP.Unit.class = "WARDEN"
     CP.Unit.sec_class = nil
 
-
-    self.old_GetListOfSkills = CP.Calc.GetListOfSkills
-    CP.Calc.GetListOfSkills = TestCP_Calc.HOOKED_GetListOfSkills
-
     CP.DB.Load()
 end
 
 function TestCP_Calc:classTearDown()
 
     CP.Unit.Load(self.old_unit)
-
-    CP.Calc.GetListOfSkills = self.old_GetListOfSkills
 
     CP.Calc.Init()
     CP.DB.Release()

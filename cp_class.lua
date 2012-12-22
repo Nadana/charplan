@@ -124,7 +124,7 @@ function Classes.ShowPage(pagenr)
             local id = sk[2]
             local name = TEXT("Sys"..id.."_name")
 
-            SkillBook_SetSkillButton( _Button, "", name, nil, 99, 200, 400, nil, true, 0, 0, 1 )
+            SkillBook_SetSkillButton( _Button, "", name, nil, 12, 200, 400, nil, true, 0, 0, 1 )
 --~             if _bLearned then
 --~                 SkillBook_SetSkillButton( _Button, _IconPath, _SkillName, _SkillLV, _PLV, _PPoint, _PTotalPoint, _Mode, _EnableToLV, 0, 0, _bLearned )
 --~             else

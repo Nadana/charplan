@@ -133,8 +133,6 @@ function CP.SlashCMD_SnapShot()
     CP_FullCharInfo.bases=CP.Calc.GetBases()
     CP_FullCharInfo.cards=CP.Calc.GetCardBonus()
     CP_FullCharInfo.item_links=GetCurrentCPItems()
-    CP_FullCharInfo.skills=CP.Calc.GetListOfSkills()
-
     CP_FullCharInfo.result =GetCurrentStats()
 
 

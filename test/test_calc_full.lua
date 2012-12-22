@@ -48,27 +48,16 @@ function TestCP_CalcFull:DoFullCharCheck(info)
     TestCP_Calc:CompareStats(values, info.result,nil,0.9) -- TODO: tolerance (last value) should be 0
 end
 
-function TestCP_CalcFull.HOOKED_GetListOfSkills()
-    if TestCP_CalcFull.cur_data and TestCP_CalcFull.cur_data.skills then
-        return TestCP_CalcFull.cur_data.skills
-    end
-    return {}
-end
 
 function TestCP_CalcFull:classSetUp()
     self.old_data = CP.Utils.TableCopy(CP.Items)
     self.old_unit={}
     CP.Unit.Store(self.old_unit)
 
-    self.old_GetListOfSkills = CP.Calc.GetListOfSkills
-    CP.Calc.GetListOfSkills = TestCP_CalcFull.HOOKED_GetListOfSkills
-
     CP.DB.Load()
 end
 
 function TestCP_CalcFull:classTearDown()
-
-    CP.Calc.GetListOfSkills = self.old_GetListOfSkills
 
     CP.Unit.Load(self.old_unit)
 
