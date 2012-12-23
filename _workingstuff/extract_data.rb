@@ -53,28 +53,23 @@ class FullDB
         @cards = Cards.new()
         @titles = Titles.new()
         @vocs = Voc.new()
+        @learnmagic = Learnmagic.new()
     end
 
     def Export
         p "writting"
         @images.Export("../item_data/images.lua")
-
         @suits.Export("../item_data/sets.lua")
         @refines.Export("../item_data/refines.lua")
         @addpower.Export("../item_data/addpower.lua")
         @titles.Export("../item_data/archievements.lua")
-
         @cards.Export("../item_data/cards.lua")
         @items.Export("../item_data/items.lua")
-
-        @spell_collection.Export("../item_data/skills.lua")
-        @spells.Export("../item_data/spells.lua")
-
+        @spell_collection.Export("../item_data/spells.lua")
+        @spells.Export("../item_data/spell_effects.lua")
         @food.Export("../item_data/food.lua")
-
         @vocs.Export("../item_data/classes.lua")
-
-        #ArmorEntry.TestWrite(armor)
+        @learnmagic.Export("../item_data/skills.lua")
     end
 
 
@@ -83,25 +78,31 @@ class FullDB
         #CheckSetItems(@suits, @items)
         @items.MarkUnusedIfNameInvalid($de)
         @suits.MarkUnusedIfNameInvalid($de)
-        CheckImages(@items, @images)
+        CheckImages(@images, [@items, @spell_collection])
         FilterSpells()
     end
 
     def FilterSpells
+        #@spells.MarkAllUnused
+        #@food.MarkSpellsUsed(@spell_collection)
+        #@learnmagic.MarkSpellsUsed(@spell_collection)
+
         @spells.MarkAllUnused
         @spell_collection.MarkSpellsUsed(@spells)
-        @food.MarkSpellsUsed(@spell_collection)
+        raise "missing spell" if not @spell_collection[490142].Export?
     end
 
-    def CheckImages(items, images)
+    def CheckImages(images, tables)
         images.MarkAllUnused()
-        items.each { |r|
-            begin
-                images.Used(r.image_id)
-            rescue
-                $log.warn { "Item #{r.id} removed 'cause image is invalid/unknown (#{r.image_id})" }
-                items.NotUsed(r.id)
-            end
+        tables.each { |tab|
+            tab.each { |r|
+                begin
+                    images.Used(r.image_id)
+                rescue
+                    $log.warn { "Item #{r.id} removed 'cause image is invalid/unknown (#{r.image_id})" }
+                    tab.NotUsed(r.id)
+                end
+            }
         }
     end
 
@@ -137,10 +138,6 @@ end
 
 ######################################
 CheckTempPath()
-
-@learnmagic = Learnmagic.new()
-@learnmagic.Export("../item_data/learn.lua")
-raise "stop"
 
 db = FullDB.new
 db.Load

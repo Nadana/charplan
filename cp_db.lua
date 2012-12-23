@@ -27,6 +27,12 @@ CP.DB = DB
     -- Bonus
     local B_EFFECT=1 -- optional
     local B_GROUP=2 -- optional
+
+    -- Skills
+    local S_EFFECT=1
+    local S_ICON=2
+    local S_SPELLS=3
+
 --[[ ] ]]
 
 
@@ -78,10 +84,11 @@ function DB.Load()
     DB.bonus = LoadTable("addpower")
     DB.refines = LoadTable("refines")
     DB.cards = LoadTable("cards")
-    DB.skills = LoadTable("skills")
-    DB.spells = LoadTable("spells")
+    DB.skills = LoadTable("spells")
+    DB.spells = LoadTable("spell_effects")
     DB.sets = LoadTable("sets")
     DB.archievements = LoadTable("archievements")
+    DB.learn = LoadTable("skills")
     DB.shop_items = LoadTable("shop_items")
     DB.shop_index = LoadTable("shop_index")
     DB.recipe_items = LoadTable("recipe_items")
@@ -131,7 +138,16 @@ function DB.GetCardEffect(card_id)
 end
 
 function DB.GetSkillSpells(skill_id)
-    return DB.skills[skill_id] or {}
+    local sp = DB.skills[skill_id] and DB.skills[skill_id][S_SPELLS]
+
+    if type(sp)=="number" then
+        return {sp}
+    elseif type(sp)~="table" then
+        CP.Debug("!no skill: "..skill_id)
+        return {}
+    end
+
+    return sp
 end
 
 function DB.GetSkillSpellEffect(spell_id)
@@ -388,6 +404,9 @@ function DB.ItemSkinPosition(item_id)
         end
     end
 end
+
+--------
+-- skills
 
 --------
 -- stat search

@@ -78,4 +78,17 @@ class Learnmagic
             outf.write("}\n")
         }
     end
+
+    def MarkSpellsUsed(spells)
+        @base.each {|i,p|
+            p.each { |data|
+                spells.Used(data.skill) if spells.db.include?(data.skill)
+            }
+        }
+        @spec.each {|i,p|
+            p.each { |data|
+                spells.Used(data.skill) if spells.db.include?(data.skill)
+            }
+        }
+    end
 end

@@ -9,9 +9,9 @@
         @skilllvarg = csv_row['ability_skilllvarg'].to_f
     end
 
-    def IsValid?
-        return (super() and @bonus.HasStats?)
-    end
+    #~ def IsValid?
+        #~ return (super() and @bonus.HasStats?)
+    #~ end
 
     def ExportDesc(data)
         data.push( "skilllvarg")

@@ -1,6 +1,6 @@
 ﻿class MagicCollectionEntry < TableEntry
-
     attr_accessor :magics
+    attr_accessor :image_id
     attr_accessor :effecttype
 
     def initialize(csv_row)
@@ -12,6 +12,7 @@
         end
 
         @effecttype = csv_row['effecttype'].to_i
+        @image_id = csv_row['imageid'].to_i
     end
 
     def IsValid?
@@ -20,14 +21,16 @@
     end
 
     def ExportDesc(data)
+        data.push( "effecttype")
+        data.push( "image_id")
         data.push( "{magics}")
         data.push( "")
     end
 
     def ExportData(data)
-        @magics.each {|d|
-            data.push(d)
-        }
+        data.push(@effecttype)
+        data.push(@image_id)
+        data.push(FormatArray(@magics, true))
     end
 
 end

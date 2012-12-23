@@ -51,7 +51,7 @@ class TableEntry
     end
 
     def ExportData(data)
-        raise "no exposrt defined"
+        raise "no export defined"
     end
 end
 
