@@ -138,8 +138,10 @@ function Classes.ShowPage(pagenr)
             local icon = sk[4]
             local learned = sk[5]
             local skill = sk[6]
+            local mode = sk[7] -- ==2: passive
+            local maxskill = sk[8] -- ==2: passive
 
-            SkillBook_SetSkillButton( _Button, icon, name, lvl, skill, 200, 400, nil, true, 0, 0, learned )
+            SkillBook_SetSkillButton( _Button, icon, name, id, skill, 200, 400, mode, maxskill>0, 0, 0, learned )
 --~             if _bLearned then
 --~                 SkillBook_SetSkillButton( _Button, _IconPath, _SkillName, _SkillLV, _PLV, _PPoint, _PTotalPoint, _Mode, _EnableToLV, 0, 0, _bLearned )
 --~             else

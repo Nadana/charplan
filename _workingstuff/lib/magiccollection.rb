@@ -1,7 +1,10 @@
-﻿class MagicCollectionEntry < TableEntry
+﻿require_relative 'table'
+
+class MagicCollectionEntry < TableEntry
     attr_accessor :magics
     attr_accessor :image_id
     attr_accessor :effecttype
+    attr_accessor :maxskill
 
     def initialize(csv_row)
         super(csv_row)
@@ -13,10 +16,10 @@
 
         @effecttype = csv_row['effecttype'].to_i
         @image_id = csv_row['imageid'].to_i
+        @maxskill = csv_row['maxskilllv'].to_i
     end
 
     def IsValid?
-        #return false if @effecttype!=2  # passive spells only
         return (@magics.size!=0)
     end
 
@@ -24,13 +27,14 @@
         data.push( "effecttype")
         data.push( "image_id")
         data.push( "{magics}")
-        data.push( "")
+        data.push( "maxskill")
     end
 
     def ExportData(data)
         data.push(@effecttype)
         data.push(@image_id)
         data.push(FormatArray(@magics, true))
+        data.push(@maxskill)
     end
 
 end

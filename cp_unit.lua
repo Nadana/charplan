@@ -152,10 +152,16 @@ end
     local S_PRE_FLAG=5
 --[[ ] ]]
 
-local function FindSkill(all, id)
+local function IsParentIncluded(all, find_skill)
+    local id = find_skill[S_PRE_SKILL]
+    if id<=0 then
+        return true
+    end
     for line,ldata in pairs(all) do
         for _,skill in ipairs(ldata) do
-            if skill[S_ID]==id then return skill end
+            if skill[S_ID]==id then
+                return IsParentIncluded(all, skill)
+            end
         end
     end
 end
@@ -170,7 +176,7 @@ function Unit.GetAllSkills()
         [DF_SkillType_SP] = CP.DB.GetSkillList(c1,2)}
 
     if c2>0 then
-        pre_res[DF_SkillType_SubJob] = CP.DB.GetSkillList(c2,2)
+        pre_res[DF_SkillType_SubJob] = CP.DB.GetSkillList(c2,1)
     end
 
 
@@ -185,23 +191,25 @@ function Unit.GetAllSkills()
 
         for _,skill in ipairs(ldata) do
             local learned = skill[S_LVL]<=level
-            local skip=false
-            if skill[S_PRE_SKILL]>0 then
-                if not FindSkill(pre_res, skill[S_PRE_SKILL]) then
-                    skip = true
-                end
 
+            if skill[S_PRE_SKILL]>0 then
                 local cur_lvl = Unit.skills[skill[S_PRE_SKILL]]
                 if not cur_lvl or cur_lvl<skill[S_PRE_SKILL_LVL] then
                     learned = false
                 end
             end
 
-            if not skip then
+            if IsParentIncluded(pre_res, skill) then
                 local id = skill[S_ID]
+                local cur_level = Unit.skills[id] or 0
+                local max_level = (CP.DB.skills[id] and CP.DB.skills[id][4]) or 0
+                if max_level <1 then cur_level=nil end
+
                 table.insert(res[line], { skill[S_LVL], id,
                             TEXT("Sys"..id.."_name"), CP.DB.GetSpellIcon(id),
-                            learned, Unit.skills[id] or 0,
+                            learned, cur_level,
+                            CP.DB.skills[id] and CP.DB.skills[id][1],
+                            max_level
                             } )
             end
         end

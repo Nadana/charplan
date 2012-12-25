@@ -38,7 +38,7 @@ class SkillEntry
     end
 
     def Export()
-        return "{#{@min_level},#{@skill},#{@req_skill},#{@req_skill_lvl},#{@req_flag},}"
+        return "{#{@min_level},#{@skill},#{@req_skill},#{@req_skill_lvl},#{@req_flag},#{@u3}}"
     end
 end
 
