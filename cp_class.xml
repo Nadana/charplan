@@ -24,12 +24,12 @@
 
 	<Button name="CPClassTabTemplate" inherits="UIPanelTopTabTemplate" virtual="true">
 		<Scripts>
-			<OnClick>CP.Classes.OnTabClicked( this)</OnClick>
+			<OnClick>CP.Classes.OnTabClicked(this, this:GetID())</OnClick>
 			<OnShow>PanelTemplates_TabResize(this, 12)</OnShow>
-		</Scripts>	
+		</Scripts>
 	</Button>
 
-	<Frame name="CPClassDialog" inherits="UICommonFrameTemplate" enableMouse="true" frameStrata="MEDIUM" hidden="true">
+	<Frame name="CPClassDialog" inherits="UICommonFrameTemplate" enableMouse="true" frameStrata="DIALOG" hidden="true">
 		<Size>
 			<AbsDimension x="349" y="545"/>
 		</Size>
@@ -80,7 +80,7 @@
 				</FontString>
 			</Layer>
 		</Layers>
-		
+
 		<Frames>
 			<Frame name="$parentClassMain" inherits="CPClassTemplate">
 				<Anchors>
@@ -99,7 +99,7 @@
 				</Anchors>
 				<TextInsets><AbsInset top="4" right="3" left="10" bottom="0"></AbsInset></TextInsets>
 			</EditBox>
-			
+
 			<Frame name="$parentSkills">
 				<Anchors>
 					<Anchor point="TOPLEFT"><Offset><AbsDimension x="10" y="156"></AbsDimension></Offset></Anchor>
@@ -115,8 +115,8 @@
 					<TileSize>
 						<AbsValue val="16"/>
 					</TileSize>
-				</Backdrop>	
-				
+				</Backdrop>
+
 				<Frames>
 					<Button name="$parentTab1" inherits="CPClassTabTemplate">
 						<Anchors>
@@ -163,7 +163,7 @@
 							</Anchor>
 						</Anchors>
 					</Button>
-				
+
 					<Frame name="$parentSkillButton_1" inherits="OBJ_SkillButton" id="1">
 						<Anchors>
 							<Anchor point="TOPLEFT">
@@ -254,7 +254,7 @@
 							</Anchor>
 						</Anchors>
 					</Frame>
-					
+
 			<Frame name="$parentPageBar">
 				<Size>
 					<AbsDimension x="295" y="29"/>

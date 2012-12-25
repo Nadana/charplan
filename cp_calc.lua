@@ -161,10 +161,10 @@ function Calc.ReadSkills()
     local skills = CP.Unit.skills
     for skill_id, level in pairs(skills) do
 
-        local spells = CP.DB.GetSkillSpells(skill_id)
+        local spells = CP.DB.GetSpellEffectList(skill_id)
         for _,spell_id in ipairs(spells) do
 
-            local skill_arg, effects = CP.DB.GetSkillSpellEffect(spell_id)
+            local skill_arg, effects = CP.DB.GetSpellEffect(spell_id)
             if skill_arg then
                 for i=1,#effects,2 do
                     local ev = effects[i+1]

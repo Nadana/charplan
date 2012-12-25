@@ -28,10 +28,10 @@ CP.DB = DB
     local B_EFFECT=1 -- optional
     local B_GROUP=2 -- optional
 
-    -- Skills
+    -- Spells
     local S_EFFECT=1
     local S_ICON=2
-    local S_SPELLS=3
+    local S_SPELL_EFFECTS=3
 
 --[[ ] ]]
 
@@ -76,7 +76,7 @@ function DB.Load()
     DB.refines = LoadTable("refines")
     DB.cards = LoadTable("cards")
     DB.skills = LoadTable("spells")
-    DB.spells = LoadTable("spell_effects")
+    DB.spell_effects = LoadTable("spell_effects")
     DB.sets = LoadTable("sets")
     DB.archievements = LoadTable("archievements")
     DB.learn = LoadTable("skills")
@@ -99,7 +99,7 @@ function DB.Release()
             DB.refines = nil
             DB.cards = nil
             DB.skills = nil
-            DB.spells = nil
+            DB.spell_effects = nil
             DB.sets = nil
             DB.archievements = nil
             DB.effects = nil
@@ -126,8 +126,8 @@ function DB.GetCardEffect(card_id)
     end
 end
 
-function DB.GetSkillSpells(skill_id)
-    local sp = DB.skills[skill_id] and DB.skills[skill_id][S_SPELLS]
+function DB.GetSpellEffectList(skill_id)
+    local sp = DB.skills[skill_id] and DB.skills[skill_id][S_SPELL_EFFECTS]
 
     if type(sp)=="number" then
         return {sp}
@@ -139,11 +139,33 @@ function DB.GetSkillSpells(skill_id)
     return sp
 end
 
-function DB.GetSkillSpellEffect(spell_id)
-    local boni = DB.spells[spell_id]
+function DB.GetSpellEffect(spell_id)
+    local boni = DB.spell_effects[spell_id]
     if boni then
         return boni[1],boni[2]
     end
+end
+
+function DB.GetSpellIcon(spell_id)
+    local icon_id = DB.skills[spell_id] and DB.skills[spell_id][S_ICON]
+    if icon_id then
+        local icon = DB.images[ icon_id ]
+        if icon then
+            return "interface/icons/" .. icon
+        else
+            CP.Debug("No Icon: "..icon_id.." for spell "..spell_id)
+        end
+    else
+        CP.Debug("No Icon for spell "..spell_id)
+    end
+end
+
+function DB.GetSkillList(token_id,line)
+    local learn = CP.DB.learn[token_id]
+    if not learn then return {} end
+
+    assert(line==1 or line==2)
+    return learn[line]
 end
 
 function DB.GetArchievementEffect(title_id)
@@ -392,9 +414,6 @@ function DB.ItemSkinPosition(item_id)
         end
     end
 end
-
---------
--- skills
 
 --------
 -- stat search

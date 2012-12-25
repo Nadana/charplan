@@ -37,7 +37,10 @@ function Classes.OnClassDropDownShow(this)
         info.notCheckable=1
         info.func = function (button)
             UIDropDownMenu_SetSelectedValue(this, button.value)
-            Classes.ResetList()
+            local c1 = UIDropDownMenu_GetSelectedValue(CPClassDialogClassMainClassDropDown)
+            local c2 = UIDropDownMenu_GetSelectedValue(CPClassDialogClassSubClassDropDown)
+            CP.Unit.SetClass(c1,c2)
+            Classes.OnClassChanged()
         end
         UIDropDownMenu_AddButton(info)
     end
@@ -73,12 +76,21 @@ function Classes.OnShow(this)
     UIDropDownMenu_SetSelectedValue(CPClassDialogClassSubClassDropDown, CP.Unit.sec_class)
     UIDropDownMenu_SetText(CPClassDialogClassSubClassDropDown, sec_name)
 
-	Classes.ResetList()
+    Classes.OnClassChanged()
 end
 
-function Classes.ResetList()
+function Classes.OnClassChanged()
+    CP.Classes.skills = CP.Unit.GetAllSkills()
+    Classes.UpdateTabs()
+    Classes.UpdateList()
+end
 
-	Classes.ResetTab()
+function Classes.OnSkillChanged()
+    CP.Classes.skills = CP.Unit.GetAllSkills()
+    Classes.UpdateList()
+end
+
+function Classes.UpdateList()
 
     local skillPoints = GetTotalTpExp()
     CPClassDialogSkillPoints:SetText( skillPoints )
@@ -122,9 +134,12 @@ function Classes.ShowPage(pagenr)
         if sk then
             local lvl = sk[1]
             local id = sk[2]
-            local name = TEXT("Sys"..id.."_name")
+            local name = sk[3]
+            local icon = sk[4]
+            local learned = sk[5]
+            local skill = sk[6]
 
-            SkillBook_SetSkillButton( _Button, "", name, nil, 12, 200, 400, nil, true, 0, 0, 1 )
+            SkillBook_SetSkillButton( _Button, icon, name, lvl, skill, 200, 400, nil, true, 0, 0, learned )
 --~             if _bLearned then
 --~                 SkillBook_SetSkillButton( _Button, _IconPath, _SkillName, _SkillLV, _PLV, _PPoint, _PTotalPoint, _Mode, _EnableToLV, 0, 0, _bLearned )
 --~             else
@@ -136,13 +151,12 @@ function Classes.ShowPage(pagenr)
 	end
 end
 
-function Classes.ResetTab()
+function Classes.UpdateTabs()
 
     local basename="CPClassDialogSkillsTab"
 
-	local VocID, VocName = GetVocInfo()
-	local VocSubID, VocSubName = GetVocSubInfo()
-	local ClassToken, SubClassToken = UnitClassToken( "player" )
+	local VocName, VocSubName  = CP.Unit.GetClassName()
+	local ClassToken, SubClassToken = CP.Unit.class, CP.Unit.sec_class
 
     local index=1
     local function AddTab(this, typ, value, name)
@@ -163,11 +177,6 @@ function Classes.ResetTab()
 
     AddTab(this, DF_SkillType_SP, string.format( DF_SkillBook_Tab_Format , ClassToken ) .. "_sole" , string.format( CLASS_ONLY , VocName ) )
 
---~ 	if( GetNumSkill( DF_SkillType_Pet ) > 0 )then
---~         AddTab(this, DF_SkillType_Pet, string.format( DF_SkillBook_Tab_Format , "pet" ), TEXT("SKILLBOOK_TAB_PET") )
---~ 	end
-
-
 	for i=index,5 do
  		_G[ basename .. i ]:Hide()
 	end
@@ -177,53 +186,14 @@ function Classes.ResetTab()
 	PanelTemplates_SetTab( CPClassDialogSkills, 1)
 end
 
-
-
 function Classes.GetCurSkillList()
-    local skill_type = Classes.GetSelectedTab()
-
-    local c1 = UIDropDownMenu_GetSelectedValue(CPClassDialogClassMainClassDropDown)
-    local c2 = UIDropDownMenu_GetSelectedValue(CPClassDialogClassSubClassDropDown)
-
-    if skill_type == DF_SkillType_MainJob then
-        return Classes.GetSkillList(c1,1)
-    elseif skill_type == DF_SkillType_SubJob then
-        return Classes.GetSkillList(c2,1)
-    elseif skill_type == DF_SkillType_SP then
-        return Classes.GetSkillList(c1,2)
-    else
-        assert(false)
-    end
-
-end
-
-function Classes.GetSelectedTab()
     local idx = PanelTemplates_GetSelectedTab(CPClassDialogSkills)
-    return _G[ "CPClassDialogSkillsTab" .. idx ].type
+    local skill_type = _G[ "CPClassDialogSkillsTab" .. idx ].type
+    return CP.Classes.skills[skill_type]
 end
-
-function Classes.GetSkillList(token,line)
-    local cid = CP.Unit.GetClassIDByToken(token)
-    local learn = CP.DB.learn[590000+cid]
-    if not learn then return {} end
-
-    assert(line==1 or line==2)
-    return learn[line]
-end
-
 
 function Classes.OnTabClicked(this, id)
-
---~ 	if( gSkillFrame.type ~= this.type ) then
-
---~ 		SkillTab_SetActiveState( gSkillFrame.tab, false );
---~ 		SkillTab_SetActiveState( this, true );
-
---~ 		gSkillFrame.tab = this;
---~ 		gSkillFrame.type = this.type;
-
---~ 		Lua_Reset_SkillBook( gSkillFrame.frame );
---~ 	end
-
+    PanelTemplates_SetTab(CPClassDialogSkills,id)
+    Classes.ShowPage(1)
 end
 

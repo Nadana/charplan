@@ -90,7 +90,7 @@ class Learnmagic
                     @spec[guid].sort {|x,y| x.min_level <=> y.min_level}.each {|r| line_spec.push(r.Export()) }
                 end
 
-                outf.write( "  [%i]={{%s},{%s}},\n" % [guid, line_base.join(","),line_spec.join(",")])
+                outf.write( "  [%i]={{%s},{%s}},\n" % [guid-590000, line_base.join(","),line_spec.join(",")])
             }
             outf.write("}\n")
         }

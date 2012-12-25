@@ -9,7 +9,8 @@ CP.Unit = Unit
     level
     sec_level
     class
-    sec_level
+    sec_class
+    skills
 ]]
 
 local function _GetTitleCount()
@@ -130,3 +131,84 @@ end
 function Unit.GetClassName()
     return Unit.GetClassNameByToken(Unit.class), Unit.GetClassNameByToken(Unit.sec_class)
 end
+
+function Unit.SetClass(c1,c2)
+    Unit.class=c1
+    Unit.sec_class=c2
+    Unit.skills={}
+
+    local cc1,cc2=UnitClassToken("player")
+    if c1==cc1 and c2==c2 then
+        Unit.skills = Unit.GetListOfSkills()
+    end
+end
+
+--[[ [ DataBase Format ]]
+    -- Spells
+    local S_LVL=1
+    local S_ID=2
+    local S_PRE_SKILL=3
+    local S_PRE_SKILL_LVL=4
+    local S_PRE_FLAG=5
+--[[ ] ]]
+
+local function FindSkill(all, id)
+    for line,ldata in pairs(all) do
+        for _,skill in ipairs(ldata) do
+            if skill[S_ID]==id then return skill end
+        end
+    end
+end
+
+function Unit.GetAllSkills()
+
+    local c1 = CP.Unit.GetClassIDByToken(Unit.class)
+    local c2 = CP.Unit.GetClassIDByToken(Unit.sec_class)
+
+    local pre_res = {
+        [DF_SkillType_MainJob] = CP.DB.GetSkillList(c1,1),
+        [DF_SkillType_SP] = CP.DB.GetSkillList(c1,2)}
+
+    if c2>0 then
+        pre_res[DF_SkillType_SubJob] = CP.DB.GetSkillList(c2,2)
+    end
+
+
+    local res={}
+    for line,ldata in pairs(pre_res) do
+        res[line]={}
+
+        local level = Unit.level
+        if line==DF_SkillType_SubJob then
+            level = math.min(Unit.level,Unit.sec_level)
+        end
+
+        for _,skill in ipairs(ldata) do
+            local learned = skill[S_LVL]<=level
+            local skip=false
+            if skill[S_PRE_SKILL]>0 then
+                if not FindSkill(pre_res, skill[S_PRE_SKILL]) then
+                    skip = true
+                end
+
+                local cur_lvl = Unit.skills[skill[S_PRE_SKILL]]
+                if not cur_lvl or cur_lvl<skill[S_PRE_SKILL_LVL] then
+                    learned = false
+                end
+            end
+
+            if not skip then
+                local id = skill[S_ID]
+                table.insert(res[line], { skill[S_LVL], id,
+                            TEXT("Sys"..id.."_name"), CP.DB.GetSpellIcon(id),
+                            learned, Unit.skills[id] or 0,
+                            } )
+            end
+        end
+    end
+
+
+    return res
+end
+
+
