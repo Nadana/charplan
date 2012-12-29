@@ -36,20 +36,38 @@ local function LoadTable(fname)
     return fn()
 end
 
-local function LoadEffects()
-	local eff = {}
-	for i=0,300 do
+local function loadEffects()
+	local cache = {}
+	for i=0,300 do	-- was 218 70 lvl
 		local n = "SYS_WEAREQTYPE_" .. i
-		local t = TEXT(n)
-		eff[i] = t
+		cache[i] = TEXT(n)
 	end
-	return eff
+	return cache
+end
+
+
+local function loadMoneyNames()
+	local cache = {}
+	for i=0,30 do	-- 14 at 5.0.6
+		local n = "SYS_MONEY_TYPE_" .. i
+		cache[i] = TEXT(n)
+	end
+	return cache
+end
+
+local function makeRecipeIndex(recipe_items)
+	local cache = {}
+	for recipe,entry in pairs(recipe_items) do
+		for _,item in pairs(entry[2]) do
+			cache[item] = recipe
+		end
+	end
+	return cache
 end
 
 function DB.Load()
-
     if DB.LoadCount then
-        DB.LoadCount = DB.LoadCount +1
+        DB.LoadCount = DB.LoadCount + 1
         return
     end
     DB.LoadCount = 1
@@ -64,8 +82,12 @@ function DB.Load()
     DB.spells = LoadTable("spells")
     DB.sets = LoadTable("sets")
     DB.archievements = LoadTable("archievements")
-
-    DB.effects = LoadEffects()
+    DB.shop_items = LoadTable("shop_items")
+    DB.shop_index = LoadTable("shop_index")
+    DB.recipe_items = LoadTable("recipe_items")
+    DB.recipe_index = makeRecipeIndex(DB.recipe_items)
+    DB.moneyNames = loadMoneyNames()
+    DB.effects = loadEffects()
 end
 
 function DB.Release()
@@ -86,6 +108,11 @@ function DB.Release()
             DB.archievements = nil
             DB.effects = nil
             DB.classes = nil
+            DB.shop_items = nil
+            DB.shop_index = nil
+            DB.recipe_items = nil
+            DB.recipe_index = nil
+            DB.moneyNames = nil
         collectgarbage("collect")
         -- local mem2 = collectgarbage("count")
         -- CP.Debug("DB Released. Freed memory: "..(math.floor(mem1-mem2)/1000).."mb")
@@ -187,7 +214,12 @@ function DB.GetSetEffect(set_id, item_count)
 end
 
 function DB.GetItemName(item_id)
-    return TEXT("Sys"..item_id.."_name")
+	if item_id and item_id >= 550000 and item_id < 560000 then
+		-- this is recipe, which have a special case for name
+		local name = DB.GetRecipeInfo(item_id)
+		if name then return name end
+	end
+	return TEXT("Sys"..item_id.."_name")
 end
 
 function DB.GetItemIcon(item_id)
@@ -742,4 +774,62 @@ function DB.GetWeaponSpeed(item_id)
 	-- weapon speed stored as integer value like `24` for speed `2.4`
 	local item = DB.items[item_id]
 	if item then return item[I_WEAPONSPEED] end
+end
+
+function DB.GetShopsForItem(item_id)
+	return DB.shop_index[item_id]
+end
+
+local function price2table(price)
+	if price then
+		return { ['type'] = price[1], ['cost'] = price[2] }
+	end
+end
+	
+function DB.GeShopItemInfo(item_id)
+	-- return map of shopID => {money type,price}
+	local shops = DB.shop_index[item_id]
+	if not shops then return nil end
+	local re = {}
+	for _,shop_id in pairs(shops) do
+		for _,entry in pairs(DB.shop_items[shop_id]) do
+			if entry[1] == item_id then
+				-- shop ID => { {type1,price1}, {type2,price2}opt }
+				re[shop_id] = { price2table(entry[2]), price2table(entry[3]) }
+			end
+		end
+	end
+	return re
+end
+
+function DB.GetShopInfo(shop_id)
+	-- return map of itemID => {money type,price}
+	local shop = DB.shop_items[shop_id]
+	if not shop then return nil end
+	local re = {}
+	for _,entry in pairs(shop) do
+		local item_id = entry[1]
+		re[item_id] = { price2table(entry[2]), price2table(entry[3]) }
+	end
+	return re
+end
+
+function DB.GetMoneyName(money_type)
+	return DB.moneyNames[money_type]
+end
+
+function DB.GetRecipeInfo(recipe_id)
+	-- name, color, items
+	local re = DB.recipe_items[recipe_id]
+	if not re then return end
+	local entry = DB.recipe_items[recipe_id]
+	local rare = entry[1]
+	local items = entry[2]
+	local name = TEXT("SYS_RECIPE_TITLE") .. DB.GetItemName(items[1])
+	return name, rare, items
+end
+
+function DB.GetRecipeItemInfo(item_id)
+	-- return recipe_id
+	return DB.recipe_index[item_id]
 end

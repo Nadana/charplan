@@ -570,8 +570,13 @@ end
 
 function Pimp.GenerateLinkByID(item_id, prefix)
     local item_data = CP.DB.GenerateItemDataByID(item_id)
-
     return Pimp.GenerateLink(item_data, prefix)
+end
+
+function Pimp.GenerateSimpleLink(item_id, prefix)
+	local r,g,b = GetItemQualityColor(GetQualityByGUID( item_id ))
+	local link = string.format("|Hitem:%x|h|cff%02x%02x%02x[%s%s]|r|h", item_id, r*256,g*256,b*256, prefix or "", CP.DB.GetItemName(item_id))
+	return link
 end
 
 function Pimp.ExtractLink(itemlink)

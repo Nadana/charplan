@@ -60,7 +60,9 @@ local default_text={
     SEARCH_CONTEXT_WEB = "Open in Webbrowser",
     SEARCH_WEBSITE = "http://www.runesdatabase.com/item/%i",
     SEARCH_DROPPED = "Dropped in: %s by %s",
-
+    SEARCH_SELLED  = "Selled at shop id %d for",
+    SEARCH_MADE  = "Made by %s",
+    
     BY_CLASS = "Base",
     BY_SKILL = "Skill",
     BY_CARD = TEXT("AC_ITEMTYPENAME_6"),

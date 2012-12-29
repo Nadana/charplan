@@ -526,18 +526,32 @@ function CP.Hooked_Hyperlink_Assign(link, key)
 		
 		-- show drop source
 		if itemID then
-			local drop = CP.Search.FindInDungeonLoots(itemID)
-			if drop and #drop > 0 then
-				local info = {}
-				info.notCheckable = 1
-				info.text = "|cffb0b030[CharPlan]|r " .. "from..."
-				info.func = function()
-					for _,text in pairs(drop) do
-						DEFAULT_CHAT_FRAME:AddMessage(link .. ' ' .. text)
-					end
+			-- CP possible not loaded, so delay item search
+			local info = {}
+			info.arg1 = itemID
+			info.notCheckable = 1
+			info.text = "|cffb0b030[CharPlan]|r " .. "from..."
+			info.func = function(button)
+				local itemID = button.arg1
+				local drop = CP.Search.FindInDungeonLoots(itemID) or {}
+				for _,text in pairs(drop) do
+					DEFAULT_CHAT_FRAME:AddMessage(link .. ' ' .. text)
 				end
-				UIDropDownMenu_AddButton(info, 1)
+				-- do not show rest of sources?
+				if drop and #drop > 0 then return end
+				CP.DB.Load()
+				drop = CP.Search.FindInShops(itemID) or {}
+				for _,text in pairs(drop) do
+					DEFAULT_CHAT_FRAME:AddMessage(link .. ' ' .. text)
+				end
+				drop = CP.Search.FindInRecipes(itemID)
+				if drop then
+					local text = drop[2]
+					DEFAULT_CHAT_FRAME:AddMessage(text)
+				end
+				CP.DB.Release()
 			end
+			UIDropDownMenu_AddButton(info, 1)
 		end
 
 		UIDropDownMenu_Refresh(ChatFrameDropDown)

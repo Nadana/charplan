@@ -684,6 +684,9 @@ function Search.ShowContextMenu(this)
                 end
     UIDropDownMenu_AddButton(info)
 
+		-- item sources --
+		
+		-- 1. Loot
     local res = Search.FindInDungeonLoots(this.item_id)
     for _,data in pairs(res) do
         info.text   = data
@@ -694,11 +697,39 @@ function Search.ShowContextMenu(this)
             end
         UIDropDownMenu_AddButton(info)
     end
+    
+    -- 2. Vendor
+    res = Search.FindInShops(this.item_id)
+    if res then
+    	for shop_id,text in pairs(res) do
+    		info.arg1 = shop_id
+    		info.text = text
+    		info.func = function(button)
+    			-- print rest of items for this shop
+    			local shop_id = button.arg1
+    			local res = Search.GetShopContents(shop_id)
+   				for id,text in pairs(res) do
+   					DEFAULT_CHAT_FRAME:AddMessage(text)
+   				end
+    		end
+    		UIDropDownMenu_AddButton(info)
+    	end
+    end
+    
+    -- 3. Recipes
+    res = Search.FindInRecipes(this.item_id)
+    if res then
+    	info.arg1 = res[2]
+    	info.text = res[2]
+    	info.func = function(button)
+    		DEFAULT_CHAT_FRAME:AddMessage(button.arg1)
+			end
+			UIDropDownMenu_AddButton(info)
+			end
 end
 
 function Search.FindInDungeonLoots(item_id)
     local res = {}
-
     if DungeonLoot and DungeonLoot.tables then
         for _,zone in pairs(DungeonLoot.tables) do
             for bossNum,boss in pairs(zone.Boss or {}) do
@@ -715,8 +746,49 @@ function Search.FindInDungeonLoots(item_id)
             end
         end
     end
-
     return res
+end
+
+function Search.FindInShops(item_id)
+	local shops = CP.DB.GeShopItemInfo(item_id)
+	if shops then
+		local res = {}
+		for shop_id,info in pairs(shops) do
+			local price = info[1]
+			local where = string.format(CP.L.SEARCH_SELLED, shop_id) .. string.format(" %s %s", MoneyNormalization(price.cost), CP.DB.GetMoneyName(price.type))
+			price = info[2]
+			if price then
+				where = where .. string.format(", %s %s", MoneyNormalization(price.cost), CP.DB.GetMoneyName(price.type))
+			end
+			res[shop_id] = where
+		end
+		return res
+	end
+end
+
+function Search.GetShopContents(shop_id)
+	local shop = CP.DB.GetShopInfo(shop_id)
+	if not shop then return nil end
+	local res = {}
+	for item_id,info in pairs(shop) do
+		local price = info[1]
+		local what = CP.Pimp.GenerateSimpleLink(item_id)
+		local where = string.format("%s %s", MoneyNormalization(price.cost), CP.DB.GetMoneyName(price.type))
+		price = info[2]
+		if price then
+			where = where .. string.format(", %s %s", MoneyNormalization(price.cost), CP.DB.GetMoneyName(price.type))
+		end
+		res[item_id] = what.." - "..where
+	end
+	return res
+end
+
+function Search.FindInRecipes(item_id)
+	local recipe = CP.DB.GetRecipeItemInfo(item_id)
+	if not recipe then return nil end
+	local info = CP.DB.GetRecipeInfo(recipe)
+	local where = string.format(CP.L.SEARCH_MADE, CP.Pimp.GenerateSimpleLink(recipe))
+	return {recipe,where}
 end
 
 function Search.ApplySuitOfItem(item_id)
