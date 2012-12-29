@@ -3,6 +3,10 @@ require 'set'
 require 'csv'
 require 'logger'
 
+# use path_settings.rb to setup correct path for:
+#  $fdb_ex="bin/FDB_ex2.exe"
+load "path_settings.rb"
+
 require_relative 'lib/all'
 
 
@@ -83,7 +87,7 @@ class FullDB
     end
 
     def FilterSpells
-        #@spells.MarkAllUnused
+        #@spell_collection.MarkAllUnused
         #@food.MarkSpellsUsed(@spell_collection)
         #@learnmagic.MarkSpellsUsed(@spell_collection)
 

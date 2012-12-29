@@ -1,5 +1,7 @@
-﻿require 'csv'
+require 'csv'
 require_relative 'rom_utilities'
+
+#module RoM_DB
 
 def FormatArray(array, optimize=false)
     if array.nil? or array.size<=0 then
@@ -53,17 +55,23 @@ class TableEntry
     def ExportData(data)
         raise "no export defined"
     end
+
+    def Name(locales)
+        return locales[@id]
+    end
 end
 
 
 class Table
     attr_reader :db
+    attr_reader :index
 
     def initialize(object, filename=nil)
         #raise "object must be TableEntry class" unless object.kind_of?(TableEntry)
 
         @ent_obj = object
-        @db = Hash.new(object)
+        @db = [] # Array.new(0,object)
+        @index = Hash.new(Integer)
 
         filename = @ent_obj::FILENAME if filename.nil?
         Load(filename) unless filename.nil?
@@ -81,35 +89,35 @@ class Table
 
     def MarkUnusedIfNameInvalid(*locales)
 
-        def Unknown?(id,locales)
-            locales.each { |l| return false if l.include?(id) }
+        def Unknown?(entry,locales)
+            locales.each { |l| return false unless entry.Name(l).nil?}
             return true
         end
 
-        MarkUnusedIf { |data| Unknown?(data.id,locales) }
+        MarkUnusedIf { |data| Unknown?(data,locales) }
     end
 
     def Used(id)
-        @db[id].Used()
+        @db[@index[id]].Used()
     end
 
     def NotUsed(id)
-        @db[id].NotUsed()
+        @db[@index[id]].NotUsed()
     end
 
     def Load(filename)
         print("#{filename}: Extracting")
-        base_dir = TempPath()+"data\\"
-        base_dir = Extract("data\\","#{filename}.db",{:fdb_filter=>"data.fdb"})  unless File.exists?(base_dir+"#{filename}.db.csv")
+        ex_filename = ExtractDBFile(filename)
 
         print(",Reading")
-        csv = CSV.read(base_dir+"#{filename}.db.csv", {:col_sep=>";", :headers=>true, :converters => :numeric})
+        csv = CSV.read(ex_filename, {:col_sep=>";", :headers=>true, :converters => :numeric})
 
         print(",Parsing")
         csv.each { |row|
             r = @ent_obj.new(row)
             next if not r.IsValid?
-            @db[r.id]= r
+            @index[r.id]= @db.size()
+            @db.push(r)
         }
 
         print(",Evaluating")
@@ -122,19 +130,26 @@ class Table
     end
 
     def include?(id)
-        return (@db.include?(id) and @db[id].IsUsed)
+        return (@index.include?(id) and @db[@index[id]].IsUsed)
     end
 
     def [](id)
-        return @db[id] if @db[id].IsUsed
+        i = @index[id]
+        return @db[i] if @db[i].IsUsed
     end
 
     def each
-        @db.each { |id,data| yield(data) if data.IsUsed  }
+        @db.each { |data| yield(data) if data.IsUsed  }
+    end
+
+    def select
+        @db.select { |data| yield(data) if data.IsUsed  }
     end
 
     def merge!(db)
-        @db.merge!(db.db)
+        @db = @db+db.db
+        @index.clear()
+        @db.each_index{ |i| @index[@db[i].id]=i }
     end
 
     def ExportEntry(entry)
@@ -147,7 +162,7 @@ class Table
 
         desc = Hash.new()
         maxdata=0
-        @db.each { |id, data|
+        @db.each { |data|
             if not desc.has_key?(data.class) then
                 line_data = []
                 data.ExportDesc(line_data)
@@ -162,7 +177,7 @@ class Table
                 }
 
             outf.write("return {\n")
-            db.each { |id, data|
+            db.each { |data|
                 next if not data.Export?
 
                 line_data = ExportEntry(data)
@@ -170,9 +185,9 @@ class Table
                 while not line_data.empty? and (line_data.last=="nil" or line_data.last.to_s.empty?) do line_data.pop end
 
                 if maxdata==1 then
-                    outf.write( "  [%s]=%s,\n" % [id, line_data.join(",")])
+                    outf.write( "  [%s]=%s,\n" % [data.id, line_data.join(",")])
                 else
-                    outf.write( "  [%s]={%s},\n" % [id, line_data.join(",")])
+                    outf.write( "  [%s]={%s},\n" % [data.id, line_data.join(",")])
                 end
                 }
             outf.write("}\n")

@@ -1,3 +1,4 @@
+# rev 2012_11_15
 require 'pathname'
 require 'fileutils'
 require 'win32/registry'
@@ -10,10 +11,14 @@ rescue LoadError
     raise "requires 'ParseConfig'\nDo 'gem install parseconfig'"
 end
 
+# Default-Path
+# ! Store correct path in a seperated file
 
-# Tools
-$fdb_ex="e:/Projekte/fdb_ex2/bin/FDB_ex2.exe " # http://github.com/McBen/FDB_Extractor2
-$lua="e:/Tools/lua/lua5.1.exe " # http://www.lua.org
+ # http://github.com/McBen/FDB_Extractor2
+    $fdb_ex="bin/FDB_ex2.exe" unless defined? $fdb_ex
+ # http://www.lua.org
+    $lua="bin/lua5.1.exe" unless defined? $lua
+
 
 ###############
 def TempPath()
@@ -71,6 +76,15 @@ def Extract(path, filter="", options=Hash.new)
     return temp_path+path
 end
 
+###############
+def ExtractDBFile(filename)
+    filename += ".db" unless filename=~/\.db$/
+
+    dir = TempPath()+"data/"
+    dir = Extract("data\\",filename,{:fdb_filter=>"data.fdb"}) unless File.exists?(TempPath()+"data\\#{filename}.csv")
+
+    return dir+filename+".csv"
+end
 
 ###############
 def RoMPath()

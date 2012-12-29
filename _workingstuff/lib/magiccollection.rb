@@ -47,7 +47,7 @@ class MagicCollection < Table
         each { | data|
             undefined = []
             data.magics.each {|d|
-                if spells.db.include?(d)
+                if spells.index.include?(d)
                     spells.Used(d)
                 else
                     undefined.push(d)
