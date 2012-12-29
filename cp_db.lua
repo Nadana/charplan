@@ -148,7 +148,7 @@ end
 function DB.GetItemEffect(item_id)
     local item = DB.items[item_id]
     if item then
-        return item[I_EFFECT]
+        return item[I_EFFECT] or {}
     else
         CP.Debug("Item not in DB: "..item_id)
     end
@@ -189,13 +189,14 @@ function DB.GetPlusEffect(item_id, plus)
     if item then
         local eff = DB.refines[item[I_REFINE]+plus-1]
         if eff then
-            return eff[1], eff[2]
+            return eff[1] or {}, eff[2] or 0
         else
             CP.Debug(string.format("Plus table not defined: %i+%i item:%i",item[I_REFINE],plus,item_id))
         end
     else
         CP.Debug("Item not in DB: "..item_id)
     end
+    return {},0
 end
 
 function DB.GetSetEffect(set_id, item_count)

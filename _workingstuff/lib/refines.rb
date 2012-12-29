@@ -19,7 +19,7 @@
 
     def ExportData(data)
         @bonus.ExportData(data)
-        data.push(@basefactor)
+        data.push(@basefactor>0 ? @basefactor : "nil")
     end
 end
 

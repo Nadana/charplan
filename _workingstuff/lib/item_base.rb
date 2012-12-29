@@ -270,7 +270,11 @@ class BonusStuff
     end
 
     def ExportData(data)
-        data.push("{#{ExportString()}}")
+        if @eqtypes.size==0 then
+            data.push("nil")
+        else
+            data.push("{#{ExportString()}}")
+        end
     end
 
     def ExportDataPlain(data)
