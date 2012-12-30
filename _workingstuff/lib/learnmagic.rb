@@ -1,6 +1,23 @@
 ﻿require 'csv'
 require_relative 'rom_utilities'
 
+FLAGS={
+ :Elite15=>[
+ 541889, # 1-Warrior
+ ],
+ :Elite20=>[
+ 541919, # 1-Warrior
+ ],
+ :Elite25=>[],
+ :Elite30=>[],
+ :Elite35=>[],
+ :Elite40=>[],
+ :Elite45=>[],
+ :Elite50=>[],
+}
+
+
+
 class SkillEntry
     attr_reader :skill
     attr_reader :min_level

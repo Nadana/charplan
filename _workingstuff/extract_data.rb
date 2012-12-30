@@ -76,6 +76,8 @@ class FullDB
         @vocs.Export("../item_data/classes.lua")
         @learnmagic.Export("../item_data/skills.lua")
         @recipes.ExportReverseIndex("../item_data/recipe_items.lua")
+
+        ExportTPCosts()
     end
 
 
@@ -138,6 +140,22 @@ class FullDB
 
             #~ raise "not found in set" unless found
         #~ }
+    end
+
+    def ExportTPCosts()
+
+        xp = Table_EXP.new()
+
+        out=[]
+        for i in 1..100
+            out.push(xp[i]["skill_cost"])
+        end
+
+        File.open("../item_data/tpcost.lua", 'wt') { |outf|
+            outf.write("return {\n")
+            outf.write( out.join(",") )
+            outf.write("\n}\n")
+        }
     end
 end
 
