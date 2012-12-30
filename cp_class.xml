@@ -29,9 +29,210 @@
 		</Scripts>
 	</Button>
 
-	<Frame name="CPClassDialog" inherits="UICommonFrameTemplate" enableMouse="true" frameStrata="DIALOG" hidden="true">
+	<Frame name="CPSkillButton" virtual="true" enableMouse="true">
+		<Size><AbsDimension x="127" y="53"/></Size>
+		<Layers>
+			<Layer level="ARTWORK">
+				<Texture name="$parentIcon" file="Interface\SkillBook\SkillBook_PowerLV_Icon">
+					<Size>
+						<AbsDimension y="16" x="16"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension y="38" x="1"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</Texture>
+				<FontString name="$parentPowerLV" inherits="Font_ItemButton_SmallNumber" text="100" justifyV="MIDDLE" justifyH="CENTER">
+					<Size>
+						<AbsDimension y="19" x="24"/>
+					</Size>
+					<Anchors>
+						<Anchor point="LEFT" relativePoint="RIGHT" relativeTo="$parentIcon"/>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Frame name="$parent_SkillInfo" inherits="Common_NameFrame_Short">
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="37" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Layers>
+					<Layer>
+						<FontString name="$parent_Name" inherits="Font_ItemButton_Desc" justifyH="LEFT" text="TEMP">
+							<Size>
+								<AbsDimension x="88" y="14"/>
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT">
+									<Offset>
+										<AbsDimension x="4" y="3"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+						</FontString>
+						<FontString name="$parent_LV" inherits="Font_ItemButton_Number" justifyH="RIGHT" text="TEMP">
+							<Size>
+								<AbsDimension x="88" y="14"/>
+							</Size>
+							<Anchors>
+								<Anchor point="BOTTOMLEFT">
+									<Offset>
+										<AbsDimension x="-4" y="-3"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+						</FontString>
+					</Layer>
+				</Layers>
+			</Frame>
+			<StatusBar name="$parentPointStatusBar" minValue="0" maxValue="1" defaultValue="0.5" virtual="true">
+				<Size>
+					<AbsDimension x="90" y="14"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="38" y="39"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Layers>
+					<Layer level="BACKGROUND">
+						<Texture name="$parentBorder" file="Interface\SkillBook\SkillBook_Point_Border">
+							<Size>
+								<AbsDimension x="92" y="16"/>
+							</Size>
+							<Anchors>
+								<Anchor point="TOPLEFT">
+									<Offset>
+										<AbsDimension x="-1" y="-1"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+							<TexCoords top="0" left="0" bottom="1" right="0.703125"/>
+						</Texture>
+					</Layer>
+					<Layer level="OVERLAY">
+						<FontString name="$parentNext" inherits="Font_ItemButton_SmallDesc" text="SKILLBOOK_NEXT" justifyV="MIDDLE" justifyH="LEFT">
+							<Size>
+								<AbsDimension x="30" y="14"/>
+							</Size>
+							<Anchors>
+								<Anchor point="LEFT" relativePoint="LEFT">
+									<Offset>
+										<AbsDimension y="0" x="2"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+							<Shadow>
+								<Color b="0" r="0" g="0"/>
+								<Offset>
+									<AbsDimension y="1" x="1"/>
+								</Offset>
+							</Shadow>
+						</FontString>
+						<FontString name="$parentNextValue" inherits="Font_ItemButton_SmallNumber" text="100000" justifyV="MIDDLE" justifyH="RIGHT">
+							<Size>
+								<AbsDimension y="14" x="60"/>
+							</Size>
+							<Anchors>
+								<Anchor point="RIGHT" relativePoint="RIGHT">
+									<Offset>
+										<AbsDimension y="0" x="-2"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+							<Shadow>
+								<Color b="0" r="0" g="0"/>
+								<Offset>
+									<AbsDimension y="1" x="1"/>
+								</Offset>
+							</Shadow>
+						</FontString>
+						<FontString name="$parentStatusText" inherits="Font_ItemButton_SmallNumber" text="MAX" justifyV="MIDDLE" justifyH="CENTER" hidden="true">
+							<Size>
+								<AbsDimension y="10" x="88"/>
+							</Size>
+							<Shadow>
+								<Color b="0" r="0" g="0"/>
+								<Offset>
+									<AbsDimension y="1" x="1"/>
+								</Offset>
+							</Shadow>
+						</FontString>
+					</Layer>
+				</Layers>
+				<BarTexture file="Interface\Common\Bar\StatusBar"/>
+				<BarColor r="0.6" g="0.78" b="1.0"/>
+			</StatusBar>
+			<Frame name="$parentSelect">
+				<Layers>
+					<Layer level="OVERLAY">
+						<Texture name="$parentSelect" file="Interface\SkillBook\SkillBook_SpellFrame_Highlight" alphaMode="ADD" hidden="true">
+							<Size>
+								<AbsDimension y="63" x="137"/>
+							</Size>
+							<Anchors>
+								<Anchor point="CENTER">
+									<Offset>
+										<AbsDimension y="0" x="0"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+							<TexCoords top="0" left="0" bottom="0.984375" right="0.53515625"/>
+						</Texture>
+						<Texture name="$parentHighlight" file="Interface\SkillBook\SkillBook_SpellFrame_Highlight" alphaMode="ADD" hidden="true">
+							<Size>
+								<AbsDimension y="63" x="137"/>
+							</Size>
+							<Anchors>
+								<Anchor point="CENTER">
+									<Offset>
+										<AbsDimension y="0" x="0"/>
+									</Offset>
+								</Anchor>
+							</Anchors>
+							<TexCoords top="0" left="0" bottom="0.984375" right="0.53515625"/>
+						</Texture>
+					</Layer>
+				</Layers>
+			</Frame>
+			<Button name="$parentItemButton" inherits="ItemButtonTemplate" frameLevel="2" enableMouse="false">
+				<Anchors>
+					<Anchor point="TOPLEFT">
+						<Offset>
+							<AbsDimension x="0" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick></OnClick>
+					<!--<OnEnter>OnEnter_SkillItemButton( this, this:GetParent():GetID() )</OnEnter>
+					<OnLeave>GameTooltip:Hide()</OnLeave>-->
+				</Scripts>
+			</Button>
+		</Frames>
+		<Scripts>
+			<OnLoad>this:RegisterForClicks("LeftButton", "RightButton")</OnLoad>
+			<OnEnter>CP.Classes.OnEnterButton(this, this:GetID() )</OnEnter>
+			<OnLeave>
+				getglobal( this:GetName() .. "SelectHighlight" ):Hide()
+				GameTooltip:Hide()
+			</OnLeave>
+		</Scripts>
+	</Frame>
+
+	<Frame name="CPClassDialog" parent="CPFrame" inherits="UICommonFrameTemplate" enableMouse="true" frameStrata="DIALOG" hidden="true">
 		<Size>
-			<AbsDimension x="349" y="545"/>
+			<AbsDimension x="489" y="545"/>
 		</Size>
 		<Anchors>
 			<Anchor point="CENTER">
@@ -92,10 +293,26 @@
 					<Anchor point="TOPLEFT"><Offset><AbsDimension x="100" y="73"></AbsDimension></Offset></Anchor>
 				</Anchors>
 			</Frame>
+
+			<CheckButton name="$parentHideNotAvailable" inherits="CPSearchCheckbox">
+				<Anchors><Anchor point="TOPLEFT"><Offset><AbsDimension x="280" y="110"></AbsDimension></Offset></Anchor></Anchors>
+				<Scripts>
+					<OnClick>CP.Classes.OnSkillChanged()</OnClick>
+				</Scripts>
+			</CheckButton>
+
+			<CheckButton name="$parentHideNotSkillable" inherits="CPSearchCheckbox">
+				<Anchors><Anchor point="TOPLEFT" relativeTo="$parentHideNotAvailable" relativePoint="BOTTOMLEFT">
+					<Offset><AbsDimension x="0" y="5"></AbsDimension></Offset></Anchor></Anchors>
+				<Scripts>
+					<OnClick>CP.Classes.OnSkillChanged()</OnClick>
+				</Scripts>
+			</CheckButton>
+
 			<EditBox name="$parentSkillPoints"  inherits="UIPanelEditBoxTemplate" numeric="true" letters="10">
 				<Size><AbsDimension x="100" y="24"></AbsDimension></Size>
 				<Anchors>
-					<Anchor point="TOPLEFT"><Offset><AbsDimension x="200"  y="110"></AbsDimension></Offset></Anchor>
+					<Anchor point="TOPLEFT"><Offset><AbsDimension x="150"  y="110"></AbsDimension></Offset></Anchor>
 				</Anchors>
 				<TextInsets><AbsInset top="4" right="3" left="10" bottom="0"></AbsInset></TextInsets>
 			</EditBox>
@@ -164,7 +381,7 @@
 						</Anchors>
 					</Button>
 
-					<Frame name="$parentSkillButton_1" inherits="OBJ_SkillButton" id="1">
+					<Frame name="$parentSkillButton_1" inherits="CPSkillButton" id="1">
 						<Anchors>
 							<Anchor point="TOPLEFT">
 								<Offset>
@@ -173,7 +390,7 @@
 							</Anchor>
 						</Anchors>
 					</Frame>
-					<Frame name="$parentSkillButton_2" inherits="OBJ_SkillButton" id="2">
+					<Frame name="$parentSkillButton_2" inherits="CPSkillButton" id="2">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="$parentSkillButton_1" relativePoint="BOTTOMLEFT">
 								<Offset>
@@ -182,7 +399,7 @@
 							</Anchor>
 						</Anchors>
 					</Frame>
-					<Frame name="$parentSkillButton_3" inherits="OBJ_SkillButton" id="3">
+					<Frame name="$parentSkillButton_3" inherits="CPSkillButton" id="3">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="$parentSkillButton_2" relativePoint="BOTTOMLEFT">
 								<Offset>
@@ -191,7 +408,7 @@
 							</Anchor>
 						</Anchors>
 					</Frame>
-					<Frame name="$parentSkillButton_4" inherits="OBJ_SkillButton" id="4">
+					<Frame name="$parentSkillButton_4" inherits="CPSkillButton" id="4">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="$parentSkillButton_3" relativePoint="BOTTOMLEFT">
 								<Offset>
@@ -200,7 +417,7 @@
 							</Anchor>
 						</Anchors>
 					</Frame>
-					<Frame name="$parentSkillButton_5" inherits="OBJ_SkillButton" id="5">
+					<Frame name="$parentSkillButton_5" inherits="CPSkillButton" id="5">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="$parentSkillButton_4" relativePoint="BOTTOMLEFT">
 								<Offset>
@@ -209,47 +426,92 @@
 							</Anchor>
 						</Anchors>
 					</Frame>
-					<Frame name="$parentSkillButton_6" inherits="OBJ_SkillButton" id="6">
+					<Frame name="$parentSkillButton_6" inherits="CPSkillButton" id="6">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="$parentSkillButton_1" relativePoint="TOPRIGHT">
 								<Offset>
-									<AbsDimension x="30" y="0"/>
+									<AbsDimension x="25" y="0"/>
 								</Offset>
 							</Anchor>
 						</Anchors>
 					</Frame>
-					<Frame name="$parentSkillButton_7" inherits="OBJ_SkillButton" id="7">
+					<Frame name="$parentSkillButton_7" inherits="CPSkillButton" id="7">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="$parentSkillButton_2" relativePoint="TOPRIGHT">
 								<Offset>
-									<AbsDimension x="30" y="0"/>
+									<AbsDimension x="25" y="0"/>
 								</Offset>
 							</Anchor>
 						</Anchors>
 					</Frame>
-					<Frame name="$parentSkillButton_8" inherits="OBJ_SkillButton" id="8">
+					<Frame name="$parentSkillButton_8" inherits="CPSkillButton" id="8">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="$parentSkillButton_3" relativePoint="TOPRIGHT">
 								<Offset>
-									<AbsDimension x="30" y="0"/>
+									<AbsDimension x="25" y="0"/>
 								</Offset>
 							</Anchor>
 						</Anchors>
 					</Frame>
-					<Frame name="$parentSkillButton_9" inherits="OBJ_SkillButton" id="9">
+					<Frame name="$parentSkillButton_9" inherits="CPSkillButton" id="9">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="$parentSkillButton_4" relativePoint="TOPRIGHT">
 								<Offset>
-									<AbsDimension x="30" y="0"/>
+									<AbsDimension x="25" y="0"/>
 								</Offset>
 							</Anchor>
 						</Anchors>
 					</Frame>
-					<Frame name="$parentSkillButton_10" inherits="OBJ_SkillButton" id="10">
+					<Frame name="$parentSkillButton_10" inherits="CPSkillButton" id="10">
 						<Anchors>
 							<Anchor point="TOPLEFT" relativeTo="$parentSkillButton_5" relativePoint="TOPRIGHT">
 								<Offset>
-									<AbsDimension x="30" y="0"/>
+									<AbsDimension x="25" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentSkillButton_11" inherits="CPSkillButton" id="11">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentSkillButton_6" relativePoint="TOPRIGHT">
+								<Offset>
+									<AbsDimension x="25" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentSkillButton_12" inherits="CPSkillButton" id="12">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentSkillButton_7" relativePoint="TOPRIGHT">
+								<Offset>
+									<AbsDimension x="25" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentSkillButton_13" inherits="CPSkillButton" id="13">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentSkillButton_8" relativePoint="TOPRIGHT">
+								<Offset>
+									<AbsDimension x="25" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentSkillButton_14" inherits="CPSkillButton" id="14">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentSkillButton_9" relativePoint="TOPRIGHT">
+								<Offset>
+									<AbsDimension x="25" y="0"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</Frame>
+					<Frame name="$parentSkillButton_15" inherits="CPSkillButton" id="15">
+						<Anchors>
+							<Anchor point="TOPLEFT" relativeTo="$parentSkillButton_10" relativePoint="TOPRIGHT">
+								<Offset>
+									<AbsDimension x="25" y="0"/>
 								</Offset>
 							</Anchor>
 						</Anchors>
@@ -257,12 +519,12 @@
 
 			<Frame name="$parentPageBar">
 				<Size>
-					<AbsDimension x="295" y="29"/>
+					<AbsDimension x="325" y="29"/>
 				</Size>
 				<Anchors>
-					<Anchor point="BOTTOMLEFT">
+					<Anchor point="BOTTOM">
 						<Offset>
-							<AbsDimension x="15" y="-10"/>
+							<AbsDimension x="0" y="-10"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
@@ -310,7 +572,7 @@
 							</Anchor>
 						</Anchors>
 						<Scripts>
-							<OnClick>CP.Classes.ShowPage(CP.Classes.page-1)</OnClick>
+							<OnClick>CP.Classes.NextPage(-1)</OnClick>
 						</Scripts>
 					</Button>
 					<Button name="$parentRightPage" inherits="SkillBookRightPageButton" text="C_NEXT_PAGE">
@@ -322,7 +584,7 @@
 							</Anchor>
 						</Anchors>
 						<Scripts>
-							<OnClick>CP.Classes.ShowPage(CP.Classes.page+1)</OnClick>
+							<OnClick>CP.Classes.NextPage(1)</OnClick>
 						</Scripts>
 					</Button>
 				</Frames>

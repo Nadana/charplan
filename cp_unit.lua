@@ -150,6 +150,7 @@ end
     local S_PRE_SKILL=3
     local S_PRE_SKILL_LVL=4
     local S_PRE_FLAG=5
+    local S_GROUP=6
 --[[ ] ]]
 
 local function IsParentIncluded(all, find_skill)
@@ -162,6 +163,16 @@ local function IsParentIncluded(all, find_skill)
             if skill[S_ID]==id then
                 return IsParentIncluded(all, skill)
             end
+        end
+    end
+end
+
+local function FindGroup(line, group)
+    if group==0 then return end
+
+    for idx,skill in ipairs(line) do
+        if skill[10]==group then
+            return idx, skill[S_ID]
         end
     end
 end
@@ -179,10 +190,10 @@ function Unit.GetAllSkills()
         pre_res[DF_SkillType_SubJob] = CP.DB.GetSkillList(c2,1)
     end
 
-
-    local res={}
+    local skills={}
+    local flags={}
     for line,ldata in pairs(pre_res) do
-        res[line]={}
+        skills[line]={}
 
         local level = Unit.level
         if line==DF_SkillType_SubJob then
@@ -190,33 +201,81 @@ function Unit.GetAllSkills()
         end
 
         for _,skill in ipairs(ldata) do
-            local learned = skill[S_LVL]<=level
-
-            if skill[S_PRE_SKILL]>0 then
-                local cur_lvl = Unit.skills[skill[S_PRE_SKILL]]
-                if not cur_lvl or cur_lvl<skill[S_PRE_SKILL_LVL] then
-                    learned = false
-                end
-            end
-
             if IsParentIncluded(pre_res, skill) then
+
                 local id = skill[S_ID]
+                local skill_level = skill[S_LVL]
+
+                -- req. level
+                local available = skill_level<=level
+                local condition_missing = nil
+
+                -- req. flag
+                if skill[S_PRE_FLAG]>0 then
+                    table.insert(flags,skill[S_PRE_FLAG])
+                    if CheckFlag(skill[S_PRE_FLAG])<1 then
+                        condition_missing = "Flag:"..skill[S_PRE_FLAG]
+                    end
+                end
+
+                -- req. pre-skill
+                if skill[S_PRE_SKILL]>0 then
+
+                    local pre_lvl = Unit.skills[skill[S_PRE_SKILL]] or 0
+                    local cur_skill = Unit.skills[id]
+
+                    if  pre_lvl<skill[S_PRE_SKILL_LVL] and not cur_skill then
+                        condition_missing = TEXT("Sys"..skill[S_PRE_SKILL].."_name").." lvl"..skill[S_PRE_SKILL_LVL]
+                    end
+                end
+
+                -- replace other skill (incl. moving skill level)
+                local rep_idx, rep_id = FindGroup(skills[line], skill[S_GROUP])
+                if rep_idx then
+                    if available and not condition_missing then
+                        Unit.skills[ id ] = Unit.skills[id] or Unit.skills[ rep_id ]
+                        Unit.skills[ rep_id ] = nil
+                        skill_level = skills[line][rep_idx][1]
+                        table.remove(skills[line],rep_idx)
+                    else
+                        Unit.skills[rep_id] = Unit.skills[ rep_id ] or Unit.skills[id]
+                        Unit.skills[skill[S_ID]]=nil
+                    end
+                end
+
                 local cur_level = Unit.skills[id] or 0
                 local max_level = (CP.DB.skills[id] and CP.DB.skills[id][4]) or 0
                 if max_level <1 then cur_level=nil end
 
-                table.insert(res[line], { skill[S_LVL], id,
-                            TEXT("Sys"..id.."_name"), CP.DB.GetSpellIcon(id),
-                            learned, cur_level,
-                            CP.DB.skills[id] and CP.DB.skills[id][1],
-                            max_level
-                            } )
+                --if not condition_missing then
+                local name = TEXT("Sys"..id.."_name")
+                if condition_missing then
+                    name = condition_missing.." > "..name
+                    available = false
+                end
+
+                    table.insert(skills[line],
+                    {   skill_level, id,
+                        name, CP.DB.GetSpellIcon(id),
+                        available, condition_missing,cur_level,
+                        CP.DB.skills[id] and CP.DB.skills[id][1],
+                        max_level,
+                        skill[S_GROUP]
+                        } )
+                --end
             end
         end
     end
 
+    for line,ldata in pairs(skills) do
+        table.sort(ldata, function (a,b)
+                if a[5]==b[5] then return a[1]<b[1] end
+                return (a[5] and 1 or 2)<(b[5] and 1 or 2)
+            end
+        )
+    end
 
-    return res
+    return skills, flags
 end
 
 

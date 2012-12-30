@@ -80,6 +80,7 @@ function DB.Load()
     DB.sets = LoadTable("sets")
     DB.archievements = LoadTable("archievements")
     DB.learn = LoadTable("skills")
+    DB.tpcosts = LoadTable("tpcost")
     DB.shop_items = LoadTable("shop_items")
     DB.shop_index = LoadTable("shop_index")
     DB.recipe_items = LoadTable("recipe_items")
@@ -105,6 +106,7 @@ function DB.Release()
             DB.effects = nil
             DB.classes = nil
             DB.learn = nil
+            DB.tpcosts = nil
             DB.shop_items = nil
             DB.shop_index = nil
             DB.recipe_items = nil
@@ -142,7 +144,7 @@ end
 function DB.GetSpellEffect(spell_id)
     local boni = DB.spell_effects[spell_id]
     if boni then
-        return boni[1],boni[2]
+        return boni[1],boni[2] or {}
     end
 end
 
@@ -812,7 +814,7 @@ local function price2table(price)
 		return { ['type'] = price[1], ['cost'] = price[2] }
 	end
 end
-	
+
 function DB.GeShopItemInfo(item_id)
 	-- return map of shopID => {money type,price}
 	local shops = DB.shop_index[item_id]
@@ -855,4 +857,10 @@ end
 
 function DB.GetRecipeOfItem(item_id)
 	return DB.recipe_items[item_id]
+end
+
+function DB.GetTPCosts(level, passive)
+    level = level or 0
+--    if not passive then level=level+1 end
+    return DB.tpcosts[level+1]
 end
