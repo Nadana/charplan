@@ -4,6 +4,8 @@ require_relative 'rom_utilities'
 #module RoM_DB
 
 def FormatArray(array, optimize=false)
+    while not array.empty? and (array.last=="nil" or array.last.to_s.empty?) do array.pop end
+
     if array.nil? or array.size<=0 then
         return "nil"
     end
@@ -11,6 +13,7 @@ def FormatArray(array, optimize=false)
     if optimize and array.size==1 then
         return array[0]
     end
+
 
     return "{" + array.join(",") + "}"
 end
@@ -135,6 +138,7 @@ class Table
 
     def [](id)
         i = @index[id]
+        raise "undefined id:#{i}" if i.nil?
         return @db[i] if @db[i].IsUsed
     end
 

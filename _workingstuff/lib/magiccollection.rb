@@ -11,7 +11,7 @@ class MagicCollectionEntry < TableEntry
         @magics=[]
         for i in 1..12
             magic = csv_row['magicbaseid'+i.to_s].to_i
-            @magics.push(magic) if magic>0
+            magic==0 ? @magics.push("nil") : @magics.push(magic)
         end
 
         @effecttype = csv_row['effecttype'].to_i
@@ -19,9 +19,9 @@ class MagicCollectionEntry < TableEntry
         @maxskill = csv_row['maxskilllv'].to_i
     end
 
-    def IsValid?
-        return (@magics.size!=0)
-    end
+    #~ def IsValid?
+        #~ return (@magics.size!=0)
+    #~ end
 
     def ExportDesc(data)
         data.push( "effecttype")
@@ -51,10 +51,12 @@ class MagicCollection < Table
         each { | data|
             undefined = []
             data.magics.each {|d|
-                if spells.index.include?(d)
-                    spells.Used(d)
-                else
-                    undefined.push(d)
+                if d!="nil" then
+                    if spells.index.include?(d)
+                        spells.Used(d)
+                    else
+                        undefined.push(d)
+                    end
                 end
             }
             data.magics = data.magics-undefined
