@@ -33,6 +33,14 @@ CP.DB = DB
     local S_ICON=2
     local S_SPELL_EFFECTS=3
 
+    -- Spell-Effect
+    local SE_SKILL_VARG=1
+    local SE_BUFFS=2
+    local SE_TIME=3
+    local SE_TIME_VARG=4
+    local SE_ATK_DMG=5
+    local SE_ATK_VARG=6
+    local SE_ATK_DMG_FIX=7
 --[[ ] ]]
 
 
@@ -144,7 +152,7 @@ end
 function DB.GetSpellEffect(spell_id)
     local boni = DB.spell_effects[spell_id]
     if boni then
-        return boni[1],boni[2] or {}
+        return boni[SE_SKILL_VARG],boni[SE_BUFFS] or {}
     end
 end
 
@@ -161,6 +169,72 @@ function DB.GetSpellIcon(spell_id)
         CP.Debug("No Icon for spell "..spell_id)
     end
 end
+
+function DB.GetSpellBuffValue(spell_id,index1,index2,level)
+    local spell = DB.GetSpellEffectList(spell_id)[index1+1]
+    if not spell then
+        CP.Debug("no sub effect: "..spell_id.."/"..index1)
+        return 0
+    end
+
+    return DB.GetSpellEffectBuffValue(spell,index2,level)
+end
+
+function DB.GetSpellEffectBuffValue(spell_effect_id,index,level)
+    local skill_arg, effects = CP.DB.GetSpellEffect(spell_effect_id)
+    if skill_arg then
+        local ev = effects[index*2+2]
+        if ev then
+            local val = (skill_arg*level+100) * ev / 100
+            val = math.floor(val*10+0.5)/10
+
+            return val
+        end
+    end
+end
+
+function DB.GetSpellDmgValue(spell_id,index,level)
+    local spell = DB.GetSpellEffectList(spell_id)[index+1]
+    if not spell then
+        CP.Debug("no sub effect: "..spell_id.."/"..index)
+        return 0
+    end
+
+    local eff = DB.spell_effects[spell]
+    if eff then
+        local val = (eff[SE_ATK_VARG]*level+100) * eff[SE_ATK_DMG] / 100
+        val = math.floor(val*10+0.5)/10
+
+        return val, eff[SE_ATK_DMG_FIX] or 0
+    end
+end
+
+function DB.GetSpellFixDmgValue(spell_eff_id)
+    local eff = DB.spell_effects[spell_eff_id]
+    if eff then
+        return eff[SE_ATK_DMG_FIX] or 0
+    end
+end
+
+function DB.GetSpellTimeValue(spell_id,index,level)
+    local spell = DB.GetSpellEffectList(spell_id)[index+1]
+    if not spell then
+        CP.Debug("no sub effect: "..spell_id.."/"..index)
+        return 0
+    end
+
+    local eff = DB.spell_effects[spell]
+    if eff then
+        if eff[SE_TIME_VARG] then
+            local val = (eff[SE_TIME_VARG]*level+100) * eff[SE_TIME] / 100
+            val = math.floor(val*10+0.5)/10
+            return val
+        else
+            return eff[SE_TIME]
+        end
+    end
+end
+
 
 function DB.GetSkillList(token_id,line)
     local learn = CP.DB.learn[token_id]

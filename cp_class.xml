@@ -220,8 +220,8 @@
 				</Anchors>
 				<Scripts>
 					<OnClick></OnClick>
-					<!--<OnEnter>OnEnter_SkillItemButton( this, this:GetParent():GetID() )</OnEnter>
-					<OnLeave>GameTooltip:Hide()</OnLeave>-->
+					<OnEnter>CP.Classes.OnEnterButton(this:GetParent(), this:GetParent():GetID() )</OnEnter>
+					<OnLeave>GameTooltip:Hide()</OnLeave>
 				</Scripts>
 			</Button>
 		</Frames>

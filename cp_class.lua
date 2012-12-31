@@ -159,23 +159,18 @@ function Classes.ShowPage(pagenr)
             local lvl = sk[1]
             local id = sk[2]
             local name = sk[3]
-            local icon = sk[4]
+            --local icon = sk[4]
             local learned = sk[5]
             local condition = sk[6]
-            local skill = sk[7] or 0
+            local skill_lvl = sk[7]
             local mode = sk[8] -- ==2: passive
             local maxskill = sk[9]
 
             local costs = CP.DB.GetTPCosts(skill, false)
 
-            Classes.SetSkillButton( _Button, icon, name, id, skill, costs,  mode, maxskill>0, 0, 0, learned )
---~             if _bLearned then
---~                 Classes.SetSkillButton( _Button, _IconPath, _SkillName, _SkillLV, _PLV, _PPoint, _Mode, _EnableToLV, 0, 0, _bLearned )
---~             else
---~                 Classes.SetSkillButton( _Button, _IconPath, _SkillName, _SkillLV, nil, nil, nil, nil, 0, 0, _bLearned )
---~             end
+            Classes.SetSkillButton(_Button, name, id,nil, skill_lvl, costs,  mode, maxskill, learned )
 		else
-			Classes.SetSkillButton( _Button, nil, nil, nil, nil, nil, nil, nil, 0, 0, nil )
+			Classes.SetSkillButtonDisabled(_Button)
 		end
 	end
 end
@@ -243,6 +238,68 @@ function Classes.GetCurSkillList()
 end
 
 
+local function GetSpellDesc(id,level)
+
+
+    local function SpellBuff(token)
+
+        local i1,i2 = string.match(token,"(%d*)%-?(.*)")
+        i1 = i1 or 0
+        i2 = i2 or 0
+        if tonumber(i2) then
+            return CP.DB.GetSpellBuffValue(id,i1,i2,level)
+        end
+
+        return "Buff"..token
+    end
+
+    local function SpellBuffTime(token)
+
+        local i1 = tonumber(token)
+        i1 = i1 or 0
+
+        return CP.DB.GetSpellTimeValue(id,i1,level)
+    end
+
+    local function SpellDmg(token)
+
+        local i1 = tonumber(token)
+        i1 = i1 or 0
+
+        return math.abs(CP.DB.GetSpellDmgValue(id,i1,level))
+    end
+
+    local function SpellFixDmg(token)
+
+        local i1 = tonumber(token)
+        if i1 then
+            return math.abs(CP.DB.GetSpellFixDmgValue(i1))
+        end
+        return "FixDMG-"..token
+    end
+
+    local desc = TEXT("Sys"..id.."_shortnote")
+if not NO_BEN then
+    desc = string.gsub(desc,"%(Buff(.-)%-Time%)", function (x) return SpellBuffTime(x) end )
+    desc = string.gsub(desc,"%(Buff(.-)%)", function (x) return SpellBuff(x) end )
+    desc = string.gsub(desc,"%(DMG(.-)%)", function (x) return SpellDmg(x) end )
+    desc = string.gsub(desc,"%(FixDMG%-(.-)%)", function (x) return SpellFixDmg(x) end )
+--~     desc = string.gsub(desc,"%(Max%-BuffTime.-%)", function (x) return "___" end )
+end
+
+    desc = string.gsub(desc,"%[.-|(.-)%]", function (x) return x end )
+    desc = string.gsub(desc,"%[(.-)%]", function (x)
+        if tonumber(x) then
+            return TEXT("Sys"..x.."_name")
+        end
+        return TEXT(x)
+        end )
+    desc = string.gsub(desc,"<CM>", "|cff770dd0")
+    desc = string.gsub(desc,"</CM>", "|r")
+
+    return desc
+end
+
 function Classes.OnEnterButton(this, id)
 
 	local iIndex	= (CP.Classes.page-1)*SKILLS_PER_PAGE + id
@@ -251,24 +308,81 @@ function Classes.OnEnterButton(this, id)
 		getglobal( this:GetName() .. "SelectHighlight" ):Show()
 	end
 
-	GameTooltip:ClearAllAnchors()
-	GameTooltip:SetOwner(this, "ANCHOR_RIGHT", 10, 0)
-	--GameTooltip:SetSkillItem( gSkillFrame.type, iIndex )
-	GameTooltip:Show()
+    if this.skill then
+        GameTooltip:ClearAllAnchors()
+        GameTooltip:SetOwner(this, "ANCHOR_RIGHT", 10, 0)
+
+        local name = TEXT("Sys"..(this.skill).."_name")
+        local lvl = CP.Unit.skills[this.skill] or 0
+        if lvl>0 then
+            name = name .." + "..lvl
+        end
+        GameTooltip:SetText(name)
+        GameTooltip:AddLine("id: "..this.skill)
+
+        GameTooltip:AddLine(GetSpellDesc(this.skill,lvl),0,0.75,0.95)
+
+        if lvl+1 < this.skill_max then
+            GameTooltip:AddLine(TEXT("SYS_TOOLTIP_MAGIC_NEXT_POWER"),0.5,0.5,0.5)
+            GameTooltip:AddLine(GetSpellDesc(this.skill,lvl+1),0.5,0.5,0.5)
+        end
+
+        if this.skill_max>lvl+1 then
+            GameTooltip:AddLine("Max (+"..this.skill_max.."):",0.6,0.6,0.6)
+            GameTooltip:AddLine(GetSpellDesc(this.skill,this.skill_max),0.6,0.6,0.6)
+        end
+
+        GameTooltip:Show()
+    end
 end
 
-function Classes.SetSkillButton( _Button, _IconPath, _SkillName, _Lv, _Plv, _Point, _Mode, _EnableToLV, _duration, _remaining, _bLearned )
+function Classes.SetSkillButtonDisabled(_Button)
 
-	local _ButtonName	= _Button:GetName()
-	local _SkillInfoName	= _ButtonName .. "_SkillInfo";
-	local _ItemButton	= getglobal( _ButtonName .. "ItemButton" )
-	local _Name		= getglobal( _SkillInfoName .. "_Name"	)
-	local _LV		= getglobal( _SkillInfoName .. "_LV"	)
-	local _PowerLV		= getglobal( _ButtonName .. "PowerLV"	)
-	local _StatusBar	= getglobal( _ButtonName .. "PointStatusBar" )
-	local _NextValue	= getglobal( _ButtonName .. "PointStatusBar" .. "NextValue" )
-	local _NextValueTitle	= getglobal( _ButtonName .. "PointStatusBar" .. "Next" )
-	local _PowerIcon	= getglobal( _ButtonName .. "Icon" );
+    local btn=_Button:GetName()
+	local _ItemButton = _G[btn.."ItemButton"]
+	local _Name       = _G[btn.."_SkillInfo".."_Name"]
+	local _LV         = _G[btn.."_SkillInfo".."_LV"]
+	local _PowerLV	  = _G[btn.."PowerLV"]
+	local _StatusBar  = _G[btn.."PointStatusBar"]
+	local _PowerIcon  = _G[btn.."Icon"]
+
+    _ItemButton:Disable()
+    SetItemButtonTexture(_ItemButton, "")
+    _LV:SetText("")
+    _PowerLV:SetText( "" )
+    _PowerIcon:Hide()
+    _StatusBar:Hide()
+    _Name:SetText("")
+    _Button:Disable()
+    _Button:Show()
+
+end
+
+function Classes.SetSkillButton( _Button, _SkillName, skill_id ,_Lv, _Plv, _Point, _Mode, _maxskill,  _bLearned )
+
+    local _EnableToLV = _maxskill>0
+
+    local btn=_Button:GetName()
+	local _ItemButton = _G[btn.."ItemButton"]
+	local _Name       = _G[btn.."_SkillInfo".."_Name"]
+	local _LV         = _G[btn.."_SkillInfo".."_LV"]
+	local _PowerLV	  = _G[btn.."PowerLV"]
+	local _StatusBar  = _G[btn.."PointStatusBar"]
+	local _StatusText = _G[btn.."PointStatusBar".. "StatusText"]
+	local _NextValue  = _G[btn.."PointStatusBar".. "NextValue"]
+	local _NextValueTitle  = _G[btn.."PointStatusBar".. "Next"]
+	local _PowerIcon  = _G[btn.."Icon"]
+
+
+    local icon = CP.DB.GetSpellIcon(skill_id)
+    local name = TEXT("Sys"..skill_id.."_name")
+
+	if( _EnableToLV == 0 and _Plv == 0 and _Point == 0 )then
+		_EnableToLV = nil
+		_Plv = nil
+		_Point = nil
+	end
+
 
 	if( _SkillName ) then
 		_NextValueTitle:Show()
@@ -278,48 +392,39 @@ function Classes.SetSkillButton( _Button, _IconPath, _SkillName, _Lv, _Plv, _Poi
 		_Button:Disable()
 	end
 
-	if( _EnableToLV == 0 and _Plv == 0 and _Point == 0 )then
-		_EnableToLV = nil
-		_Plv = nil
-		_Point = nil
-	end
-
-
-	SetItemButtonTexture( _ItemButton, _IconPath );
-
-	getglobal( _ButtonName .. "PointStatusBar" .. "StatusText" ):Hide();
-
+	SetItemButtonTexture( _ItemButton, icon )
+	_StatusText:Hide()
     _NextValue:SetText( _Point )
 
 	if( _Lv and _Lv > 0 ) then
 		local strRank = TEXT( "SYS_MAGIC_LEVEL" )
-		_LV:SetText( strRank .. _Lv );
-		_LV:SetColor( 0.9, 0.9, 0.4 );
+		_LV:SetText( strRank .. _Lv )
+		_LV:SetColor( 0.9, 0.9, 0.4 )
 	else
-		_LV:SetText( "" );
+		_LV:SetText( "" )
 	end
 
 	if( _Plv ) then
-		_PowerLV:SetText( _Plv );
-		_NextValueTitle:Show();
-		_PowerIcon:Show();
+		_PowerLV:SetText( _Plv )
+		_NextValueTitle:Show()
+		_PowerIcon:Show()
 	else
-		_NextValueTitle:Hide();
-		_PowerLV:SetText( "" );
-		_PowerIcon:Hide();
+		_NextValueTitle:Hide()
+		_PowerLV:SetText( "" )
+		_PowerIcon:Hide()
 	end
 
 	if( _EnableToLV ) then
 		_StatusBar:Show();
 		if( _EnableToLV == 0 ) then
-			_StatusBar:SetValue( 1 );
-			_NextValue:SetText( "" );
-			getglobal( _ButtonName .. "PointStatusBar" .. "Next" ):Hide();
-			getglobal( _ButtonName .. "PointStatusBar" .. "StatusText" ):Show();
+			_StatusBar:SetValue( 1 )
+			_NextValue:SetText("")
+			_NextValueTitle:Hide()
+			_StatusText:Show()
 		else
-			_StatusBar:SetValue( _Plv / UnitLevel( "player" ) );
-			getglobal( _ButtonName .. "PointStatusBar" .. "Next" ):Show();
-			getglobal( _ButtonName .. "PointStatusBar" .. "StatusText" ):Hide();
+			_StatusBar:SetValue( _Plv / UnitLevel( "player" ) )
+			_NextValueTitle:Show()
+			_StatusText:Hide()
 
 		end
 		_StatusBar:Show();
@@ -328,33 +433,34 @@ function Classes.SetSkillButton( _Button, _IconPath, _SkillName, _Lv, _Plv, _Poi
 	end
 
 	if( _Mode == 0 or _Mode == 1 )then
-		_Name:SetText( _SkillName );
-		_Name:SetColor( 1, 1, 1 );
-		_ItemButton:Enable();
+		_Name:SetText( _SkillName )
+		_Name:SetColor( 1, 1, 1 )
+		_ItemButton:Enable()
 	elseif( _Mode == 2 ) then
-		_Name:SetColor( 0.1, 0.68, 0.21 );
-		_Name:SetText( _SkillName );
-		_ItemButton:Disable();
+		_Name:SetColor( 0.1, 0.68, 0.21 )
+		_Name:SetText( _SkillName )
+		_ItemButton:Disable()
 	elseif( _Mode == 100 ) then
-		_Name:SetText( _SkillName );
-		_Name:SetColor( 1, 1, 1 );
-		_ItemButton:Enable();
+		_Name:SetText( _SkillName )
+		_Name:SetColor( 1, 1, 1 )
+		_ItemButton:Enable()
 	else
-		_Name:SetText( _SkillName );
-		_Name:SetColor( 1, 1, 1 );
-		_ItemButton:Disable();
+		_Name:SetText( _SkillName )
+		_Name:SetColor( 1, 1, 1 )
+		_ItemButton:Disable()
 	end
 
-	_Button.Mode       = _Mode;
-	_Button.EnableToLV = _EnableToLV;
-	_Button.bLearned = _bLearned;
-	_ItemButton.bLearned = _bLearned;
+	_Button.Mode       = _Mode
+	_Button.EnableToLV = _EnableToLV
+	_Button.bLearned = _bLearned
+	_Button.skill = skill_id
+	_Button.skill_max = _maxskill
 	_Button:Show()
 
 	if( not _bLearned )then
-		_ItemButton:Disable();
-		_Name:SetColor( 0.5, 0.5, 0.5 );
-		_LV:SetColor( 0.5, 0.5, 0.5 );
+		_ItemButton:Disable()
+		_Name:SetColor( 0.5, 0.5, 0.5 )
+		_LV:SetColor( 0.5, 0.5, 0.5 )
 	end
 
 end
