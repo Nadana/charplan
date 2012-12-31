@@ -34,8 +34,6 @@ end
 
 ------------------------------
 
-local MAX_LEVEL=75
-
 local WaitTimer = LibStub("WaitTimer")
 local Nyx = LibStub("Nyx")
 

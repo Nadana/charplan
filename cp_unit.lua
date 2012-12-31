@@ -2,6 +2,8 @@ local CP = _G.CP
 local Unit= {}
 CP.Unit = Unit
 
+local MAX_LEVEL=75
+
 --[[ data fields:
     title_id
     title_count
@@ -12,6 +14,14 @@ CP.Unit = Unit
     sec_class
     skills
 ]]
+
+function Unit.ClampLevel(level)
+    level = tonumber(level) or 1
+    if level<1 then return 1 end
+    if level>MAX_LEVEL then return MAX_LEVEL end
+
+    return level
+end
 
 local function _GetTitleCount()
     local count = GetTitleCount()-1
@@ -245,6 +255,7 @@ function Unit.GetAllSkills()
 
                 local cur_level = Unit.skills[id] or 0
                 local max_level = (CP.DB.skills[id] and CP.DB.skills[id][4]) or 0
+                if max_level >MAX_LEVEL then max_level=MAX_LEVEL end
                 if max_level <1 then cur_level=nil end
 
                 --if not condition_missing then

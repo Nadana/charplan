@@ -17,6 +17,11 @@
 				<Anchors>
 					<Anchor point="LEFT"><Offset><AbsDimension x="152"  y="0"></AbsDimension></Offset></Anchor>
 				</Anchors>
+				<Scripts>
+					<OnEnterPressed>CP.Classes.OnLevelChanged(this)</OnEnterPressed>
+					<OnTabPressed>CP.Classes.OnLevelChanged(this)</OnTabPressed>
+					<OnEditFocusLost>CP.Classes.OnLevelChanged(this)</OnEditFocusLost>
+				</Scripts>
 				<TextInsets><AbsInset top="4" right="3" left="10" bottom="0"></AbsInset></TextInsets>
 			</EditBox>
 		</Frames>

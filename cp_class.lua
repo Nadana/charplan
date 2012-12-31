@@ -215,16 +215,33 @@ function Classes.UpdateTabs()
 	PanelTemplates_SetTab( CPClassDialogSkills, 1)
 end
 
+function Classes.OnTabClicked(this, id)
+    PanelTemplates_SetTab(CPClassDialogSkills,id)
+    Classes.ShowPage(1)
+end
+
+function Classes.OnLevelChanged(this)
+    CP.Unit.level = CP.Unit.ClampLevel(CPClassDialogClassMainLevelEdit:GetText())
+    CP.Unit.sec_level = CP.Unit.ClampLevel(CPClassDialogClassSubLevelEdit:GetText())
+
+    CPClassDialogClassMainLevelEdit:SetText(CP.Unit.level)
+    CPClassDialogClassSubLevelEdit:SetText(CP.Unit.sec_level)
+
+    if CP.Unit.sec_level > CP.Unit.level then
+        CPClassDialogClassSubLevelEdit:SetTextColor(1,0.7,0.7)
+    else
+        CPClassDialogClassSubLevelEdit:SetTextColor(1,1,1)
+    end
+
+    Classes.OnSkillChanged()
+end
+
 function Classes.GetCurSkillList()
     local idx = PanelTemplates_GetSelectedTab(CPClassDialogSkills)
     local skill_type = _G[ "CPClassDialogSkillsTab" .. idx ].type
     return CP.Classes.skills[skill_type]
 end
 
-function Classes.OnTabClicked(this, id)
-    PanelTemplates_SetTab(CPClassDialogSkills,id)
-    Classes.ShowPage(1)
-end
 
 function Classes.OnEnterButton(this, id)
 
