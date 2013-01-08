@@ -61,15 +61,6 @@ local function loadMoneyNames()
 	return cache
 end
 
-local function makeRecipeIndex(recipe_items)
-	local cache = {}
-	for recipe,entry in pairs(recipe_items) do
-		for _,item in pairs(entry[2]) do
-			cache[item] = recipe
-		end
-	end
-	return cache
-end
 
 function DB.Load()
     if DB.LoadCount then
@@ -92,7 +83,6 @@ function DB.Load()
     DB.shop_items = LoadTable("shop_items")
     DB.shop_index = LoadTable("shop_index")
     DB.recipe_items = LoadTable("recipe_items")
-    DB.recipe_index = makeRecipeIndex(DB.recipe_items)
     DB.moneyNames = loadMoneyNames()
     DB.effects = loadEffects()
 end
@@ -118,7 +108,6 @@ function DB.Release()
             DB.shop_items = nil
             DB.shop_index = nil
             DB.recipe_items = nil
-            DB.recipe_index = nil
             DB.moneyNames = nil
         collectgarbage("collect")
         -- local mem2 = collectgarbage("count")
@@ -231,9 +220,8 @@ function DB.GetSetEffect(set_id, item_count)
 end
 
 function DB.GetItemName(item_id)
-	if item_id and item_id >= 550000 and item_id < 560000 then
-		-- this is recipe, which have a special case for name
-		local name = DB.GetRecipeInfo(item_id)
+	if item_id >= 550000 and item_id < 560000 then
+		local name = DB.GetRecipeName(item_id)
 		if name then return name end
 	end
 	return TEXT("Sys"..item_id.."_name")
@@ -838,18 +826,14 @@ function DB.GetMoneyName(money_type)
 	return DB.moneyNames[money_type]
 end
 
-function DB.GetRecipeInfo(recipe_id)
-	-- name, color, items
-	local re = DB.recipe_items[recipe_id]
-	if not re then return end
-	local entry = DB.recipe_items[recipe_id]
-	local rare = entry[1]
-	local items = entry[2]
-	local name = TEXT("SYS_RECIPE_TITLE") .. DB.GetItemName(items[1])
-	return name, rare, items
+function DB.GetRecipeName(recipe_id)
+    for item,rec in ipairs(DB.recipe_items) do
+        if rec==recipe_id then
+            return TEXT("SYS_RECIPE_TITLE") .. DB.GetItemName(item)
+        end
+    end
 end
 
-function DB.GetRecipeItemInfo(item_id)
-	-- return recipe_id
-	return DB.recipe_index[item_id]
+function DB.GetRecipeOfItem(item_id)
+	return DB.recipe_items[item_id]
 end

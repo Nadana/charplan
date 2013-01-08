@@ -382,7 +382,7 @@ function Search.DoSort(column)
         		end
         	else
         		-- or sort by mdmg
-        		boni = effect2	
+        		boni = effect2
         	end
         else
         	-- sort armor by pdef+mdef
@@ -685,7 +685,7 @@ function Search.ShowContextMenu(this)
     UIDropDownMenu_AddButton(info)
 
 		-- item sources --
-		
+
 		-- 1. Loot
     local res = Search.FindInDungeonLoots(this.item_id)
     for _,data in pairs(res) do
@@ -697,7 +697,7 @@ function Search.ShowContextMenu(this)
             end
         UIDropDownMenu_AddButton(info)
     end
-    
+
     -- 2. Vendor
     res = Search.FindInShops(this.item_id)
     if res then
@@ -715,7 +715,7 @@ function Search.ShowContextMenu(this)
     		UIDropDownMenu_AddButton(info)
     	end
     end
-    
+
     -- 3. Recipes
     res = Search.FindInRecipes(this.item_id)
     if res then
@@ -784,9 +784,8 @@ function Search.GetShopContents(shop_id)
 end
 
 function Search.FindInRecipes(item_id)
-	local recipe = CP.DB.GetRecipeItemInfo(item_id)
-	if not recipe then return nil end
-	local info = CP.DB.GetRecipeInfo(recipe)
+	local recipe = CP.DB.GetRecipeOfItem(item_id)
+	if not recipe then return end
 	local where = string.format(CP.L.SEARCH_MADE, CP.Pimp.GenerateSimpleLink(recipe))
 	return {recipe,where}
 end
