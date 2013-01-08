@@ -58,6 +58,7 @@ class FullDB
         @titles = Titles.new()
         @vocs = Voc.new()
         @learnmagic = Learnmagic.new()
+        @recipes = Recipes.new()
     end
 
     def Export
@@ -74,6 +75,7 @@ class FullDB
         @food.Export("../item_data/food.lua")
         @vocs.Export("../item_data/classes.lua")
         @learnmagic.Export("../item_data/skills.lua")
+        @recipes.ExportReverseIndex("../item_data/recipe_items.lua")
     end
 
 

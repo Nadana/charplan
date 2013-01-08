@@ -19,5 +19,6 @@ require_relative 'cards'
 require_relative 'titles'
 require_relative 'voc'
 require_relative 'learnmagic'
+require_relative 'recipes'
 
 
