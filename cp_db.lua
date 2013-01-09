@@ -156,6 +156,11 @@ function DB.GetSpellEffect(spell_id)
     end
 end
 
+--  2=passive
+function DB.GetSpellType(spell_id)
+    return DB.skills[spell_id] and DB.skills[spell_id][S_EFFECT]
+end
+
 function DB.GetSpellIcon(spell_id)
     local icon_id = DB.skills[spell_id] and DB.skills[spell_id][S_ICON]
     if icon_id then
