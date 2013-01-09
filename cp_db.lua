@@ -60,15 +60,6 @@ local function loadEffects()
 end
 
 
-local function loadMoneyNames()
-	local cache = {}
-	for i=0,30 do	-- 14 at 5.0.6
-		local n = "SYS_MONEY_TYPE_" .. i
-		cache[i] = TEXT(n)
-	end
-	return cache
-end
-
 
 function DB.Load()
     if DB.LoadCount then
@@ -92,7 +83,6 @@ function DB.Load()
     DB.shop_items = LoadTable("shop_items")
     DB.shop_index = LoadTable("shop_index")
     DB.recipe_items = LoadTable("recipe_items")
-    DB.moneyNames = loadMoneyNames()
     DB.effects = loadEffects()
 end
 
@@ -118,7 +108,6 @@ function DB.Release()
             DB.shop_items = nil
             DB.shop_index = nil
             DB.recipe_items = nil
-            DB.moneyNames = nil
         collectgarbage("collect")
         -- local mem2 = collectgarbage("count")
         -- CP.Debug("DB Released. Freed memory: "..(math.floor(mem1-mem2)/1000).."mb")
@@ -923,7 +912,7 @@ function DB.GetShopInfo(shop_id)
 end
 
 function DB.GetMoneyName(money_type)
-	return DB.moneyNames[money_type]
+    return TEXT("SYS_MONEY_TYPE_" .. money_type)
 end
 
 function DB.GetRecipeName(recipe_id)
