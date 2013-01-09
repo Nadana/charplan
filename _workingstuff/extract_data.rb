@@ -88,6 +88,8 @@ class FullDB
         @suits.MarkUnusedIfNameInvalid($de)
         CheckImages(@images, [@items, @spell_collection])
         FilterSpells()
+
+        @spell_collection.ClearUnskillable(@learnmagic)
     end
 
     def FilterSpells

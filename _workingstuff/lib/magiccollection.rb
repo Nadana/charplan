@@ -5,6 +5,7 @@ class MagicCollectionEntry < TableEntry
     attr_accessor :image_id
     attr_accessor :effecttype
     attr_accessor :maxskill
+    attr_accessor :tp_cost_rate
 
     def initialize(csv_row)
         super(csv_row)
@@ -17,6 +18,7 @@ class MagicCollectionEntry < TableEntry
         @effecttype = csv_row['effecttype'].to_i
         @image_id = csv_row['imageid'].to_i
         @maxskill = csv_row['maxskilllv'].to_i
+        @tp_cost_rate = csv_row['exptablerate'].to_i
     end
 
     #~ def IsValid?
@@ -28,6 +30,7 @@ class MagicCollectionEntry < TableEntry
         data.push( "image_id")
         data.push( "{magics}")
         data.push( "maxskill")
+        data.push( "tprate")
     end
 
     def ExportData(data)
@@ -35,6 +38,7 @@ class MagicCollectionEntry < TableEntry
         data.push(@image_id)
         data.push(FormatArray(@magics, true))
         data.push(@maxskill)
+        data.push(@tp_cost_rate)
     end
 
 end
@@ -60,6 +64,25 @@ class MagicCollection < Table
                 end
             }
             data.magics = data.magics-undefined
+        }
+    end
+
+    def ClearUnskillable(learnmagic)
+        not_skill = @index
+
+        learnmagic.guids.each { |guid|
+            if learnmagic.base.has_key? guid then
+                learnmagic.base[guid].each {|x|  not_skill.delete(x.skill) }
+            end
+
+            if learnmagic.spec.has_key? guid then
+                learnmagic.spec[guid].each {|x|  not_skill.delete(x.skill) }
+            end
+        }
+
+        not_skill.each { |x,y|
+                @db[y].maxskill="nil"
+                @db[y].tp_cost_rate="nil"
         }
     end
 end

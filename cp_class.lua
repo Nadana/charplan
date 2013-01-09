@@ -166,7 +166,7 @@ function Classes.ShowPage(pagenr)
             local mode = sk[8] -- ==2: passive
             local maxskill = sk[9]
 
-            local costs = CP.DB.GetTPCosts(skill, false)
+            local costs = CP.DB.GetTPCosts(id, skill_lvl)
 
             Classes.SetSkillButton(_Button, name, id,nil, skill_lvl, costs,  mode, maxskill, learned )
 		else
@@ -376,6 +376,7 @@ function Classes.SetSkillButton( _Button, _SkillName, skill_id ,_Lv, _Plv, _Poin
 
     local icon = CP.DB.GetSpellIcon(skill_id)
     local name = TEXT("Sys"..skill_id.."_name")
+    local passive = CP.DB.IsSpellPassive(skill_id)
 
 	if( _EnableToLV == 0 and _Plv == 0 and _Point == 0 )then
 		_EnableToLV = nil
@@ -432,25 +433,15 @@ function Classes.SetSkillButton( _Button, _SkillName, skill_id ,_Lv, _Plv, _Poin
 		_StatusBar:Hide();
 	end
 
-	if( _Mode == 0 or _Mode == 1 )then
-		_Name:SetText( _SkillName )
-		_Name:SetColor( 1, 1, 1 )
-		_ItemButton:Enable()
-	elseif( _Mode == 2 ) then
+    _Name:SetText( _SkillName )
+    if passive then
 		_Name:SetColor( 0.1, 0.68, 0.21 )
-		_Name:SetText( _SkillName )
 		_ItemButton:Disable()
-	elseif( _Mode == 100 ) then
-		_Name:SetText( _SkillName )
+    else
 		_Name:SetColor( 1, 1, 1 )
 		_ItemButton:Enable()
-	else
-		_Name:SetText( _SkillName )
-		_Name:SetColor( 1, 1, 1 )
-		_ItemButton:Disable()
 	end
 
-	_Button.Mode       = _Mode
 	_Button.EnableToLV = _EnableToLV
 	_Button.bLearned = _bLearned
 	_Button.skill = skill_id

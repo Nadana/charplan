@@ -161,7 +161,7 @@ function Calc.ReadSkills()
     local skills = CP.Unit.skills
     for skill_id, level in pairs(skills) do
 
-        if CP.DB.GetSpellType(skill_id)==2 then
+        if CP.DB.IsSpellPassive(skill_id) then
 
             local spells = CP.DB.GetSpellEffectList(skill_id)
             for _,spell_id in ipairs(spells) do

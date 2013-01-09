@@ -32,6 +32,8 @@ CP.DB = DB
     local S_EFFECT=1
     local S_ICON=2
     local S_SPELL_EFFECTS=3
+    local S_MAX_SKILL=4
+    local S_TP_RATE=5
 
     -- Spell-Effect
     local SE_SKILL_VARG=1
@@ -58,8 +60,6 @@ local function loadEffects()
 	end
 	return cache
 end
-
-
 
 function DB.Load()
     if DB.LoadCount then
@@ -148,6 +148,10 @@ end
 --  2=passive
 function DB.GetSpellType(spell_id)
     return DB.skills[spell_id] and DB.skills[spell_id][S_EFFECT]
+end
+
+function DB.IsSpellPassive(spell_id)
+    return DB.GetSpellType(spell_id)==2
 end
 
 function DB.GetSpellIcon(spell_id)
@@ -927,8 +931,9 @@ function DB.GetRecipeOfItem(item_id)
 	return DB.recipe_items[item_id]
 end
 
-function DB.GetTPCosts(level, passive)
+function DB.GetTPCosts(spell_id,level)
     level = level or 0
---    if not passive then level=level+1 end
-    return DB.tpcosts[level+1]
+
+    local rate = (DB.skills[spell_id] and DB.skills[spell_id][S_TP_RATE]) or 1
+    return DB.tpcosts[level+rate]
 end
