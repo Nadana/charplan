@@ -195,7 +195,7 @@ function Classes.UpdateTabs()
 
     AddTab(this, DF_SkillType_MainJob, string.format( DF_SkillBook_Tab_Format , ClassToken ) , VocName )
 
-	if( VocSubID ~= -1 )then
+	if SubClassToken then
         AddTab(this, DF_SkillType_SubJob, string.format( DF_SkillBook_Tab_Format , SubClassToken ) , VocSubName )
     end
 
@@ -234,7 +234,7 @@ end
 function Classes.GetCurSkillList()
     local idx = PanelTemplates_GetSelectedTab(CPClassDialogSkills)
     local skill_type = _G[ "CPClassDialogSkillsTab" .. idx ].type
-    return CP.Classes.skills[skill_type]
+    return CP.Classes.skills[skill_type] or {}
 end
 
 

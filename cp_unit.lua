@@ -196,7 +196,7 @@ function Unit.GetAllSkills()
         [DF_SkillType_MainJob] = CP.DB.GetSkillList(c1,1),
         [DF_SkillType_SP] = CP.DB.GetSkillList(c1,2)}
 
-    if c2>0 then
+    if c2 and c2>0 then
         pre_res[DF_SkillType_SubJob] = CP.DB.GetSkillList(c2,1)
     end
 
