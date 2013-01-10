@@ -336,6 +336,15 @@ function Classes.OnEnterButton(this, id)
     end
 end
 
+function Classes.OnClickButton(this, id, key)
+	local iIndex	= (CP.Classes.page-1)*SKILLS_PER_PAGE + id
+	if this.skill and key == "LBUTTON" and IsShiftKeyDown() then
+		local lvl = CP.Unit.skills[this.skill] or 0
+		local link = CP.Pimp.GenerateSkillLink(this.skill, lvl, CP.Prefix);
+		CP.PostItemLink(link);
+	end
+end
+
 function Classes.SetSkillButtonDisabled(_Button)
 
     local btn=_Button:GetName()

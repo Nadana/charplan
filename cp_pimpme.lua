@@ -575,8 +575,15 @@ end
 
 function Pimp.GenerateSimpleLink(item_id, prefix)
 	local r,g,b = GetItemQualityColor(GetQualityByGUID( item_id ))
-	local link = string.format("|Hitem:%x|h|cff%02x%02x%02x[%s%s]|r|h", item_id, r*256,g*256,b*256, prefix or "", CP.DB.GetItemName(item_id))
-	return link
+	return string.format("|Hitem:%x|h|cff%02x%02x%02x[%s%s]|r|h", item_id, r*256,g*256,b*256, prefix or "", CP.DB.GetItemName(item_id))
+end
+
+function Pimp.GenerateSkillLink(skill_id, skill_level, prefix)
+	local name = CP.DB.GetItemName(skill_id)
+	if skill_level and skill_level > 0 then
+		name = name .. "+" .. skill_level
+	end
+	return string.format("|Hskill:%d %d|h|cff8080ff[%s%s]|r|h", skill_id, skill_level or 0, prefix or "", name)
 end
 
 function Pimp.ExtractLink(itemlink)
