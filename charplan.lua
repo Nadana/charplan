@@ -9,7 +9,7 @@ Notes:
 
 local CP = {}
 _G.CP = CP
-
+CP.Prefix = "CP: "
 
 CP.version       = "@project-version@"
 --@do-not-package@
@@ -558,10 +558,12 @@ function CP.Hooked_Hyperlink_Assign(link, key)
 end
 
 function CP.PostItemLink(item_data)
-    local link_txt = CP.Pimp.GenerateLink(item_data, "CP: ")
-
-    if not ChatEdit_AddItemLink(link_txt) and not DEFAULT_CHAT_EDITBOX:IsVisible() then
-        DEFAULT_CHAT_FRAME:AddMessage(link_txt)
+    local link = item_data
+    if type(item_data) == 'table' then
+        link_txt = CP.Pimp.GenerateLink(item_data, CP.Prefix)
+    end
+    if not ChatEdit_AddItemLink(link) and not DEFAULT_CHAT_EDITBOX:IsVisible() then
+        DEFAULT_CHAT_FRAME:AddMessage(link)
     end
 end
 
