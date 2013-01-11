@@ -560,7 +560,7 @@ end
 function CP.PostItemLink(item_data)
     local link = item_data
     if type(item_data) == 'table' then
-        link_txt = CP.Pimp.GenerateLink(item_data, CP.Prefix)
+        link = CP.Pimp.GenerateLink(item_data, CP.Prefix)
     end
     if not ChatEdit_AddItemLink(link) and not DEFAULT_CHAT_EDITBOX:IsVisible() then
         DEFAULT_CHAT_FRAME:AddMessage(link)
