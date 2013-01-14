@@ -51,7 +51,7 @@ function StatSearch.OnShow(this)
     	StatSearch.filters = {}
     end
 
-  	for i=1,4 do
+  	for i=1,5 do
   		local edit = getglobal('CPStatSearchSearchBox' .. i)
   		local label = getglobal(edit:GetName() .. 'Back')
   		edit:SetText(StatSearch.filters[i] or "")
@@ -76,7 +76,7 @@ function StatSearch.UpdateList()
     end
 
     local filters = StatSearch.filters
-    for i=1,4 do
+    for i=1,5 do
         local val = getglobal('CPStatSearchSearchBox' .. i):GetText()
         filters[i] = trim(val)
     end

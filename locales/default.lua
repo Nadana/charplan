@@ -35,6 +35,7 @@ local default_text={
     PIMP_FILTER2 = "<Stat1>",
     PIMP_FILTER3 = "<Stat2>",
     PIMP_FILTER4 = "min",
+    PIMP_FILTER5 = "max",
     PIMP_COPY = "Copy to…",
     PIMP_COPY_TO_ALL = "… all items",
     PIMP_CLEAR = "Clear",

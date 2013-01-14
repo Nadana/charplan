@@ -60,7 +60,7 @@
 	</EditBox>
 
 	<Frame name="CPStatSearch" hidden="true" parent="CPPimpMe" inherits="UICommonFrameTemplate" frameStrata="TOOLTIP" frameLevel="1000">
-		<Size><AbsDimension x="450" y="300"></AbsDimension></Size>
+		<Size><AbsDimension x="490" y="300"></AbsDimension></Size>
 		<Frames>
 		  <!-- filter -->
 		  <EditBox name="$parentSearchBox1" inherits="CPStatSearch_FilterBox">
@@ -87,10 +87,16 @@
 					<Anchor point="TOPLEFT" relativeTo="$parentSearchBox3" relativePoint="TOPRIGHT"><Offset><AbsDimension x="5" y="0" /></Offset></Anchor>
 				</Anchors>
 			</EditBox>
+		  <EditBox name="$parentSearchBox5" inherits="CPStatSearch_FilterBox">
+				<Size><AbsDimension x="35" y="20"/></Size>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="$parentSearchBox4" relativePoint="TOPRIGHT"><Offset><AbsDimension x="5" y="0" /></Offset></Anchor>
+				</Anchors>
+			</EditBox>
 
 			<Frame name="$parentItem" enableMouse="true">
 				<Size>
-					<AbsDimension x="420" y="210"></AbsDimension>
+					<AbsDimension x="460" y="210"></AbsDimension>
 				</Size>
 				<Anchors>
 					<Anchor point="TOP"><Offset><AbsDimension y="50" x="0"></AbsDimension></Offset></Anchor>

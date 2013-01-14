@@ -548,9 +548,10 @@ function DB.GetBonusGroupList(runes, filter)
     return res
 end
 
-function DB.GetBonusFilteredList(is_rune, existingStats, statName, name1, name2, minValue)
+function DB.GetBonusFilteredList(is_rune, existingStats, statName, name1, name2, minValue, maxValue)
 	is_runs = is_rune and true or false
 	minValue = minValue and tonumber(minValue)
+	maxValue = maxValue and tonumber(maxValue)
 
 	-- convert existing stats to lookup table
 	local exists = {}
@@ -607,16 +608,19 @@ function DB.GetBonusFilteredList(is_rune, existingStats, statName, name1, name2,
 	local is_include_stat = function(id)
 		if exists[id] then
 			return false
-		elseif not minValue then
+		elseif not minValue and not maxValue then
 			return true
 		else
 			-- filter by min of all stat values to prevent 105+700 with minValue 116
+			-- and filter by max to prevent 156+900 with maxValue = 150
+			-- NOTE: it would be nice to filter by stat level instead of values to filter the plain values like 290Patk+754HP, which belongs to the 116 base stat.
 			local bonus = DB.bonus[id][B_EFFECT]
+			local min = 0xffffFFFF
 			for i=2,#bonus,2 do
-				local v = bonus[i]
-				if v < minValue then
-					return false
-				end
+				min = math.min(min, bonus[i])
+			end
+			if (minValue and min < minValue) or (maxValue and min > maxValue) then
+				return false
 			end
 			return true
 		end
