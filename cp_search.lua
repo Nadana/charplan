@@ -34,7 +34,8 @@ function Search.OnLoad(this)
     CPSearchTakeIt1:SetText(CP.L.SEARCH_USE_SLOT1)
     CPSearchTakeIt2:SetText(CP.L.SEARCH_USE_SLOT2)
 
-    UIDropDownMenu_SetText(CPSearchFilterRarity,TEXT("C_ALL"))
+    Search.rarity = 3;	-- purple items by default
+    UIDropDownMenu_SetText(CPSearchFilterRarity,TEXT("ITEM_QUALITY3_DESC"))
 end
 
 
@@ -50,6 +51,11 @@ function Search.ShowSearch(slot_id, item_id)
         text = TEXT(string.format("SYS_EQWEARPOS_%02i",slot_id))
     end
     UIDropDownMenu_SetText(CPSearchFilterSlot,text)
+
+    if Search.slot == 21 then	-- clear rarity for wings
+      Search.rarity = nil;
+      UIDropDownMenu_SetText(CPSearchFilterRarity,TEXT("C_ALL"))
+    end
 
     Search.FindItems()
     CPSearch:Show()
