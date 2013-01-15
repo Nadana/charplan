@@ -8,6 +8,8 @@ class MagicObjectEntry < TableEntry
     attr_accessor :atk_dmg_fix
     attr_accessor :time
     attr_accessor :time_varg
+    attr_accessor :dot
+    attr_accessor :dot_varg
 
 
     def initialize(csv_row)
@@ -20,6 +22,8 @@ class MagicObjectEntry < TableEntry
         @atk_dmg_fix = csv_row['atk_fixvalue'].to_f
         @time = csv_row['effecttime'].to_f
         @time_varg = csv_row['effecttime_skilllvarg'].to_f
+        @dot = csv_row['dotbase'].to_f
+        @dot_varg = csv_row['dotskilllvarg'].to_f
     end
 
     #~ def IsValid?
@@ -33,7 +37,9 @@ class MagicObjectEntry < TableEntry
         data.push("time_varg")
         data.push("atk_dmg")
         data.push("atk_varg")
-        data.push("atk_dmg_fix")
+        data.push("atk_dmg")
+        data.push("dot_varg")
+        data.push("dot_dmg_fix")
     end
 
     def ExportData(data)
@@ -44,6 +50,8 @@ class MagicObjectEntry < TableEntry
         @atk_dmg!=0 ? data.push(@atk_dmg) : data.push("nil")
         (@atk_varg!=0 and @atk_dmg!=0) ? data.push(@atk_varg) : data.push("nil")
         @atk_dmg_fix!=0 ? data.push(@atk_dmg_fix) : data.push("nil")
+        @dot!=0 ? data.push(@dot) : data.push("nil")
+        (@dot_varg!=0 and @dot!=0) ? data.push(@dot_varg) : data.push("nil")
     end
 end
 

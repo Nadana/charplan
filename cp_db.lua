@@ -43,6 +43,8 @@ CP.DB = DB
     local SE_ATK_DMG=5
     local SE_ATK_VARG=6
     local SE_ATK_DMG_FIX=7
+    local SE_DOT_DMG=8
+    local SE_DOT_VARG=9
 --[[ ] ]]
 
 
@@ -200,7 +202,7 @@ function DB.GetSpellDmgValue(spell_id,index,level)
 
     local eff = DB.spell_effects[spell]
     if eff then
-        local val = (eff[SE_ATK_VARG]*level+100) * eff[SE_ATK_DMG] / 100
+        local val = ( (eff[SE_ATK_VARG] or 0)*level+100) * (eff[SE_ATK_DMG] or 0) / 100
         val = math.floor(val*10+0.5)/10
 
         return val, eff[SE_ATK_DMG_FIX] or 0
@@ -215,13 +217,17 @@ function DB.GetSpellFixDmgValue(spell_eff_id)
 end
 
 function DB.GetSpellTimeValue(spell_id,index,level)
-    local spell = DB.GetSpellEffectList(spell_id)[index+1]
-    if not spell then
+    local spell_effect_id = DB.GetSpellEffectList(spell_id)[index+1]
+    if not spell_effect_id then
         CP.Debug("no sub effect: "..spell_id.."/"..index)
         return 0
     end
 
-    local eff = DB.spell_effects[spell]
+    return DB.GetSpellEffectTimeValue(spell_effect_id,level)
+end
+
+function DB.GetSpellEffectTimeValue(spell_effect_id,level)
+    local eff = DB.spell_effects[spell_effect_id]
     if eff then
         if eff[SE_TIME_VARG] then
             local val = (eff[SE_TIME_VARG]*level+100) * eff[SE_TIME] / 100
@@ -233,26 +239,57 @@ function DB.GetSpellTimeValue(spell_id,index,level)
     end
 end
 
+function DB.GetSpellDotValue(spell_id,index,level)
+    local spell_effect_id = DB.GetSpellEffectList(spell_id)[index+1]
+    if not spell_effect_id then
+        CP.Debug("no sub effect: "..spell_id.."/"..index)
+        return 0
+    end
+
+    return DB.GetSpellEffectDotValue(spell_effect_id,level)
+end
+
+function DB.GetSpellEffectDotValue(spell_effect_id,level)
+    local eff = DB.spell_effects[spell_effect_id]
+    if eff then
+        if eff[SE_DOT_VARG] then
+            local val = ( eff[SE_DOT_VARG]*level+100) * eff[SE_DOT_DMG] / 100
+            val = math.floor(val*10+0.5)/10
+            return val
+        else
+            return eff[SE_DOT_DMG]
+        end
+    end
+end
+
 function DB.GetSpellDesc(spell_id,level)
 
     local function SpellBuff(token)
 
-        local i1,i2 = string.match(token,"(%d*)%-?(.*)")
-        i1 = i1 or 0
-        i2 = i2 or 0
-        if tonumber(i2) then
-            return DB.GetSpellBuffValue(spell_id,i1,i2,level)
+        local i1,val,ispell = string.match(token,"(%d*)%-?([^%-]*)%-?(%d*)")
+        i1 = tonumber(i1) or 0
+
+        ispell = tonumber(ispell)
+        if not ispell then
+            ispell = DB.GetSpellEffectList(spell_id)[i1+1]
+        end
+
+        if val=="Time" then
+            return DB.GetSpellEffectTimeValue(ispell,level)
+        elseif val=="Dot" then
+            return DB.GetSpellEffectDotValue(ispell,level)
+        else
+            val = tonumber(val)
+            if val then
+                if val>20 then
+                    return math.abs(DB.GetSpellEffectBuffValue(val,i1,level))
+                else
+                    return DB.GetSpellEffectBuffValue(ispell,val,level)
+                end
+            end
         end
 
         return "Buff"..token
-    end
-
-    local function SpellBuffTime(token)
-
-        local i1 = tonumber(token)
-        i1 = i1 or 0
-
-        return DB.GetSpellTimeValue(spell_id,i1,level)
     end
 
     local function SpellDmg(token)
@@ -274,7 +311,6 @@ function DB.GetSpellDesc(spell_id,level)
 
     local desc = TEXT("Sys"..spell_id.."_shortnote")
 
-    desc = string.gsub(desc,"%(Buff(.-)%-Time%)", function (x) return SpellBuffTime(x) end )
     desc = string.gsub(desc,"%(Buff(.-)%)", function (x) return SpellBuff(x) end )
     desc = string.gsub(desc,"%(DMG(.-)%)", function (x) return SpellDmg(x) end )
     desc = string.gsub(desc,"%(FixDMG%-(.-)%)", function (x) return SpellFixDmg(x) end )
