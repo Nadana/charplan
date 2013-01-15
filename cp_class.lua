@@ -237,69 +237,6 @@ function Classes.GetCurSkillList()
     return CP.Classes.skills[skill_type] or {}
 end
 
-
-local function GetSpellDesc(id,level)
-
-
-    local function SpellBuff(token)
-
-        local i1,i2 = string.match(token,"(%d*)%-?(.*)")
-        i1 = i1 or 0
-        i2 = i2 or 0
-        if tonumber(i2) then
-            return CP.DB.GetSpellBuffValue(id,i1,i2,level)
-        end
-
-        return "Buff"..token
-    end
-
-    local function SpellBuffTime(token)
-
-        local i1 = tonumber(token)
-        i1 = i1 or 0
-
-        return CP.DB.GetSpellTimeValue(id,i1,level)
-    end
-
-    local function SpellDmg(token)
-
-        local i1 = tonumber(token)
-        i1 = i1 or 0
-
-        return math.abs(CP.DB.GetSpellDmgValue(id,i1,level))
-    end
-
-    local function SpellFixDmg(token)
-
-        local i1 = tonumber(token)
-        if i1 then
-            return math.abs(CP.DB.GetSpellFixDmgValue(i1))
-        end
-        return "FixDMG-"..token
-    end
-
-    local desc = TEXT("Sys"..id.."_shortnote")
-if not NO_BEN then
-    desc = string.gsub(desc,"%(Buff(.-)%-Time%)", function (x) return SpellBuffTime(x) end )
-    desc = string.gsub(desc,"%(Buff(.-)%)", function (x) return SpellBuff(x) end )
-    desc = string.gsub(desc,"%(DMG(.-)%)", function (x) return SpellDmg(x) end )
-    desc = string.gsub(desc,"%(FixDMG%-(.-)%)", function (x) return SpellFixDmg(x) end )
---~     desc = string.gsub(desc,"%(Max%-BuffTime.-%)", function (x) return "___" end )
-end
-
-    desc = string.gsub(desc,"%[.-|(.-)%]", function (x) return x end )
-    desc = string.gsub(desc,"%[(.-)%]", function (x)
-        if tonumber(x) then
-            return TEXT("Sys"..x.."_name")
-        end
-        return TEXT(x)
-        end )
-    desc = string.gsub(desc,"<CM>", "|cff770dd0")
-    desc = string.gsub(desc,"</CM>", "|r")
-
-    return desc
-end
-
 function Classes.OnEnterButton(this, id)
 
 	local iIndex	= (CP.Classes.page-1)*SKILLS_PER_PAGE + id
@@ -318,18 +255,20 @@ function Classes.OnEnterButton(this, id)
             name = name .." + "..lvl
         end
         GameTooltip:SetText(name)
-        GameTooltip:AddLine("id: "..this.skill)
+    --@debug@
+    GameTooltip:AddLine("id: "..this.skill)
+    --@end-debug@
 
-        GameTooltip:AddLine(GetSpellDesc(this.skill,lvl),0,0.75,0.95)
+        GameTooltip:AddLine(CP.DB.GetSpellDesc(this.skill,lvl),0,0.75,0.95)
 
         if lvl+1 < this.skill_max then
             GameTooltip:AddLine(TEXT("SYS_TOOLTIP_MAGIC_NEXT_POWER"),0.5,0.5,0.5)
-            GameTooltip:AddLine(GetSpellDesc(this.skill,lvl+1),0.5,0.5,0.5)
+            GameTooltip:AddLine(CP.DB.GetSpellDesc(this.skill,lvl+1),0.5,0.5,0.5)
         end
 
         if this.skill_max>lvl+1 then
             GameTooltip:AddLine("Max (+"..this.skill_max.."):",0.6,0.6,0.6)
-            GameTooltip:AddLine(GetSpellDesc(this.skill,this.skill_max),0.6,0.6,0.6)
+            GameTooltip:AddLine(CP.DB.GetSpellDesc(this.skill,this.skill_max),0.6,0.6,0.6)
         end
 
         GameTooltip:Show()
@@ -367,7 +306,7 @@ function Classes.SetSkillButtonDisabled(_Button)
 
 end
 
-function Classes.SetSkillButton( _Button, _SkillName, skill_id ,_Lv, _Plv, _Point, _Mode, _maxskill,  _bLearned )
+function Classes.SetSkillButton( _Button, _SkillName, skill_id ,_Lv, _Plv, _Point, _Mode, _maxskill, bLearned )
 
     local _EnableToLV = _maxskill>0
 

@@ -233,6 +233,67 @@ function DB.GetSpellTimeValue(spell_id,index,level)
     end
 end
 
+function DB.GetSpellDesc(spell_id,level)
+
+    local function SpellBuff(token)
+
+        local i1,i2 = string.match(token,"(%d*)%-?(.*)")
+        i1 = i1 or 0
+        i2 = i2 or 0
+        if tonumber(i2) then
+            return DB.GetSpellBuffValue(spell_id,i1,i2,level)
+        end
+
+        return "Buff"..token
+    end
+
+    local function SpellBuffTime(token)
+
+        local i1 = tonumber(token)
+        i1 = i1 or 0
+
+        return DB.GetSpellTimeValue(spell_id,i1,level)
+    end
+
+    local function SpellDmg(token)
+
+        local i1 = tonumber(token)
+        i1 = i1 or 0
+
+        return math.abs(DB.GetSpellDmgValue(spell_id,i1,level))
+    end
+
+    local function SpellFixDmg(token)
+
+        local i1 = tonumber(token)
+        if i1 then
+            return math.abs(DB.GetSpellFixDmgValue(i1))
+        end
+        return "FixDMG-"..token
+    end
+
+    local desc = TEXT("Sys"..spell_id.."_shortnote")
+
+    desc = string.gsub(desc,"%(Buff(.-)%-Time%)", function (x) return SpellBuffTime(x) end )
+    desc = string.gsub(desc,"%(Buff(.-)%)", function (x) return SpellBuff(x) end )
+    desc = string.gsub(desc,"%(DMG(.-)%)", function (x) return SpellDmg(x) end )
+    desc = string.gsub(desc,"%(FixDMG%-(.-)%)", function (x) return SpellFixDmg(x) end )
+if not NO_BEN then
+    desc = string.gsub(desc,"%(Max%-BuffTime.-%)", function (x) return "___" end )
+end
+
+    desc = string.gsub(desc,"%[.-|(.-)%]", function (x) return x end )
+    desc = string.gsub(desc,"%[(.-)%]", function (x)
+        if tonumber(x) then
+            return TEXT("Sys"..x.."_name")
+        end
+        return TEXT(x)
+        end )
+    desc = string.gsub(desc,"<CM>", "|cff770dd0")
+    desc = string.gsub(desc,"</CM>", "|r")
+
+    return desc
+end
 
 function DB.GetSkillList(token_id,line)
     local learn = CP.DB.learn[token_id]
