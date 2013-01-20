@@ -162,7 +162,7 @@ function StatSearch.ItemOnEnter(this)
             local left={}
             local right={}
             for i=1,#effect,2 do
-                table.insert(left, TEXT("SYS_WEAREQTYPE_"..effect[i]))
+                table.insert(left, CP.DB.GetEffectName(effect[i]))
                 table.insert(right,effect[i+1])
             end
             GameTooltip:AddDoubleLine(" "..table.concat(left,"/"), table.concat(right,"/"))

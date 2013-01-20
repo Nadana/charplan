@@ -467,12 +467,14 @@ function Calc.AllAttributes(values)
         values.DEX = values.DEX+all
         values.INT = values.INT+all
         values.WIS = values.WIS+all
+        
+        local all_attributes = CP.DB.GetEffectName(7)
 
-        AddDescription(s.STR, TEXT("SYS_WEAREQTYPE_7"),all)
-        AddDescription(s.STA, TEXT("SYS_WEAREQTYPE_7"),all)
-        AddDescription(s.DEX, TEXT("SYS_WEAREQTYPE_7"),all)
-        AddDescription(s.INT, TEXT("SYS_WEAREQTYPE_7"),all)
-        AddDescription(s.WIS, TEXT("SYS_WEAREQTYPE_7"),all)
+        AddDescription(s.STR, all_attributes,all)
+        AddDescription(s.STA, all_attributes,all)
+        AddDescription(s.DEX, all_attributes,all)
+        AddDescription(s.INT, all_attributes,all)
+        AddDescription(s.WIS, all_attributes,all)
     end
 
 end
@@ -507,7 +509,7 @@ local function AddPerc(values, stat, percent, by_stat)
     local inc = math.floor(values[stat]*percent*0.01)
     values[stat] = values[stat] + inc
 
-    AddDescription(stat, TEXT("SYS_WEAREQTYPE_"..by_stat),inc)
+    AddDescription(stat, CP.DB.GetEffectName(by_stat),inc)
 end
 
 function Calc.Perc_Values(values)
@@ -522,7 +524,7 @@ end
 
 local function AddValue(values, stat,val, by_stat)
     values[stat] = values[stat] + val
-    AddDescription(stat, TEXT("SYS_WEAREQTYPE_"..by_stat), math.floor(val))
+    AddDescription(stat, CP.DB.GetEffectName(by_stat), math.floor(val))
 end
 
 

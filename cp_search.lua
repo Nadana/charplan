@@ -130,7 +130,7 @@ function Search.FilterTypeMenu_OnShow(this)
             [TEXT("SYS_WEAPON_TYPE06")]=14, --="Zweihandschwert"
             [TEXT("SYS_WEAPON_TYPE07")]=15, --="Zweihandstab"
             [TEXT("SYS_WEAPON_TYPE08")]=16, --="Zweihandaxt"
-            [TEXT("SYS_WEAPON_TYPE09")]=17, --="Beidhändiger Hammer"
+            [TEXT("SYS_WEAPON_TYPE09")]=17, --="BeidhÐ´ndiger Hammer"
             [TEXT("SYS_WEAPON_TYPE10")]=18, --="Stangenwaffe"
             },
         [5]= { -- Secondary Weapon
@@ -551,9 +551,9 @@ function Search.UpdateItem(base_name, item)
     for eff,value in pairs(boni) do
         if value~=0 then
             local idx = 1+math.floor(i/3)
-            local txt = "+"..value.." "..TEXT("SYS_WEAREQTYPE_"..eff)
+            local txt = "+"..value.." "..CP.DB.GetEffectName(eff)
             if string.len(txt)>36 then
-                txt = string.sub(txt,1,35).."…"
+                txt = string.sub(txt,1,35).."â€¦"
             end
             boni_txt[idx] = (boni_txt[idx] or "")..txt.."\n"
             i=i+1

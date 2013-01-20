@@ -621,7 +621,7 @@ function DB.GetBonusGroupList(runes, filter)
 
                     eff = {}
                     for i=1,#rdata[B_EFFECT],2 do
-                        local n = TEXT("SYS_WEAREQTYPE_"..rdata[B_EFFECT][i])
+                        local n = DB.GetEffectName(rdata[B_EFFECT][i])
                         if n then
                             table.insert(eff,n)
                             if not filter_found then
