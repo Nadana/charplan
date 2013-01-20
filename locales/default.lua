@@ -64,6 +64,7 @@ local default_text={
     SEARCH_SELLED  = "Selled at shop id %d for",
     SEARCH_MADE  = "Made by %s",
     SEARCH_UNIQUE_SKINS = "Unique skin",
+    SEARCH_FILTER_STATS = "Stats",
     
     BY_CLASS = "Base",
     BY_SKILL = "Skill",

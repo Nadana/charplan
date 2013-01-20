@@ -845,6 +845,9 @@ local function GetFilterFunction(info)
  info.no_empty_items
  info.itemset_only
  info.unique_skin
+ info.stat_name
+ info.stat_min
+ info.stat_max
 ]]
     local code = {"return function (id,data)"}
     if info.unique_skin then
@@ -891,6 +894,34 @@ local function GetFilterFunction(info)
         local name = string.lower(info.name)
         local suit_test = string.format('if not data[%i] or not string.find(TEXT("Sys"..data[%i].."_name"):lower(),"%s") then return false end',I_SET,I_SET,name)
         table.insert(code, 'if not string.find(TEXT("Sys"..id.."_name"):lower(),"'..name..'") then '..suit_test..' end')
+    end
+    
+    if info.stat_name and info.stat_name ~= "" then
+    	local effect_name = string.lower(info.stat_name)
+    	local effect_min = info.stat_min or 0
+    	local effect_max = info.stat_max or 0
+    	
+    	local code_text = string.format([=[
+    		local effect_name = "%s"
+    		local effect_min, effect_max = %d, %d
+	    	local item_data = CP.Search.GetPimpedItemData(id)
+	    	local boni = CP.Calc.GetItemBonus(item_data)
+	    	local found = false
+	    	for eff,value in pairs(boni) do
+	    		if value ~= 0 then
+	    			local effect = string.lower(CP.DB.GetEffectName(eff))
+	    			if effect:find(effect_name) and (value >= effect_min or effect_min == 0) and (value <= effect_max or effect_max == 0) then
+	    				found = true
+	    				break
+	    			end
+	    		end
+	    	end
+	    	if not found then
+	    		return false
+	    	end
+	    ]=],
+	    	effect_name, effect_min, effect_max);
+	    table.insert(code, code_text)
     end
 
     table.insert(code,"return true end")
@@ -1043,4 +1074,8 @@ function DB.GetTPCosts(spell_id,level)
 
     local rate = (DB.skills[spell_id] and DB.skills[spell_id][S_TP_RATE]) or 1
     return DB.tpcosts[level+rate]
+end
+
+function DB.GetEffectName(id)
+	return DB.effects[id] or ""
 end

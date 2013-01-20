@@ -491,6 +491,33 @@
 					<OnLeave>GameTooltip:Hide()</OnLeave>
 				</Scripts>
 			</CheckButton>
+	    <EditBox name="CPSearchFilterStats" inherits="UIPanelEditBoxTemplate">
+				<Size><AbsDimension x="120" y="20"/></Size>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="CPSearchFilterUniqueSkin" relativePoint="BOTTOMLEFT"><Offset><AbsDimension x="0" y="2" /></Offset></Anchor>
+				</Anchors>
+				<Scripts>
+					<OnTextChanged>CP.Search.FindItems()</OnTextChanged>
+				</Scripts>
+			</EditBox>
+	    <EditBox name="CPSearchFilterStatsMin" inherits="UIPanelEditBoxTemplate" numeric="true" letters="5">
+				<Size><AbsDimension x="40" y="20"/></Size>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="CPSearchFilterStats" relativePoint="TOPRIGHT"><Offset><AbsDimension x="5" y="0" /></Offset></Anchor>
+				</Anchors>
+				<Scripts>
+					<OnTextChanged>CP.Search.FindItems()</OnTextChanged>
+				</Scripts>
+			</EditBox>
+	    <EditBox name="CPSearchFilterStatsMax" inherits="UIPanelEditBoxTemplate" numeric="true" letters="5">
+				<Size><AbsDimension x="40" y="20"/></Size>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="CPSearchFilterStatsMin" relativePoint="TOPRIGHT"><Offset><AbsDimension x="12" y="0" /></Offset></Anchor>
+				</Anchors>
+				<Scripts>
+					<OnTextChanged>CP.Search.FindItems()</OnTextChanged>
+				</Scripts>
+			</EditBox>
 
 		</Frames>
 		<Scripts>
