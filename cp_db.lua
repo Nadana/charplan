@@ -844,8 +844,14 @@ local function GetFilterFunction(info)
  info.level_max
  info.no_empty_items
  info.itemset_only
+ info.unique_skin
 ]]
     local code = {"return function (id,data)"}
+    if info.unique_skin then
+	    local skins = {}
+    	CP.DB.UniqueSkinsCache = skins
+    	table.insert(code, string.format('local icon = data[%i]; if CP.DB.UniqueSkinsCache[icon] then return false else CP.DB.UniqueSkinsCache[icon] = true end', I_ICON))
+    end
 
     if info.slot then
         local slots = CP.DB.GetItemTypesForSlot(info.slot)

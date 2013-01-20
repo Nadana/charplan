@@ -63,6 +63,7 @@ local default_text={
     SEARCH_DROPPED = "Dropped in: %s by %s",
     SEARCH_SELLED  = "Selled at shop id %d for",
     SEARCH_MADE  = "Made by %s",
+    SEARCH_UNIQUE_SKINS = "Unique skin",
     
     BY_CLASS = "Base",
     BY_SKILL = "Skill",

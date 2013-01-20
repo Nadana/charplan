@@ -33,6 +33,8 @@ function Search.OnLoad(this)
 
     CPSearchTakeIt1:SetText(CP.L.SEARCH_USE_SLOT1)
     CPSearchTakeIt2:SetText(CP.L.SEARCH_USE_SLOT2)
+    
+    CPSearchFilterUniqueSkin:SetText(CP.L.SEARCH_UNIQUE_SKINS)
 
     Search.rarity = 3;	-- purple items by default
     UIDropDownMenu_SetText(CPSearchFilterRarity,TEXT("ITEM_QUALITY3_DESC"))
@@ -302,6 +304,7 @@ local function GetFilterInfo()
     end
     info.no_empty_items = CPSearchFilterStatLess:IsChecked()
     info.itemset_only = CPSearchFilterSets:IsChecked()
+    info.unique_skin = CPSearchFilterUniqueSkin:IsChecked()
     info.rarity = Search.rarity
 
     info.types = {}

@@ -476,6 +476,22 @@
 					<OnClick>CP.Search.OnCancel()</OnClick>
 				</Scripts>
 			</Button>
+			
+			<!-- additional filters -->
+			<CheckButton name="CPSearchFilterUniqueSkin" inherits="CPSearchCheckbox">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="CPSearchCancel" relativePoint="BOTTOMLEFT"><Offset><AbsDimension x="0" y="1"></AbsDimension></Offset></Anchor>
+				</Anchors>
+				<Scripts>
+					<OnEnter>
+						GameTooltip:SetOwner(this, "ANCHOR_TOPLEFT", -5, 0);
+						GameTooltip:SetText(CP.L.SEARCH_UNIQUE_SKINS);
+						GameTooltip:Show()
+					</OnEnter>
+					<OnLeave>GameTooltip:Hide()</OnLeave>
+				</Scripts>
+			</CheckButton>
+
 		</Frames>
 		<Scripts>
 			<OnLoad>CP.Search.OnLoad(this)</OnLoad>
