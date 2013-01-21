@@ -1,4 +1,5 @@
---[[
+--[[  coding: utf-8
+
     CharPlan - Search
 
     Item search dialog
@@ -33,9 +34,9 @@ function Search.OnLoad(this)
 
     CPSearchTakeIt1:SetText(CP.L.SEARCH_USE_SLOT1)
     CPSearchTakeIt2:SetText(CP.L.SEARCH_USE_SLOT2)
-    
-    CPSearchFilterUniqueSkin:SetText(CP.L.SEARCH_UNIQUE_SKINS)
-    -- CPSearchFilterStatsLabel:SetText(CP.L.SEARCH_FILTER_STATS)
+
+    CPSearchFilterUniqueSkinText:SetText(CP.L.SEARCH_UNIQUE_SKINS)
+    CPSearchFilterStatsLabel:SetText(CP.L.SEARCH_FILTER_STATS)
 
     Search.rarity = 3;	-- purple items by default
     UIDropDownMenu_SetText(CPSearchFilterRarity,TEXT("ITEM_QUALITY3_DESC"))
@@ -79,7 +80,8 @@ function Search.OnHide()
 end
 
 function Search.OnTab(this)
-    local tab_order={"CPSearchFilterName","CPSearchFilterLevelMin","CPSearchFilterLevelMax"}
+    local tab_order={"CPSearchFilterName","CPSearchFilterLevelMin","CPSearchFilterLevelMax",
+                     "CPSearchFilterStats","CPSearchFilterStatsMin","CPSearchFilterStatsMax"}
 
     local idx
     for i,name in ipairs(tab_order) do if this:GetName()==name then idx=i break end end
