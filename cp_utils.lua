@@ -61,6 +61,29 @@ function Utils.RomanToNum( roman )
     return numeral
 end
 
+function Utils.Clamp(x,mi,ma)
+    if x<mi then return mi end
+    if x>ma then return ma end
+    return x
+end
+
+function Utils.ColorCode(r,g,b,a,gamma)
+    a = a or 1
+
+    if gamma then
+        --local ng=1-gamma
+		--r, g, b = (r*ng + gamma)*0.5,(g*ng + gamma)*0.5,(b*ng + gamma)*0.5
+		r, g, b = (r + 0.5)*0.5,(g + 0.5)*0.5,(b + 0.5)*0.5
+	end
+
+    r = Utils.Clamp(r*256,0,255)
+    g = Utils.Clamp(g*256,0,255)
+    b = Utils.Clamp(b*256,0,255)
+    a = Utils.Clamp(a*256,0,255)
+
+    return string.format("|c%02x%02x%02x%02x",a,r,g,b)
+end
+
 
 --[[ [ Runes of Magic item link hash calculation code ]]
 --//////////////////////////////////////////////////////////////////

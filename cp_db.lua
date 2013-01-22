@@ -262,7 +262,15 @@ function DB.GetSpellEffectDotValue(spell_effect_id,level)
     end
 end
 
-function DB.GetSpellDesc(spell_id,level)
+function DB.GetSpellDesc(spell_id,level, var_color_code)
+
+    local function colored(text)
+        if var_color_code then
+            return var_color_code .. text .. "|r"
+        else
+            return text
+        end
+    end
 
     local function SpellBuff(token)
 
@@ -275,16 +283,16 @@ function DB.GetSpellDesc(spell_id,level)
         end
 
         if val=="Time" then
-            return DB.GetSpellEffectTimeValue(ispell,level)
+            return colored(DB.GetSpellEffectTimeValue(ispell,level))
         elseif val=="Dot" then
-            return DB.GetSpellEffectDotValue(ispell,level)
+            return colored(DB.GetSpellEffectDotValue(ispell,level))
         else
             val = tonumber(val)
             if val then
                 if val>20 then
-                    return math.abs(DB.GetSpellEffectBuffValue(val,i1,level))
+                    return colored(math.abs(DB.GetSpellEffectBuffValue(val,i1,level)))
                 else
-                    return DB.GetSpellEffectBuffValue(ispell,val,level)
+                    return colored(DB.GetSpellEffectBuffValue(ispell,val,level))
                 end
             end
         end
@@ -297,7 +305,7 @@ function DB.GetSpellDesc(spell_id,level)
         local i1 = tonumber(token)
         i1 = i1 or 0
 
-        return math.abs(DB.GetSpellDmgValue(spell_id,i1,level))
+        return colored(math.abs(DB.GetSpellDmgValue(spell_id,i1,level)))
     end
 
     local function SpellFixDmg(token)
@@ -314,9 +322,7 @@ function DB.GetSpellDesc(spell_id,level)
     desc = string.gsub(desc,"%(Buff(.-)%)", function (x) return SpellBuff(x) end )
     desc = string.gsub(desc,"%(DMG(.-)%)", function (x) return SpellDmg(x) end )
     desc = string.gsub(desc,"%(FixDMG%-(.-)%)", function (x) return SpellFixDmg(x) end )
-if not NO_BEN then
     desc = string.gsub(desc,"%(Max%-BuffTime.-%)", function (x) return "___" end )
-end
 
     desc = string.gsub(desc,"%[.-|(.-)%]", function (x) return x end )
     desc = string.gsub(desc,"%[(.-)%]", function (x)
@@ -895,12 +901,12 @@ local function GetFilterFunction(info)
         local suit_test = string.format('if not data[%i] or not string.find(TEXT("Sys"..data[%i].."_name"):lower(),"%s") then return false end',I_SET,I_SET,name)
         table.insert(code, 'if not string.find(TEXT("Sys"..id.."_name"):lower(),"'..name..'") then '..suit_test..' end')
     end
-    
+
     if info.stat_name and info.stat_name ~= "" then
     	local effect_name = string.lower(info.stat_name)
     	local effect_min = info.stat_min or 0
     	local effect_max = info.stat_max or 0
-    	
+
     	local code_text = string.format([=[
     		local effect_name = "%s"
     		local effect_min, effect_max = %d, %d

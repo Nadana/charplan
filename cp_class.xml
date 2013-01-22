@@ -236,6 +236,182 @@
 		</Scripts>
 	</Frame>
 
+	<Frame name="CPSkillLevelUpFrame" frameStrata="HIGH" parent="UIParent" enableKeyboard="true" hidden="true">
+		<Size>
+			<AbsDimension x="250" y="120"/>
+		</Size>
+		<Backdrop bgFile="Interface\tooltips\tooltip-background" edgeFile="Interface\DialogFrame\DialogBox-Border" tile="true">
+			<BackgroundInsets>
+				<AbsInset left="8" right="9" top="9" bottom="8"/>
+			</BackgroundInsets>
+			<TileSize><AbsValue val="32"/></TileSize>
+			<EdgeSize><AbsValue val="32"/></EdgeSize>
+		</Backdrop>
+		<Layers>
+			<Layer level="OVERLAY">
+				<FontString name="$parentValueText" inherits="GameFontHighlight" justifyH="CENTER" justifyV="MIDDLE">
+					<Size>
+						<AbsDimension x="50" y="22"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="50" y="37"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentSkillName" inherits="GameFontHighlight" justifyH="LEFT" justifyV="MIDDLE">
+					<Size>
+						<AbsDimension x="150" y="22"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPLEFT">
+							<Offset>
+								<AbsDimension x="20" y="15"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+					<FontHeight>
+						<AbsValue val="14"/>
+					</FontHeight>
+					<Color r="1.0" g="0.96" b="0.4"/>
+				</FontString>
+				<FontString name="$parentRank" inherits="GameFontHighlight" justifyH="RIGHT" justifyV="MIDDLE">
+					<Size>
+						<AbsDimension x="100" y="22"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPRIGHT">
+							<Offset>
+								<AbsDimension x="-20" y="15"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+					<FontHeight>
+						<AbsValue val="14"/>
+					</FontHeight>
+					<Color r="0.99" g="0.8" b="0.23"/>
+				</FontString>
+				<FontString name="$parentCost" inherits="GameFontHighlight" justifyH="RIGHT" justifyV="MIDDLE">
+					<Size>
+						<AbsDimension x="100" y="22"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOPRIGHT">
+							<Offset>
+								<AbsDimension x="-20" y="59"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+					<FontHeight>
+						<AbsValue val="14"/>
+					</FontHeight>
+				</FontString>
+			</Layer>
+			<Layer level="BACKGROUND">
+				<Texture file="Interface\DialogFrame\DialogBox-Input-Border">
+					<Size>
+						<AbsDimension x="8" y="24"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="10" y="37"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+					<TexCoords left="0" right="0.25" top="0" bottom="1.0"/>
+				</Texture>
+				<Texture file="Interface\DialogFrame\DialogBox-Input-Border">
+					<Size>
+						<AbsDimension x="8" y="24"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="90" y="37"/>
+							</Offset>
+						</Anchor>
+					</Anchors>					
+					<TexCoords left="0.75" right="1.0" top="0" bottom="1.0"/>
+				</Texture>
+				<Texture file="Interface\DialogFrame\DialogBox-Input-Border">
+					<Size>
+						<AbsDimension x="50" y="22"/>
+					</Size>
+					<Anchors>
+						<Anchor point="TOP">
+							<Offset>
+								<AbsDimension x="50" y="37"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+					<TexCoords left="0.25" right="0.75" top="0" bottom="1.0"/>
+				</Texture>
+			</Layer>
+		</Layers>
+		<Frames>
+			<Button name="$parentLeftButton" inherits="UIPanelLeftPageButtonTemplate">
+				<Anchors>
+					<Anchor point="RIGHT" relativeTo="$parentValueText" relativePoint="LEFT">
+						<Offset>
+							<AbsDimension x="-16" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>CP.Classes.RaiseSkill_Down()</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentRightButton" inherits="UIPanelRightPageButtonTemplate">
+				<Anchors>
+					<Anchor point="LEFT" relativeTo="$parentValueText" relativePoint="RIGHT">
+						<Offset>
+							<AbsDimension x="16" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>CP.Classes.RaiseSkill_Up()</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentOkayButton" inherits="UIPanelButtonTemplate" text="C_SURE">
+				<Size>
+					<AbsDimension x="64" y="24"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOM">
+						<Offset>
+							<AbsDimension x="-45" y="-14"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>CP.Classes.RaiseSkill_Okay()</OnClick>
+				</Scripts>
+			</Button>
+			<Button name="$parentCancelButton" inherits="UIPanelButtonTemplate" text="C_CANCEL">
+				<Size>
+					<AbsDimension x="64" y="24"/>
+				</Size>
+				<Anchors>
+					<Anchor point="BOTTOM">
+						<Offset>
+							<AbsDimension x="45" y="-14"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnClick>
+						CPSkillLevelUpFrame:Hide()
+						GameTooltip_SkillLevelUp:Hide()
+					</OnClick>
+				</Scripts>
+			</Button>
+		</Frames>
+	</Frame>
+	
 	<Frame name="CPClassDialog" parent="CPFrame" inherits="UICommonFrameTemplate" enableMouse="true" frameStrata="DIALOG" hidden="true">
 		<Size>
 			<AbsDimension x="489" y="545"/>

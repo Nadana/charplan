@@ -253,10 +253,8 @@ function Unit.GetAllSkills()
                     end
                 end
 
-                local cur_level = Unit.skills[id] or 0
                 local max_level = (CP.DB.skills[id] and CP.DB.skills[id][4]) or 0
                 if max_level >MAX_LEVEL then max_level=MAX_LEVEL end
-                if max_level <1 then cur_level=nil end
 
                 --if not condition_missing then
                 local name = TEXT("Sys"..id.."_name")
@@ -268,7 +266,7 @@ function Unit.GetAllSkills()
                     table.insert(skills[line],
                     {   skill_level, id,
                         name, CP.DB.GetSpellIcon(id),
-                        available, condition_missing,cur_level,
+                        available, condition_missing,
                         CP.DB.skills[id] and CP.DB.skills[id][1],
                         max_level,
                         skill[S_GROUP]

@@ -162,13 +162,12 @@ function Classes.ShowPage(pagenr)
             --local icon = sk[4]
             local learned = sk[5]
             local condition = sk[6]
-            local skill_lvl = sk[7]
-            local mode = sk[8] -- ==2: passive
-            local maxskill = sk[9]
+            local mode = sk[7] -- ==2: passive
+            local maxskill = sk[8]
 
             local costs = CP.DB.GetTPCosts(id, skill_lvl)
 
-            Classes.SetSkillButton(_Button, name, id,nil, skill_lvl, costs,  mode, maxskill, learned )
+            Classes.SetSkillButton(_Button, name, id, costs,  mode, maxskill, learned )
 		else
 			Classes.SetSkillButtonDisabled(_Button)
 		end
@@ -252,23 +251,26 @@ function Classes.OnEnterButton(this, id)
         local name = TEXT("Sys"..(this.skill).."_name")
         local lvl = CP.Unit.skills[this.skill] or 0
         if lvl>0 then
-            name = name .." + "..lvl
+            name = name .."+"..lvl
         end
         GameTooltip:SetText(name)
     --@debug@
     GameTooltip:AddLine("id: "..this.skill)
     --@end-debug@
 
-        GameTooltip:AddLine(CP.DB.GetSpellDesc(this.skill,lvl),0,0.75,0.95)
+        local col = CP.Utils.ColorCode(0,0.75,0.95,1,0.5)
+        GameTooltip:AddLine(CP.DB.GetSpellDesc(this.skill,lvl,col),0,0.75,0.95)
 
         if lvl+1 < this.skill_max then
-            GameTooltip:AddLine(TEXT("SYS_TOOLTIP_MAGIC_NEXT_POWER"),0.5,0.5,0.5)
-            GameTooltip:AddLine(CP.DB.GetSpellDesc(this.skill,lvl+1),0.5,0.5,0.5)
+            local col = CP.Utils.ColorCode(0.45,0.45,0.45,1,0.5)
+            GameTooltip:AddLine(TEXT("SYS_TOOLTIP_MAGIC_NEXT_POWER"),0.45,0.45,0.45)
+            GameTooltip:AddLine(CP.DB.GetSpellDesc(this.skill,lvl+1,col),0.45,0.45,0.45)
         end
 
         if this.skill_max>lvl+1 then
+            local col = CP.Utils.ColorCode(0.6,0.6,0.6,1,0.5)
             GameTooltip:AddLine("Max (+"..this.skill_max.."):",0.6,0.6,0.6)
-            GameTooltip:AddLine(CP.DB.GetSpellDesc(this.skill,this.skill_max),0.6,0.6,0.6)
+            GameTooltip:AddLine(CP.DB.GetSpellDesc(this.skill,this.skill_max,col),0.6,0.6,0.6)
         end
 
         GameTooltip:Show()
@@ -276,11 +278,14 @@ function Classes.OnEnterButton(this, id)
 end
 
 function Classes.OnClickButton(this, id, key)
-	local iIndex	= (CP.Classes.page-1)*SKILLS_PER_PAGE + id
-	if this.skill and key == "LBUTTON" and IsShiftKeyDown() then
-		local lvl = CP.Unit.skills[this.skill] or 0
-		local link = CP.Pimp.GenerateSkillLink(this.skill, lvl, CP.Prefix);
-		CP.PostItemLink(link);
+	if key == "LBUTTON" then
+        if IsShiftKeyDown() then
+		    local lvl = CP.Unit.skills[this.skill] or 0
+		    local link = CP.Pimp.GenerateSkillLink(this.skill, lvl, CP.Prefix)
+		    CP.PostItemLink(link)
+        else
+            Classes.RaiseSkill(this,this.skill)
+        end
 	end
 end
 
@@ -294,6 +299,11 @@ function Classes.SetSkillButtonDisabled(_Button)
 	local _StatusBar  = _G[btn.."PointStatusBar"]
 	local _PowerIcon  = _G[btn.."Icon"]
 
+	_Button.EnableToLV = nil
+	_Button.bLearned = nil
+	_Button.skill = nil
+	_Button.skill_max = nil
+
     _ItemButton:Disable()
     SetItemButtonTexture(_ItemButton, "")
     _LV:SetText("")
@@ -306,7 +316,7 @@ function Classes.SetSkillButtonDisabled(_Button)
 
 end
 
-function Classes.SetSkillButton( _Button, _SkillName, skill_id ,_Lv, _Plv, _Point, _Mode, _maxskill, bLearned )
+function Classes.SetSkillButton( _Button, _SkillName, skill_id, _Point, _Mode, _maxskill, _bLearned )
 
     local _EnableToLV = _maxskill>0
 
@@ -325,12 +335,8 @@ function Classes.SetSkillButton( _Button, _SkillName, skill_id ,_Lv, _Plv, _Poin
     local icon = CP.DB.GetSpellIcon(skill_id)
     local name = TEXT("Sys"..skill_id.."_name")
     local passive = CP.DB.IsSpellPassive(skill_id)
-
-	if( _EnableToLV == 0 and _Plv == 0 and _Point == 0 )then
-		_EnableToLV = nil
-		_Plv = nil
-		_Point = nil
-	end
+    local cur_level = CP.Unit.skills[skill_id] or 0
+    if _maxskill<1 then cur_level=nil end
 
 
 	if( _SkillName ) then
@@ -345,16 +351,16 @@ function Classes.SetSkillButton( _Button, _SkillName, skill_id ,_Lv, _Plv, _Poin
 	_StatusText:Hide()
     _NextValue:SetText( _Point )
 
-	if( _Lv and _Lv > 0 ) then
-		local strRank = TEXT( "SYS_MAGIC_LEVEL" )
-		_LV:SetText( strRank .. _Lv )
-		_LV:SetColor( 0.9, 0.9, 0.4 )
-	else
-		_LV:SetText( "" )
-	end
+--~ 	if( _Lv and _Lv > 0 ) then
+--~ 		local strRank = TEXT( "SYS_MAGIC_LEVEL" )
+--~ 		_LV:SetText( strRank .. _Lv )
+--~ 		_LV:SetColor( 0.9, 0.9, 0.4 )
+--~ 	else
+ 		_LV:SetText( "" )
+--~ 	end
 
-	if( _Plv ) then
-		_PowerLV:SetText( _Plv )
+	if cur_level then
+		_PowerLV:SetText( cur_level )
 		_NextValueTitle:Show()
 		_PowerIcon:Show()
 	else
@@ -364,17 +370,16 @@ function Classes.SetSkillButton( _Button, _SkillName, skill_id ,_Lv, _Plv, _Poin
 	end
 
 	if( _EnableToLV ) then
-		_StatusBar:Show();
-		if( _EnableToLV == 0 ) then
+		_StatusBar:Show()
+		if _maxskill>0 then
+			_StatusBar:SetValue( cur_level / _maxskill )
+			_NextValueTitle:Show()
+			_StatusText:Hide()
+		else
 			_StatusBar:SetValue( 1 )
 			_NextValue:SetText("")
 			_NextValueTitle:Hide()
 			_StatusText:Show()
-		else
-			_StatusBar:SetValue( _Plv / UnitLevel( "player" ) )
-			_NextValueTitle:Show()
-			_StatusText:Hide()
-
 		end
 		_StatusBar:Show();
 	else
@@ -404,4 +409,55 @@ function Classes.SetSkillButton( _Button, _SkillName, skill_id ,_Lv, _Plv, _Poin
 
 end
 
+function Classes.RaiseSkill(parent, skill_id)
 
+    CPSkillLevelUpFrame.level = CP.Unit.skills[skill_id] or 0
+    CPSkillLevelUpFrame.skill = skill_id
+
+    local name = TEXT("Sys"..skill_id.."_name")
+    CPSkillLevelUpFrameSkillName:SetText(name)
+
+    CPSkillLevelUpFrame:ClearAllAnchors()
+    CPSkillLevelUpFrame:SetAnchor("LEFT", "RIGHT",parent:GetName(), 10,-40)
+
+    GameTooltip_SkillLevelUp:SetOwner( CPSkillLevelUpFrame, "ANCHOR_BOTTOM", 0, 1 )
+    CPSkillLevelUpFrame:Show()
+    GameTooltip:Hide()
+
+    Classes.RaiseSkill_Update()
+end
+
+function Classes.RaiseSkill_Okay()
+    CP.Unit.skills[CPSkillLevelUpFrame.skill] = CPSkillLevelUpFrame.level
+    CPSkillLevelUpFrame:Hide()
+    GameTooltip_SkillLevelUp:Hide()
+    Classes.UpdateList()
+end
+
+function Classes.RaiseSkill_Update()
+    local this = CPSkillLevelUpFrame
+    local lvl = CPSkillLevelUpFrame.level
+
+    CPSkillLevelUpFrameValueText:SetText(lvl)
+
+    local name = TEXT("Sys"..(this.skill).."_name") .."+"..lvl
+    GameTooltip_SkillLevelUp:SetText(name)
+    --@debug@
+    GameTooltip_SkillLevelUp:AddLine("id: "..this.skill)
+    --@end-debug@
+    GameTooltip_SkillLevelUp:AddLine(CP.DB.GetSpellDesc(this.skill,lvl),0,0.75,0.95)
+    GameTooltip_SkillLevelUp:Show()
+end
+
+function Classes.RaiseSkill_Down()
+    CPSkillLevelUpFrame.level = CPSkillLevelUpFrame.level-1
+    if CPSkillLevelUpFrame.level<1 then
+        CPSkillLevelUpFrame.level = 1
+    end
+    Classes.RaiseSkill_Update()
+end
+
+function Classes.RaiseSkill_Up()
+    CPSkillLevelUpFrame.level = CPSkillLevelUpFrame.level+1
+    Classes.RaiseSkill_Update()
+end
