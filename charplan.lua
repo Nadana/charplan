@@ -9,13 +9,14 @@ Notes:
 
 local CP = {}
 _G.CP = CP
-CP.Prefix = "CP: "
 
 CP.version       = "@project-version@"
+CP.Prefix = "CP: "
 --@do-not-package@
 CP.version       = "v5.0"
 dofile("interface/addons/charplan/debug_utils.lua")
 --@end-do-not-package@
+
 
 
 ------------------------------

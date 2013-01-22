@@ -623,7 +623,7 @@ function Search.OnItemClick(this, key)
   elseif key == "LBUTTON" and (IsShiftKeyDown() or IsCtrlKeyDown()) then
     local item_data = Search.GetPimpedItemData(new_item)
     if IsCtrlKeyDown() then
-        local link = CP.Pimp.GenerateLink(item_data, "CP: ")
+        local link = CP.Pimp.GenerateLink(item_data, CP.Prefix)
         ItemPreviewFrame_SetItemLink(ItemPreviewFrame, link)
     else
         CP.PostItemLink(item_data)
