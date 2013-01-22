@@ -320,6 +320,65 @@ function CP.PimpUpdate()
     end
 end
 
+
+local ModelParts={
+        [0]="helmet",
+        [1]="hand",
+        [2]="foot",
+        [3]="torso",
+        [4]="leg",
+        [5]="back",
+        [6]="belt",
+        [7]="shoulder"
+}
+
+function CP.ColorEdit(slot, base_color)
+
+    local name = TEXT(string.format("SYS_EQWEARPOS_%02i",slot)) .. " - "
+    local cidx = 1
+    local col = CP.Items[slot].color or {}
+
+    if base_color then
+        name = name .. C_MAIN_COLOR
+    else
+        name = name .. C_SUB_COLOR
+        cidx = 4
+    end
+
+    local info={
+        parent = CPFrame,
+        titleText = name,
+        alphaMode = nil,
+        r = col[cidx] or 1,
+        g = col[cidx+1] or 1,
+        b = col[cidx+2] or 1,
+
+        callbackFuncUpdate = function ()
+            	local r=ColorPickerFrame.r
+	            local g=ColorPickerFrame.g
+	            local b=ColorPickerFrame.b
+                if base_color then
+                    CPEquipmentFrameModel:SetComponentColors(ModelParts[slot],r,g,b,col[4] or 1,col[5] or 1,col[6] or 1)
+                else
+                    CPEquipmentFrameModel:SetComponentColors(ModelParts[slot],col[1] or 1,col[2] or 1,col[3] or 1,r,g,b)
+                end
+                CPEquipmentFrameModel:Build()
+            end,
+
+        callbackFuncOkay = function ()
+            col[cidx],col[cidx+1],col[cidx+2]=ColorPickerFrame.r, ColorPickerFrame.g, ColorPickerFrame.b
+            CP.Items[slot].color = col
+        end,
+
+        callbackFuncCancel = CP.UpdateModel,
+    }
+
+	ColorPickerFrame:ClearAllAnchors()
+	ColorPickerFrame:SetAnchor("LEFT", "RIGHT",CPFrame:GetName(), -20,0)
+
+    OpenColorPickerFrameEx( info )
+end
+
 function CP.OnModelLoad(this)
     CommonModel_OnLoad(this)
 
@@ -358,8 +417,15 @@ function CP.UpdateModel()
                 link = CP.Pimp.GenerateLink(CP.Items[slot])
             end
             model:SetItemLink(link)
+
+            local col = CP.Items[slot].color
+            if col then
+                CPEquipmentFrameModel:SetComponentColors(ModelParts[slot],col[1] or 1,col[2] or 1,col[3] or 1,col[4] or 1,col[5] or 1,col[6] or 1)
+            end
         end
     end
+
+    --model:Build()
 end
 
 
@@ -581,7 +647,6 @@ function CP.EquipItem_OnLoad(this)
     assert(slotId,slotName..":"..tostring(slotId))
     this:SetID(slotId)
     CP.EquipButtons[slotId]=this
-
 end
 
 
@@ -678,21 +743,35 @@ function CP.EquipItem_ShowMenu( this )
         local data = CP.Items[CPEquipButtonMenu.Slot]
         if data then
             info.text = string.format(CP.L.CONTEXT_PIMPME, CP.DB.GetItemName(data.id))
-            info.func = function() CP.PimpStart(CPEquipButtonMenu.Slot) end
-            UIDropDownMenu_AddButton(info)
+        else
+            info.text = string.format(CP.L.CONTEXT_PIMPME, "")
         end
+        info.func = function() CP.PimpStart(CPEquipButtonMenu.Slot) end
+        info.disabled = not data
+        UIDropDownMenu_AddButton(info)
+
 
         info.text = CP.L.CONTEXT_SEARCH
         info.func = function() CP.Search.ShowSearch(CPEquipButtonMenu.Slot) end
         UIDropDownMenu_AddButton(info)
 
-        if data and not CP.DB.IsWeaponSlot(CPEquipButtonMenu.Slot) then
-          info.text = CP.L.CONTEXT_SHARE
-          info.hasArrow = true
-          UIDropDownMenu_AddButton(info)
+        info.text = CP.L.CONTEXT_SHARE
+        info.disabled = not data or CP.DB.IsWeaponSlot(CPEquipButtonMenu.Slot)
+        info.hasArrow = not info.disabled
+        UIDropDownMenu_AddButton(info)
 
-          info.hasArrow = nil
-        end
+        info.text = C_MAIN_COLOR
+        info.hasArrow = nil
+        info.func = function() CP.ColorEdit(CPEquipButtonMenu.Slot,true) end
+        info.disabled = not data
+        UIDropDownMenu_AddButton(info)
+
+        info.text = C_SUB_COLOR
+        info.func = function() CP.ColorEdit(CPEquipButtonMenu.Slot,false) end
+        info.disabled = not data
+        UIDropDownMenu_AddButton(info)
+
+        UIDropDownMenu_AddSeparator()
 
         info.text = CP.L.CONTEXT_CLEAR
         info.func = function() CP.ClearItem(CPEquipButtonMenu.Slot) end
