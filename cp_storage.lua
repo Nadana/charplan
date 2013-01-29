@@ -31,6 +31,13 @@ function Storage.GetLoadedName()
     return Storage.LoadedItems
 end
 
+
+local function DefaultsClear(items)
+end
+
+local function DefaultsRestore(items)
+end
+
 function Storage.SaveItems(name)
     if not name then
         StaticPopupDialogs["CP_INPUT_SAVE_NAME"] = {
@@ -56,6 +63,7 @@ function Storage.SaveItems(name)
     Storage.LoadedItems = name
     CP_Storage[name]={}
     CP.Utils.TableCopy(CP.Items,CP_Storage[name])
+    DefaultsClear(CP_Storage[name])
     CP_Storage[name].unit={}
     CP.Unit.Store(CP_Storage[name].unit)
 
@@ -91,6 +99,7 @@ function Storage.LoadItems(name)
 
     Storage.LoadedItems = name
     CP.Utils.TableCopy(CP_Storage[name], CP.Items)
+    DefaultsRestore(CP.Items)
     CP.Items.unit=nil
     CP.Unit.Load(CP_Storage[name].unit)
     StoreageVersionUpdate()
