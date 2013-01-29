@@ -893,7 +893,11 @@ local function GetFilterFunction(info)
     end
 
     if info.rarity then
-        table.insert(code, 'if GetQualityByGUID(id)~='..info.rarity..' then return false end')
+        if info.rarity_single then
+            table.insert(code, 'if GetQualityByGUID(id)~='..info.rarity..' then return false end')
+        else
+            table.insert(code, 'if GetQualityByGUID(id)<'..info.rarity..' then return false end')
+        end
     end
 
     if info.name and info.name~="" then

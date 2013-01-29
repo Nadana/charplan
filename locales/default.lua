@@ -65,7 +65,10 @@ local default_text={
     SEARCH_MADE  = "Made by %s",
     SEARCH_UNIQUE_SKINS = "Unique skin",
     SEARCH_FILTER_STATS = "Stats",
-    
+
+    SEARCH_RARITY_EXACT = "only this rarity",
+    SEARCH_RARITY_MINIMUM = "at least this rarity",
+
     BY_CLASS = "Base",
     BY_SKILL = "Skill",
     BY_CARD = TEXT("AC_ITEMTYPENAME_6"),

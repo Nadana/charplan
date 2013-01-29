@@ -286,11 +286,32 @@ function Search.FilterRarityMenu_OnShow(button)
     info.func = Search.FilterRarityMenu_OnClicked
     info.value=8
     UIDropDownMenu_AddButton(info)
+
+    UIDropDownMenu_AddSeparator()
+
+    info = {}
+    info.text = CP.L.SEARCH_RARITY_EXACT
+    info.checked = Search.rarity_single
+    info.value=true
+    info.func = Search.FilterRarityMenu_Option_OnClicked
+    UIDropDownMenu_AddButton(info)
+
+    info = {}
+    info.text = CP.L.SEARCH_RARITY_MINIMUM
+    info.checked = not Search.rarity_single
+    info.value=nil
+    info.func = Search.FilterRarityMenu_Option_OnClicked
+    UIDropDownMenu_AddButton(info)
 end
 
 function Search.FilterRarityMenu_OnClicked(button)
     UIDropDownMenu_SetSelectedID(CPSearchFilterRarity, button:GetID())
     Search.rarity=button.value
+    Search.FindItems()
+end
+
+function Search.FilterRarityMenu_Option_OnClicked(button)
+    Search.rarity_single=button.value
     Search.FindItems()
 end
 
@@ -312,6 +333,7 @@ local function GetFilterInfo()
     info.stat_min = tonumber(CPSearchFilterStatsMin:GetText())
     info.stat_max = tonumber(CPSearchFilterStatsMax:GetText())
     info.rarity = Search.rarity
+    info.rarity_single = Search.rarity_single
 
     info.types = {}
     for id,v in pairs(CP.Search.type_filter) do
