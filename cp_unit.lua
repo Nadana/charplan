@@ -143,12 +143,15 @@ function Unit.GetClassName()
 end
 
 function Unit.SetClass(c1,c2)
+    assert(c1)
+    if c1==c2 then c2=nil end
+
     Unit.class=c1
     Unit.sec_class=c2
     Unit.skills={}
 
     local cc1,cc2=UnitClassToken("player")
-    if c1==cc1 and c2==c2 then
+    if c1==cc1 and c2==cc2 then
         Unit.skills = Unit.GetListOfSkills()
     end
 end
@@ -181,7 +184,7 @@ local function FindGroup(line, group)
     if group==0 then return end
 
     for idx,skill in ipairs(line) do
-        if skill[10]==group then
+        if skill[9]==group then
             return idx, skill[S_ID]
         end
     end
@@ -222,9 +225,11 @@ function Unit.GetAllSkills()
 
                 -- req. flag
                 if skill[S_PRE_FLAG]>0 then
-                    table.insert(flags,skill[S_PRE_FLAG])
-                    if CheckFlag(skill[S_PRE_FLAG])<1 then
-                        condition_missing = "Flag:"..skill[S_PRE_FLAG]
+                    if not Unit.skills[id] or Unit.skills[id]<1 then
+                        table.insert(flags,skill[S_PRE_FLAG])
+                        if CheckFlag(skill[S_PRE_FLAG])<1 then
+                            condition_missing = "Flag:"..skill[S_PRE_FLAG]
+                        end
                     end
                 end
 
@@ -265,10 +270,11 @@ function Unit.GetAllSkills()
 
                     table.insert(skills[line],
                     {   skill_level, id,
-                        name, CP.DB.GetSpellIcon(id),
+                        name,
                         available, condition_missing,
                         CP.DB.skills[id] and CP.DB.skills[id][1],
                         max_level,
+                        skill[S_PRE_FLAG]>0,
                         skill[S_GROUP]
                         } )
                 --end
@@ -276,6 +282,7 @@ function Unit.GetAllSkills()
         end
     end
 
+    -- sort
     for line,ldata in pairs(skills) do
         table.sort(ldata, function (a,b)
                 if a[5]==b[5] then return a[1]<b[1] end
@@ -288,3 +295,11 @@ function Unit.GetAllSkills()
 end
 
 
+
+function Unit.GetSkillTPSum()
+    local sum=0
+    for id,lvl in pairs(Unit.skills) do
+        sum = sum + CP.DB.GetTPTotalCosts(id,lvl)
+    end
+    return sum
+end
