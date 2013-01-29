@@ -61,28 +61,83 @@ function Utils.RomanToNum( roman )
     return numeral
 end
 
-function Utils.Clamp(x,mi,ma)
-    if x<mi then return mi end
-    if x>ma then return ma end
-    return x
+function Utils.FormatThousands(number)
+    local left,num,right = string.match(tostring(number),'^([^%d]*%d)(%d*)(.-)$')
+    num = num:reverse():gsub('(%d%d%d)','%1'..COMMA)
+    return left..(num:reverse())..right
 end
 
-function Utils.ColorCode(r,g,b,a,gamma)
-    a = a or 1
+function UIDropDownMenu_AddSeparator()
+    local separator = { text = string.rep("-",12), isTitle = 1}
+    UIDropDownMenu_AddButton(separator)
+end
 
-    if gamma then
-        --local ng=1-gamma
-		--r, g, b = (r*ng + gamma)*0.5,(g*ng + gamma)*0.5,(b*ng + gamma)*0.5
-		r, g, b = (r + 0.5)*0.5,(g + 0.5)*0.5,(b + 0.5)*0.5
-	end
+----------------------
+-- Color class
+CPColor={
+ r=1,g=1,b=1
+}
+CPColor.__index = CPColor
 
-    r = Utils.Clamp(r*256,0,255)
-    g = Utils.Clamp(g*256,0,255)
-    b = Utils.Clamp(b*256,0,255)
-    a = Utils.Clamp(a*256,0,255)
+function CPColor.New(r,g,b,a)
+    local newcol={}
+    setmetatable(newcol,CPColor)
+    newcol.r = r or 1
+    newcol.g = g or 1
+    newcol.b = b or 1
+    newcol.a = a or 1
+    CPColor.Clamp(newcol)
+    return newcol
+end
+
+function CPColor:Clamp()
+    if self.r < 0 then self.r = 0 end
+    if self.r > 1 then self.r = 1 end
+    if self.g < 0 then self.g = 0 end
+    if self.g > 1 then self.g = 1 end
+    if self.b < 0 then self.b = 0 end
+    if self.b > 1 then self.b = 1 end
+    if self.a < 0 then self.a = 0 end
+    if self.a > 1 then self.a = 1 end
+end
+
+function CPColor:Code()
+    local r,g,b,a = self.r*256,self.g*256,self.b*256,self.a*256
+    if r < 0 then r = 0 end
+    if r > 255 then r = 255 end
+    if g < 0 then g = 0 end
+    if g > 255 then g = 255 end
+    if b < 0 then b = 0 end
+    if b > 255 then b = 255 end
+    if a < 0 then a = 0 end
+    if a > 255 then a = 255 end
 
     return string.format("|c%02x%02x%02x%02x",a,r,g,b)
 end
+
+function CPColor:Get()
+    self:Clamp()
+
+    return self.r,self.g,self.b
+end
+
+function CPColor:Brightness(fac)
+    local Y = 0.299*self.r + 0.587*self.g + 0.114*self.b
+    local U = (self.b - Y)*0.493
+    local V = (self.r - Y)*0.877
+
+    Y=Y*fac
+
+    return CPColor.New(
+            Y + V*1.140,
+            Y - 0.39466*U - 0.5806*V,
+            Y + U*2.028)
+end
+
+function CPColor:Dup()
+    return CPColor.New(self.r,self.g,self.b,self.a)
+end
+
 
 
 --[[ [ Runes of Magic item link hash calculation code ]]
