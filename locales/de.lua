@@ -44,7 +44,7 @@ CP.L ={
     ENUMERATE_CANCELED = "Übertragung abgebrochen",
 
     CONTEXT_MENU = "Zum Plan hinzufügen",
-    CONTEXT_PIMPME= "Pimp: %s",
+    CONTEXT_PIMPME= "Pimp",
     CONTEXT_SEARCH= "Suche",
     CONTEXT_SHARE = "Kopiere Werte zu…",
     CONTEXT_CLEAR = "Leeren",

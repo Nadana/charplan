@@ -741,18 +741,15 @@ function CP.EquipItem_ShowMenu( this )
 
     if( UIDROPDOWNMENU_MENU_LEVEL == 1 ) then
         local data = CP.Items[CPEquipButtonMenu.Slot]
-        if data then
-            info.text = string.format(CP.L.CONTEXT_PIMPME, CP.DB.GetItemName(data.id))
-        else
-            info.text = string.format(CP.L.CONTEXT_PIMPME, "")
-        end
+
+        info.text = CP.L.CONTEXT_PIMPME
         info.func = function() CP.PimpStart(CPEquipButtonMenu.Slot) end
         info.disabled = not data
         UIDropDownMenu_AddButton(info)
 
-
         info.text = CP.L.CONTEXT_SEARCH
         info.func = function() CP.Search.ShowSearch(CPEquipButtonMenu.Slot) end
+        info.disabled = nil
         UIDropDownMenu_AddButton(info)
 
         info.text = CP.L.CONTEXT_SHARE

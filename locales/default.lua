@@ -16,7 +16,7 @@ local default_text={
     ENUMERATE_CANCELED = "Enumeration canceled!",
 
     CONTEXT_MENU = "Add to plan",
-    CONTEXT_PIMPME= "Pimp: %s",
+    CONTEXT_PIMPME= "Pimp",
     CONTEXT_SEARCH= "Search",
     CONTEXT_SHARE = "Copy stats to…",
     CONTEXT_CLEAR = "Clear",
