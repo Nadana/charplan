@@ -334,6 +334,8 @@ local ModelParts={
 
 function CP.ColorEdit(slot, base_color)
 
+    assert(ModelParts[slot])
+
     local name = TEXT(string.format("SYS_EQWEARPOS_%02i",slot)) .. " - "
     local cidx = 1
     local col = CP.Items[slot].color or {}
@@ -760,12 +762,12 @@ function CP.EquipItem_ShowMenu( this )
         info.text = C_MAIN_COLOR
         info.hasArrow = nil
         info.func = function() CP.ColorEdit(CPEquipButtonMenu.Slot,true) end
-        info.disabled = not data
+        info.disabled = not data or not ModelParts[CPEquipButtonMenu.Slot]
         UIDropDownMenu_AddButton(info)
 
         info.text = C_SUB_COLOR
         info.func = function() CP.ColorEdit(CPEquipButtonMenu.Slot,false) end
-        info.disabled = not data
+        info.disabled = not data or not ModelParts[CPEquipButtonMenu.Slot]
         UIDropDownMenu_AddButton(info)
 
         UIDropDownMenu_AddSeparator()
