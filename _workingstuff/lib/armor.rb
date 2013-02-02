@@ -4,6 +4,7 @@ class ArmorEntry < ItemEntry
 
     attr_accessor :inv_pos
     attr_accessor :armor_typ, :unk1, :unk2
+    attr_accessor :limitsex
 
     def initialize(csv_row)
         super(csv_row)
@@ -17,6 +18,9 @@ class ArmorEntry < ItemEntry
         @armor_typ = csv_row['armortype'].to_i
         @unk1 = csv_row['unk124'].to_i
         @unk2 = csv_row['unk128'].to_i
+        @limitsex = csv_row['limitsex'].to_i # -1=all; 1=male; 2=female
+
+        @limitsex = nil if @limitsex!=1 and @limitsex!=2
 
         raise "illegal pos:"+@inv_pos.to_s if @inv_pos>21
 
@@ -66,12 +70,14 @@ class ArmorEntry < ItemEntry
         data.push( "slot")
         data.push( "type")
         super(data)
+        data.push( "limitsex")
     end
 
     def ExportData(data)
         data.push(@inv_pos)
         data.push(@armor_typ)
         super(data)
+        data.push(@limitsex)
     end
 
     def ArmorEntry.TestWrite(db)

@@ -23,6 +23,7 @@ CP.DB = DB
     local I_STATS=8 -- optional
     local I_SET=9 -- optional
     local I_WEAPONSPEED = 10 -- optional
+    local I_LIMITSEX = 10 -- optional
 
     -- Bonus
     local B_EFFECT=1 -- optional
@@ -514,7 +515,6 @@ function DB.GetItemPositions(item_id)
     end
 end
 
-
 function DB.GetItemTypesForSlot(slot)
 
     if slot==15 then     return {32,34,35}
@@ -528,14 +528,15 @@ function DB.GetItemTypesForSlot(slot)
 end
 
 function DB.IsWeapon(id)
-    local s1,s2 = DB.GetItemPositions(id)
-    return DB.IsWeaponSlot(s1) or DB.IsWeaponSlot(s2)
+    local item = DB.items[item_id]
+    if item then
+        return item[I_SLOT]>31
+    end
 end
 
 function DB.IsWeaponSlot(id)
   return id == 10 or id == 15 or id == 16
 end
-
 
 function DB.IsWeapon2Hand(item_id)
     local item = DB.items[item_id]
@@ -854,11 +855,11 @@ local function GetFilterFunction(info)
  info.stat_name
  info.stat_min
  info.stat_max
+ info.limitsex
 ]]
     local code = {"return function (id,data)"}
     if info.unique_skin then
-	    local skins = {}
-    	CP.DB.UniqueSkinsCache = skins
+    	CP.DB.UniqueSkinsCache = {}
     	table.insert(code, string.format('local icon = data[%i]; if CP.DB.UniqueSkinsCache[icon] then return false else CP.DB.UniqueSkinsCache[icon] = true end', I_ICON))
     end
 
@@ -898,6 +899,10 @@ local function GetFilterFunction(info)
         else
             table.insert(code, 'if GetQualityByGUID(id)<'..info.rarity..' then return false end')
         end
+    end
+
+    if info.limitsex then
+        table.insert(code, 'local sex=CP.DB.GetLimitedSex(id) if sex and sex~='..info.limitsex..' then return false end')
     end
 
     if info.name and info.name~="" then
@@ -1022,7 +1027,12 @@ end
 function DB.GetWeaponSpeed(item_id)
 	-- weapon speed stored as integer value like `24` for speed `2.4`
 	local item = DB.items[item_id]
-	if item then return item[I_WEAPONSPEED] end
+	if item and DB.IsWeapon(item_id) then return item[I_WEAPONSPEED] end
+end
+
+function DB.GetLimitedSex(item_id)
+	local item = DB.items[item_id]
+	if item and not DB.IsWeapon(item_id) then return item[I_LIMITSEX] end
 end
 
 function DB.GetShopsForItem(item_id)
