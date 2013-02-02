@@ -1035,7 +1035,7 @@ local function price2table(price)
 	end
 end
 
-function DB.GeShopItemInfo(item_id)
+function DB.GetShopItemInfo(item_id)
 	-- return map of shopID => {money type,price}
 	local shops = DB.shop_index[item_id]
 	if not shops then return nil end

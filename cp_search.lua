@@ -787,7 +787,7 @@ function Search.FindInDungeonLoots(item_id)
 end
 
 function Search.FindInShops(item_id)
-	local shops = CP.DB.GeShopItemInfo(item_id)
+	local shops = CP.DB.GetShopItemInfo(item_id)
 	if shops then
 		local res = {}
 		for shop_id,info in pairs(shops) do
