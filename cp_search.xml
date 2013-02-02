@@ -201,7 +201,7 @@
 						</Anchors></FontString>
 					</Layer>
 				</Layers>
-					
+
 				<Frames>
 					<EditBox name="$parentName" inherits="UIPanelEditBoxTemplate">
 						<Size><AbsDimension x="120" y="20"/></Size>
@@ -400,7 +400,7 @@
 					</EditBox>
 				</Frames>
 			</Frame>
-			
+
 			<!-- item list !-->
 			<Frame name="CPSearchItems">
 				<Size>
@@ -501,7 +501,7 @@
 					</Offset></Anchor>
 				</Anchors>
 				<Scripts>
-					<OnClick>CP.Search.OnTakeIt()</OnClick>
+					<OnClick>CP.Search.OnTakeIt(1)</OnClick>
 				</Scripts>
 			</Button>
 			<Button name="CPSearchTakeIt1Item" inherits="ItemButtonTemplate">
@@ -511,7 +511,7 @@
 				<Scripts>
 					<OnEnter>CP.Search.OnTakeItEnter(this, 1)</OnEnter>
 					<OnLeave>CP.Search.OnTakeItLeave(1)</OnLeave>
-					<OnClick>CP.Search.OnTakeIt()</OnClick>
+					<OnClick>CP.Search.OnTakeIt(1)</OnClick>
 				</Scripts>
 			</Button>
 			<Button name="CPSearchTakeIt2" inherits="UIPanelButtonTemplate">
@@ -550,7 +550,7 @@
 					<OnClick>CP.Search.OnCancel()</OnClick>
 				</Scripts>
 			</Button>
-	
+
 		</Frames>
 		<Scripts>
 			<OnLoad>CP.Search.OnLoad(this)</OnLoad>
