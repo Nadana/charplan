@@ -774,6 +774,7 @@ function CP.EquipItem_ShowMenu( this )
 
         info.text = CP.L.CONTEXT_CLEAR
         info.func = function() CP.ClearItem(CPEquipButtonMenu.Slot) end
+        info.disabled = not data
         UIDropDownMenu_AddButton(info)
 
     elseif( UIDROPDOWNMENU_MENU_LEVEL == 2 ) then
