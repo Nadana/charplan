@@ -527,7 +527,7 @@ function DB.GetItemTypesForSlot(slot)
     return slot
 end
 
-function DB.IsWeapon(id)
+function DB.IsWeapon(item_id)
     local item = DB.items[item_id]
     if item then
         return item[I_SLOT]>31
