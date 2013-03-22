@@ -110,7 +110,16 @@ def RoMPath()
 end
 
 ###############
+def GetROMVersionFromIni()
+	require 'inifile'
+	filename = RoMPath() + "Client.exe.ini"
+	ini = IniFile.new(:filename => filename)
+	return ini['Version'].values_at('Major', 'Minor', 'BuildNum', 'Extend').map {|x| x.to_i }
+end
+
 def GetROMVersion()
+    return GetROMVersionFromIni()
+
     apiGetFileVersionInfoSize = Win32API.new('Version', 'GetFileVersionInfoSize', 'PP', 'L')
     apiGetFileVersionInfo     = Win32API.new('Version', 'GetFileVersionInfo', 'PLLP', 'L')
     apiVerQueryValue          = Win32API.new('Version', 'VerQueryValue', 'PPPP', 'I')
