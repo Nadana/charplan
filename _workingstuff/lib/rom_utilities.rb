@@ -67,9 +67,11 @@ def Extract(path, filter="", options=Hash.new)
             return data
         }
     else
-        Dir.chdir( Pathname($fdb_ex).dirname ) {
-            #p ("#{$fdb_ex} #{foptions.join(" ")} -y -o \"#{temp_path}\" #{escaped} #{src}")
-            system("#{$fdb_ex} #{foptions.join(" ")} -y -o \"#{temp_path}\" #{escaped} #{src}")
+    		fdbex = Pathname($fdb_ex)
+        Dir.chdir( fdbex.dirname ) {
+        	exe = fdbex.basename
+                #p ("#{exe} #{foptions.join(" ")} -y -o \"#{temp_path}\" #{escaped} #{src}")
+            system("#{exe} #{foptions.join(" ")} -y -o \"#{temp_path}\" #{escaped} #{src}")
         }
     end
 
@@ -104,13 +106,11 @@ def RoMPath()
 			end
 		end
     raise "RoM not found" unless File.exists?(dir)
-
-    return dir
+    return dir + '/'
 end
 
 ###############
 def GetROMVersion()
-
     apiGetFileVersionInfoSize = Win32API.new('Version', 'GetFileVersionInfoSize', 'PP', 'L')
     apiGetFileVersionInfo     = Win32API.new('Version', 'GetFileVersionInfo', 'PLLP', 'L')
     apiVerQueryValue          = Win32API.new('Version', 'VerQueryValue', 'PPPP', 'I')
