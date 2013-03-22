@@ -17,6 +17,7 @@ $log.formatter = proc { |severity, datetime, progname, msg|  "#{severity}: #{msg
 
 MAX_LEVEL = 83
 MAX_RARE = [0,1,2,3,4,5,8]
+EXCLUDE_UNNAMED = true
 $log << "FILTER RULES:\n"
 $log << "max level is: #{MAX_LEVEL}\n"
 $log << "max rariry is: #{MAX_RARE.to_s}\n"
@@ -84,8 +85,10 @@ class FullDB
     def Check
         p "Checking & cleanup"
         #CheckSetItems(@suits, @items)
-        @items.MarkUnusedIfNameInvalid($de)
-        @suits.MarkUnusedIfNameInvalid($de)
+        if EXCLUDE_UNNAMED
+        	@items.MarkUnusedIfNameInvalid($de)
+        	@suits.MarkUnusedIfNameInvalid($de)
+      	end
         CheckImages(@images, [@items, @spell_collection])
         FilterSpells()
 
