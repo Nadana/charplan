@@ -15,9 +15,9 @@ end
 # ! Store correct path in a seperated file
 
  # http://github.com/McBen/FDB_Extractor2
-    $fdb_ex="bin/FDB_ex2.exe" unless defined? $fdb_ex
+    $fdb_ex ||= "bin/FDB_ex2.exe"
  # http://www.lua.org
-    $lua="bin/lua5.1.exe" unless defined? $lua
+    $lua ||= "bin/lua5.1.exe"
 
 
 ###############
@@ -95,59 +95,26 @@ def RoMPath()
     rescue
         dir = File.join(ENV['ProgramFiles'], "Runes of Magic/")
     end
-		dir.gsub!('\\','/')
-		unless File.exists?(dir)
-			# go to parent path and check for Client.exe
-			pc = Dir.pwd.split('/')
-			dir = pc.shift
-			while(tmp = pc.shift) do
-				dir = File.join(dir, tmp)
-				break if File.exists?(File.join(dir, 'Client.exe'))
-			end
-		end
+
+    dir.gsub!('\\','/')
+    unless File.exists?(dir)
+        # go to parent path and check for Client.exe
+        pc = Dir.pwd.split('/')
+        dir = pc.shift
+        while(tmp = pc.shift) do
+            dir = File.join(dir, tmp)
+            break if File.exists?(File.join(dir, 'Client.exe'))
+        end
+    end
+
     raise "RoM not found" unless File.exists?(dir)
     return dir + '/'
 end
 
 ###############
-def GetROMVersionFromIni()
-	require 'inifile'
-	filename = RoMPath() + "Client.exe.ini"
-	ini = IniFile.new(:filename => filename)
-	return ini['Version'].values_at('Major', 'Minor', 'BuildNum', 'Extend').map {|x| x.to_i }
-end
-
 def GetROMVersion()
-    return GetROMVersionFromIni()
-
-    apiGetFileVersionInfoSize = Win32API.new('Version', 'GetFileVersionInfoSize', 'PP', 'L')
-    apiGetFileVersionInfo     = Win32API.new('Version', 'GetFileVersionInfo', 'PLLP', 'L')
-    apiVerQueryValue          = Win32API.new('Version', 'VerQueryValue', 'PPPP', 'I')
-    memcpy = Win32API.new('msvcrt', 'memcpy', 'PLL', 'L')
-
-    filename = RoMPath()+"Client.exe"
-
-    vsize=apiGetFileVersionInfoSize.call(filename, nil)
-    raise "no version info" if vsize==0
-
-    infoVersion  = '\0' * vsize
-    apiGetFileVersionInfo.call(filename,0,vsize,infoVersion)
-
-    addr = "\0"*4
-    value = "\0"*4
-    apiVerQueryValue.call(infoVersion, '\\', addr, value)
-
-    v_bufsz = value.unpack('L')[0]
-    v_buf = "\0" * v_bufsz
-    v_src = addr.unpack('L')[0]
-
-    ret = memcpy.call(v_buf, v_src, v_bufsz)
-    raise 'memcpy failed' if ret == 0
-    raise 'Oops' unless v_buf[0, 4].unpack('L')[0] == 0xFEEF04BD
-
-    return v_buf[0x08, 8].unpack('S*').values_at(1,0,3,2)  #-> [1, 8, 2, 0]
-    # p v_buf[0x08, 8].unpack('S*').values_at(1,0,3,2)  #-> [1, 8, 2, 0]
-    # p v_buf[0x10, 8].unpack('S*').values_at(1,0,3,2)  #-> [1, 8, 2, 0]
+    ini = ParseConfig.new(RoMPath() + "Client.exe.ini")
+	return ini['Version'].values_at('Major', 'Minor', 'BuildNum', 'Extend').map {|x| x.to_i }
 end
 
 ###############
