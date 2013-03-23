@@ -38,10 +38,8 @@ function Search.OnLoad(this)
     CPSearchFilterUniqueSkinText:SetText(CP.L.SEARCH_UNIQUE_SKINS)
     CPSearchFilterStatsLabel:SetText(CP.L.SEARCH_FILTER_STATS)
 
-    Search.rarity = 3;	-- purple items by default
-    UIDropDownMenu_SetText(CPSearchFilterRarity,TEXT("ITEM_QUALITY3_DESC"))
+    Search.FilterRaritySetSelection(3) -- purple items by default
 end
-
 
 function Search.ShowSearch(slot_id, item_id)
     if CP.DB.IsSlotType(slot_id) ~= CP.DB.IsSlotType(Search.slot) then
@@ -57,8 +55,7 @@ function Search.ShowSearch(slot_id, item_id)
     UIDropDownMenu_SetText(CPSearchFilterSlot,text)
 
     if Search.slot == 21 then	-- clear rarity for wings
-      Search.rarity = nil;
-      UIDropDownMenu_SetText(CPSearchFilterRarity,TEXT("C_ALL"))
+        Search.FilterRaritySetSelection(nil) 
     end
 
     Search.FindItems()
@@ -181,13 +178,11 @@ function Search.FilterTypeMenu_OnSelect(this)
     Search.FindItems()
 end
 
-
 function Search.FilterSlotMenu_OnLoad(this)
     UIDropDownMenu_SetWidth(this, 100)
     UIDropDownMenu_Initialize( this, Search.FilterSlotMenu_OnShow)
     UIDropDownMenu_Refresh(this)
 end
-
 
 function Search.FilterSlotMenu_OnShow(this)
     local slots={0,1,2,3,4,5,6,7,8,10,11,13,15,16,21}
@@ -264,49 +259,58 @@ function Search.FilterRarityMenu_OnLoad(this)
     UIDropDownMenu_SetSelectedValue(this, 0)
 end
 
-function Search.FilterRarityMenu_OnShow(button)
-    local info
-	info = {}
-	info.text = TEXT("C_ALL")
-	info.func = Search.FilterRarityMenu_OnClicked
-	UIDropDownMenu_AddButton(info)
+local function GetRarityName(id)
+    if not id then return TEXT("C_ALL") end
+    if id==8 then return TEXT("ACCOUNT_SHOP") end
 
-	for i = 0, 5 do
-		info = {}
-        info.text = TEXT("ITEM_QUALITY"..i.."_DESC")
-        info.textR, info.textG, info.textB = GetItemQualityColor(i)
-		info.func = Search.FilterRarityMenu_OnClicked
-        info.value=i
-		UIDropDownMenu_AddButton(info)
-	end
+    return TEXT("ITEM_QUALITY"..id.."_DESC")
+end
 
-    info = {}
-    info.text = TEXT("ACCOUNT_SHOP")
-    info.textR, info.textG, info.textB = GetItemQualityColor(8)
+local function AddRarityMenuButton(id)
+    local info = {}
+    info.text = GetRarityName(id)
+    info.textR, info.textG, info.textB = GetItemQualityColor(id or 0)
     info.func = Search.FilterRarityMenu_OnClicked
-    info.value=8
-    UIDropDownMenu_AddButton(info)
-
-    UIDropDownMenu_AddSeparator()
-
-    info = {}
-    info.text = CP.L.SEARCH_RARITY_EXACT
-    info.checked = Search.rarity_single
-    info.value=true
-    info.func = Search.FilterRarityMenu_Option_OnClicked
-    UIDropDownMenu_AddButton(info)
-
-    info = {}
-    info.text = CP.L.SEARCH_RARITY_MINIMUM
-    info.checked = not Search.rarity_single
-    info.value=nil
-    info.func = Search.FilterRarityMenu_Option_OnClicked
+    info.value=id
     UIDropDownMenu_AddButton(info)
 end
 
+function Search.FilterRarityMenu_OnShow(button)
+
+    AddRarityMenuButton(nil)
+	for i = 0, 5 do
+        AddRarityMenuButton(i)
+	end
+    AddRarityMenuButton(8)
+
+    UIDropDownMenu_AddSeparator()
+
+    local info = {
+        text = CP.L.SEARCH_RARITY_EXACT,
+        checked = Search.rarity_single,
+        value = true,
+        func = Search.FilterRarityMenu_Option_OnClicked
+    }
+    UIDropDownMenu_AddButton(info)
+
+    info = {
+        text = CP.L.SEARCH_RARITY_MINIMUM,
+        checked = not Search.rarity_single,
+        value = nil,
+        func = Search.FilterRarityMenu_Option_OnClicked
+    }
+    UIDropDownMenu_AddButton(info)
+end
+
+function Search.FilterRaritySetSelection(id)
+    local name = GetRarityName(id)
+    UIDropDownMenu_SetSelectedName(CPSearchFilterRarity, name)
+    CPSearchFilterRarityText:SetColor( GetItemQualityColor(id or 0) )
+    Search.rarity=id
+end
+
 function Search.FilterRarityMenu_OnClicked(button)
-    UIDropDownMenu_SetSelectedID(CPSearchFilterRarity, button:GetID())
-    Search.rarity=button.value
+    Search.FilterRaritySetSelection(button.value)
     Search.FindItems()
 end
 
@@ -344,7 +348,6 @@ local function GetFilterInfo()
 
     return info
 end
-
 
 function Search.FindItems()
 
@@ -384,7 +387,6 @@ function Search.HeaderClicked(this)
 
     Search.DoSort(Search.cur_sort)
 end
-
 
 function Search.DoSort(column)
 
@@ -484,7 +486,6 @@ function Search.DoSort(column)
 
     Search.ScrollToSelection()
 end
-
 
 function Search.ScrollToSelection()
 
@@ -588,7 +589,6 @@ function Search.UpdateItem(base_name, item)
     _G[base_name.."Boni2"]:SetText(boni_txt[2] or "")
 end
 
-
 function Search.UpdateSlotInfo()
     local s1,s2
     if Search.selection then
@@ -599,7 +599,7 @@ function Search.UpdateSlotInfo()
         if s1==13 or s1==14 then s1,s2=13,14 end
     end
 
-		Search.slots = {}
+    Search.slots = {}
     if s1 then
         CPSearchTakeIt1:Show()
         CPSearchTakeIt1Item:Show()
