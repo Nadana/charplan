@@ -123,7 +123,6 @@ function Calc.Clear()
     return Calc.values
 end
 
-
 function Calc.ID2StatName(id)
     for n,v in pairs(Calc.STATS) do
         if id==v then return n end
@@ -266,7 +265,6 @@ function Calc.Explain(stat)
 
     return res.left,res.right
 end
-
 
 local function CalcBase(class_var,stat,level)
     if not class_var then return 0 end

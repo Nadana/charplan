@@ -496,7 +496,9 @@ function Classes.RaiseSkill_Update()
     --@debug@
     GameTooltip_SkillLevelUp:AddLine("id: "..this.skill)
     --@end-debug@
-    GameTooltip_SkillLevelUp:AddLine(CP.DB.GetSpellDesc(this.skill,lvl),0,0.75,0.95)
+    local col = CPColor.New(0,0.75,0.95)
+    local col_val = col:Brightness(1.5)    
+    GameTooltip_SkillLevelUp:AddLine(CP.DB.GetSpellDesc(this.skill,lvl,col_val:Code()), col:Get())
     GameTooltip_SkillLevelUp:Show()
 end
 

@@ -229,8 +229,6 @@ function CP.HasItems()
     end
 end
 
-
-
 function CP.FindSlotForItem(item_id)
     local s1,s2, force1 = CP.DB.GetItemPositions(item_id)
 

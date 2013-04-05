@@ -496,7 +496,6 @@ function DB.IsItemAllowedInSlot(item_id, slot)
     return slot==a or slot==b
 end
 
-
 function DB.GetItemPositions(item_id)
     local item = DB.items[item_id]
     if not item then return end
@@ -969,8 +968,6 @@ function DB.GetItemInfo(item_id)
 
     return  item[I_LEVEL],item[I_SET]
 end
-
-
 
 function DB.GenerateItemDataByID(item_id)
 

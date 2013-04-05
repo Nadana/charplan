@@ -294,8 +294,6 @@ function Unit.GetAllSkills()
     return skills, flags
 end
 
-
-
 function Unit.GetSkillTPSum()
     local sum=0
     for id,lvl in pairs(Unit.skills) do
