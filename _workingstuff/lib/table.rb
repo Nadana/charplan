@@ -40,7 +40,7 @@ class TableEntry
         return (IsValid? and @used)
     end
 
-    def IsUsed()
+    def used?
         return @used
     end
 
@@ -133,21 +133,21 @@ class Table
     end
 
     def include?(id)
-        return (@index.include?(id) and @db[@index[id]].IsUsed)
+        return (@index.include?(id) and @db[@index[id]].used?)
     end
 
     def [](id)
         i = @index[id]
         raise "undefined id:#{i}" if i.nil?
-        return @db[i] if @db[i].IsUsed
+        return @db[i] if @db[i].used?
     end
 
     def each
-        @db.each { |data| yield(data) if data.IsUsed  }
+        @db.each { |data| yield(data) if data.used?  }
     end
 
     def select
-        @db.select { |data| yield(data) if data.IsUsed  }
+        @db.select { |data| yield(data) if data.used?  }
     end
 
     def merge!(db)

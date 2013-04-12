@@ -34,7 +34,7 @@ class FullDB
     attr_accessor :title
     attr_accessor :vocs
 
-    def Load
+    def load
         p "Load tables"
         $de = Locales.new("de")
 
@@ -62,7 +62,7 @@ class FullDB
         @recipes = Recipes.new()
     end
 
-    def Export
+    def export
         p "writting"
         @images.Export("../item_data/images.lua")
         @suits.Export("../item_data/sets.lua")
@@ -82,23 +82,36 @@ class FullDB
     end
 
 
-    def Check
+    def check
         p "Checking & cleanup"
         #CheckSetItems(@suits, @items)
         if EXCLUDE_UNNAMED
         	@items.MarkUnusedIfNameInvalid($de)
         	@suits.MarkUnusedIfNameInvalid($de)
         end
+
         str = $STATLIST.key("Stärke")
         @items.MarkUnusedIf { |item| item.bonus.Value(str)>20000 }
 
-        CheckImages(@images, [@items, @spell_collection])
-        FilterSpells()
+        findUnusedRefines(@items)
+        findUnusedImages(@images, [@items, @spell_collection])
+        findUnusedSpells()
 
         @spell_collection.ClearUnskillable(@learnmagic)
     end
 
-    def FilterSpells
+    def findUnusedRefines(items)
+        @refines.MarkAllUnused
+        @items.each { |i|
+            if i.refineid>0 then
+                (0..19).each {|plus|
+                    @refines.Used(i.refineid+plus)
+                }
+            end
+        }
+    end
+
+    def findUnusedSpells
         #@spell_collection.MarkAllUnused
         #@food.MarkSpellsUsed(@spell_collection)
         #@learnmagic.MarkSpellsUsed(@spell_collection)
@@ -108,7 +121,7 @@ class FullDB
         raise "missing spell" if not @spell_collection[490142].Export?
     end
 
-    def CheckImages(images, tables)
+    def findUnusedImages(images, tables)
         images.MarkAllUnused()
         tables.each { |tab|
             tab.each { |r|
@@ -172,6 +185,6 @@ end
 CheckTempPath()
 
 db = FullDB.new
-db.Load
-db.Check
-db.Export
+db.load
+db.check
+db.export
