@@ -88,7 +88,10 @@ class FullDB
         if EXCLUDE_UNNAMED
         	@items.MarkUnusedIfNameInvalid($de)
         	@suits.MarkUnusedIfNameInvalid($de)
-      	end
+        end
+        str = $STATLIST.key("Stärke")
+        @items.MarkUnusedIf { |item| item.bonus.Value(str)>20000 }
+
         CheckImages(@images, [@items, @spell_collection])
         FilterSpells()
 

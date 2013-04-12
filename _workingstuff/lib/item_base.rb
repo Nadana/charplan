@@ -216,7 +216,6 @@ $STATLIST={# SYS_WEAREQTYPE_xxx
     213 => "Erhöhung der TP nach Spielerfolg",
 }
 
-
 class BonusStuff
     attr_accessor :eqtypes, :eqvalues
 
@@ -236,6 +235,12 @@ class BonusStuff
                 @unknown_stat = type if not $STATLIST.key?(type)
             end
         end
+    end
+
+    def Value(id)
+        n = @eqtypes.find_index(id)
+        return @eqvalues[n] unless n.nil?
+        return 0
     end
 
     def HasInvalidStat?

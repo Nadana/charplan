@@ -19,6 +19,7 @@ end
  # http://www.lua.org
     $lua ||= "bin/lua5.1.exe"
 
+raise '$fdb_ex variable not set or file not found' if not File.exists? $fdb_ex
 
 ###############
 def TempPath()
@@ -27,6 +28,7 @@ end
 
 ###############
 def LUA_Execute(script)
+    raise '$lua variable not set or file not found' if not File.exists? $lua
     system("#{$lua} "+script)
 end
 

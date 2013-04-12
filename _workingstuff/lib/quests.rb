@@ -26,10 +26,10 @@ class QuestEntry < TableEntry
             @perquisite.push(qid) if qid>0
         end
 
-        @start_npc=[]
+        @start_npcs=[]
         for i in ("iquest_starter1".."iquest_starter5")
             n_id=row[i].to_i
-            @start_npc.push(n_id) if n_id>100
+            @start_npcs.push(n_id) if n_id>100
         end
 
         GetRequests(row)
@@ -38,54 +38,56 @@ class QuestEntry < TableEntry
 
     def IsValid?
         return super()
-        #qname = $text[@id]
-        #return qname.nil?
     end
 
-    def GetRequests(csv)
-        @requests=[]
-        for i in 1..10
-            item = csv['irequest_itemid'+i.to_s].to_i
-            if item>0 then
-                prefix =csv['irequest_itemstr'+i.to_s].to_i
-                count = csv['irequest_itemval'+i.to_s].to_i
-                @requests.push( {:prefix=>prefix,:item=>item,:count=>count} )
+    private
+
+        def GetRequests(csv)
+            @requests=[]
+            for i in 1..10
+                item = csv['irequest_itemid'+i.to_s].to_i
+                if item>0 then
+                    prefix =csv['irequest_itemstr'+i.to_s].to_i
+                    count = csv['irequest_itemval'+i.to_s].to_i
+                    @requests.push( {:prefix=>prefix,:item=>item,:count=>count} )
+                end
+            end
+
+            for i in 1..10
+                item = csv['irequest_killid'+i.to_s].to_i
+                if item>0 then
+                    prefix =csv['irequest_killstr'+i.to_s].to_i+16
+                    count = csv['irequest_killval'+i.to_s].to_i
+                    @requests.push( {:prefix=>prefix,:item=>item,:count=>count,:kill=>true} )
+                end
             end
         end
 
-        for i in 1..10
-            item = csv['irequest_killid'+i.to_s].to_i
-            if item>0 then
-                prefix =csv['irequest_killstr'+i.to_s].to_i+16
-                count = csv['irequest_killval'+i.to_s].to_i
-                @requests.push( {:prefix=>prefix,:item=>item,:count=>count} )
+        def GetReward(csv)
+            @reward=[]
+
+            for i in 1..5
+                item = csv['ireward_choiceid'+i.to_s].to_i
+                count= csv['ireward_choiceval'+i.to_s].to_i
+                if item>0 and count>0 then
+                    @reward.push( {:item=>item,:count=>count} )
+                end
+            end
+
+            for i in 1..5
+                item = csv['ireward_itemid'+i.to_s].to_i
+                count= csv['ireward_itemval'+i.to_s].to_i
+                if item>0 and count>0 then
+                    @reward.push( {:item=>item,:count=>-count} )
+                end
             end
         end
-    end
 
-    def GetReward(csv)
-        @reward=[]
-
-        for i in 1..5
-            item = csv['ireward_choiceid'+i.to_s].to_i
-            count= csv['ireward_choiceval'+i.to_s].to_i
-            if item>0 and count>0 then
-                @reward.push( {:item=>item,:count=>count} )
-            end
+        def SetAsFollowerOf(qid)
+            @postquest.push(qid)
         end
 
-        for i in 1..5
-            item = csv['ireward_itemid'+i.to_s].to_i
-            count= csv['ireward_itemval'+i.to_s].to_i
-            if item>0 and count>0 then
-                @reward.push( {:item=>item,:count=>-count} )
-            end
-        end
-    end
-
-    def SetAsFollowerOf(qid)
-        @postquest.push(qid)
-    end
+    public
 
     def level
         @rawdata["icheck_lv"].to_i
@@ -114,6 +116,11 @@ class QuestEntry < TableEntry
 
     def reward_money(exp_vals)
         return (@rawdata["ireward_money"].to_i * exp_vals["quest_money_base"].to_i ) / 100
+    end
+
+    def reward_item(id)
+        f = @reward.find{ |i| i[:item]==id}
+        return f ? f[:count].abs : 0
     end
 
     def catalog

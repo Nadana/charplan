@@ -74,7 +74,7 @@ class Table
 
         @ent_obj = object
         @db = [] # Array.new(0,object)
-        @index = Hash.new(Integer)
+        @index = Hash.new()
 
         filename = @ent_obj::FILENAME if filename.nil?
         Load(filename) unless filename.nil?
