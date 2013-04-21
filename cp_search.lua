@@ -218,7 +218,7 @@ end
 
 function Search.PlusMenu_OnShow(button)
     local info={}
-    for i=0,16 do
+    for i=0,20 do
         info.text = "+"..i
         info.value = i
         info.notCheckable=1
