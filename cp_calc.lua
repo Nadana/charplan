@@ -465,7 +465,7 @@ function Calc.AllAttributes(values)
         values.DEX = values.DEX+all
         values.INT = values.INT+all
         values.WIS = values.WIS+all
-        
+
         local all_attributes = CP.DB.GetEffectName(7)
 
         AddDescription(s.STR, all_attributes,all)
@@ -617,11 +617,9 @@ function Calc.WeaponDepended(values)
 
 end
 
-function Calc.WeaponDps(item_id, item_bonus)
-	if not item_bonus then return nil end
-	local dmg = item_bonus[Calc.STATS.PDMG]
+function Calc.WeaponDps(item_id, pdmg)
 	local speed = CP.DB.GetWeaponSpeed(item_id)
-	if dmg and speed then
-		return (dmg*10) / speed
+	if pdmg and speed then
+		return (pdmg*10) / speed
 	end
 end

@@ -55,7 +55,7 @@ function Search.ShowSearch(slot_id, item_id)
     UIDropDownMenu_SetText(CPSearchFilterSlot,text)
 
     if Search.slot == 21 then	-- clear rarity for wings
-        Search.FilterRaritySetSelection(nil) 
+        Search.FilterRaritySetSelection(nil)
     end
 
     Search.FindItems()
@@ -368,22 +368,37 @@ function Search.HeaderClicked(this)
     assert(this:GetID()<=HEADER_COUNT)
     for i=1,HEADER_COUNT do
         _G["CPSearchHead"..i.."SortIcon"]:Hide()
+        if _G["CPSearchHead"..i.."SortIcon2"] then _G["CPSearchHead"..i.."SortIcon2"]:Hide() end
     end
 
     local id = this:GetID()
     if Search.cur_sort == id or Search.cur_sort == -id then
         Search.cur_sort = -Search.cur_sort
+
+        if id==3 and Search.cur_sort>0 then
+            Search.cur_sort_sub = not Search.cur_sort_sub
+        end
     else
+        Search.cur_sort_sub=nil
         Search.cur_sort = id
     end
 
+    local texture = _G[this:GetName() .."SortIcon"]
+    local texture2 = _G[this:GetName().."SortIcon2"]
     if Search.cur_sort>0 then
-        _G[this:GetName() .. "SortIcon"]:SetFile("Interface/chatframe/chatframe-scrollbar-buttondown")
-        _G[this:GetName() .. "SortIcon"]:Show()
+        texture:SetFile("Interface/chatframe/chatframe-scrollbar-buttondown")
+        if Search.cur_sort_sub and texture2 then
+            texture2:SetFile("Interface/chatframe/chatframe-scrollbar-buttondown")
+            texture2:Show()
+        end
     else
-        _G[this:GetName() .. "SortIcon"]:SetFile("Interface/chatframe/chatframe-scrollbar-buttonup")
-        _G[this:GetName() .. "SortIcon"]:Show()
+        texture:SetFile("Interface/chatframe/chatframe-scrollbar-buttonup")
+        if Search.cur_sort_sub and texture2 then
+            texture2:SetFile("Interface/chatframe/chatframe-scrollbar-buttonup")
+            texture2:Show()
+        end
     end
+        texture:Show()
 
     Search.DoSort(Search.cur_sort)
 end
@@ -411,7 +426,7 @@ function Search.DoSort(column)
         local weapon = att1 == CP.Calc.STATS.PDMG
         local boni
         if weapon then
-        	if effect1 > effect2 then
+        	if not Search.cur_sort_sub then
         		-- sort by dps for pdmg-based weapons
         		local speed = CP.DB.GetWeaponSpeed(item_id)
         		if speed and speed ~= 0 then
@@ -420,7 +435,7 @@ function Search.DoSort(column)
         			boni = effect1
         		end
         	else
-        		-- or sort by mdmg
+        		--or sort by mdmg
         		boni = effect2
         	end
         else
@@ -553,14 +568,14 @@ function Search.UpdateItem(base_name, item)
     local txt = ""
     local attA,attB = CP.DB.PrimarAttributes(item.id)
     if attA and boni[attA]~=0 then
-    		-- add DPS
-        local n = CP.Calc.ID2StatName(attA)
-        if n == 'PDMG' then
-        	local dps = CP.Calc.WeaponDps(item.id, boni)
+        -- add DPS
+        if attA == CP.Calc.STATS.PDMG then
+        	local dps = CP.Calc.WeaponDps(item.id, boni[attA])
         	if dps then
-						txt = txt..string.format("%s: %.1f\n", CP.L.STAT_SHORTS.DPS, dps)
+	    		txt = txt..string.format("%s: %.1f\n", CP.L.STAT_SHORTS.DPS, dps)
         	end
         end
+        local n = CP.Calc.ID2StatName(attA)
         txt = txt..(CP.L.STAT_SHORTS[n])..": "..boni[attA].."\n"
         boni[attA] = nil
     end
