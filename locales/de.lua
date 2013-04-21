@@ -82,6 +82,7 @@ CP.L ={
     SEARCH_CONTEXT_SKIN = "Skin übernehmen",
     SEARCH_CONTEXT_WEB = "Im Webbrowser öffnen",
     SEARCH_WEBSITE = "http://de.runesdatabase.com/item/%i",
+    SEARCH_GENDER = "alle Geschlechter",
 
     BY_CLASS = "Base",
     BY_SKILL = "Skill",

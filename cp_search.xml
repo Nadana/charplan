@@ -287,6 +287,15 @@
 							</Anchor>
 						</Anchors>
 					</CheckButton>
+					<CheckButton name="$parentGender" inherits="CPSearchCheckbox">
+						<Anchors>
+							<Anchor point="TOPLEFT">
+								<Offset>
+									<AbsDimension x="460" y="96"/>
+								</Offset>
+							</Anchor>
+						</Anchors>
+					</CheckButton>
 					<Frame name="$parentType" inherits="UIDropDownMenuTemplate">
 						<Size>
 							<AbsDimension x="132" y="24"/>

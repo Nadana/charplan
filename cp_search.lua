@@ -25,6 +25,7 @@ function Search.OnLoad(this)
     CPSearchHead4:SetText(CP.L.SEARCH_STATS)
     CPSearchFilterStatLessText:SetText(CP.L.SEARCH_NOSTATLESS)
     CPSearchFilterSetsText:SetText(CP.L.SEARCH_ONLYSET)
+    CPSearchFilterGenderText:SetText(CP.L.SEARCH_GENDER)
     CPSearchFilterNameLabel:SetText(CP.L.SEARCH_NAME)
     CPSearchFilterLevelLabel:SetText(CP.L.SEARCH_LEVEL)
 
@@ -338,6 +339,10 @@ local function GetFilterInfo()
     info.stat_max = tonumber(CPSearchFilterStatsMax:GetText())
     info.rarity = Search.rarity
     info.rarity_single = Search.rarity_single
+
+    if not CPSearchFilterGender:IsChecked() then
+        info.limitsex = 1+(UnitSex("player") %2)
+    end
 
     info.types = {}
     for id,v in pairs(CP.Search.type_filter) do
