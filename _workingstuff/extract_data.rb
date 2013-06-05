@@ -35,7 +35,7 @@ class FullDB
     attr_accessor :vocs
 
     def load
-        p "Load tables"
+        puts "Load tables"
         $de = Locales.new("de")
 
         @images = Images.new()
@@ -63,7 +63,7 @@ class FullDB
     end
 
     def export
-        p "writting"
+        puts "writting"
         @images.Export("../item_data/images.lua")
         @suits.Export("../item_data/sets.lua")
         @refines.Export("../item_data/refines.lua")
@@ -83,7 +83,7 @@ class FullDB
 
 
     def check
-        p "Checking & cleanup"
+        puts "Checking & cleanup"
         #CheckSetItems(@suits, @items)
         if EXCLUDE_UNNAMED
         	@items.MarkUnusedIfNameInvalid($de)

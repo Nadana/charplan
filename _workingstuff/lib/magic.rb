@@ -37,7 +37,7 @@ class MagicObjectEntry < TableEntry
         data.push("time_varg")
         data.push("atk_dmg")
         data.push("atk_varg")
-        data.push("atk_dmg")
+        data.push("atk_dmg_fix")
         data.push("dot_varg")
         data.push("dot_dmg_fix")
     end

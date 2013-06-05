@@ -69,11 +69,16 @@ def Extract(path, filter="", options=Hash.new)
             return data
         }
     else
-    		fdbex = Pathname($fdb_ex)
+    	fdbex = Pathname($fdb_ex)
         Dir.chdir( fdbex.dirname ) {
-        	exe = fdbex.basename
-                #p ("#{exe} #{foptions.join(" ")} -y -o \"#{temp_path}\" #{escaped} #{src}")
+        exe = fdbex.basename
+
+        #p ("#{exe} #{foptions.join(" ")} -y -o \"#{temp_path}\" #{escaped} #{src}")
+        if options.key?(:silent)
+            `#{exe} #{foptions.join(" ")} -y -o \"#{temp_path}\" #{escaped} #{src}`
+        else
             system("#{exe} #{foptions.join(" ")} -y -o \"#{temp_path}\" #{escaped} #{src}")
+        end
         }
     end
 
@@ -81,11 +86,13 @@ def Extract(path, filter="", options=Hash.new)
 end
 
 ###############
-def ExtractDBFile(filename)
+def ExtractDBFile(filename, options=Hash.new)
     filename += ".db" unless filename=~/\.db$/
 
+    options[:fdb_filter]="data.fdb"
+
     dir = TempPath()+"data/"
-    dir = Extract("data\\",filename,{:fdb_filter=>"data.fdb"}) unless File.exists?(TempPath()+"data\\#{filename}.csv")
+    dir = Extract("data\\",filename,options) unless File.exists?(TempPath()+"data\\#{filename}.csv")
 
     return dir+filename+".csv"
 end

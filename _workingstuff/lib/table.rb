@@ -110,7 +110,7 @@ class Table
 
     def Load(filename)
         print("#{filename}: Extracting")
-        ex_filename = ExtractDBFile(filename)
+        ex_filename = ExtractDBFile(filename,:silent=>true)
 
         print(",Reading")
         csv = CSV.read(ex_filename, {:col_sep=>";", :headers=>true, :converters => :numeric})
