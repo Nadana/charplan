@@ -2,7 +2,7 @@ local CP = _G.CP
 local Unit= {}
 CP.Unit = Unit
 
-local MAX_LEVEL=77
+local MAX_LEVEL=80
 
 --[[ data fields:
     title_id
@@ -111,8 +111,13 @@ function Unit.GetListOfSkills()
             if _bLearned then
                 local link = GetSkillHyperLink( page, index )
                 local id, lvl = link:match(":(%d+) (%d+)")
-                assert(PLV==tonumber(lvl))
-                skills[tonumber(id)] = PLV
+                if PLV==tonumber(lvl) then
+                    --assert(PLV==tonumber(lvl))
+                    CP.Debug("Warning: skill level diff:"..id.."->"..tostring(PLV).."/"..tostring(lvl))
+                end
+                if tonumber(id)~=nil then
+                    skills[tonumber(id)] = PLV
+                end
             end
         end
     end
