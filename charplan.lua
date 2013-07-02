@@ -141,6 +141,16 @@ function CP.Register3rdParty()
         }
         AddonManager.RegisterAddonTable(addon)
     end
+
+    if XBARVERSION and XBARVERSION>=1.51 then
+        XAddon_Register({
+            popup={{
+                icon = "interface/AddOns/charplan/icon.dds",
+                GetText = function() return "CharPlan" end,
+                GetTooltip = function() return "Plan&Pimp your toon equipment" end,
+                OnClick = function(this, key) ToggleUIFrame(CPFrame) end,
+        }}});
+    end
 end
 
 local function FindSkin(path, id)
