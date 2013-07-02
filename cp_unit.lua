@@ -111,7 +111,7 @@ function Unit.GetListOfSkills()
             if _bLearned then
                 local link = GetSkillHyperLink( page, index )
                 local id, lvl = link:match(":(%d+) (%d+)")
-                if PLV==tonumber(lvl) then
+                if PLV~=tonumber(lvl) then
                     --assert(PLV==tonumber(lvl))
                     CP.Debug("Warning: skill level diff:"..id.."->"..tostring(PLV).."/"..tostring(lvl))
                 end
