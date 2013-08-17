@@ -19,6 +19,9 @@ local default_text={
     CONTEXT_PIMPME= "Pimp",
     CONTEXT_SEARCH= "Search",
     CONTEXT_SHARE = "Copy stats to…",
+    CONTEXT_SHARE_STATS = "copy stats",
+    CONTEXT_SHARE_RUNES = "copy runes",
+    CONTEXT_SHARE_VALUES = "copy base values",
     CONTEXT_CLEAR = "Clear",
 
     ERROR_NOSLOT = "A free Bag Slot is needed to import your current equipment!",

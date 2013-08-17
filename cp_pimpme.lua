@@ -34,6 +34,7 @@ local Pimp = {}
 CP.Pimp = Pimp
 
 local Nyx = LibStub("Nyx")
+local WaitTimer = LibStub("WaitTimer")
 
 function Pimp.PimpItemLink(itemlink)
 
@@ -147,6 +148,10 @@ end
 
 function Pimp.OnLoad(this)
     UIPanelBackdropFrame_SetTexture( this, "Interface/Common/PanelCommonFrame", 256, 256 )
+
+    Pimp.CopyFilter_Stats = true
+    Pimp.CopyFilter_Runes = true
+    Pimp.CopyFilter_values = true
 
     CPPimpMeAttrDuraLabel:SetText(CP.L.PIMP_DURA)
     CPPimpMeAttrCopyMenuBtn:SetText(CP.L.PIMP_COPY)
@@ -295,6 +300,44 @@ function Pimp.FillCopyMenu(level, src_item)
             UIDropDownMenu_AddButton( info, level )
         end
     end
+
+    local seperator = {}
+    seperator.text = '---------------'
+    seperator.isTitle = 1
+    UIDropDownMenu_AddButton( seperator, level )
+
+    local info = {}
+    info.text = CP.L.CONTEXT_SHARE_STATS
+    info.checked = Pimp.CopyFilter_Stats
+    info.keepShownOnClick = 1
+    info.func = function(this)
+        Pimp.CopyFilter_Stats = not Pimp.CopyFilter_Stats
+        UIDropDownMenu_Show(_G[UIDROPDOWNMENU_OPEN_MENU],level)
+        this.checked = not Pimp.CopyFilter_Stats
+    end
+    UIDropDownMenu_AddButton( info, level )
+
+    local info = {}
+    info.text = CP.L.CONTEXT_SHARE_RUNES
+    info.checked = Pimp.CopyFilter_Runes
+    info.keepShownOnClick = 1
+    info.func = function(this)
+        Pimp.CopyFilter_Runes = not Pimp.CopyFilter_Runes
+        UIDropDownMenu_Show(_G[UIDROPDOWNMENU_OPEN_MENU],level)
+        this.checked = not Pimp.CopyFilter_Runes
+    end
+    UIDropDownMenu_AddButton( info, level )
+
+    local info = {}
+    info.text = CP.L.CONTEXT_SHARE_VALUES
+    info.checked = Pimp.CopyFilter_values
+    info.keepShownOnClick = 1
+    info.func = function(this)
+        Pimp.CopyFilter_values = not Pimp.CopyFilter_values
+        UIDropDownMenu_Show(_G[UIDROPDOWNMENU_OPEN_MENU],level)
+        this.checked = not Pimp.CopyFilter_values
+    end
+    UIDropDownMenu_AddButton( info, level )
 end
 
 function Pimp.CopyToAll(item_data)
@@ -314,18 +357,24 @@ function Pimp.CopyItemEnchancement(src_data, dest_data)
     assert(src_data)
     assert(dest_data)
 
-    for i = 1,6 do
-        dest_data.stats[i] = src_data.stats[i]
+    if Pimp.CopyFilter_Stats then
+        for i = 1,6 do
+            dest_data.stats[i] = src_data.stats[i]
+        end
     end
 
-    for i = 1,4 do
-        dest_data.runes[i] = src_data.runes[i]
+    if Pimp.CopyFilter_Runes then
+        for i = 1,4 do
+             dest_data.runes[i] = src_data.runes[i]
+        end
+        dest_data.max_runes = CP.Pimp.UsedRunes(src_data)
     end
-    dest_data.max_runes = CP.Pimp.UsedRunes(src_data)
 
-    dest_data.plus = src_data.plus
-    dest_data.tier = src_data.tier
-    dest_data.dura = src_data.dura
+    if CopyFilter_values then
+        dest_data.plus = src_data.plus
+        dest_data.tier = src_data.tier
+        dest_data.dura = src_data.dura
+    end
 
     CP.UpdateEquipment()
 end
@@ -351,19 +400,25 @@ function Pimp.CompareItemEnchancement(src_data, dest_data)
     assert(src_data)
     assert(dest_data)
 
-    for i = 1,6 do
-        if dest_data.stats[i] ~= src_data.stats[i] then return false end
+    if Pimp.CopyFilter_Stats then
+        for i = 1,6 do
+            if dest_data.stats[i] ~= src_data.stats[i] then return false end
+        end
     end
 
-    for i = 1,4 do
-        if dest_data.runes[i] ~= src_data.runes[i] then return false end
+    if Pimp.CopyFilter_Runes then
+        for i = 1,4 do
+            if dest_data.runes[i] ~= src_data.runes[i] then return false end
+        end
     end
 
-    if  dest_data.plus ~= src_data.plus or
-        dest_data.tier ~= src_data.tier or
-        dest_data.dura ~= src_data.dura
-        --or dest_data.max_dura ~= src_data.max_dura
-        then return false end
+    if CopyFilter_values then
+        if  dest_data.plus ~= src_data.plus or
+            dest_data.tier ~= src_data.tier or
+            dest_data.dura ~= src_data.dura
+            --or dest_data.max_dura ~= src_data.max_dura
+            then return false end
+    end
 
     return true
 end

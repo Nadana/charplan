@@ -48,6 +48,9 @@ CP.L ={
     CONTEXT_SEARCH= "Suche",
     CONTEXT_SHARE = "Kopiere Werte zu…",
     CONTEXT_CLEAR = "Leeren",
+    CONTEXT_SHARE_STATS = "Stats kopieren",
+    CONTEXT_SHARE_RUNES = "Runen kopieren",
+    CONTEXT_SHARE_VALUES = "Basiswerte kopieren",
 
     ERROR_NOSLOT = "Ein freier Rucksack platz wird für das Importieren benötigt.",
     ERROR_PICKEDUPITEM = "Beim Übertragen ist ein Fehler aufgetreten! Bitte prüfen Sie ihre Ausrüstung!",
