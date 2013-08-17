@@ -266,7 +266,7 @@ end
 function DB.GetSpellDesc(spell_id,level, var_color_code)
 
     local function colored(text)
-        if var_color_code then
+        if var_color_code and text then
             return var_color_code .. text .. "|r"
         else
             return text
@@ -291,7 +291,7 @@ function DB.GetSpellDesc(spell_id,level, var_color_code)
             val = tonumber(val)
             if val then
                 if val>20 then
-                    return colored(math.abs(DB.GetSpellEffectBuffValue(val,i1,level)))
+                    return colored(math.abs(DB.GetSpellEffectBuffValue(val,i1,level) or 0))
                 else
                     return colored(DB.GetSpellEffectBuffValue(ispell,val,level))
                 end
@@ -313,7 +313,7 @@ function DB.GetSpellDesc(spell_id,level, var_color_code)
 
         local i1 = tonumber(token)
         if i1 then
-            return math.abs(DB.GetSpellFixDmgValue(i1))
+            return math.abs(DB.GetSpellFixDmgValue(i1) or 0)
         end
         return "FixDMG-"..token
     end
