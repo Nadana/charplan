@@ -298,9 +298,13 @@ function Pimp.FillCopyMenu(level, src_item)
 end
 
 function Pimp.CopyToAll(item_data)
+    local src_is_weapon = CP.DB.IsWeapon(item_data.id)
     for slot,item in pairs(CP.Items) do
         if item then
-            Pimp.CopyItemEnchancement(item_data, item)
+            local dest_is_weapon = CP.DB.IsWeapon(item.id)
+            if src_is_weapon==dest_is_weapon then
+                Pimp.CopyItemEnchancement(item_data, item)
+            end
         end
     end
 end
@@ -309,10 +313,6 @@ function Pimp.CopyItemEnchancement(src_data, dest_data)
 
     assert(src_data)
     assert(dest_data)
-
-    local src_is_weapon = CP.DB.IsWeapon(src_data.id)
-    local dest_is_weapon = CP.DB.IsWeapon(dest_data.id)
-    if src_is_weapon~=dest_is_weapon then return end
 
     for i = 1,6 do
         dest_data.stats[i] = src_data.stats[i]
@@ -350,10 +350,6 @@ function Pimp.CompareItemEnchancement(src_data, dest_data)
 
     assert(src_data)
     assert(dest_data)
-
-    local src_is_weapon = CP.DB.IsWeapon(src_data.id)
-    local dest_is_weapon = CP.DB.IsWeapon(dest_data.id)
-    if src_is_weapon~=dest_is_weapon then return false end
 
     for i = 1,6 do
         if dest_data.stats[i] ~= src_data.stats[i] then return false end
