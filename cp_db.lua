@@ -160,12 +160,7 @@ end
 function DB.GetSpellIcon(spell_id)
     local icon_id = DB.skills[spell_id] and DB.skills[spell_id][S_ICON]
     if icon_id then
-        local icon = DB.images[ icon_id ]
-        if icon then
-            return "interface/icons/" .. icon
-        else
-            CP.Debug("No Icon: "..icon_id.." for spell "..spell_id)
-        end
+        return DB.GetIcon(icon_id)
     else
         CP.Debug("No Icon for spell "..spell_id)
     end
@@ -430,14 +425,18 @@ end
 function DB.GetItemIcon(item_id)
     local item = DB.items[item_id]
     if item then
-        local icon = DB.images[ item[I_ICON] ]
-        if icon then
-            return "interface/icons/" .. icon
-        else
-            CP.Debug("No Icon: "..item[I_ICON].." for Item "..item_id)
-        end
+        return DB.GetIcon(item[I_ICON])
     else
         CP.Debug("Item not in DB: "..item_id)
+    end
+end
+
+function DB.GetIcon(icon_id)
+    local icon = DB.images[ icon_id ]
+    if icon then
+        return "interface/icons/" .. icon
+    else
+        CP.Debug("No Icon: "..item[I_ICON].." for Item "..item_id)
     end
 end
 
