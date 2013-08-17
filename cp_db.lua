@@ -1074,7 +1074,7 @@ function DB.GetMoneyName(money_type)
 end
 
 function DB.GetRecipeName(recipe_id)
-    for item,rec in ipairs(DB.recipe_items) do
+    for item,rec in pairs(DB.recipe_items) do
         if rec==recipe_id then
             return TEXT("SYS_RECIPE_TITLE") .. DB.GetItemName(item)
         end
