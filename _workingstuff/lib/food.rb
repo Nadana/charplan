@@ -5,10 +5,12 @@ class FoodEntry < ItemsEntry
 
     attr_accessor :type
     attr_accessor :spell
+    attr_accessor :image_id
 
     def initialize(csv_row)
         super(csv_row)
         @type = csv_row['itemtype'].to_i
+        @image_id = csv_row['imageid'].to_i
         @spell = csv_row['incmagic_onuse'].to_i
     end
 
@@ -20,10 +22,12 @@ class FoodEntry < ItemsEntry
 
     def ExportDesc(data)
         data.push("magic")
+        #data.push("image")
     end
 
     def ExportData(data)
         data.push(@spell)
+        #data.push(@image_id)
     end
 end
 

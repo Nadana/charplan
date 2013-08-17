@@ -41,6 +41,14 @@ class MagicCollectionEntry < TableEntry
         data.push(@tp_cost_rate)
     end
 
+    def is_buff?(spell_book)
+        @magics.each {|x|
+            next if not spell_book.include? x
+            return true if spell_book[x].is_buff?
+        }
+        return false
+    end
+
 end
 
 

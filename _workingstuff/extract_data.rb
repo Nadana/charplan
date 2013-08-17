@@ -19,7 +19,9 @@ $log.formatter = proc { |severity, datetime, progname, msg|  "#{severity}: #{msg
 
 MAX_RARE = [0,1,2,3,4,5,8]
 MAX_LEVEL = 100
-EXCLUDE_UNNAMED = false#true
+EXCLUDE_UNNAMED = false
+INCLUDE_FOOD = false  # ATM only in buff-search-branch
+
 $log << "FILTER RULES:\n"
 $log << "max level is: #{MAX_LEVEL}\n"
 $log << "max rariry is: #{MAX_RARE.to_s}\n"
@@ -56,7 +58,7 @@ class FullDB
         @refines = Refines.new()
         @spells = Magics.new()
         @spell_collection = MagicCollection.new()
-        @food = Food.new()
+        @food = Food.new() if INCLUDE_FOOD
         @cards = Cards.new()
         @titles = Titles.new()
         @vocs = Voc.new()
@@ -75,7 +77,7 @@ class FullDB
         @items.Export(dir+"items.lua")
         @spell_collection.Export(dir+"spells.lua")
         @spells.Export(dir+"spell_effects.lua")
-        @food.Export(dir+"food.lua")
+        @food.Export(dir+"food.lua") if INCLUDE_FOOD
         @vocs.Export(dir+"classes.lua")
         @learnmagic.Export(dir+"skills.lua")
         @recipes.ExportReverseIndex(dir+"recipe_items.lua")
@@ -96,6 +98,7 @@ class FullDB
         if EXCLUDE_UNNAMED
         	@items.MarkUnusedIfNameInvalid($de)
         	@suits.MarkUnusedIfNameInvalid($de)
+            @food.MarkUnusedIfNameInvalid($de)  if INCLUDE_FOOD
         end
 
         @cards.MarkUnusedIf {|d| d.cardaddpower==0 }
@@ -103,9 +106,14 @@ class FullDB
         str = $STATLIST.key("Stärke")
         @items.MarkUnusedIf { |item| item.bonus.Value(str)>20000 }
 
+        if INCLUDE_FOOD then
+            @food.MarkUnusedIf { |item| not @spell_collection[item.spell].is_buff?(@spells) }
+        end
+
         findUnusedRefines(@items)
-        findUnusedImages(@images, [@items, @spell_collection])
+        findUnusedImages(@images, [@items, @spell_collection ]) #, @food])
         #findUnusedSpells()
+
 
         @spell_collection.ClearUnskillable(@learnmagic)
     end

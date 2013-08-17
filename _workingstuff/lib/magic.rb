@@ -61,6 +61,12 @@ class MagicObjectEntry < TableEntry
         @shield!=0 ? data.push(@shield) : data.push("nil")
         (@shield_varg!=0 and @shield!=0) ? data.push(@shield_varg) : data.push("nil")
     end
+
+    def is_buff?
+        return @bonus.has_calc_stat?
+        # if @time.to_n>0
+    end
+
 end
 
 
