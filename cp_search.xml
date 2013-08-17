@@ -126,26 +126,7 @@
 		</PushedTextOffset>
 	</Button>
 
-	<CheckButton name="CPSearchCheckbox" inherits="UIPanelCheckButtonTemplate" autoChecked="true" virtual="true">
-		<Size>
-			<AbsDimension x="18" y="20"/>
-		</Size>
-		<Layers>
-			<Layer>
-				<FontString name="$parentText" inherits="GameFontHighlight" justifyH="LEFT">
-					<Size>
-						<AbsDimension x="150" y="16"/>
-					</Size>
-					<Anchors>
-						<Anchor point="LEFT" relativePoint="RIGHT">
-							<Offset>
-								<AbsDimension x="1" y="0"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-				</FontString>
-			</Layer>
-		</Layers>
+	<CheckButton name="CPSearchCheckbox" inherits="CPCheckbox" virtual="true">
 		<Scripts>
 			<OnClick>CP.Search.FindItems()</OnClick>
 		</Scripts>

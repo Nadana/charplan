@@ -13,6 +13,7 @@ cp_unit.lua
 cp_utils.lua
 cp_class.lua
 
+cp_templates.xml
 charplan.xml
 cp_pimpme.xml
 cp_statsearch.xml
