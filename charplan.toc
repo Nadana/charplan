@@ -5,6 +5,7 @@ libs/WaitTimer.lua
 charplan.lua
 cp_calc.lua
 cp_db.lua
+cp_db_spell.lua
 cp_pimpme.lua
 cp_statsearch.lua
 cp_search.lua
