@@ -22,7 +22,7 @@ class MagicCollectionEntry < TableEntry
     end
 
     #~ def IsValid?
-        #~ return (@magics.size!=0)
+        #~ return super()
     #~ end
 
     def ExportDesc(data)

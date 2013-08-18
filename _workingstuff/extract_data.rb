@@ -112,13 +112,17 @@ class FullDB
     end
 
     def findUnusedSpells
+        raise "missing spell2" if not @spell_collection[493298].Export?
+
         #@spell_collection.MarkAllUnused
         #@food.MarkSpellsUsed(@spell_collection)
         #@learnmagic.MarkSpellsUsed(@spell_collection)
 
         @spells.MarkAllUnused
         @spell_collection.MarkSpellsUsed(@spells)
-        raise "missing spell" if not @spell_collection[490142].Export?
+        raise "missing spell1" if not @spell_collection[490142].Export?
+        raise "missing spell2" if not @spell_collection[493298].Export? # was remove 'cause invalid image
+        #raise "missing spell" if not @spells[623034].Export? # used in tooltip but not in spell
     end
 
     def findUnusedImages(images, tables)
@@ -128,8 +132,13 @@ class FullDB
                 begin
                     images.Used(r.image_id)
                 rescue
-                    $log.warn { "Item #{r.id} removed 'cause image is invalid/unknown (#{r.image_id})" }
-                    tab.NotUsed(r.id)
+                    if tab == @spell_collection then
+                        $log.info { "Spell_Collection #{r.id} has invalid/unknown image: (#{r.image_id})" }
+                        #tab.NotUsed(r.id)
+                    else
+                        $log.warn { "Item #{r.id} removed 'cause invalid/unknown image: (#{r.image_id})" }
+                        tab.NotUsed(r.id)
+                    end
                 end
             }
         }

@@ -1,5 +1,5 @@
 --[[
-    CharPlan - DB - Spell
+    CharPlan - DB
 ]]
 
 local CP = _G.CP
@@ -23,8 +23,9 @@ local DB = CP.DB
     local SE_ATK_DMG_FIX=7
     local SE_DOT_DMG=8
     local SE_DOT_VARG=9
+    local SE_SHIELD_POINT=10
+    local SE_SHIELD_VARG=11
 --[[ ] ]]
-
 
 
 function DB.GetSpellEffectList(skill_id)
@@ -65,16 +66,6 @@ function DB.GetSpellIcon(spell_id)
     end
 end
 
-function DB.GetSpellBuffValue(spell_id,index1,index2,level)
-    local spell = DB.GetSpellEffectList(spell_id)[index1+1]
-    if not spell then
-        CP.Debug("no sub effect: "..spell_id.."/"..index1)
-        return 0
-    end
-
-    return DB.GetSpellEffectBuffValue(spell,index2,level)
-end
-
 function DB.GetSpellEffectBuffValue(spell_effect_id,index,level)
     local skill_arg, effects = CP.DB.GetSpellEffect(spell_effect_id)
     if skill_arg then
@@ -86,6 +77,7 @@ function DB.GetSpellEffectBuffValue(spell_effect_id,index,level)
             return val
         end
     end
+    return "??"
 end
 
 function DB.GetSpellDmgValue(spell_id,index,level)
@@ -104,21 +96,11 @@ function DB.GetSpellDmgValue(spell_id,index,level)
     end
 end
 
-function DB.GetSpellFixDmgValue(spell_eff_id)
-    local eff = DB.spell_effects[spell_eff_id]
+function DB.GetSpellEffectFixDmgValue(spell_effect_id)
+    local eff = DB.spell_effects[spell_effect_id]
     if eff then
         return eff[SE_ATK_DMG_FIX] or 0
     end
-end
-
-function DB.GetSpellTimeValue(spell_id,index,level)
-    local spell_effect_id = DB.GetSpellEffectList(spell_id)[index+1]
-    if not spell_effect_id then
-        CP.Debug("no sub effect: "..spell_id.."/"..index)
-        return 0
-    end
-
-    return DB.GetSpellEffectTimeValue(spell_effect_id,level)
 end
 
 function DB.GetSpellEffectTimeValue(spell_effect_id,level)
@@ -131,17 +113,9 @@ function DB.GetSpellEffectTimeValue(spell_effect_id,level)
         else
             return eff[SE_TIME]
         end
+    else
+        CP.Debug("No spell effect: "..spell_effect_id)
     end
-end
-
-function DB.GetSpellDotValue(spell_id,index,level)
-    local spell_effect_id = DB.GetSpellEffectList(spell_id)[index+1]
-    if not spell_effect_id then
-        CP.Debug("no sub effect: "..spell_id.."/"..index)
-        return 0
-    end
-
-    return DB.GetSpellEffectDotValue(spell_effect_id,level)
 end
 
 function DB.GetSpellEffectDotValue(spell_effect_id,level)
@@ -157,20 +131,33 @@ function DB.GetSpellEffectDotValue(spell_effect_id,level)
     end
 end
 
+function DB.GetSpellEffectShieldValue(spell_effect_id,level)
+    local eff = DB.spell_effects[spell_effect_id]
+    if eff then
+        if eff[SE_SHIELD_VARG] then
+            local val = ( eff[SE_SHIELD_VARG]*level+100) * eff[SE_SHIELD_POINT] / 100
+            val = math.floor(val*10+0.5)/10
+            return val
+        else
+            return eff[SE_SHIELD_POINT]
+        end
+    end
+end
+
 function DB.GetSpellDesc(spell_id,level, var_color_code)
 
     local function colored(text)
         if var_color_code and text then
-            return var_color_code .. text .. "|r"
+            return var_color_code..text.."|r"
         else
             return text
         end
     end
 
     local function SpellBuff(token)
-
         local i1,val,ispell = string.match(token,"(%d*)%-?([^%-]*)%-?(%d*)")
         i1 = tonumber(i1) or 0
+
 
         ispell = tonumber(ispell)
         if not ispell then
@@ -181,14 +168,16 @@ function DB.GetSpellDesc(spell_id,level, var_color_code)
             return colored(DB.GetSpellEffectTimeValue(ispell,level))
         elseif val=="Dot" then
             return colored(DB.GetSpellEffectDotValue(ispell,level))
+        elseif val=="Shield" then
+            return colored(DB.GetSpellEffectShieldValue(ispell,level))
         else
             val = tonumber(val)
             if val then
                 if val>20 then
-                    return colored(math.abs(DB.GetSpellEffectBuffValue(val,i1,level) or 0))
-                else
-                    return colored(DB.GetSpellEffectBuffValue(ispell,val,level))
+                    ispell = val
+                    val = i1
                 end
+                return colored(math.abs(DB.GetSpellEffectBuffValue(ispell,val,level) or 0))
             end
         end
 
@@ -203,29 +192,36 @@ function DB.GetSpellDesc(spell_id,level, var_color_code)
         return colored(math.abs(DB.GetSpellDmgValue(spell_id,i1,level)))
     end
 
-    local function SpellFixDmg(token)
-
+    local function SpellEffectFixDmg(token)
         local i1 = tonumber(token)
-        if i1 then
-            return math.abs(DB.GetSpellFixDmgValue(i1) or 0)
-        end
-        return "FixDMG-"..token
+        return math.abs(DB.GetSpellEffectFixDmgValue(i1) or 0)
     end
 
-    local desc = TEXT("Sys"..spell_id.."_shortnote")
+    local function SpellFixDmg(token)
+        local ispell = DB.GetSpellEffectList(spell_id)[tonumber(token)+1]
+        return SpellEffectFixDmg(ispell)
+    end
 
-    desc = string.gsub(desc,"%(Buff(.-)%)", function (x) return SpellBuff(x) end )
-    desc = string.gsub(desc,"%(DMG(.-)%)", function (x) return SpellDmg(x) end )
-    desc = string.gsub(desc,"%(FixDMG%-(.-)%)", function (x) return SpellFixDmg(x) end )
-    desc = string.gsub(desc,"%(Max%-BuffTime.-%)", function (x) return "___" end )
+    local function LinkText(x)
+        local _,_,res = string.find(x,".*|(.+)")
+        if res then return res end
 
-    desc = string.gsub(desc,"%[.-|(.-)%]", function (x) return x end )
-    desc = string.gsub(desc,"%[(.-)%]", function (x)
         if tonumber(x) then
             return TEXT("Sys"..x.."_name")
         end
         return TEXT(x)
-        end )
+    end
+
+    local desc = TEXT("Sys"..spell_id.."_shortnote")
+
+    desc = string.gsub(desc,"%(Buff(.-)%)", SpellBuff )
+    desc = string.gsub(desc,"%(DMG(.-)%)", SpellDmg )
+    desc = string.gsub(desc,"%(FixDMG%-(.-)%)", SpellEffectFixDmg )
+    desc = string.gsub(desc,"%(FixDMG(%d+)%)", SpellFixDmg )
+    desc = string.gsub(desc,"%(Max%-BuffTime.-%)",  " _12?_ " ) -- 12 for spell 501535
+    desc = string.gsub(desc,"%(Max%-Buff(%d+%-%d+)%)",  " _?_ " ) -- ? for spell 502896 (skill: 492627)
+    desc = string.gsub(desc,"%[(.-)%]", LinkText)
+
     desc = string.gsub(desc,"<CM>", "|cff770dd0")
     desc = string.gsub(desc,"</CM>", "|r")
 
@@ -239,3 +235,4 @@ function DB.GetSkillList(token_id,line)
     assert(line==1 or line==2)
     return learn[line]
 end
+

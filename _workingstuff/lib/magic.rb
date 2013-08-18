@@ -10,6 +10,8 @@ class MagicObjectEntry < TableEntry
     attr_accessor :time_varg
     attr_accessor :dot
     attr_accessor :dot_varg
+    attr_accessor :shield
+    attr_accessor :shield_varg
 
 
     def initialize(csv_row)
@@ -24,6 +26,8 @@ class MagicObjectEntry < TableEntry
         @time_varg = csv_row['effecttime_skilllvarg'].to_f
         @dot = csv_row['dotbase'].to_f
         @dot_varg = csv_row['dotskilllvarg'].to_f
+        @shield = csv_row['magicshield_point'].to_f
+        @shield_varg = csv_row['magicshield_skilllvarg'].to_f
     end
 
     #~ def IsValid?
@@ -40,6 +44,8 @@ class MagicObjectEntry < TableEntry
         data.push("atk_dmg_fix")
         data.push("dot_varg")
         data.push("dot_dmg_fix")
+        data.push("shield")
+        data.push("shield_varg")
     end
 
     def ExportData(data)
@@ -52,6 +58,8 @@ class MagicObjectEntry < TableEntry
         @atk_dmg_fix!=0 ? data.push(@atk_dmg_fix) : data.push("nil")
         @dot!=0 ? data.push(@dot) : data.push("nil")
         (@dot_varg!=0 and @dot!=0) ? data.push(@dot_varg) : data.push("nil")
+        @shield!=0 ? data.push(@shield) : data.push("nil")
+        (@shield_varg!=0 and @shield!=0) ? data.push(@shield_varg) : data.push("nil")
     end
 end
 
