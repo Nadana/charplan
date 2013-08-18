@@ -833,3 +833,60 @@ end
 
 
 
+
+-----------------------------------
+-- Pet Button
+function CP.PetButtonUpdate()
+
+    if CP.Unit.GetPet() then
+        CPFramePetEggButtonIcon:SetTexture("Interface\\PetFrame\\PetEggButton-Type01")
+        CPFramePetEggButton:LockHighlight()
+    else
+		CPFramePetEggButtonIcon:SetTexture("Interface\\PetFrame\\PetEggButton-Empty")
+        CPFramePetEggButton:UnlockHighlight()
+    end
+end
+
+function CP.PetButton_OnEnter(this)
+    local pet = CP.Unit.GetPet()
+    if pet then
+		local name = GetPetItemName(pet)
+		local propText = PET_PROPERTY_TEXT[ GetPetItemProperty(pet) ]
+
+		local petlv = GetPetItemLevel( pet )
+
+		if name then
+			local temp = "|cfffff482"..name.."|r |cff0EBFff( "..propText.." ) |r".."("..petlv..")"
+			GameTooltip:SetOwner( this, "ANCHOR_TOPRIGHT", 0, 0 )
+			GameTooltip:SetText( temp )
+		end
+    end
+end
+
+function CP.OnEggMenuLoad(this)
+    UIDropDownMenu_Initialize( this, CP.OnEggMenuShow, "MENU")
+end
+
+function CP.OnEggMenuShow(this)
+    local info = {}
+
+    info.text = "no Pet"
+    info.func = function() CP.Unit.SetPet() CP.PetButtonUpdate() CP.UpdatePoints() end
+    UIDropDownMenu_AddButton( info, 1 )
+
+    local cur_pet = CP.Unit.GetPet()
+    for id = 1,PET_FRAME_NUM_ITEMS do
+
+        if HasPetItem(id) then
+    		local name = GetPetItemName(id)
+	    	local propText = PET_PROPERTY_TEXT[ GetPetItemProperty(id) ]
+    		local petlv = GetPetItemLevel( id )
+
+            info.text = name.." lvl "..petlv.." |cff0EBFff("..propText..")|r"
+            info.checked = (id==cur_pet)
+            info.func = function() CP.Unit.SetPet(id) CP.PetButtonUpdate() CP.UpdatePoints() end
+            UIDropDownMenu_AddButton( info, 1 )
+        end
+	end
+
+end

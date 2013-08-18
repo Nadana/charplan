@@ -806,6 +806,39 @@
 								</FontString>
 							</Layer>
 						</Layers>
+						<Frames>
+							<Button name="CPFramePetEggButton">
+								<Size>
+									<AbsDimension x="24" y="24"/>
+								</Size>
+								<Anchors>
+									<Anchor point="BOTTOMLEFT"><Offset><AbsDimension y="-5" x="8"></AbsDimension></Offset></Anchor>
+								</Anchors>
+								<Scripts>
+									<OnClick>ToggleDropDownMenu(CPFrameEggMenu)</OnClick>
+									<OnEnter>CP.PetButton_OnEnter(this)</OnEnter>
+									<OnLeave>GameTooltip:Hide()</OnLeave>
+								</Scripts>
+								<NormalTexture name="$parentIcon" file="Interface\PetFrame\PetEggButton-Empty"/>
+								<DisabledTexture file="Interface\PetFrame\PetEggButton-Default"/>
+								<HighlightTexture file="Interface\PetFrame\PetEggButton-Highlight" alphaMode="ADD"/>
+							</Button>
+							<Frame name="CPFrameEggMenu" inherits="UIDropDownMenuTemplate">
+								<Size>
+									<AbsDimension x="132" y="26"/>
+								</Size>
+								<Anchors>
+									<Anchor point="TOPLEFT">
+										<Offset>
+											<AbsDimension x="0" y="0"/>
+										</Offset>
+									</Anchor>
+								</Anchors>
+								<Scripts>
+									<OnLoad>CP.OnEggMenuLoad(this)</OnLoad>
+								</Scripts>
+							</Frame>							
+						</Frames>
 					</Frame>
 				</Frames>
 			</Frame>

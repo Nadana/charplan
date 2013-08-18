@@ -77,6 +77,7 @@ local default_text={
     BY_SKILL = "Skill",
     BY_CARD = TEXT("AC_ITEMTYPENAME_6"),
     BY_SET = "Sets",
+    BY_PET = "Pet",
     BY_TITLE = C_TITLE,
 
     STAT_SHORTS = {

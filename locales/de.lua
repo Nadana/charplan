@@ -90,6 +90,7 @@ CP.L ={
     BY_CLASS = "Base",
     BY_SKILL = "Skill",
     BY_SET = "Sets",
+    BY_PET = "Pet",
 
     STAT_SHORTS= {},
     STAT_NAMES= {},

@@ -182,6 +182,7 @@ function Calc.Calculate()
     values = values + Calc.GetSkillBonus()
     values = values + Calc.GetCardBonus()
     values = values + Calc.GetArchievementBonus()
+    values = values + Calc.GetPetBonus()
 
     values = Calc.AddItemsBonus(values)
   	Calc.DependingStats(values)
@@ -237,6 +238,10 @@ function Calc.Explain(stat)
     values = Calc.GetSetBonus()
     total = total + values
     AddDescription(stat, COLOR_SET..CP.L.BY_SET, values[stat])
+
+    values = Calc.GetPetBonus()
+    total = total + values
+    AddDescription(stat, COLOR_SET..CP.L.BY_PET, values[stat])
 
     values = Calc.GetArchievementBonus()
     total = total + values
@@ -317,6 +322,43 @@ function Calc.GetArchievementBonus()
     end
 
     values.HP = values.HP + CP.Unit.title_count*5
+
+    return values
+end
+
+function Calc.GetPetBonus()
+
+    local values = Calc.NewStats()
+
+
+    local pet = CP.Unit.GetPet()
+
+    if pet then
+
+        -- Assists
+
+        -- TODO: fix it
+        local ass_base = GetPetItemAbility(pet, "HUNGER")+ GetPetItemAbility(pet, "LOYAL")/10+GetPetItemAbility(pet, "TALENT")/10
+        ass_base = math.min(ass_base,99.9)
+        local assist = math.ceil(ass_base / 20) *20 / 100
+
+        values.STR = math.floor(GetPetItemAssist(pet, "STR") * assist)
+        values.DEX = math.floor(GetPetItemAssist(pet, "AGI") * assist)
+        values.STA = math.floor(GetPetItemAssist(pet, "STA") * assist)
+        values.INT = math.floor(GetPetItemAssist(pet, "INT") * assist)
+        values.WIS = math.floor(GetPetItemAssist(pet, "MND") * assist)
+
+        -- Buffs
+        local _numItems = GetPetItemNumSkill( pet )
+        for i = 1, _numItems do
+		    local _name, _icon, _learn, _topLevel, _level, _point, _limitLv, _canLearn = GetPetItemSkillInfo( pet, i )
+
+            if ( _learn == true ) then
+                -- _petSkillLearned[_petSkillLearned.count] = i;
+            end
+        end
+
+    end
 
     return values
 end

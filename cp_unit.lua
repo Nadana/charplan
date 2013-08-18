@@ -161,6 +161,22 @@ function Unit.SetClass(c1,c2)
     end
 end
 
+function Unit.GetPet()
+    return Unit.pet_id
+end
+
+function Unit.SetPet(pet_id)
+    Unit.pet_id = pet_id
+end
+
+function Unit.GetSummonedPet()
+	for i = 1,PET_FRAME_NUM_ITEMS do
+		if IsPetSummoned(i) then
+			return i
+		end
+	end
+end
+
 --[[ [ DataBase Format ]]
     -- Spells
     local S_LVL=1

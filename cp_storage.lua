@@ -166,6 +166,9 @@ function Storage.LoadCurrentEquipment()
     CP.Items={}
 
     Storage.Timer = WaitTimer.Wait(0.1, Storage.OnUpdate)
+
+    CP.Unit.SetPet(CP.Unit.GetSummonedPet())
+    CP.PetButtonUpdate()
 end
 
 
