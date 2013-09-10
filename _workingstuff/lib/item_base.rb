@@ -214,6 +214,26 @@ $STATLIST={# SYS_WEAREQTYPE_xxx
     211 => "Herstellungserfahrung",
     212 => "Erhöhung der EP nach Spielerfolg",
     213 => "Erhöhung der TP nach Spielerfolg",
+
+# no Names
+    #~ 180 => "??",
+
+    #~ 214 => "??",
+    #~ 215 => "??",
+    #~ 216 => "??",
+    #~ 217 => "??",
+    #~ 218 => "??",
+    #~ 219 => "??",
+    #~ 220 => "??",
+    #~ 221 => "??",
+    #~ 222 => "??",
+    #~ 223 => "??",
+    #~ 224 => "??",
+    #~ 225 => "??",
+    #~ 226 => "??",
+    #~ 227 => "??",
+    #~ 228 => "??",
+    #~ 229 => "??",
 }
 
 class BonusStuff
@@ -224,6 +244,7 @@ class BonusStuff
 
         @eqtypes=[]
         @eqvalues=[]
+        @unknown_stat = false
         for i in 1..max_bonus
             type = csv_row['eqtype'+i.to_s].to_i
             value = csv_row['eqtypevalue'+i.to_s].to_i
@@ -233,6 +254,7 @@ class BonusStuff
                 @eqvalues.push(value)
 
                 @unknown_stat = type if not $STATLIST.key?(type)
+                $log.error "bonus: #{@unknown_stat} used" if @unknown_stat
             end
         end
     end

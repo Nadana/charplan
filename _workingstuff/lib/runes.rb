@@ -9,11 +9,10 @@ class RunesEntry < TableEntry
         @group = 10000+csv_row['runegroup'].to_i
 
         raise "unknown bonus stat" if @bonus.HasInvalidStat?
-#        $log.info("rune #{@id} has no name") if $de[@id].nil?
     end
 
     def IsValid?
-        return (not @bonus.HasInvalidStat? and @bonus.HasStats?)
+        return ((not @bonus.HasInvalidStat?) and @bonus.HasStats?)
     end
 
     def ExportDesc(data)

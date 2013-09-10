@@ -10,7 +10,6 @@ class AddPowerEntry < TableEntry
         @bonus = BonusStuff.new(csv_row)
 
         raise "unknown bonus stat" if @bonus.HasInvalidStat?
-#        $log.info("addpower #{@id} has no name") if $de[@id].nil?
     end
 
     def IsValid?
