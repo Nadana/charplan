@@ -7,8 +7,6 @@ local CP = _G.CP
 local Classes= {}
 CP.Classes = Classes
 
-local learn = CP.DB.learn
-
 local SKILLS_PER_PAGE=15
 -- helper
 local function SetVisible(this,vis)
@@ -255,8 +253,6 @@ end
 
 function Classes.OnEnterButton(this, id)
 
-	local iIndex	= (CP.Classes.page-1)*SKILLS_PER_PAGE + id
-
 	if this.EnableToLV == 1 then
 		getglobal( this:GetName() .. "SelectHighlight" ):Show()
 	end
@@ -356,7 +352,6 @@ function Classes.SetSkillButton( _Button, _SkillName, skill_id, _Mode, _maxskill
 
 
     local icon = CP.DB.GetSpellIcon(skill_id)
-    local name = TEXT("Sys"..skill_id.."_name")
     local passive = CP.DB.IsSpellPassive(skill_id)
     local cur_level = CP.Unit.skills[skill_id] or 0
     if _maxskill<1 then cur_level=nil end
@@ -497,7 +492,7 @@ function Classes.RaiseSkill_Update()
     GameTooltip_SkillLevelUp:AddLine("id: "..this.skill)
     --@end-debug@
     local col = CPColor.New(0,0.75,0.95)
-    local col_val = col:Brightness(1.5)    
+    local col_val = col:Brightness(1.5)
     GameTooltip_SkillLevelUp:AddLine(CP.DB.GetSpellDesc(this.skill,lvl,col_val:Code()), col:Get())
     GameTooltip_SkillLevelUp:Show()
 end

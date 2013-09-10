@@ -33,8 +33,6 @@ local CP = _G.CP
 local StatSearch = {}
 CP.StatSearch = StatSearch
 
-local Nyx = LibStub("Nyx")
-
 local Pimp = CP.Pimp -- TEMP
 
 local STATSEARCH_FIELD=13

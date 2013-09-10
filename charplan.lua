@@ -537,101 +537,96 @@ function CP.Hooked_Hyperlink_Assign(link, key)
 	CP.ori_Hyperlink_Assign(link, key)
 	if (key ~= "RBUTTON" ) then return 	end
 
-	local itemID = nil
-	local _type, _data, _name = ParseHyperlink(link)
-	if _type == 'item' then
-		-- prevent adding menu to unacceptable items
-		itemID = tonumber(link:match("^|H.-:(%x+)") or '', 16)
-		if not (itemID and itemID > 210000 and itemID < 240000) then
-			_type = nil
-		end
+	local _type, _data, _ = ParseHyperlink(link)
+	if _type ~= 'item' then
+        return
+    end
+
+    local itemID = tonumber(_data:match("^(%x+)") or '', 16)
+
+    -- prevent adding menu to unacceptable items
+    if not (itemID and itemID > 210000 and itemID < 240000) then
+        return
 	end
 
-	if(_type=="item") then
+    local menu_label = "|cffb0b030[CharPlan]|r " .. CP.L.CONTEXT_MENU;
+    if not CP.DB.IsLoaded() then
+        -- a simple method if dialog is not open (performance)
+        local info = {}
+        info.text = menu_label
+        info.notCheckable = 1
+        info.func = function()
+            CP.DB.Load()
+            local item_data = CP.Pimp.ExtractLink(link)
+            local inv_pos = CP.FindSlotForItem(item_data.id)
+            if inv_pos then
+                CP.ApplyItem(item_data, inv_pos,true)
+            else
+                CP.Output(CP.L.ERROR_NO_VALID_ITEM)
+            end
+            CP.DB.Release()
+        end
+        UIDropDownMenu_AddButton(info, 1)
 
-		local menu_label = "|cffb0b030[CharPlan]|r " .. CP.L.CONTEXT_MENU;
-		if not CP.DB.IsLoaded() then
-			-- a simple method if dialog is not open (performance)
-			local info = {}
-			info.text = menu_label
-			info.notCheckable = 1
-			info.func = function()
-				CP.DB.Load()
-				local item_data = CP.Pimp.ExtractLink(link)
-				local inv_pos = CP.FindSlotForItem(item_data.id)
-				if inv_pos then
-					CP.ApplyItem(item_data, inv_pos,true)
-				else
-					CP.Output(CP.L.ERROR_NO_VALID_ITEM)
-				end
-				CP.DB.Release()
-			end
-			UIDropDownMenu_AddButton(info, 1)
+    else
 
-		else
+        local item_data = CP.Pimp.ExtractLink(link)
+        local s1,s2, force1 = CP.DB.GetItemPositions(item_data.id)
+        if force1 then s2=nil end
 
-			local item_data = CP.Pimp.ExtractLink(link)
-			local s1,s2, force1 = CP.DB.GetItemPositions(item_data.id)
-			if force1 then s2=nil end
+        if s1 then
+            local info = {}
+            info.notCheckable = 1
+            info.text = menu_label
+            if s2 then info.text = menu_label .. " - "..CP.L.SEARCH_USE_SLOT1 end
+            info.func = function()
+                CP.DB.Load()
+                CP.ApplyItem(item_data, s1)
+                CP.DB.Release()
+            end
+            UIDropDownMenu_AddButton(info, 1)
+        end
 
-			if s1 then
-				local info = {}
-				info.notCheckable = 1
-				info.text = menu_label
-				if s2 then info.text = menu_label .. " - "..CP.L.SEARCH_USE_SLOT1 end
-				info.func = function()
-					CP.DB.Load()
-					CP.ApplyItem(item_data, s1)
-					CP.DB.Release()
-				end
-				UIDropDownMenu_AddButton(info, 1)
-			end
+        if s2 then
+            local info = {}
+            info.notCheckable = 1
+            info.text = menu_label .. " - "..CP.L.SEARCH_USE_SLOT2
+            info.func = function()
+                CP.DB.Load()
+                CP.ApplyItem(item_data, s2)
+                CP.DB.Release()
+            end
+            UIDropDownMenu_AddButton(info, 1)
+        end
+    end
 
-			if s2 then
-				local info = {}
-				info.notCheckable = 1
-				info.text = menu_label .. " - "..CP.L.SEARCH_USE_SLOT2
-				info.func = function()
-					CP.DB.Load()
-					CP.ApplyItem(item_data, s2)
-					CP.DB.Release()
-				end
-				UIDropDownMenu_AddButton(info, 1)
-			end
-		end
+    -- show drop source
+    -- CP possible not loaded, so delay item search
+    local info = {}
+    info.notCheckable = 1
+    info.text = "|cffb0b030[CharPlan]|r " .. "from..."
+    info.func = function(button)
+        local drop = CP.Search.FindInDungeonLoots(itemID) or {}
+        for _,text in pairs(drop) do
+            DEFAULT_CHAT_FRAME:AddMessage(link .. ' ' .. text)
+        end
+        -- do not show rest of sources?
+        if drop and #drop > 0 then return end
+        CP.DB.Load()
+        drop = CP.Search.FindInShops(itemID) or {}
+        for _,text in pairs(drop) do
+            DEFAULT_CHAT_FRAME:AddMessage(link .. ' ' .. text)
+        end
+        drop = CP.Search.FindInRecipes(itemID)
+        if drop then
+            local text = drop[2]
+            DEFAULT_CHAT_FRAME:AddMessage(text)
+        end
+        CP.DB.Release()
+    end
+    UIDropDownMenu_AddButton(info, 1)
 
-		-- show drop source
-		if itemID then
-			-- CP possible not loaded, so delay item search
-			local info = {}
-			info.arg1 = itemID
-			info.notCheckable = 1
-			info.text = "|cffb0b030[CharPlan]|r " .. "from..."
-			info.func = function(button)
-				local itemID = button.arg1
-				local drop = CP.Search.FindInDungeonLoots(itemID) or {}
-				for _,text in pairs(drop) do
-					DEFAULT_CHAT_FRAME:AddMessage(link .. ' ' .. text)
-				end
-				-- do not show rest of sources?
-				if drop and #drop > 0 then return end
-				CP.DB.Load()
-				drop = CP.Search.FindInShops(itemID) or {}
-				for _,text in pairs(drop) do
-					DEFAULT_CHAT_FRAME:AddMessage(link .. ' ' .. text)
-				end
-				drop = CP.Search.FindInRecipes(itemID)
-				if drop then
-					local text = drop[2]
-					DEFAULT_CHAT_FRAME:AddMessage(text)
-				end
-				CP.DB.Release()
-			end
-			UIDropDownMenu_AddButton(info, 1)
-		end
-
-		UIDropDownMenu_Refresh(ChatFrameDropDown)
-	end
+    UIDropDownMenu_Refresh(ChatFrameDropDown)
 end
 
 function CP.PostItemLink(item_data)

@@ -112,12 +112,6 @@ local function ApplyBonus(stats, effect, factor)
     end
 end
 
-local function AddStats(stats_res, stats)
-    for id, val in pairs(stats or {}) do
-        stats_res[id]=stats_res[id]+val
-    end
-end
-
 function Calc.Clear()
     Calc.values=Calc.NewStats()
     return Calc.values
@@ -276,8 +270,6 @@ local function CalcBase(class_var,stat,level)
 end
 
 function Calc.GetBases()
-    local s = Calc.STATS
-
     local v = Calc.NewStats()
 
     local lvl = CP.Unit.level

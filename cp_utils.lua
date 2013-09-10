@@ -227,7 +227,7 @@ function Utils.CalculateItemLinkHash(num)
         sum = sum + w
     end
 
-    local a,b,c,d,e,x,i = sum,0,0,0,0,0,0
+    local a,b,c,e = sum,0,0,0,0,0
 
     for x,d in ipairs(num) do
         b = (d * (x-1)) % 2^32

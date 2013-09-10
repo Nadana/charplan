@@ -848,7 +848,7 @@ function Search.FindInRecipes(item_id)
 end
 
 function Search.ApplySuitOfItem(item_id)
-    local lvl, suit_id = CP.DB.GetItemInfo(item_id)
+    local _, suit_id = CP.DB.GetItemInfo(item_id)
     if not suit_id then return end
     Search.ApplySuit(suit_id)
 end

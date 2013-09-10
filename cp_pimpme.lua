@@ -34,7 +34,6 @@ local Pimp = {}
 CP.Pimp = Pimp
 
 local Nyx = LibStub("Nyx")
-local WaitTimer = LibStub("WaitTimer")
 
 function Pimp.PimpItemLink(itemlink)
 

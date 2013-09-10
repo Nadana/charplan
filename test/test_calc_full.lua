@@ -10,11 +10,6 @@ TestCP_CalcFull={}
   -> paste the CP_FullCharInfo variable into it
   -> at the end of the function add the test call: "TestCP_CalcFull:DoFullCharCheck(CP_FullCharInfo)"
 ]]
-local function ApplyBonus(stats, effect)
-    for i=1,#effect,2 do
-        stats[effect[i]] = stats[effect[i]] + effect[i+1]
-    end
-end
 
 local function LoadStoredData(info)
     TestCP_CalcFull.cur_data = info

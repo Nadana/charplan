@@ -86,7 +86,7 @@ function Nyx.GetItemID( itemLk )
   if not itemLk then return end
 
   local ret = "";
-  local _type, _data, _name = ParseHyperlink(itemLk)
+  local _, _data, _ = ParseHyperlink(itemLk)
 
   if ( _data and _data ~= "" ) then
     _,_,ret = string.find(_data, "(%x+)")

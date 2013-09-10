@@ -25,7 +25,7 @@ end
 function assertError(f, ...)
 	-- assert that calling f with the arguments will raise an error
 	-- example: assertError( f, 1, 2 ) => f(1,2) should generate an error
-	local has_error, error_msg = not pcall( f, ... )
+	local has_error, _ = not pcall( f, ... )
 	if has_error then return end
 	error( "No error generated", 2 )
 end

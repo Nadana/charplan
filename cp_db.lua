@@ -568,7 +568,6 @@ function DB.FindBonus(text, cur_level, is_rune)
     text,match_canidate,cur_level = ReplaceNumbersWithRomans(text,cur_level)
 
     local good_match = nil
-    local good_match_name = nil
     for id,rdata in pairs(DB.bonus) do
 
         if rdata[B_GROUP] and DB.IsRuneGroup(rdata[B_GROUP])==is_rune then
@@ -782,7 +781,7 @@ function DB.GetSuitItems(suit_id)
 end
 
 function DB.IsSuitItem(item_id)
-  local lvl, suit = DB.GetItemInfo(item_id)
+  local _, suit = DB.GetItemInfo(item_id)
   return suit
 end
 

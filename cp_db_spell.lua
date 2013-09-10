@@ -10,8 +10,8 @@ local DB = CP.DB
     local S_EFFECT=1
     local S_ICON=2
     local S_SPELL_EFFECTS=3
-    local S_MAX_SKILL=4
-    local S_TP_RATE=5
+    --local S_MAX_SKILL=4
+    --local S_TP_RATE=5
 
     -- Spell-Effect
     local SE_SKILL_VARG=1
