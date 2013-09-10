@@ -2,7 +2,7 @@ local CP = _G.CP
 local Unit= {}
 CP.Unit = Unit
 
-local MAX_LEVEL=80
+local MAX_LEVEL=82
 
 --[[ data fields:
     title_id
