@@ -80,7 +80,7 @@ function StatSearch.UpdateList()
     end
 
     local isrune = (CPStatSearch.slot>6)
-		local existing = (isrune and Pimp.data.runes) or Pimp.data.stats;
+    local existing = (isrune and Pimp.data.runes) or Pimp.data.stats
     Pimp.Stats = CP.DB.GetBonusFilteredList(isrune, existing, unpack(filters))
 
     CPStatSearchItemSB:SetValueStepMode("INT")
@@ -153,9 +153,8 @@ function StatSearch.ItemOnEnter(this)
     end
 
     for _,d in ipairs(ids) do
-
         local effect = CP.DB.GetBonusEffect(d[2])
-        if #effect>0 then
+        if effect and #effect>0 then
             GameTooltip:AddLine(d[1],1,0.82,0)
             local left={}
             local right={}

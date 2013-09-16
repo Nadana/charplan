@@ -365,7 +365,7 @@ end
 -- stat search
 local function GetBonusName(id)
     local name = TEXT("Sys"..id.."_name")
-    local gname, lvl = string.match(name,"^(.-)%s+(%w+)$")
+    local gname, lvl = string.match(name,"^(.-)%s+([IVX]+)$")
     if not gname then
         return name, ""
     end
