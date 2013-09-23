@@ -44,7 +44,7 @@ class AddPower < Table
 
             name = local[r.id]
             next if name.nil?
-            matchdata = /^(.+)\s+(\w+)$/.match(name)
+            matchdata = /^(.+)\s+([IVX]+)$/.match(name)
             name = matchdata[1] if not matchdata.nil?
 
             if groups.key?(name) then

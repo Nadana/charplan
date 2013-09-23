@@ -44,7 +44,7 @@ class Runes < Table
                 r.NotUsed
                 next
             end
-            matchdata = /^(.+)\s+(\w+)$/.match(name)
+            matchdata = /^(.+)\s+([IVX]+)$/.match(name)
 
             if groups.key?(r.group) then
                 raise "different bonis in group #{r.group}" unless r.bonus.SameEffects?(groups[r.group][:boni])

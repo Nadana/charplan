@@ -309,7 +309,6 @@ class BonusStuff
     end
 end
 
-
 class StatsStuff
     attr_accessor :stats
     attr_accessor :has_randoms

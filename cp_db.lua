@@ -466,7 +466,7 @@ function DB.GetBonusFilteredList(is_rune, existingStats, statName, name1, name2,
 	end
 
 	-- filter out min values and existing stats
-	local first_of_group = function(id)
+	local function first_of_group(id)
 		local group = DB.bonus[id][B_GROUP]
 		for i = id-1,(520000-1),-1 do
 			local stat = DB.bonus[i]
@@ -477,7 +477,7 @@ function DB.GetBonusFilteredList(is_rune, existingStats, statName, name1, name2,
 		return id
 	end
 
-	local is_include_stat = function(id)
+	local function is_include_stat(id)
 		if exists[id] then
 			return false
 		elseif not minValue and not maxValue then
