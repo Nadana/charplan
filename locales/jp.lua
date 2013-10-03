@@ -7,11 +7,11 @@
 -- http://rom.curseforge.com/addons/charplan/localization/
 --]]
 
-CP.L =
+Charplan.L =
 --@localization(locale="jaJP", format="lua_table", handle-unlocalized="ignore")@
 
-CP.L.STAT_SHORTS =
+Charplan.L.STAT_SHORTS =
 --@localization(locale="jaJP", namespace="STAT_SHORTS", format="lua_table", handle-unlocalized="ignore")@
 
-CP.L.STAT_NAMES =
+Charplan.L.STAT_NAMES =
 --@localization(locale="jaJP", namespace="STATS", format="lua_table", handle-unlocalized="ignore")@

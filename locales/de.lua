@@ -7,20 +7,20 @@
 -- http://rom.curseforge.com/addons/charplan/localization/
 --]]
 
-CP.L =
+Charplan.L =
 --@localization(locale="deDE", format="lua_table", handle-unlocalized="ignore")@
 --@do-not-package@
 {}
 --@end-do-not-package@
 
 
-CP.L.STAT_SHORTS =
+Charplan.L.STAT_SHORTS =
 --@localization(locale="deDE", namespace="STAT_SHORTS", format="lua_table", handle-unlocalized="ignore")@
 --@do-not-package@
 nil
 --@end-do-not-package@
 
-CP.L.STAT_NAMES =
+Charplan.L.STAT_NAMES =
 --@localization(locale="deDE", namespace="STATS", format="lua_table", handle-unlocalized="ignore")@
 --@do-not-package@
 nil
@@ -28,7 +28,7 @@ nil
 
 --@do-not-package@
 ----- DEVELOPER VERSION
-CP.L ={
+Charplan.L ={
     TITLE_EMPTY = "<unbenannt>",
     MENU_TITLE = "Menu",
     MENU_IMPORT= "Ausrüstung importieren",

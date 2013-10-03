@@ -6,7 +6,7 @@
 
 
 local DB = {}
-local CP = _G.CP
+local CP = _G.Charplan
 CP.DB = DB
 
 --[[ [ DataBase Format ]]
@@ -624,7 +624,8 @@ local function GetFilterFunction(info)
  info.stat_max
  info.limitsex
 ]]
-    local code = {"return function (id,data)"}
+    local code = {"return function (id,data)","local CP = _G.Charplan"}
+
     if info.unique_skin then
     	CP.DB.UniqueSkinsCache = {}
     	table.insert(code, string.format('local icon = data[%i]; if CP.DB.UniqueSkinsCache[icon] then return false else CP.DB.UniqueSkinsCache[icon] = true end', I_ICON))

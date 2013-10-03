@@ -152,10 +152,10 @@ local default_text={
     },
 }
 
-CP.L = CP.L or default_text
-CP.L.STAT_NAMES = CP.L.STAT_NAMES or {}
-CP.L.STAT_SHORTS = CP.L.STAT_SHORTS or {}
-setmetatable(CP.L, {__index = default_text})
-setmetatable(CP.L.STAT_NAMES, {__index = default_text.STAT_NAMES})
-setmetatable(CP.L.STAT_SHORTS, {__index = default_text.STAT_SHORTS})
+Charplan.L = Charplan.L or default_text
+Charplan.L.STAT_NAMES = Charplan.L.STAT_NAMES or {}
+Charplan.L.STAT_SHORTS = Charplan.L.STAT_SHORTS or {}
+setmetatable(Charplan.L, {__index = default_text})
+setmetatable(Charplan.L.STAT_NAMES, {__index = default_text.STAT_NAMES})
+setmetatable(Charplan.L.STAT_SHORTS, {__index = default_text.STAT_SHORTS})
 

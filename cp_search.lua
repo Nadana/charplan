@@ -5,7 +5,7 @@
     Item search dialog
 ]]
 
-local CP = _G.CP
+local CP = _G.Charplan
 local Search = {}
 CP.Search = Search
 

@@ -5,7 +5,7 @@
 ]]
 
 local Storage = {}
-local CP = _G.CP
+local CP = _G.Charplan
 CP.Storage = Storage
 
 CP_Storage={}

@@ -2,7 +2,7 @@ TestCP_Calc={}
 
 
 function TestCP_Calc:testSkillBonus()
-    local s = CP.Calc.STATS
+    local s = Charplan.Calc.STATS
 
     TestCP_Calc:CheckSkill({[s.INT]=78}, {[490222]=0}, {[s.INT]=78+11}) -- Weisheit+0
     TestCP_Calc:CheckSkill({[s.INT]=78}, {[490222]=7}, {[s.INT]=78+18.9}) -- Weisheit+7
@@ -10,13 +10,13 @@ end
 
 function TestCP_Calc:CheckSkill(base_val, skills, result)
 
-    CP.Unit.skills = skills
-    CP.Calc.ReadSkills()
+    Charplan.Unit.skills = skills
+    Charplan.Calc.ReadSkills()
 
-    local values = CP.Calc.NewStats()
+    local values = Charplan.Calc.NewStats()
     values = values + base_val
-    values = values + CP.Calc.GetSkillBonus()
-    CP.Calc.DependingStats(values)
+    values = values + Charplan.Calc.GetSkillBonus()
+    Charplan.Calc.DependingStats(values)
 
 
     TestCP_Calc:CompareStats(values, result)
@@ -24,7 +24,7 @@ end
 
 function TestCP_Calc:testStats()
 
-    local a= CP.Calc.NewStats()
+    local a= Charplan.Calc.NewStats()
     a.STR= 10
     assertEquals(a.STR, 10)
     a[2]=a[2]+10
@@ -34,7 +34,7 @@ function TestCP_Calc:testStats()
     assertEquals(a.STR, 20)
     assertEquals(a.DEX, 30)
 
-    local b= CP.Calc.NewStats()
+    local b= Charplan.Calc.NewStats()
     b.STR=5
     b.INT=5
 
@@ -73,18 +73,18 @@ end
 function TestCP_Calc:classSetUp()
 
     self.old_unit={}
-    CP.Unit.Store(self.old_unit)
+    Charplan.Unit.Store(self.old_unit)
 
-    CP.Unit.class = "WARDEN"
-    CP.Unit.sec_class = nil
+    Charplan.Unit.class = "WARDEN"
+    Charplan.Unit.sec_class = nil
 
-    CP.DB.Load()
+    Charplan.DB.Load()
 end
 
 function TestCP_Calc:classTearDown()
 
-    CP.Unit.Load(self.old_unit)
+    Charplan.Unit.Load(self.old_unit)
 
-    CP.Calc.Init()
-    CP.DB.Release()
+    Charplan.Calc.Init()
+    Charplan.DB.Release()
 end

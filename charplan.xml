@@ -2,11 +2,11 @@
 	<!-- Equipment Buttons -->
 	<Button name="CPEquipItemButtonTemplate" inherits="ItemButtonTemplate" virtual="true">
 		<Scripts>
-			<OnClick>CP.EquipItem_OnClick(this, key)</OnClick>
-			<OnLoad>CP.EquipItem_OnLoad( this )</OnLoad>
-			<OnEnter>CP.EquipItem_OnEnter( this )</OnEnter>
-			<OnLeave>CP.EquipItem_OnLeave( this )</OnLeave>
-			<OnReceiveDrag>CP.EquipItem_OnReceiveDrag( this )</OnReceiveDrag>
+			<OnClick>Charplan.EquipItem_OnClick(this, key)</OnClick>
+			<OnLoad>Charplan.EquipItem_OnLoad( this )</OnLoad>
+			<OnEnter>Charplan.EquipItem_OnEnter( this )</OnEnter>
+			<OnLeave>Charplan.EquipItem_OnLeave( this )</OnLeave>
+			<OnReceiveDrag>Charplan.EquipItem_OnReceiveDrag( this )</OnReceiveDrag>
 		</Scripts>
 	</Button>
 	<!-- Attribute Displays -->
@@ -50,8 +50,8 @@
 			</Layer>
 		</Layers>
 		<Scripts>
-			<OnLoad>CP.Attribute_OnLoad( this )</OnLoad>
-			<OnEnter>CP.Attribute_OnEnter(this)</OnEnter>
+			<OnLoad>Charplan.Attribute_OnLoad( this )</OnLoad>
+			<OnEnter>Charplan.Attribute_OnEnter(this)</OnEnter>
 			<OnLeave>GameTooltip:Hide()</OnLeave>
 		</Scripts>
 	</Frame>
@@ -76,7 +76,7 @@
 			</Layer>
 		</Layers>
 		<Scripts>
-			<OnLoad>CP.AttributeTitle_OnLoad( this )</OnLoad>
+			<OnLoad>Charplan.AttributeTitle_OnLoad( this )</OnLoad>
 		</Scripts>
 	</Frame>
 	<!-- class diaplay button -->
@@ -542,7 +542,7 @@
 							</Anchor>
 						</Anchors>
 						<Scripts>
-							<OnClick>CP.ChangeClass()</OnClick>
+							<OnClick>Charplan.ChangeClass()</OnClick>
 						</Scripts>
 					</Button>					
 					<Button name="CPFrameMenuBtn" inherits="UIPanelButtonTemplate" text="Menu">
@@ -572,7 +572,7 @@
 							</Anchor>
 						</Anchors>
 						<Scripts>
-							<OnLoad>CP.OnMenuLoad(this)</OnLoad>
+							<OnLoad>Charplan.OnMenuLoad(this)</OnLoad>
 						</Scripts>
 					</Frame>
                 	<Frame name="$parentPeperdollFrame" frameStrata="BACKGROUND" frameLevel="1">
@@ -612,7 +612,7 @@
 							</Anchor>
 						</Anchors>
 						<Scripts>
-							<OnLoad>CP.OnModelLoad(this)</OnLoad>
+							<OnLoad>Charplan.OnModelLoad(this)</OnLoad>
 						</Scripts>
 					</Model>
 					<Button name="$parentEquipRing0Slot" inherits="CPEquipItemButtonTemplate">
@@ -816,7 +816,7 @@
 								</Anchors>
 								<Scripts>
 									<OnClick>ToggleDropDownMenu(CPFrameEggMenu)</OnClick>
-									<OnEnter>CP.PetButton_OnEnter(this)</OnEnter>
+									<OnEnter>Charplan.PetButton_OnEnter(this)</OnEnter>
 									<OnLeave>GameTooltip:Hide()</OnLeave>
 								</Scripts>
 								<NormalTexture name="$parentIcon" file="Interface\PetFrame\PetEggButton-Empty"/>
@@ -835,7 +835,7 @@
 									</Anchor>
 								</Anchors>
 								<Scripts>
-									<OnLoad>CP.OnEggMenuLoad(this)</OnLoad>
+									<OnLoad>Charplan.OnEggMenuLoad(this)</OnLoad>
 								</Scripts>
 							</Frame>							
 						</Frames>
@@ -844,15 +844,15 @@
 			</Frame>
 			<Frame name="CPEquipButtonMenu" inherits="UIDropDownMenuTemplate">
 				<Scripts>
-					<OnLoad>UIDropDownMenu_Initialize(this, CP.EquipItem_ShowMenu, "MENU")</OnLoad>
+					<OnLoad>UIDropDownMenu_Initialize(this, Charplan.EquipItem_ShowMenu, "MENU")</OnLoad>
 				</Scripts>
 			</Frame>
 		</Frames>
 		<Scripts>
-			<OnLoad>CP.OnLoad(this)</OnLoad>
-			<OnEvent>CP.OnEvent(this,event)</OnEvent>
-			<OnShow>CP.OnShow(this)</OnShow>
-			<OnHide>CP.OnHide()</OnHide>
+			<OnLoad>Charplan.OnLoad(this)</OnLoad>
+			<OnEvent>Charplan.OnEvent(this,event)</OnEvent>
+			<OnShow>Charplan.OnShow(this)</OnShow>
+			<OnHide>Charplan.OnHide()</OnHide>
 		</Scripts>
 	</Frame>
 

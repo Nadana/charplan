@@ -8,8 +8,8 @@ dofile(path..'test_calc_items.lua')
 dofile(path..'test_calc_full.lua')
 dofile(path..'test_utils.lua')
 
-CP.DB.Load()
+Charplan.DB.Load()
     LuaUnit:run()
-CP.DB.Release()
+Charplan.DB.Release()
 
 

@@ -14,12 +14,12 @@ TestCP_CalcFull={}
 local function LoadStoredData(info)
     TestCP_CalcFull.cur_data = info
 
-    CP.Items={}
+    Charplan.Items={}
     for _,item in pairs(info.item_links) do
-        CP.ApplyLinkItem(item,nil,true)
+        Charplan.ApplyLinkItem(item,nil,true)
     end
 
-    CP.Unit.Load(info)
+    Charplan.Unit.Load(info)
 end
 
 function TestCP_CalcFull:DoFullCharCheck(info)
@@ -27,17 +27,17 @@ function TestCP_CalcFull:DoFullCharCheck(info)
     -- data prepase
     LoadStoredData(info)
 
-    CP.Calc.Init()
+    Charplan.Calc.Init()
 
     -- !Same as in calculate
-    local values = CP.Calc.NewStats()
+    local values = Charplan.Calc.NewStats()
     values = values + info.bases
-    values = values + CP.Calc.GetSkillBonus()
+    values = values + Charplan.Calc.GetSkillBonus()
     values = values + info.cards
-    values = values + CP.Calc.GetArchievementBonus()
+    values = values + Charplan.Calc.GetArchievementBonus()
 
-    values = CP.Calc.AddItemsBonus(values)
-    CP.Calc.DependingStats(values)
+    values = Charplan.Calc.AddItemsBonus(values)
+    Charplan.Calc.DependingStats(values)
     -- !end
 
     TestCP_Calc:CompareStats(values, info.result,nil,0.9) -- TODO: tolerance (last value) should be 0
@@ -45,20 +45,20 @@ end
 
 
 function TestCP_CalcFull:classSetUp()
-    self.old_data = CP.Utils.TableCopy(CP.Items)
+    self.old_data = Charplan.Utils.TableCopy(Charplan.Items)
     self.old_unit={}
-    CP.Unit.Store(self.old_unit)
+    Charplan.Unit.Store(self.old_unit)
 
-    CP.DB.Load()
+    Charplan.DB.Load()
 end
 
 function TestCP_CalcFull:classTearDown()
 
-    CP.Unit.Load(self.old_unit)
+    Charplan.Unit.Load(self.old_unit)
 
-    CP.Items = self.old_data
-    CP.Calc.Init()
-    CP.DB.Release()
+    Charplan.Items = self.old_data
+    Charplan.Calc.Init()
+    Charplan.DB.Release()
 end
 
 

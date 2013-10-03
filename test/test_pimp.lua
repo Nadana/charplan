@@ -18,8 +18,8 @@ end
 
 function TestCP_PimpMe:ExtractLink(itemlink)
 
-    local item_data = CP.Pimp.ExtractLink(itemlink)
-    local test = CP.Pimp.GenerateLink(item_data)
+    local item_data = Charplan.Pimp.ExtractLink(itemlink)
+    local test = Charplan.Pimp.GenerateLink(item_data)
 
     assertEquals(test,itemlink)
 
@@ -29,11 +29,11 @@ end
 
 
 function TestCP_PimpMe:classSetUp()
-    CP.DB.Load()
+    Charplan.DB.Load()
 end
 
 function TestCP_PimpMe:classTearDown()
-    CP.DB.Release()
+    Charplan.DB.Release()
 end
 
 

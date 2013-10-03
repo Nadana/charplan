@@ -20,7 +20,7 @@
 			</Layer>
 		</Layers>
 		<Scripts>
-			<OnLoad>CP.Pimp.OnCtrlLoad(this)</OnLoad>
+			<OnLoad>Charplan.Pimp.OnCtrlLoad(this)</OnLoad>
 		</Scripts>
 	</Frame>
 	<Frame name="CPStatSelectionTemplate" virtual="true">
@@ -42,8 +42,8 @@
                     </Anchor>
 				</Anchors>
 				<Scripts>
-                    <OnTabPressed>CP.Pimp.StatName_Tab(this)</OnTabPressed>
-					<OnEditFocusLost>CP.Pimp.StatName_Finished(this)</OnEditFocusLost>
+                    <OnTabPressed>Charplan.Pimp.StatName_Tab(this)</OnTabPressed>
+					<OnEditFocusLost>Charplan.Pimp.StatName_Finished(this)</OnEditFocusLost>
 				</Scripts>
 				<FontString inherits="GameFontNormalSmall" />
 				<TextInsets><AbsInset top="6" right="3" left="4" bottom="0"></AbsInset></TextInsets>
@@ -60,12 +60,12 @@
 					<Anchor point="LEFT" relativeTo="$parentTier" relativePoint="RIGHT"></Anchor>
 				</Anchors>
 				<Scripts>
-					<OnClick>CP.Pimp.OnStatSelSearch(this:GetParent())</OnClick>
+					<OnClick>Charplan.Pimp.OnStatSelSearch(this:GetParent())</OnClick>
 				</Scripts>
 			</Button>
 		</Frames>
 		<Scripts>
-			<OnLoad>CP.Pimp.OnStatCtrlLoad(this)</OnLoad>
+			<OnLoad>Charplan.Pimp.OnStatCtrlLoad(this)</OnLoad>
 		</Scripts>
 	</Frame>
 
@@ -140,7 +140,7 @@
 					<Button name="CPPimpMeItem" inherits="ItemButtonTemplate">
 							<Anchors><Anchor point="TOPLEFT" /></Anchors>
 							<Scripts>
-								<OnClick>CP.Pimp.OnItemClicked()</OnClick>
+								<OnClick>Charplan.Pimp.OnItemClicked()</OnClick>
 							</Scripts>
 					</Button>
 					<Frame name="$parentPlus" inherits="CPPimpDropDown">
@@ -163,8 +163,8 @@
 							</Anchor>
 						</Anchors>
 						<Scripts>
-							<OnTabPressed>CP.Pimp.OnDura_TabClick(this)</OnTabPressed>
-							<OnTextChanged>CP.Pimp.OnDura_Changed(this)</OnTextChanged>
+							<OnTabPressed>Charplan.Pimp.OnDura_TabClick(this)</OnTabPressed>
+							<OnTextChanged>Charplan.Pimp.OnDura_Changed(this)</OnTextChanged>
 						</Scripts>
 						<TextInsets><AbsInset top="8" right="4" left="4" bottom="0"></AbsInset></TextInsets>
 					</EditBox>
@@ -177,8 +177,8 @@
 							</Anchor>
 						</Anchors>
 						<Scripts>
-							<OnTabPressed>CP.Pimp.OnMaxDura_TabClick(this)</OnTabPressed>
-							<OnTextChanged>CP.Pimp.OnMaxDura_Changed(this)</OnTextChanged>
+							<OnTabPressed>Charplan.Pimp.OnMaxDura_TabClick(this)</OnTabPressed>
+							<OnTextChanged>Charplan.Pimp.OnMaxDura_Changed(this)</OnTextChanged>
 						</Scripts>
 						<TextInsets><AbsInset top="8" right="4" left="4" bottom="0"></AbsInset></TextInsets>
 					</EditBox>
@@ -222,7 +222,7 @@
 							<Anchor point="BOTTOM"><Offset><AbsDimension x="-45" y="-10"></AbsDimension></Offset></Anchor>
 						</Anchors>
 						<Scripts>
-							<OnClick>CP.Pimp.OnOK(this)</OnClick>
+							<OnClick>Charplan.Pimp.OnOK(this)</OnClick>
 						</Scripts>
 					</Button>
 					<Button name="$parentBtnCancel" inherits="UIPanelButtonTemplate" text="CANCEL">
@@ -231,7 +231,7 @@
 							<Anchor point="BOTTOM"><Offset><AbsDimension x="55" y="-10"></AbsDimension></Offset></Anchor>
 						</Anchors>
 						<Scripts>
-							<OnClick>CP.Pimp.OnCancel(this)</OnClick>
+							<OnClick>Charplan.Pimp.OnCancel(this)</OnClick>
 						</Scripts>
 					</Button>
 					<Button name="$parentClearBtn" inherits="UIPanelButtonTemplate">
@@ -240,10 +240,10 @@
 							<Anchor point="BOTTOM"><Offset><AbsDimension x="70" y="-90"></AbsDimension></Offset></Anchor>
 						</Anchors>
 						<Scripts>
-							<OnDoubleClick>CP.Pimp.OnClear()
+							<OnDoubleClick>Charplan.Pimp.OnClear()
 										GameTooltip:Hide()</OnDoubleClick>
 							<OnClick>GameTooltip:SetOwner(this, "ANCHOR_TOPLEFT", -5, 0)
-										GameTooltip:SetText(CP.L.PIMP_CLEAR_TIP)
+										GameTooltip:SetText(Charplan.L.PIMP_CLEAR_TIP)
 										GameTooltip:Show()
 							</OnClick>
 							<OnLeave>GameTooltip:Hide()</OnLeave>
@@ -263,16 +263,16 @@
 							<Offset><AbsDimension y="-4" x="-20"></AbsDimension></Offset></Anchor>
 						</Anchors>
 						<Scripts>
-							<OnLoad>UIDropDownMenu_Initialize(this, CP.Pimp.ShowCopyMenu, "MENU")</OnLoad>
+							<OnLoad>UIDropDownMenu_Initialize(this, Charplan.Pimp.ShowCopyMenu, "MENU")</OnLoad>
 						</Scripts>
 					</Frame>
 				</Frames>
 			</Frame>
 		</Frames>
 		<Scripts>
-			<OnLoad>CP.Pimp.OnLoad(this)</OnLoad>
-			<OnShow>CP.Pimp.OnShow(this)</OnShow>
-			<OnHide>CP.Pimp.OnHide(this)</OnHide>
+			<OnLoad>Charplan.Pimp.OnLoad(this)</OnLoad>
+			<OnShow>Charplan.Pimp.OnShow(this)</OnShow>
+			<OnHide>Charplan.Pimp.OnHide(this)</OnHide>
 		</Scripts>
 	</Frame>
 

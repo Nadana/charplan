@@ -1,4 +1,4 @@
-local CP = _G.CP
+local CP = _G.Charplan
 local Unit= {}
 CP.Unit = Unit
 

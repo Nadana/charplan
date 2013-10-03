@@ -29,7 +29,7 @@ Item data = {
 ]]
 
 
-local CP = _G.CP
+local CP = _G.Charplan
 local StatSearch = {}
 CP.StatSearch = StatSearch
 

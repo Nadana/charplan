@@ -2,7 +2,7 @@
     CharPlan - DB
 ]]
 
-local CP = _G.CP
+local CP = _G.Charplan
 local DB = CP.DB
 
 --[[ [ DataBase Format ]]

@@ -1,9 +1,9 @@
 TestCP_CalcItems={}
 
 function TestCP_CalcItems:testSetBonus()
-    local s = CP.Calc.STATS
+    local s = Charplan.Calc.STATS
 
-    CP.Items={
+    Charplan.Items={
             [1]={id=226503}, -- Set - Handschützer von Yawaka
             [4]={id=226505}, -- Set - Beinschützer von Yawaka
             [6]={id=226504}, -- Set - Gurt von Yawaka
@@ -11,23 +11,23 @@ function TestCP_CalcItems:testSetBonus()
             [14]={id=227956}, -- Earring (dummy - other set)
             [15]={id=212254}, -- Weapon (dummy)
         }
-    local result = CP.Calc.GetSetBonus(result)
+    local result = Charplan.Calc.GetSetBonus(result)
     TestCP_Calc:CompareStatsComplete(result, {[s.DEX]=95,[s.PATK]=1200,[s.PCRIT]=150,[s.STR]=100,[s.PDMG]=45})
 
 
-    CP.Items={
+    Charplan.Items={
             [1]={id=226503}, -- Set - Handschützer von Yawaka
             [4]={id=226505}, -- Set - Beinschützer von Yawaka
         }
-    local result = CP.Calc.GetSetBonus(result)
+    local result = Charplan.Calc.GetSetBonus(result)
     TestCP_Calc:CompareStatsComplete(result, {[s.DEX]=95})
 end
 
 function TestCP_CalcItems:testItemCalc_ID_226499() --Handschützer von Lekani
-    local s = CP.Calc.STATS
+    local s = Charplan.Calc.STATS
 
     -- http://de.runesdatabase.com/item/226499
-    local item = CP.DB.GenerateItemDataByID(226499)
+    local item = Charplan.DB.GenerateItemDataByID(226499)
     self:CheckItem(item, {[s.PDEF]=1107, [s.MDEF]=1365})
  	self:CheckItemPlusGrad(226499, 100,10, 10, {[s.PDEF]=2601, [s.MDEF]=3207})
 
@@ -37,7 +37,7 @@ function TestCP_CalcItems:testItemCalc_ID_226499() --Handschützer von Lekani
   	self:CheckItemPlusGrad(226499, 100,6, 2, {[s.PDEF]=1538.4, [s.MDEF]=1897})
   	self:CheckItemPlusGrad(226499, 116,6, 2, {[s.PDEF]=1846, [s.MDEF]=2276.4})
 
-    local item = CP.Pimp.ExtractLink("|Hitem:374c3 0 77060c74 d41bd3b2 d56cd570 d492d574 7f1d9 0 0 0 2d50 9604|h|cffc805f8[Handschützer von Lekani]|r|h")
+    local item = Charplan.Pimp.ExtractLink("|Hitem:374c3 0 77060c74 d41bd3b2 d56cd570 d492d574 7f1d9 0 0 0 2d50 9604|h|cffc805f8[Handschützer von Lekani]|r|h")
  	self:CheckItem(item, {
                             [s.PDEF]=1846,
                             [s.MDEF]=2276.4,
@@ -53,10 +53,10 @@ end
 
 
 function TestCP_CalcItems:testItemCalc_ID_212485()
-    local s = CP.Calc.STATS
+    local s = Charplan.Calc.STATS
 
     -- http://de.runesdatabase.com/item/212485
-    local item = CP.DB.GenerateItemDataByID(212485)
+    local item = Charplan.DB.GenerateItemDataByID(212485)
     self:CheckItem(item, {[s.PDMG]=1159})
     self:CheckPlus(item, s.PDMG, {1182,1205,1228,1251,1274,1309,1344,1379,1413,1448,1483,1541,1599,1657,1715,1831})
     self:CheckTier(item, s.PDMG, {1274.9,1390.8,1506.7,1622.6,1738.5})
@@ -70,7 +70,7 @@ end
 
 
 function TestCP_CalcItems:testItemCalc_ID_212615()
-    local s = CP.Calc.STATS
+    local s = Charplan.Calc.STATS
 
     -- http://de.runesdatabase.com/item/212615
 	self:CheckItemPlusGrad(212615, 100,0, 0, {[s.PDMG]=2288, [s.PATK]=976})
@@ -82,7 +82,7 @@ function TestCP_CalcItems:testItemCalc_ID_212615()
 end
 
 function TestCP_CalcItems:testItemCalc_ID_227845() -- jennys-robe
-    local s = CP.Calc.STATS
+    local s = Charplan.Calc.STATS
 
     -- http://de.runesdatabase.com/item/227845
 	self:CheckItemPlusGrad(227845, 100,0, 0, {[s.MDMG]=200})
@@ -91,7 +91,7 @@ function TestCP_CalcItems:testItemCalc_ID_227845() -- jennys-robe
 end
 
 function TestCP_CalcItems:testItemCalc_without_BasePLUS()
-    local s = CP.Calc.STATS
+    local s = Charplan.Calc.STATS
 
     -- http://de.runesdatabase.com/item/211540
     self:CheckItemPlusGrad(211540, 100,0, 0, {[s.PDMG]=285, [s.MDMG]=150, [s.STR]=17})
@@ -127,7 +127,7 @@ end
 
 
 function TestCP_CalcItems:CheckItemPlusGrad(item_id, dura_percent, plus, tier, stats)
-    local item = CP.DB.GenerateItemDataByID(item_id)
+    local item = Charplan.DB.GenerateItemDataByID(item_id)
     item.dura = item.dura * dura_percent / 100
     item.plus = plus or 0
     item.tier = tier or 0
@@ -137,18 +137,18 @@ end
 
 
 function TestCP_CalcItems:CheckItem(item, stats)
-    local result = CP.Calc.GetItemBonus(item)
+    local result = Charplan.Calc.GetItemBonus(item)
     TestCP_Calc:CompareStats(result, stats, "Item: "..item.id,0.03) -- TODO: tolerance (last value) should be 0
 end
 
 
 
 function TestCP_CalcItems:classSetUp()
-    self.old_data = CP.Utils.TableCopy(CP.Items)
-    CP.DB.Load()
+    self.old_data = Charplan.Utils.TableCopy(Charplan.Items)
+    Charplan.DB.Load()
 end
 
 function TestCP_CalcItems:classTearDown()
-    CP.Items = self.old_data
-    CP.DB.Release()
+    Charplan.Items = self.old_data
+    Charplan.DB.Release()
 end

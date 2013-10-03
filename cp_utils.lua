@@ -5,7 +5,7 @@
 ]]
 
 local Utils = {}
-local CP = _G.CP
+local CP = _G.Charplan
 CP.Utils = Utils
 
 

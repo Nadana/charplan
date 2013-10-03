@@ -3,7 +3,7 @@
 
     the Skill tree
 ]]
-local CP = _G.CP
+local CP = _G.Charplan
 local Classes= {}
 CP.Classes = Classes
 

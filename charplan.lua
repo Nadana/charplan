@@ -8,7 +8,7 @@ Notes:
 
 
 local CP = {}
-_G.CP = CP
+_G.Charplan = CP
 
 CP.version       = "@project-version@"
 CP.Prefix = "CP: "

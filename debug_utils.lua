@@ -1,3 +1,4 @@
+local CP = _G.Charplan
 
 function CP.SlashCMD(msg)
     if string.find(msg,"^t") then

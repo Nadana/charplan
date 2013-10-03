@@ -2,11 +2,11 @@
 TestCP_DB={}
 
 function TestCP_DB:classSetUp()
-    CP.DB.Load()
+    Charplan.DB.Load()
 end
 
 function TestCP_DB:classTearDown()
-    CP.DB.Release()
+    Charplan.DB.Release()
 end
 
 
@@ -25,15 +25,15 @@ end
 function TestCP_DB.testBonusInfos()
     if GetLanguage()~="DE" then return end
 
-    local name, lvl, grp = CP.DB.GetBonusInfo( FindStat("Leben X") )
+    local name, lvl, grp = Charplan.DB.GetBonusInfo( FindStat("Leben X") )
     assertEquals(name,"Leben")
     assertEquals(lvl,"X")
-    assertFalse(CP.DB.IsRuneGroup(grp))
+    assertFalse(Charplan.DB.IsRuneGroup(grp))
 
-    name, lvl, grp = CP.DB.GetBonusInfo( FindRune("Leben X") )
+    name, lvl, grp = Charplan.DB.GetBonusInfo( FindRune("Leben X") )
     assertEquals(name,"Leben")
     assertEquals(lvl,"X")
-    assertTrue(CP.DB.IsRuneGroup(grp))
+    assertTrue(Charplan.DB.IsRuneGroup(grp))
 
 end
 
@@ -41,13 +41,13 @@ end
 function TestCP_DB.testBonusTextParser()
     if GetLanguage()~="DE" then return end
 
-    assertEquals(CP.DB.FindBonus("Leben", "X", false), FindStat("Leben X")  )
-    assertEquals(CP.DB.FindBonus("Leben", "X", true),  FindRune("Leben X") )
+    assertEquals(Charplan.DB.FindBonus("Leben", "X", false), FindStat("Leben X")  )
+    assertEquals(Charplan.DB.FindBonus("Leben", "X", true),  FindRune("Leben X") )
 end
 
 
 function TestCP_DB.testGetItemEffect()
-    local effect = CP.DB.GetItemEffect(212485)
+    local effect = Charplan.DB.GetItemEffect(212485)
     assertArrayEquals(effect, {25,1159,6,80,12,483})
 end
 

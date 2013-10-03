@@ -3,7 +3,7 @@
 
     Calculations
 ]]
-local CP = _G.CP
+local CP = _G.Charplan
 local Calc= {}
 CP.Calc = Calc
 

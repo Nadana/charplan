@@ -25,18 +25,18 @@
 			</Layer>
 		</Layers>
 		<Scripts>
-			<OnClick>CP.StatSearch.ItemClicked(this,key)</OnClick>
+			<OnClick>Charplan.StatSearch.ItemClicked(this,key)</OnClick>
 			<OnDoubleClick>
-					CP.StatSearch.ItemClicked(this,key)
-					CP.StatSearch.Close()
+					Charplan.StatSearch.ItemClicked(this,key)
+					Charplan.StatSearch.Close()
 			</OnDoubleClick>
 			<OnMouseWheel>
-				CP.StatSearch.ItemOnLeave()
+				Charplan.StatSearch.ItemOnLeave()
 				UIPanelScrollBar_OnMouseWheel(CPStatSearchItemSB, delta)
-				CP.StatSearch.ItemOnEnter(this)
+				Charplan.StatSearch.ItemOnEnter(this)
 			</OnMouseWheel>
-			<OnEnter>CP.StatSearch.ItemOnEnter(this)</OnEnter>
-			<OnLeave>CP.StatSearch.ItemOnLeave()</OnLeave>
+			<OnEnter>Charplan.StatSearch.ItemOnEnter(this)</OnEnter>
+			<OnLeave>Charplan.StatSearch.ItemOnLeave()</OnLeave>
 		</Scripts>
 	</Frame>
 
@@ -53,9 +53,9 @@
 			</Layer>
 		</Layers>
 		<Scripts>
-			<OnEditFocusGained>CP.StatSearch.FilterFocus(this,true)</OnEditFocusGained>
-			<OnEditFocusLost>CP.StatSearch.FilterFocus(this,false)</OnEditFocusLost>
-			<OnTextChanged>CP.StatSearch.UpdateList(this)</OnTextChanged>
+			<OnEditFocusGained>Charplan.StatSearch.FilterFocus(this,true)</OnEditFocusGained>
+			<OnEditFocusLost>Charplan.StatSearch.FilterFocus(this,false)</OnEditFocusLost>
+			<OnTextChanged>Charplan.StatSearch.UpdateList(this)</OnTextChanged>
 		</Scripts>
 	</EditBox>
 
@@ -153,7 +153,7 @@
 						<Scripts>
 							<OnValueChanged>
 								UIPanelScrollBar_OnValueChanged(this, arg1)
-								CP.StatSearch.ListUpdate()
+								Charplan.StatSearch.ListUpdate()
 							</OnValueChanged>
 						</Scripts>
 					</Slider>
@@ -168,7 +168,7 @@
 					<Anchor point="BOTTOM"><Offset><AbsDimension x="-45" y="-8"></AbsDimension></Offset></Anchor>
 				</Anchors>
 				<Scripts>
-					<OnClick>CP.StatSearch.Close()</OnClick>
+					<OnClick>Charplan.StatSearch.Close()</OnClick>
 				</Scripts>
 			</Button>
 			<Button name="$parentBtnCancel" inherits="UIPanelButtonTemplate" text="CANCEL">
@@ -177,13 +177,13 @@
 					<Anchor point="BOTTOM"><Offset><AbsDimension x="55" y="-8"></AbsDimension></Offset></Anchor>
 				</Anchors>
 				<Scripts>
-					<OnClick>CP.StatSearch.Cancel()</OnClick>
+					<OnClick>Charplan.StatSearch.Cancel()</OnClick>
 				</Scripts>
 			</Button>
 		</Frames>
 		<Scripts>
-			<OnShow>CP.StatSearch.OnShow(this)</OnShow>
-			<OnHide>CP.StatSearch.OnHide(this)</OnHide>
+			<OnShow>Charplan.StatSearch.OnShow(this)</OnShow>
+			<OnHide>Charplan.StatSearch.OnHide(this)</OnHide>
 		</Scripts>
 
 	</Frame>

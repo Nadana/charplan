@@ -8,7 +8,7 @@
 				<Anchors><Anchor point="LEFT" /></Anchors>
 				<Scripts>
 					<OnLoad>UIDropDownMenu_SetWidth(this, 110)
-								UIDropDownMenu_Initialize(this, CP.Classes.OnClassDropDownShow)
+								UIDropDownMenu_Initialize(this, Charplan.Classes.OnClassDropDownShow)
 					</OnLoad>
 				</Scripts>
 			</Frame>
@@ -18,9 +18,9 @@
 					<Anchor point="LEFT"><Offset><AbsDimension x="152"  y="0"></AbsDimension></Offset></Anchor>
 				</Anchors>
 				<Scripts>
-					<OnEnterPressed>CP.Classes.OnLevelChanged(this)</OnEnterPressed>
-					<OnTabPressed>CP.Classes.OnLevelChanged(this)</OnTabPressed>
-					<OnEditFocusLost>CP.Classes.OnLevelChanged(this)</OnEditFocusLost>
+					<OnEnterPressed>Charplan.Classes.OnLevelChanged(this)</OnEnterPressed>
+					<OnTabPressed>Charplan.Classes.OnLevelChanged(this)</OnTabPressed>
+					<OnEditFocusLost>Charplan.Classes.OnLevelChanged(this)</OnEditFocusLost>
 				</Scripts>
 				<TextInsets><AbsInset top="4" right="3" left="10" bottom="0"></AbsInset></TextInsets>
 			</EditBox>
@@ -29,7 +29,7 @@
 
 	<Button name="CPClassTabTemplate" inherits="UIPanelTopTabTemplate" virtual="true">
 		<Scripts>
-			<OnClick>CP.Classes.OnTabClicked(this, this:GetID())</OnClick>
+			<OnClick>Charplan.Classes.OnTabClicked(this, this:GetID())</OnClick>
 			<OnShow>PanelTemplates_TabResize(this, 12)</OnShow>
 		</Scripts>
 	</Button>
@@ -219,20 +219,20 @@
 					</Anchor>
 				</Anchors>
 				<Scripts>
-					<OnClick>CP.Classes.OnClickButton(this:GetParent(), this:GetParent():GetID(), key)</OnClick>
-					<OnEnter>CP.Classes.OnEnterButton(this:GetParent(), this:GetParent():GetID())</OnEnter>
+					<OnClick>Charplan.Classes.OnClickButton(this:GetParent(), this:GetParent():GetID(), key)</OnClick>
+					<OnEnter>Charplan.Classes.OnEnterButton(this:GetParent(), this:GetParent():GetID())</OnEnter>
 					<OnLeave>GameTooltip:Hide()</OnLeave>
 				</Scripts>
 			</Button>
 		</Frames>
 		<Scripts>
 			<OnLoad>this:RegisterForClicks("LeftButton", "RightButton")</OnLoad>
-			<OnEnter>CP.Classes.OnEnterButton(this, this:GetID())</OnEnter>
+			<OnEnter>Charplan.Classes.OnEnterButton(this, this:GetID())</OnEnter>
 			<OnLeave>
 				getglobal( this:GetName() .. "SelectHighlight" ):Hide()
 				GameTooltip:Hide()
 			</OnLeave>
-			<OnClick>CP.Classes.OnClickButton(this, this:GetID(), key)</OnClick>
+			<OnClick>Charplan.Classes.OnClickButton(this, this:GetID(), key)</OnClick>
 		</Scripts>
 	</Frame>
 
@@ -303,7 +303,7 @@
 			<CheckButton name="$parentHideNotAvailable" inherits="CPSearchCheckbox">
 				<Anchors><Anchor point="TOPLEFT"><Offset><AbsDimension x="280" y="110"></AbsDimension></Offset></Anchor></Anchors>
 				<Scripts>
-					<OnClick>CP.Classes.OnSkillChanged()</OnClick>
+					<OnClick>Charplan.Classes.OnSkillChanged()</OnClick>
 				</Scripts>
 			</CheckButton>
 
@@ -311,7 +311,7 @@
 				<Anchors><Anchor point="TOPLEFT" relativeTo="$parentHideNotAvailable" relativePoint="BOTTOMLEFT">
 					<Offset><AbsDimension x="0" y="5"></AbsDimension></Offset></Anchor></Anchors>
 				<Scripts>
-					<OnClick>CP.Classes.OnSkillChanged()</OnClick>
+					<OnClick>Charplan.Classes.OnSkillChanged()</OnClick>
 				</Scripts>
 			</CheckButton>
 
@@ -578,7 +578,7 @@
 							</Anchor>
 						</Anchors>
 						<Scripts>
-							<OnClick>CP.Classes.NextPage(-1)</OnClick>
+							<OnClick>Charplan.Classes.NextPage(-1)</OnClick>
 						</Scripts>
 					</Button>
 					<Button name="$parentRightPage" inherits="SkillBookRightPageButton" text="C_NEXT_PAGE">
@@ -590,7 +590,7 @@
 							</Anchor>
 						</Anchors>
 						<Scripts>
-							<OnClick>CP.Classes.NextPage(1)</OnClick>
+							<OnClick>Charplan.Classes.NextPage(1)</OnClick>
 						</Scripts>
 					</Button>
 				</Frames>
@@ -600,7 +600,7 @@
 
 		</Frames>
 		<Scripts>
-			<OnShow>CP.Classes.OnShow( this )</OnShow>
+			<OnShow>Charplan.Classes.OnShow( this )</OnShow>
 		</Scripts>
 	</Frame>
 
@@ -729,7 +729,7 @@
 					</Anchor>
 				</Anchors>
 				<Scripts>
-					<OnClick>CP.Classes.RaiseSkill_Modify(-1)</OnClick>
+					<OnClick>Charplan.Classes.RaiseSkill_Modify(-1)</OnClick>
 				</Scripts>
 			</Button>
 			<Button name="$parentRightButton" inherits="UIPanelRightPageButtonTemplate">
@@ -741,7 +741,7 @@
 					</Anchor>
 				</Anchors>
 				<Scripts>
-					<OnClick>CP.Classes.RaiseSkill_Modify(1)</OnClick>
+					<OnClick>Charplan.Classes.RaiseSkill_Modify(1)</OnClick>
 				</Scripts>
 			</Button>
 			<Slider name="$parentLevelBar" orientation="HORIZONTAL">
@@ -823,8 +823,8 @@
 					</Layer>
 				</Layers>
 				<Scripts>
-					<OnValueChanged>CP.Classes.RaiseSkill_OnSlider(this, arg1)</OnValueChanged>
-					<OnMouseWheel>CP.Classes.RaiseSkill_Modify(delta*0.1)</OnMouseWheel>
+					<OnValueChanged>Charplan.Classes.RaiseSkill_OnSlider(this, arg1)</OnValueChanged>
+					<OnMouseWheel>Charplan.Classes.RaiseSkill_Modify(delta*0.1)</OnMouseWheel>
 				</Scripts>
 				<ThumbTexture name="$parentThumb" file="Interface\ChatFrame\ChatFrame-ScrollBar-Knob">
 					<Size>
@@ -844,7 +844,7 @@
 					</Anchor>
 				</Anchors>
 				<Scripts>
-					<OnClick>CP.Classes.RaiseSkill_Okay()</OnClick>
+					<OnClick>Charplan.Classes.RaiseSkill_Okay()</OnClick>
 				</Scripts>
 			</Button>
 			<Button name="$parentCancelButton" inherits="UIPanelButtonTemplate" text="C_CANCEL">
