@@ -12,10 +12,10 @@
 
     Example:
         -- simple delayed call
-        WaitTimer.Wait(5, function () DEFAULT_CHAT_FRAME:AddMessage("huhu") end)
+        WaitTimer.Delay(5, function () DEFAULT_CHAT_FRAME:AddMessage("huhu") end)
 
         -- repeatable call
-        id = WaitTimer.Wait(10, function ()
+        id = WaitTimer.Delay(10, function ()
                             DEFAULT_CHAT_FRAME:AddMessage("spam")
                             return 10
                         end)
@@ -24,13 +24,13 @@
 
         -- with user data
         funtion pout(txt) DEFAULT_CHAT_FRAME:AddMessage(txt) end
-        WaitTimer.Wait(1, pout, nil, "3")
-        WaitTimer.Wait(2, pout, nil, "2")
-        WaitTimer.Wait(3, pout, nil, "1")
+        WaitTimer.Delay(1, pout, nil, "3")
+        WaitTimer.Delay(2, pout, nil, "2")
+        WaitTimer.Delay(3, pout, nil, "1")
 
 
     Usage:
-        timer_id = WaitTimer.Wait(seconds, function, id, data)
+        timer_id = WaitTimer.Delay(seconds, function, id, data)
         ================================================
 
         - seconds=  how long to wait
@@ -58,7 +58,7 @@
 
         WaitTimer.SetTime(id, delay)
         ==================================
-        - reset the wait time
+        - reset the delay time
         - if <delay> is ommited the function will be triggert on next update
 
 
@@ -69,8 +69,15 @@
             WaitTimer.toc
 
 --]]
-local Timer = LibStub:NewLibrary("WaitTimer", 4)
-if not Timer then return end
+local Timer = LibStub:NewLibrary("WaitTimer", 8)
+if not Timer then
+    -- for ReloadUI()
+    if not GameTooltip.DelayShow then
+        Timer =  LibStub("WaitTimer")
+        Timer.ReInit()
+    end
+    return
+end
 
 WaitTimerUpdateFrame = nil
 
@@ -130,7 +137,7 @@ local function TriggerEvent(events, elapsedTime)
             end
 
             if not good then
-                error("error in update call (id='"..tostring(data[2]).."'): "..next_delay)
+                error("error in update call (id='"..tostring(data[2]).."'): "..next_delay,0)
             end
         end
     end
@@ -143,7 +150,12 @@ function WaitTimerOnUpdate(this,elapsedTime)
     TestIfAllDone()
 end
 
-function Timer.Wait(seconds, fct, id, data)
+function Timer.Delay(seconds, fct, id, data)
+
+    if type(fct)~="function" then
+        error("parameter 2 is not a function",1)
+    end
+
     local _,cur_data = FindID(id)
     if cur_data then
         cur_data[1]=seconds
@@ -159,6 +171,10 @@ function Timer.Wait(seconds, fct, id, data)
     StartUpdate()
 
     return id
+end
+
+function Timer.Wait(seconds, fct, id, data) -- OBSOLETE
+    return Timer.Delay(seconds, fct, id, data)
 end
 
 function Timer.Remaining(id)
@@ -183,3 +199,59 @@ function Timer.Stop(id)
         TestIfAllDone()
     end
 end
+
+-------------------------------------
+function Timer.Call(fct,data)
+
+    local thread = coroutine.create(fct)
+    Timer.Delay(0,
+        function ()
+            local state, time = coroutine.resume(thread,data)
+            if state then
+                return time
+            end
+        end
+    )
+end
+
+function Timer.CallWait(time)
+    coroutine.yield(time or 0)
+end
+
+-------------------------------------
+local SHOW_DELAY = 0.8
+local RESHOW_TIME = 0.3
+local function DoShow(window)
+    window:Show()
+end
+
+function Timer.DelayShow(window, delay)
+    if Timer.Remaining("wtd2_"..window:GetName()) then
+        Timer.Stop("wtd2_"..window:GetName())
+        DoShow(window)
+        return
+    end
+
+    Timer.Delay(delay or SHOW_DELAY, DoShow, "wtd1_"..window:GetName(), window)
+end
+
+function Timer.DelayShowCancel(window)
+    Timer.Stop("wtd1_"..window:GetName())
+    if window:IsVisible() then
+        Timer.Delay(RESHOW_TIME, function() end, "wtd2_"..window:GetName())
+    end
+end
+
+function Timer.ReInit()
+    GameTooltip.DelayShow = function (self)
+        self:Hide() -- SetText triggers 'Show'
+        Timer.DelayShow(self, delay)
+    end
+
+    GameTooltip.DelayHide= function (self) -- NB: 'Hide' is a C-Api function thus we shouldn't overload it
+        Timer.DelayShowCancel(self)
+        self:Hide()
+    end
+end
+Timer.ReInit()
+

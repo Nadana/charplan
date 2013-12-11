@@ -8,7 +8,7 @@
 --  License: MIT/X
 -----------------------------------------------------------------------------
 
-local Nyx = LibStub:NewLibrary("Nyx", 15)
+local Nyx = LibStub:NewLibrary("Nyx", 17)
 if not Nyx then return end
 
 
@@ -30,15 +30,17 @@ end
 -- Example: Nyx.LoadLocalesAuto("Interface/Addons/dailynotes/Locales/","default")
 function Nyx.LoadLocalesAuto(directory, default)
     local func, err = loadfile(directory..string.sub(GetLanguage(),1,2)..".lua")
-    local lang={}
+    local lang
     if not err then
         lang = func()
     end
 
     if default then
         local lang2 = Nyx.LoadFile(directory..default..".lua")
-        lang = lang or {}
-        TableMerge(lang, lang2 or {})
+        lang = lang or lang2
+        if not err and lang2 then
+            TableMerge(lang, lang2)
+        end
     end
 
     return lang
@@ -86,7 +88,7 @@ function Nyx.GetItemID( itemLk )
   if not itemLk then return end
 
   local ret = "";
-  local _, _data, _ = ParseHyperlink(itemLk)
+  local _, _data = ParseHyperlink(itemLk)
 
   if ( _data and _data ~= "" ) then
     _,_,ret = string.find(_data, "(%x+)")
@@ -168,27 +170,31 @@ end
 
 ------------------------------
 local function ReplaceTags(desc, fct_on_id_tag, fct_on_name_tag, fct_on_color_tag)
-    local max_loops=20
-    local ls=1,le
-    repeat
-        ls,le = desc:find("%[.-%]",ls)
-        if not ls then break end
 
-        local newtext= string.match(desc:sub(ls+1,le-1), "^([^|]+)")
+--~     for max_recurison=1,20 do
+--~         local nothing_found=true
 
-        if newtext:find("^<[sS]>") then
-            newtext = fct_on_id_tag(string.sub(newtext,4),true)
-        elseif tonumber(newtext) then
-            newtext = fct_on_id_tag(newtext)
-        else
-            newtext = fct_on_name_tag(newtext)
-        end
+        desc = string.gsub(desc,"%[(.-)%]",
+            function (tag)
+                nothing_found=false
 
-        desc = desc:sub(1,ls-1)..newtext..desc:sub(le+1)
-        ls = ls + newtext:len()
+                local _,_,res = string.find(tag,".*|(.+)")
+                if res then
+                    return fct_on_name_tag(res)
+                end
 
-        max_loops=max_loops-1
-    until max_loops<0
+                if tag:find("^<[sS]>") then
+                    return fct_on_id_tag(string.sub(tag,4),true)
+                elseif tonumber(tag) then
+                    return fct_on_id_tag(tag)
+                else
+                    return fct_on_name_tag(TEXT(tag))
+                end
+            end
+        )
+
+--~         if nothing_found then break end
+--~     end
 
     if fct_on_color_tag then
         desc = desc:gsub("<(/?)C(.-)>",fct_on_color_tag)
@@ -197,8 +203,7 @@ local function ReplaceTags(desc, fct_on_id_tag, fct_on_name_tag, fct_on_color_ta
     end
 
     desc = desc:gsub("$PLAYERNAME",UnitName("player"))
-
-    assert(max_loops>0,"Quest Text error for QID="..tostring(Quest_ID))
+    desc = desc:gsub("$playername",UnitName("player"))
 
     return desc
 end
@@ -224,7 +229,7 @@ local function FullFunctionTags(text)
         end,
 
         function (text)
-            return TEXT("SYS_COLOR_ZONE")..TEXT(text).."|r"
+            return TEXT("SYS_COLOR_ZONE")..text.."|r"
         end,
 
         function (closed_text,id)
@@ -248,7 +253,7 @@ local function SmallFunctionTags(text)
         end,
 
         function (text)
-            return "|cffb0b0b0"..TEXT(text).."|r"
+            return "|cffb0b0b0"..text.."|r"
         end
     )
 end
