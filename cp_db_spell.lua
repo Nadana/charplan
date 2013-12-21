@@ -74,20 +74,28 @@ function DB.GetSpellEffectBuffValue(spell_effect_id,index,level)
             local val = (skill_arg*level+100) * ev / 100
             val = math.floor(val*10+0.5)/10
 
-            return val
+            return math.abs(val)
         end
     end
     return "??"
 end
 
-function DB.GetSpellDmgValue(spell_id,index,level)
-    local spell = DB.GetSpellEffectList(spell_id)[index+1]
-    if not spell then
-        CP.Debug("no sub effect: "..spell_id.."/"..index)
-        return 0
+local function GetSpell(spell_id,index)
+    if index<0 then
+        return -index
+    else
+        local spell = DB.GetSpellEffectList(spell_id)[index+1]
+        if not spell then
+            CP.Debug("no sub effect: "..spell_id.."/"..index)
+        end
+        return spell
     end
+end
 
-    local eff = DB.spell_effects[spell]
+function DB.GetSpellDmgValue(spell_id,index,level)
+    local spell = GetSpell(spell_id,index)
+
+    local eff = spell and DB.spell_effects[spell]
     if eff then
         local val = ( (eff[SE_ATK_VARG] or 0)*level+100) * (eff[SE_ATK_DMG] or 0) / 100
         val = math.floor(val*10+0.5)/10
@@ -177,7 +185,7 @@ function DB.GetSpellDesc(spell_id,level, var_color_code)
                     ispell = val
                     val = i1
                 end
-                return colored(math.abs(DB.GetSpellEffectBuffValue(ispell,val,level) or 0))
+                return colored(DB.GetSpellEffectBuffValue(ispell,val,level))
             end
         end
 
@@ -199,7 +207,7 @@ function DB.GetSpellDesc(spell_id,level, var_color_code)
 
     local function SpellFixDmg(token)
         local ispell = DB.GetSpellEffectList(spell_id)[tonumber(token)+1]
-        return SpellEffectFixDmg(ispell)
+        return math.abs(SpellEffectFixDmg(ispell))
     end
 
     local function LinkText(x)
@@ -236,3 +244,19 @@ function DB.GetSkillList(token_id,line)
     return learn[line]
 end
 
+function DB.GetSetSkillList()
+    local res={}
+    for skill,_ in pairs(CP.DB.set_skills) do
+        table.insert(res,skill)
+    end
+    return res
+end
+
+function DB.GetSetSkill_Sets(skill)
+    local res = CP.DB.set_skills[skill]
+    if type(res)=="number" then
+        return {res}
+    elseif type(res)=="table" then
+        return res
+    end
+end

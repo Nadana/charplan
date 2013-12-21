@@ -79,6 +79,7 @@ class FullDB
         @recipes.ExportReverseIndex("../item_data/recipe_items.lua")
 
         ExportTPCosts()
+        @suits.exportSkillList("../item_data/set_skills.lua")
     end
 
 
@@ -95,7 +96,7 @@ class FullDB
 
         findUnusedRefines(@items)
         findUnusedImages(@images, [@items, @spell_collection])
-        findUnusedSpells()
+        #findUnusedSpells()
 
         @spell_collection.ClearUnskillable(@learnmagic)
     end

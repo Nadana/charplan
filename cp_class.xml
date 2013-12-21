@@ -236,7 +236,7 @@
 		</Scripts>
 	</Frame>
 
-	<Frame name="CPClassDialog" parent="CPFrame" inherits="UICommonFrameTemplate" enableMouse="true" frameStrata="DIALOG" hidden="true">
+	<Frame name="CPClassDialog" parent="CPFrame" inherits="UICommonFrameTemplate" frameStrata="DIALOG" hidden="true">
 		<Size>
 			<AbsDimension x="489" y="545"/>
 		</Size>
@@ -601,6 +601,7 @@
 		</Frames>
 		<Scripts>
 			<OnShow>Charplan.Classes.OnShow( this )</OnShow>
+			<OnHide>Charplan.Classes.OnHide()</OnHide>
 		</Scripts>
 	</Frame>
 

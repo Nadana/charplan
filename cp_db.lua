@@ -40,7 +40,7 @@ end
 
 local function loadEffects()
 	local cache = {}
-	for i=0,300 do	-- was 218 70 lvl
+	for i=0,300 do
 		local n = "SYS_WEAREQTYPE_" .. i
 		cache[i] = TEXT(n)
 	end
@@ -61,6 +61,7 @@ function DB.Load()
     DB.refines = LoadTable("refines")
     DB.cards = LoadTable("cards")
     DB.skills = LoadTable("spells")
+    DB.set_skills = LoadTable("set_skills")
     DB.spell_effects = LoadTable("spell_effects")
     DB.sets = LoadTable("sets")
     DB.archievements = LoadTable("archievements")
@@ -94,6 +95,7 @@ function DB.Release()
             DB.shop_items = nil
             DB.shop_index = nil
             DB.recipe_items = nil
+            DB.set_skills = nil
         collectgarbage("collect")
         -- local mem2 = collectgarbage("count")
         -- CP.Debug("DB Released. Freed memory: "..(math.floor(mem1-mem2)/1000).."mb")

@@ -1,8 +1,10 @@
-﻿class SuitEntry < TableEntry
+﻿require_relative 'table'
 
-    attr_accessor :totalcount
-    attr_accessor :set_items
-    #attr_accessor :bonis
+class SuitEntry < TableEntry
+
+    attr_reader :totalcount
+    attr_reader :set_items
+    attr_reader :skills
 
     def initialize(csv_row)
         super(csv_row)
@@ -38,12 +40,14 @@
             end
         end
 
-        #~ max =0
-        #~ for b in 1..9
-            #~ max = b if @bonis[b][:eff].size>0
-        #~ end
 
-        #~ raise "#{id} -> more bonuses #{max+1} in set as possible #{@totalcount}" if @totalcount != max+1
+        @skills=[]
+        for i in 1..4
+            skill = csv_row["suitiskilld#{i}"].to_i
+            @skills.push(skill) if skill>0
+        end
+
+
     end
 
     def HasBonis?
@@ -72,15 +76,32 @@
             end
         end
     end
-
 end
-
-
 
 class Suits < Table
     FILENAME = "suitobject"
 
     def initialize()
         super(SuitEntry, FILENAME)
+    end
+
+    def exportSkillList(filename)
+
+        all_skills = Hash.new{ |hash, key| hash[key] = Array.new() }
+        db.each { |data|
+            next if not data.Export?
+
+            data.skills.each { |skill|
+                all_skills[skill].push(data.id)
+                }
+        }
+
+        File.open(filename, 'wt') { |outf|
+            outf.write( "return {\n")
+            all_skills.each { |skill,sets|
+                outf.write( " [#{skill}]= #{FormatArray(sets,true)},\n")
+            }
+            outf.write( "}")
+        }
     end
 end

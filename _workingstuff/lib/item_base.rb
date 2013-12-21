@@ -239,17 +239,20 @@ $STATLIST={# SYS_WEAREQTYPE_xxx
 class BonusStuff
     attr_accessor :eqtypes, :eqvalues
 
-    def initialize(csv_row, max_bonus=10)
+    MAX_BONUS = 10
+
+    def initialize(csv_row, include_null_stats=false)
         raise "db-format changed (updated fdbex?)" unless csv_row.header?('eqtype1')
 
         @eqtypes=[]
         @eqvalues=[]
         @unknown_stat = false
-        for i in 1..max_bonus
+        for i in 1..MAX_BONUS
             type = csv_row['eqtype'+i.to_s].to_i
             value = csv_row['eqtypevalue'+i.to_s].to_i
 
-            if type>0 and (i<3 or value!=0) then
+            if (include_null_stats and (type>0 or value!=0)) or
+               (not include_null_stats and (type>0 and (i<3 or value!=0))) then
                 @eqtypes.push(type)
                 @eqvalues.push(value)
 

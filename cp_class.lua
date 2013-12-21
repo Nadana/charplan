@@ -99,8 +99,34 @@ function Classes.OnShow(this)
     Classes.OnClassChanged()
 end
 
+function Classes.OnHide(this)
+    CP.Classes.skills=nil
+end
+
+local function GetSetSkills()
+    local res ={}
+    local setskills = CP.DB.GetSetSkillList()
+    for _,skill in ipairs(setskills) do
+        table.insert(res,
+            {
+                0, -- level
+                skill, -- id
+                TEXT("Sys"..skill.."_name"), -- name
+                false, -- learned
+                nil,
+                0, -- mode = sk[6] -- ==2: passive
+                0, -- max level
+                true -- local can_be_disabled =
+            })
+    end
+
+    return res
+end
+
 function Classes.OnClassChanged()
     CP.Classes.skills = CP.Unit.GetAllSkills()
+    CP.Classes.skills[11] = GetSetSkills()
+
     Classes.UpdateTabs()
     Classes.UpdateList()
 end
@@ -197,30 +223,34 @@ function Classes.UpdateTabs()
 	local ClassToken, SubClassToken = CP.Unit.class, CP.Unit.sec_class
 
     local index=1
-    local function AddTab(this, typ, value, name)
+    local function AddTab(typ, icon, tooltip,text)
         local frame = _G[ basename .. index]
         frame.type = typ
 		frame:SetID(index)
         frame:Show()
+        if text then
+        	frame.toolipsText = toolipsText
+            frame:SetText(text)
+            PanelTemplates_TabResize(frame, 12)
+        else
+            PanelTemplates_IconTabInit(frame, icon, tooltip)
+        end
         PanelTemplates_DeselectTab(frame)
-        PanelTemplates_IconTabInit( frame, value, text)
         index = index+1
     end
 
-    AddTab(this, DF_SkillType_MainJob, string.format( DF_SkillBook_Tab_Format , ClassToken ) , VocName )
-
+    AddTab(DF_SkillType_MainJob, string.format( DF_SkillBook_Tab_Format , ClassToken ) , VocName )
 	if SubClassToken then
-        AddTab(this, DF_SkillType_SubJob, string.format( DF_SkillBook_Tab_Format , SubClassToken ) , VocSubName )
+        AddTab(DF_SkillType_SubJob, string.format( DF_SkillBook_Tab_Format , SubClassToken ) , VocSubName )
     end
-
-    AddTab(this, DF_SkillType_SP, string.format( DF_SkillBook_Tab_Format , ClassToken ) .. "_sole" , string.format( CLASS_ONLY , VocName ) )
+    AddTab(DF_SkillType_SP, string.format( DF_SkillBook_Tab_Format , ClassToken ) .. "_sole" , string.format( CLASS_ONLY , VocName ) )
+    AddTab(11, nil,nil,"Set")
 
 	for i=index,5 do
  		_G[ basename .. i ]:Hide()
 	end
 
 	PanelTemplates_SetNumTabs( CPClassDialogSkills, index )
-
 	PanelTemplates_SetTab( CPClassDialogSkills, 1)
 end
 

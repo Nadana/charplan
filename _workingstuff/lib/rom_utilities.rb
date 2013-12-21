@@ -76,8 +76,10 @@ def Extract(path, filter="", options=Hash.new)
         #p ("#{exe} #{foptions.join(" ")} -y -o \"#{temp_path}\" #{escaped} #{src}")
         if options.key?(:silent)
             `#{exe} #{foptions.join(" ")} -y -o \"#{temp_path}\" #{escaped} #{src}`
+            raise "error" if $?!=0
         else
-            system("#{exe} #{foptions.join(" ")} -y -o \"#{temp_path}\" #{escaped} #{src}")
+            result = system("#{exe} #{foptions.join(" ")} -y -o \"#{temp_path}\" #{escaped} #{src}")
+            raise "error" unless result
         end
         }
     end

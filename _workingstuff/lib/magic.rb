@@ -16,7 +16,7 @@ class MagicObjectEntry < TableEntry
 
     def initialize(csv_row)
         super(csv_row)
-        @bonus = BonusStuff.new(csv_row)
+        @bonus = BonusStuff.new(csv_row,true)
         @skilllvarg = csv_row['ability_skilllvarg'].to_f
 
         @atk_varg = csv_row['dmgpower_skilllvarg'].to_f
