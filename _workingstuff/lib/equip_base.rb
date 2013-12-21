@@ -214,27 +214,8 @@ $STATLIST={# SYS_WEAREQTYPE_xxx
     211 => "Herstellungserfahrung",
     212 => "Erhöhung der EP nach Spielerfolg",
     213 => "Erhöhung der TP nach Spielerfolg",
-
-# no Names
-    #~ 180 => "??",
-
-    #~ 214 => "??",
-    #~ 215 => "??",
-    #~ 216 => "??",
-    #~ 217 => "??",
-    #~ 218 => "??",
-    #~ 219 => "??",
-    #~ 220 => "??",
-    #~ 221 => "??",
-    #~ 222 => "??",
-    #~ 223 => "??",
-    #~ 224 => "??",
-    #~ 225 => "??",
-    #~ 226 => "??",
-    #~ 227 => "??",
-    #~ 228 => "??",
-    #~ 229 => "??",
 }
+
 
 class BonusStuff
     attr_accessor :eqtypes, :eqvalues
@@ -312,6 +293,7 @@ class BonusStuff
     end
 end
 
+
 class StatsStuff
     attr_accessor :stats
     attr_accessor :has_randoms
@@ -352,7 +334,7 @@ class StatsStuff
 end
 
 
-class ItemEntry < TableEntry
+class EquipmentEntry < TableEntry
 
     attr_accessor :image_id, :min_level, :set
     attr_accessor :bonus
@@ -384,12 +366,12 @@ class ItemEntry < TableEntry
             return false
         end
 
-        if @level>MAX_LEVEL then
+        if defined? MAX_LEVEL and @level>MAX_LEVEL then
             $log.info("Item #{@id}: is above max level #{@level}")
             return false
         end
 
-        if MAX_RARE.index(@rare).nil? then
+        if defined? MAX_RARE and MAX_RARE.index(@rare).nil? then
             $log.info("Item #{@id}: has rarity #{@rare}")
             return false
         end

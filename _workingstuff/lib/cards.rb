@@ -1,4 +1,7 @@
-﻿class CardEntry < TableEntry
+﻿require_relative 'table'
+require_relative 'items'
+
+class CardEntry < ItemsEntry
 
     attr_accessor :cardaddpower
 
@@ -8,10 +11,11 @@
     end
 
     def IsValid?
-        if @cardaddpower==0 then
-            $log.info("#{@id} Card has no bonus")
-            return false
-        end
+ # replace by:  MarkUnusedIf (|d| d.cardaddpower==0 }
+        #~ if @cardaddpower==0 then
+            #~ $log.info { "#{@id} Card has no bonus" } if $log
+            #~ return false
+        #~ end
         return true
     end
 

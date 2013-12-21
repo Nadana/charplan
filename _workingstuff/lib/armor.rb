@@ -1,6 +1,6 @@
-﻿require_relative 'item_base'
+﻿require_relative 'equip_base'
 
-class ArmorEntry < ItemEntry
+class ArmorEntry < EquipmentEntry
 
     attr_accessor :inv_pos
     attr_accessor :armor_typ, :unk1, :unk2

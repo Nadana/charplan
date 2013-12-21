@@ -1,5 +1,7 @@
-﻿
-class RunesEntry < TableEntry
+﻿require_relative 'table'
+require_relative 'items'
+
+class RunesEntry < ItemsEntry
     attr_accessor :bonus
     attr_accessor :level, :group
 

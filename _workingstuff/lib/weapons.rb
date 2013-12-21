@@ -1,6 +1,6 @@
-﻿require_relative 'item_base'
+﻿require_relative 'equip_base'
 
-class WeaponEntry < ItemEntry
+class WeaponEntry < EquipmentEntry
     attr_accessor :weapon
     attr_accessor :weapontype
     attr_accessor :attackspeed
