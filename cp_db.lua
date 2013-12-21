@@ -33,7 +33,7 @@ CP.DB = DB
 
 
 local function LoadTable(fname)
-    local fn, err = loadfile("interface/addons/charplan/item_data/"..fname..".lua")
+    local fn, err = loadfile("interface/addons/charplan/item_data/"..fname..".luc")
     assert(fn,err)
     return fn()
 end
@@ -54,7 +54,7 @@ function DB.Load()
     end
     DB.LoadCount = 1
 
-    DB.classes= LoadTable("classes");
+    DB.classes= LoadTable("classes")
     DB.images = LoadTable("images")
     DB.items = LoadTable("items")
     DB.bonus = LoadTable("addpower")

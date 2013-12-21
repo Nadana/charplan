@@ -62,26 +62,31 @@ class FullDB
         @recipes = Recipes.new()
     end
 
-    def export
+    def export(dir)
         puts "writting"
-        @images.Export("../item_data/images.lua")
-        @suits.Export("../item_data/sets.lua")
-        @refines.Export("../item_data/refines.lua")
-        @addpower.Export("../item_data/addpower.lua")
-        @titles.Export("../item_data/archievements.lua")
-        @cards.Export("../item_data/cards.lua")
-        @items.Export("../item_data/items.lua")
-        @spell_collection.Export("../item_data/spells.lua")
-        @spells.Export("../item_data/spell_effects.lua")
-        @food.Export("../item_data/food.lua")
-        @vocs.Export("../item_data/classes.lua")
-        @learnmagic.Export("../item_data/skills.lua")
-        @recipes.ExportReverseIndex("../item_data/recipe_items.lua")
+        @images.Export(dir+"images.lua")
+        @suits.Export(dir+"sets.lua")
+        @refines.Export(dir+"refines.lua")
+        @addpower.Export(dir+"addpower.lua")
+        @titles.Export(dir+"archievements.lua")
+        @cards.Export(dir+"cards.lua")
+        @items.Export(dir+"items.lua")
+        @spell_collection.Export(dir+"spells.lua")
+        @spells.Export(dir+"spell_effects.lua")
+        @food.Export(dir+"food.lua")
+        @vocs.Export(dir+"classes.lua")
+        @learnmagic.Export(dir+"skills.lua")
+        @recipes.ExportReverseIndex(dir+"recipe_items.lua")
 
         ExportTPCosts()
-        @suits.exportSkillList("../item_data/set_skills.lua")
+        @suits.exportSkillList(dir+"set_skills.lua")
+
+        compile(dir)
     end
 
+    def compile(dir)
+        Dir[dir+"*.lua"].each {|p| LUA_Compile(p) }
+    end
 
     def check
         puts "Checking & cleanup"
@@ -90,6 +95,8 @@ class FullDB
         	@items.MarkUnusedIfNameInvalid($de)
         	@suits.MarkUnusedIfNameInvalid($de)
         end
+
+        @cards.MarkUnusedIf {|d| d.cardaddpower==0 }
 
         str = $STATLIST.key("Stärke")
         @items.MarkUnusedIf { |item| item.bonus.Value(str)>20000 }
@@ -197,4 +204,4 @@ CheckTempPath()
 db = FullDB.new
 db.load
 db.check
-db.export
+db.export "../item_data/"

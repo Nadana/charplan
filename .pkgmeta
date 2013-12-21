@@ -1,6 +1,5 @@
 ignore:
  - _workingstuff
  - test
- - item_data/_all_stats.lua
- - item_data/_classes.lua
+ - item_data/*.lua
  - debug_utils.lua
