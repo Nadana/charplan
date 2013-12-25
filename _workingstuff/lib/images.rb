@@ -17,14 +17,23 @@ class Image < TableEntry
         @filename = row['actfield']
 
         if not @filename.nil? then
+            @filename=nil if @filename=~/\/$/ # rom bug? icon is a directory
+        end
+    end
+
+    def pathname()
+        if not @filename.nil? then
             @filename.tr!('\\','\/')  # replace slash
             @filename.gsub!(/^\//,'') # remove leading slash
             @filename.downcase!       # using lower case to minimize mem usage
 
             @filename.gsub!(/\..+$/,'') # remove extention
-
-            @filename=nil if @filename=~/\/$/ # rom bug? icon is a directory
         end
+        return @filename
+    end
+
+    def pathnameShort()
+        return pathname().gsub(/^#{Regexp.escape(BASE_ICON_PATH)}/,'')
     end
 
     def IsValid?
@@ -37,7 +46,7 @@ class Image < TableEntry
 
     def ExportData(data)
         #raise "image not on base path: "+@filename unless @filename=~/^#{Regexp.escape(BASE_ICON_PATH)}/
-        data.push('"'+@filename.gsub(/^#{Regexp.escape(BASE_ICON_PATH)}/,'')+'"')
+        data.push('"'+pathnameShort()+'"')
     end
 end
 

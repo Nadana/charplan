@@ -45,6 +45,7 @@ class FullDB
         @images = Images.new()
 
         @items = Armor.new()
+        @items.MarkUnusedIf {|d| not d.IsTypeValid? or d.inv_pos==12 }
         weapons= Weapons.new()
         @items.merge!(weapons)
 
@@ -85,6 +86,7 @@ class FullDB
         ExportTPCosts()
         @suits.exportSkillList(dir+"set_skills.lua")
 
+        puts "compiling"
         compile(dir)
     end
 
@@ -102,6 +104,7 @@ class FullDB
         end
 
         @cards.MarkUnusedIf {|d| d.cardaddpower==0 }
+        @titles.MarkUnusedIf {|d| not d.bonus.HasStats? }
 
         str = $STATLIST.key("Stärke")
         @items.MarkUnusedIf { |item| item.bonus.Value(str)>20000 }

@@ -1,4 +1,5 @@
 require_relative 'rom_utilities'
+require 'parseconfig'
 
 class Locales
     attr_accessor :db

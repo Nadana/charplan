@@ -1,4 +1,4 @@
-require 'csv'
+﻿require 'csv'
 require_relative 'rom_utilities'
 
 #module RoM_DB
@@ -40,7 +40,7 @@ class TableEntry
         return (IsValid? and @used)
     end
 
-    def used?
+    def IsUsed?
         return @used
     end
 
@@ -62,6 +62,29 @@ class TableEntry
     def Name(locales)
         return locales[@id]
     end
+
+    def PrepareExport(table,*args)
+    end
+
+    def ExportNew(fields)
+        res = fields.map { |x|
+            r = method(x).call
+
+            if r.is_a? Array
+                FormatArray(r,true)
+            elsif !!r==r # is Boolean?
+                (r ? "1" : "nil")
+            elsif r.nil?
+                "nil"
+            else
+                r.to_s
+            end
+            }
+
+        while not res.empty? and (res.last=="nil" or res.last.to_s.empty?) do res.pop end
+        return res
+    end
+
 end
 
 
@@ -134,17 +157,21 @@ class Table
     end
 
     def include?(id)
-        return (@index.include?(id) and @db[@index[id]].used?)
+        return (@index.include?(id) and @db[@index[id]].IsUsed?)
+    end
+
+    def exists?(id)
+        return @index.include?(id)
     end
 
     def [](id)
         i = @index[id]
-        raise "undefined id:#{i}" if i.nil?
-        return @db[i] if @db[i].used?
+        #raise "undefined id:#{i}" if i.nil?
+        return @db[i] if not i.nil? and @db[i].IsUsed?
     end
 
     def each
-        @db.each { |data| yield(data) if data.used?  }
+        @db.each { |data| yield(data) if data.IsUsed?  }
     end
 
     def select
@@ -163,14 +190,19 @@ class Table
         return dest
     end
 
+   def ExportEntryDesc(entry)
+        dest = []
+        entry.ExportDesc(dest)
+        return dest
+    end
+
     def Export(filename)
 
         desc = Hash.new()
         maxdata=0
         @db.each { |data|
             if not desc.has_key?(data.class) then
-                line_data = []
-                data.ExportDesc(line_data)
+                line_data = ExportEntryDesc(data)
                 desc[data.class] = line_data.join(",")
                 maxdata = [maxdata, line_data.size()].max
             end
@@ -182,7 +214,7 @@ class Table
                 }
 
             outf.write("return {\n")
-            db.each { |data|
+            @db.each { |data|
                 next if not data.Export?
 
                 line_data = ExportEntry(data)
@@ -199,7 +231,72 @@ class Table
         }
     end
 
-    def GuessOrder()
+   def ExportNew(filename, fields,*args)
+        File.open(filename, 'wt') { |outf|
+            outf.write( "-- %s\n" % fields.join(", "))
+
+            outf.write("return {\n")
+            @db.each { |data|
+                next if not data.Export?
+
+                data.PrepareExport(self, args)
+                line_data = data.ExportNew(fields)
+
+                if fields.size==1 then
+                    outf.write( "  [%s]=%s,\n" % [data.id, line_data.join(",")])
+                else
+                    outf.write( "  [%s]={%s},\n" % [data.id, line_data.join(",")])
+                end
+                }
+            outf.write("}\n")
+        }
+    end
+
+    def GuessOrder(fields, force_output=false,*args)
+
+        data_count = Array.new
+        @db.each { |data|
+            next if not data.Export?
+
+            data.PrepareExport(self, args)
+            line_data = data.ExportNew(fields)
+            while data_count.size < line_data.size do data_count.push(0) end
+
+            line_data.each_with_index do |item, index|
+                data_count[index] += 1 if item!="nil"
+            end
+        }
+
+        order = (0..data_count.size-1).to_a
+        neworder = order.sort { |a,b|
+                (data_count[b] <=> data_count[a])==0 ? (a <=> b) :  (data_count[b] <=> data_count[a])
+            }
+
+        if force_output or order != neworder then
+            #order_str = neworder.map { |i| "#{i+1}-#{fields[i]}" }.join(",")
+            order_str = neworder.map { |i| "#{i+1}-#{fields[i]} (#{data_count[i]*100/@db.size}%)" }.join("\n")
+            puts "Suggested order for #{self.class.name} ->\n#{order_str}"
+        end
+    end
+
+    def WriteFieldDef(filename, marker, prefix, fields)
+
+        list =""
+        fields.each_with_index {|name,idx| list=list+"    local #{prefix}#{name.upcase}=#{idx+1}\n" }
+
+        text= File.read filename
+        text.force_encoding("UTF-8")
+
+        str_begin = "--[[ [ #{marker} ]]"
+        str_end = "--[[ ] ]]"
+
+        old = /#{Regexp.escape(str_begin)}.+?#{Regexp.escape(str_end)}/mu
+        new = str_begin+"\n"+ list + str_end
+
+        text.gsub!(old,new)
+
+        File.open(filename, 'w+'){ |f| f << text }
+
     end
 end
 

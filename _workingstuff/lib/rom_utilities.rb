@@ -1,4 +1,3 @@
-# rev 2012_11_15
 require 'pathname'
 require 'fileutils'
 require 'win32/registry'
@@ -38,7 +37,6 @@ def LUA_Compile(script)
     luac = $lua.gsub(/(.*)lua(.+?).exe/i, '\1luac\2.exe')
     raise "luac not found (#{luac}" if not File.exists? luac
 
-    p "#{luac} -o #{script[0..-2]}c #{script}"
     system("#{luac} -s -o #{script[0..-2]}c #{script}")
 end
 

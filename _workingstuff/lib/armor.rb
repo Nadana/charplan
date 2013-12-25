@@ -58,12 +58,8 @@ class ArmorEntry < EquipmentEntry
     end
 
     def IsValid?
-        if not IsTypeValid? then
-            $log.warn("item has wrong typ-> id:#{@id} - pos:#{@inv_pos} type:#{@armor_typ}")
-            return false
-        end
-
-        return (super() and @inv_pos!=12)
+        #  use: items.MarkUnusedIf {|d| not d.IsTypeValid? or d.inv_pos==12 }
+        return super()
     end
 
     def ExportDesc(data)

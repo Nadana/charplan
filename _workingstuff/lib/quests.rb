@@ -263,17 +263,16 @@ class Quests < Table
     def AfterLoad()
         each { |q|
             q.perquisite.each do |pq|
-                @db[pq].post_quest.push(q.id) if exists?(pq)
+                self[pq].post_quest.push(q.id) if exists?(pq)
             end
             }
     end
 
-
     def RemoveUnusedPostQuests()
-        @db.each do |id,q|
+        each do |q|
             to_delete=[]
             q.post_quest.each { |qid|
-                if not @db.include? qid then
+                if not include? qid then
                     to_delete.push(qid)
                 end
             }
@@ -283,17 +282,17 @@ class Quests < Table
     end
 
     def CheckDependingQuests()
-        @db.each { |id,q|
+        each { |q|
             begin
                 repeatit=false
                 q.perquisite.each { |qid1|
-                    q_qid1 = @db[qid1]
+                    q_qid1 = self[qid1]
                     next if q_qid1.nil?
 
                     q.perquisite.each { |qid2|
-                        next if qid1==qid2 or not @db.include? qid2
+                        next if qid1==qid2 or not include? qid2
 
-                        if q_qid1.HasPreQuest?(@db,qid2) then
+                        if q_qid1.HasPreQuest?(self,qid2) then
                             # puts "Quest #{q.id} double depend on #{qid2}. see #{qid1}"
                             q.perquisite.delete(qid2)
                             repeatit=true
