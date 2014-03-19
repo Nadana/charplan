@@ -108,7 +108,7 @@
 		</Layers>
 	</Button>
 
-	
+
 	<!-- Main Dialog -->
 	<Frame name="CPFrame" parent="UIParent" enableMouse="true" inherits="UICommonFrameTemplate">
 		<Size>
@@ -544,7 +544,7 @@
 						<Scripts>
 							<OnClick>Charplan.ChangeClass()</OnClick>
 						</Scripts>
-					</Button>					
+					</Button>
 					<Button name="CPFrameMenuBtn" inherits="UIPanelButtonTemplate" text="Menu">
 						<Size>
 							<AbsDimension x="132" y="24"/>
@@ -837,7 +837,7 @@
 								<Scripts>
 									<OnLoad>Charplan.OnEggMenuLoad(this)</OnLoad>
 								</Scripts>
-							</Frame>							
+							</Frame>
 						</Frames>
 					</Frame>
 				</Frames>
@@ -862,7 +862,7 @@
 			<AbsDimension y="24" x="24"/>
 		</Size>
 		<Scripts>
-			<OnClick>ToggleUIFrame(CPFrame)</OnClick>
+			<OnClick>AddonManager.MiniButton_OnClick(this)</OnClick>
 			<OnEnter>AddonManager.MiniButton_OnEnter(this)</OnEnter>
 			<OnLeave>AddonManager.MiniButton_OnLeave(this)</OnLeave>
 		</Scripts>
