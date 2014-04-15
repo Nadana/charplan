@@ -36,7 +36,7 @@ end
 
 def LUA_Compile(script)
     luac = $lua.gsub(/(.*)lua(.+?).exe/i, '\1luac\2.exe')
-    raise "luca not found (#{luac}" if not File.exists? luac
+    raise "luac not found (#{luac}" if not File.exists? luac
 
     p "#{luac} -o #{script[0..-2]}c #{script}"
     system("#{luac} -s -o #{script[0..-2]}c #{script}")

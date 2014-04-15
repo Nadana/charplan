@@ -5,6 +5,8 @@ require 'logger'
 
 # use path_settings.rb to setup correct path for:
 #  $fdb_ex="bin/FDB_ex2.exe"
+#  $lua="e:/Tools/luarocks/2.1/lua5.1.exe"
+
 load "path_settings.rb"
 
 require_relative 'lib/all'
@@ -15,7 +17,7 @@ $log.level = Logger::WARN
 #$log.level = Logger::INFO
 $log.formatter = proc { |severity, datetime, progname, msg|  "#{severity}: #{msg}\n" }
 
-MAX_LEVEL = 90
+MAX_LEVEL = 93
 MAX_RARE = [0,1,2,3,4,5,8]
 EXCLUDE_UNNAMED = true
 $log << "FILTER RULES:\n"
