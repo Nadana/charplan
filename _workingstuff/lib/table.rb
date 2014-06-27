@@ -101,6 +101,7 @@ class Table
     end
 
     def Used(id)
+        return false if not @index.include? id
         @db[@index[id]].Used()
     end
 
