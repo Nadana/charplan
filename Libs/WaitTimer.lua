@@ -28,8 +28,20 @@
         WaitTimer.Delay(2, pout, nil, "2")
         WaitTimer.Delay(3, pout, nil, "1")
 
+        -- wait
+        WaitTimer.Call(worker)
+
+        function worker()
+            DEFAULT_CHAT_FRAME:AddMessage("ready")
+            Timer.CallWait(1)
+            DEFAULT_CHAT_FRAME:AddMessage("set")
+            Timer.CallWait(1)
+            DEFAULT_CHAT_FRAME:AddMessage("go")
+        end
+
 
     Usage:
+
         timer_id = WaitTimer.Delay(seconds, function, id, data)
         ================================================
 
@@ -50,16 +62,40 @@
         - stops the timer without calling the function
 
 
-        waittime = WaitTimer.Remaining(id)
+        resttime = WaitTimer.Remaining(id)
         ==================================
         - @return remaining seconds
                   or nil
+        - also use it to test if a timer is running
 
 
         WaitTimer.SetTime(id, delay)
         ==================================
         - reset the delay time
         - if <delay> is ommited the function will be triggert on next update
+
+
+
+        id = WaitTimer.Call(fct, data)
+        ==================================
+        - will call "fct(data)"
+        - required for using "CallWait"
+        - the ID can be used for a "CallAbort" call
+
+        WaitTimer.CallWait(time)
+        ==================================
+        - pause function for 'time' seconds
+        - ! only usable if the function was called by "WaitTimer.Call" !
+
+        WaitTimer.CallAbort(id)
+        ==================================
+        - abort the 'Call'
+
+
+    GameTooltip
+        for delayed tooltips replace
+            GameTooltip:Show()  with   GameTooltip:DelayShow()
+            GameTooltip:Hide()  with   GameTooltip:DelayHide()
 
 
     Setup:
@@ -69,7 +105,7 @@
             WaitTimer.toc
 
 --]]
-local Timer = LibStub:NewLibrary("WaitTimer", 8)
+local Timer = LibStub:NewLibrary("WaitTimer", 12)
 if not Timer then
     -- for ReloadUI()
     if not GameTooltip.DelayShow then
@@ -123,21 +159,32 @@ local function TestIfAllDone()
 end
 
 local function TriggerEvent(events, elapsedTime)
+    local something_to_remove=false
     for i,data in ipairs(events) do
 
         data[1] = data[1]-elapsedTime
 
-        if data[1]<=0 then
+        if data[1]<0 then
             local good, next_delay = pcall(data[3],data[4])
 
             if good and type(next_delay)=="number" then
-                data[1] = next_delay
+                data[1] = math.max(0,next_delay)
             else
-                table.remove(events,i)
-            end
+                if not good then
+                    error("error in update call (id='"..tostring(data[2]).."'): "..next_delay,0)
+                end
 
-            if not good then
-                error("error in update call (id='"..tostring(data[2]).."'): "..next_delay,0)
+                if data[1]<0 then -- delay was reset in event function
+                    something_to_remove=true
+                end
+            end
+        end
+    end
+
+    if something_to_remove then
+        for i=#events,1,-1 do
+            if events[i][1]<0 then
+                table.remove(events,i)
             end
         end
     end
@@ -155,6 +202,8 @@ function Timer.Delay(seconds, fct, id, data)
     if type(fct)~="function" then
         error("parameter 2 is not a function",1)
     end
+
+    seconds = math.max(0,seconds)
 
     local _,cur_data = FindID(id)
     if cur_data then
@@ -204,7 +253,7 @@ end
 function Timer.Call(fct,data)
 
     local thread = coroutine.create(fct)
-    Timer.Delay(0,
+    local id = Timer.Delay(0,
         function ()
             local state, time = coroutine.resume(thread,data)
             if state then
@@ -212,10 +261,16 @@ function Timer.Call(fct,data)
             end
         end
     )
+
+    return id
 end
 
 function Timer.CallWait(time)
     coroutine.yield(time or 0)
+end
+
+function Timer.CallAbort(id)
+    Timer.Stop(id)
 end
 
 -------------------------------------
@@ -252,6 +307,8 @@ function Timer.ReInit()
         Timer.DelayShowCancel(self)
         self:Hide()
     end
+
+    WaitTimerUpdateFrame = nil
 end
 Timer.ReInit()
 
