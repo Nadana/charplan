@@ -23,11 +23,11 @@ function Search.OnLoad(this)
     CPSearchHead2:SetText(CP.L.SEARCH_LEVEL)
     CPSearchHead3:SetText(CP.L.SEARCH_BASE_STATS)
     CPSearchHead4:SetText(CP.L.SEARCH_STATS)
-    CPSearchFilterStatLessText:SetText(CP.L.SEARCH_NOSTATLESS)
-    CPSearchFilterSetsText:SetText(CP.L.SEARCH_ONLYSET)
-    CPSearchFilterGenderText:SetText(CP.L.SEARCH_GENDER)
+
     CPSearchFilterNameLabel:SetText(CP.L.SEARCH_NAME)
     CPSearchFilterLevelLabel:SetText(CP.L.SEARCH_LEVEL)
+    CPSearchFilterStatsLabel:SetText(CP.L.SEARCH_FILTER_STATS)
+    CPSearchFilterFilterText:SetText(CP.L.SEARCH_FILTER)
 
     CPSearchPimpPlus:SetText(CP.L.PIMP_PLUS)
     CPSearchPimpTier:SetText(CP.L.PIMP_TIER)
@@ -35,9 +35,6 @@ function Search.OnLoad(this)
 
     CPSearchTakeIt1:SetText(CP.L.SEARCH_USE_SLOT1)
     CPSearchTakeIt2:SetText(CP.L.SEARCH_USE_SLOT2)
-
-    CPSearchFilterUniqueSkinText:SetText(CP.L.SEARCH_UNIQUE_SKINS)
-    CPSearchFilterStatsLabel:SetText(CP.L.SEARCH_FILTER_STATS)
 
     Search.FilterRaritySetSelection(3) -- purple items by default
 end
@@ -263,6 +260,7 @@ end
 local function GetRarityName(id)
     if not id then return TEXT("C_ALL") end
     if id==8 then return TEXT("ACCOUNT_SHOP") end
+    if id==0 then return TEXT("UNUSUAL_LV0") end
 
     return TEXT("ITEM_QUALITY"..id.."_DESC")
 end
@@ -320,6 +318,59 @@ function Search.FilterRarityMenu_Option_OnClicked(button)
     Search.FindItems()
 end
 
+function Search.FilterFilterMenu_OnLoad(this)
+    UIDropDownMenu_SetWidth(this, 100)
+    UIDropDownMenu_Initialize(this, Search.FilterFilterMenu_OnShow)
+end
+
+function Search.FilterFilterMenu_OnShow(button)
+    local info = {}
+    info.text = CP.L.SEARCH_NOSTATLESS
+    info.checked = Search.no_empty_items
+    info.func = function()
+                    Search.no_empty_items = not Search.no_empty_items
+                    Search.FindItems()
+                end
+    UIDropDownMenu_AddButton(info)
+
+    local info = {}
+    info.text = CP.L.SEARCH_ONLYSET
+    info.checked = Search.itemset_only
+    info.func = function()
+        Search.itemset_only = not Search.itemset_only
+        Search.FindItems()
+    end
+    UIDropDownMenu_AddButton(info)
+
+    local info = {}
+    info.text = CP.L.SEARCH_UNIQUE_SKINS
+    info.checked = Search.unique_skin
+    info.func = function()
+        Search.unique_skin = not Search.unique_skin
+        Search.FindItems()
+    end
+    UIDropDownMenu_AddButton(info)
+
+    local info = {}
+    info.text = CP.L.SEARCH_GENDER
+    info.checked = Search.limitsex
+    info.func = function()
+        Search.limitsex = not Search.limitsex
+        Search.FindItems()
+    end
+    UIDropDownMenu_AddButton(info)
+
+    local info = {}
+    info.text = "Unbenannt"--CP.L.SEARCH_GENDER
+    info.checked = Search.include_unnamed
+    info.func = function()
+        Search.include_unnamed = not Search.include_unnamed
+        Search.FindItems()
+    end
+    UIDropDownMenu_AddButton(info)
+
+end
+
 local function GetFilterInfo()
 
     local info={}
@@ -331,16 +382,17 @@ local function GetFilterInfo()
     if info.level_min and info.level_max and info.level_min>info.level_max then
         info.level_min,info.level_max = info.level_max,info.level_min
     end
-    info.no_empty_items = CPSearchFilterStatLess:IsChecked()
-    info.itemset_only = CPSearchFilterSets:IsChecked()
-    info.unique_skin = CPSearchFilterUniqueSkin:IsChecked()
+    info.include_unnamed = Search.include_unnamed
+    info.no_empty_items = Search.no_empty_items
+    info.itemset_only = Search.itemset_only
+    info.unique_skin = Search.unique_skin
     info.stat_name = CPSearchFilterStats:GetText()
     info.stat_min = tonumber(CPSearchFilterStatsMin:GetText())
     info.stat_max = tonumber(CPSearchFilterStatsMax:GetText())
     info.rarity = Search.rarity
     info.rarity_single = Search.rarity_single
 
-    if not CPSearchFilterGender:IsChecked() then
+    if not Search.limitsex then
         info.limitsex = 1+(UnitSex("player") %2)
     end
 

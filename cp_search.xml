@@ -218,65 +218,45 @@
 							<OnTextChanged>Charplan.Search.FindItems()</OnTextChanged>
 						</Scripts>
 					</EditBox>
-					<CheckButton name="$parentStatLess" inherits="CPSearchCheckbox">
-					<Anchors>
-						<Anchor point="TOPLEFT">
-							<Offset>
-								<AbsDimension x="345" y="78"/>
-							</Offset>
-						</Anchor>
-					</Anchors>
-					<Scripts>
-						<OnEnter>
-							GameTooltip:SetOwner(this, "ANCHOR_TOPLEFT", -5, 0);
-							GameTooltip:SetText(Charplan.L.SEARCH_NOSTATLESS_TIP);
-							GameTooltip:Show()
-						</OnEnter>
-						<OnLeave>GameTooltip:Hide()</OnLeave>
-					</Scripts>
-				</CheckButton>
-					<CheckButton name="$parentSets" inherits="CPSearchCheckbox">
-						<Anchors>
-							<Anchor point="TOPLEFT" >
-								<Offset>
-									<AbsDimension x="345" y="60"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</CheckButton>
-					<Frame name="$parentRarity" inherits="UIDropDownMenuTemplate">
-						<Size>
-							<AbsDimension x="132" y="24"/>
-						</Size>
-						<Anchors>
-							<Anchor point="TOPLEFT">
-								<Offset>
-									<AbsDimension x="344" y="35"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-						<Scripts>
-							<OnLoad>Charplan.Search.FilterRarityMenu_OnLoad(this)</OnLoad>
-						</Scripts>
-					</Frame>
-					<CheckButton name="CPSearchPowerModify" inherits="CPSearchCheckbox">
-						<Anchors>
-							<Anchor point="TOPLEFT">
-								<Offset>
-									<AbsDimension x="530" y="74"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</CheckButton>
-					<CheckButton name="$parentGender" inherits="CPSearchCheckbox">
-						<Anchors>
-							<Anchor point="TOPLEFT">
-								<Offset>
-									<AbsDimension x="460" y="96"/>
-								</Offset>
-							</Anchor>
-						</Anchors>
-					</CheckButton>
+                    <Frame name="$parentRarity" inherits="UIDropDownMenuTemplate">
+                        <Size>
+                            <AbsDimension x="132" y="24"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT">
+                                <Offset>
+                                    <AbsDimension x="344" y="35"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>Charplan.Search.FilterRarityMenu_OnLoad(this)</OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <Frame name="$parentFilter" inherits="UIDropDownMenuTemplate">
+                        <Size>
+                            <AbsDimension x="132" y="24"/>
+                        </Size>
+                        <Anchors>
+                            <Anchor point="TOPLEFT">
+                                <Offset>
+                                    <AbsDimension x="344" y="50"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                        <Scripts>
+                            <OnLoad>Charplan.Search.FilterFilterMenu_OnLoad(this)</OnLoad>
+                        </Scripts>
+                    </Frame>
+                    <CheckButton name="CPSearchPowerModify" inherits="CPSearchCheckbox">
+                        <Anchors>
+                            <Anchor point="TOPLEFT">
+                                <Offset>
+                                    <AbsDimension x="530" y="74"/>
+                                </Offset>
+                            </Anchor>
+                        </Anchors>
+                    </CheckButton>
 					<Frame name="$parentType" inherits="UIDropDownMenuTemplate">
 						<Size>
 							<AbsDimension x="132" y="24"/>
@@ -335,23 +315,6 @@
 							<OnLoad>Charplan.Search.TierMenu_OnLoad(this)</OnLoad>
 						</Scripts>
 					</Frame>
-					<CheckButton name="$parentUniqueSkin" inherits="CPSearchCheckbox">
-						<Anchors>
-									<Anchor point="TOPLEFT" >
-										<Offset>
-											<AbsDimension x="345" y="96"/>
-										</Offset>
-									</Anchor>
-								</Anchors>
-						<Scripts>
-							<OnEnter>
-								GameTooltip:SetOwner(this, "ANCHOR_TOPLEFT", -5, 0);
-								GameTooltip:SetText(Charplan.L.SEARCH_UNIQUE_SKINS);
-								GameTooltip:Show()
-							</OnEnter>
-							<OnLeave>GameTooltip:Hide()</OnLeave>
-						</Scripts>
-					</CheckButton>
 					<EditBox name="$parentStats" inherits="UIPanelEditBoxTemplate">
 						<Size><AbsDimension x="100" y="20"/></Size>
 						<Anchors>

@@ -2,3 +2,4 @@ _workingstuff/logfile.txt
 _workingstuff/WebSite
 *.exe
 charplan.sublime*
+/.idea/

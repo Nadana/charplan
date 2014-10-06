@@ -18,10 +18,8 @@ $log.level = Logger::WARN
 $log.formatter = proc { |severity, datetime, progname, msg|  "#{severity}: #{msg}\n" }
 
 MAX_RARE = [0,1,2,3,4,5,8]
-#MAX_LEVEL = 93
-#EXCLUDE_UNNAMED = true
 MAX_LEVEL = 100
-EXCLUDE_UNNAMED = true
+EXCLUDE_UNNAMED = false#true
 $log << "FILTER RULES:\n"
 $log << "max level is: #{MAX_LEVEL}\n"
 $log << "max rariry is: #{MAX_RARE.to_s}\n"

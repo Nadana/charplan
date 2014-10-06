@@ -679,10 +679,19 @@ local function GetFilterFunction(info)
         table.insert(code, 'local sex=CP.DB.GetLimitedSex(id) if sex and sex~='..info.limitsex..' then return false end')
     end
 
+
+    if (info.name and info.name~="") or not info.include_unnamed then
+        table.insert(code, 'local txtname = "Sys"..id.."_name"')
+    end
+
     if info.name and info.name~="" then
         local name = string.lower(info.name)
         local suit_test = string.format('if not data[%i] or not string.find(TEXT("Sys"..data[%i].."_name"):lower(),"%s") then return false end',I_SET,I_SET,name)
-        table.insert(code, 'if not string.find(TEXT("Sys"..id.."_name"):lower(),"'..name..'") then '..suit_test..' end')
+        table.insert(code, 'if not string.find(TEXT(txtname):lower(),"'..name..'") then '..suit_test..' end')
+    end
+
+    if not info.include_unnamed then
+        table.insert(code, 'if TEXT(txtname)==txtname then return false end')
     end
 
     if info.stat_name and info.stat_name ~= "" then

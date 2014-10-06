@@ -69,6 +69,8 @@ local default_text={
     SEARCH_UNIQUE_SKINS = "Unique skin",
     SEARCH_FILTER_STATS = "Stats",
     SEARCH_GENDER = "all genders",
+    SEARCH_FILTER = "Filter",
+    SEARCH_UNNAMED = "unnamed",
 
     SEARCH_RARITY_EXACT = "only this rarity",
     SEARCH_RARITY_MINIMUM = "at least this rarity",
