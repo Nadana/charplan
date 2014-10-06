@@ -361,7 +361,7 @@ function Search.FilterFilterMenu_OnShow(button)
     UIDropDownMenu_AddButton(info)
 
     local info = {}
-    info.text = "Unbenannt"--CP.L.SEARCH_GENDER
+    info.text = CP.L.SEARCH_UNNAMED
     info.checked = Search.include_unnamed
     info.func = function()
         Search.include_unnamed = not Search.include_unnamed

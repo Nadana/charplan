@@ -13,7 +13,7 @@ _G.Charplan = CP
 CP.version       = "@project-version@"
 CP.Prefix = "CP: "
 --@do-not-package@
-CP.version       = "v6.0"
+CP.version       = "v6.1"
 dofile("interface/addons/charplan/debug_utils.lua")
 --@end-do-not-package@
 

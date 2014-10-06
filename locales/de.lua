@@ -87,7 +87,7 @@ Charplan.L ={
     SEARCH_WEBSITE = "http://de.runesdatabase.com/item/%i",
     SEARCH_GENDER = "alle Geschlechter",
     SEARCH_FILTER = "Filter",
-    SEARCH_UNNAMED = "Namenlos",
+    SEARCH_UNNAMED = "Unbenannte Gegenstände",
 
     BY_CLASS = "Base",
     BY_SKILL = "Skill",
