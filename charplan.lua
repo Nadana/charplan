@@ -690,7 +690,7 @@ function CP.EquipItem_OnReceiveDrag( this )
         slot = this:GetID()
     }
 
-    WaitTimer.Wait(0.1, CP.WaitForItemLink,"CP_ITEMDROPER", data )
+    WaitTimer.Delay(0.1, CP.WaitForItemLink,"CP_ITEMDROPER", data )
     ItemClipboard_Clear()
 end
 
