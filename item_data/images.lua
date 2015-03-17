@@ -7787,6 +7787,8 @@ return {
   [803527]="skill_panel_icons/sp_psy_005",
   [803528]="skill_aug54-1",
   [803538]="skill_kni_new50-10",
+  [803546]="mount_skate_fish",
+  [803547]="mount_makhaz_beast",
   [803579]="skill_aug51-2",
   [803581]="boss_skill/skill_boss_skill_215",
   [803584]="boss_skill/skill_boss_skill_95",
