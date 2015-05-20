@@ -8,8 +8,12 @@ require 'logger'
 #  $lua="e:/Tools/luarocks/2.1/lua5.1.exe"
 
 load "path_settings.rb"
-
-require_relative 'lib/all'
+begin
+    require_relative '../../!ruby_rom/lib/ruby_rom'
+rescue
+    p "'ruby_rom' required - plz concact me if you need it"
+    raise
+end
 
 
 $log = Logger.new(open('logfile.txt', File::WRONLY | File::CREAT))
