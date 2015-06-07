@@ -2,7 +2,7 @@ local CP = _G.Charplan
 local Unit= {}
 CP.Unit = Unit
 
-local MAX_LEVEL=90
+local MAX_LEVEL=92
 
 --[[ data fields:
     title_id
