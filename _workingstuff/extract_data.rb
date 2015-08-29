@@ -15,7 +15,6 @@ rescue
     raise
 end
 
-
 $log = Logger.new(open('logfile.txt', File::WRONLY | File::CREAT))
 $log.level = Logger::WARN
 #$log.level = Logger::INFO
@@ -212,6 +211,16 @@ class FullDB
             outf.write("\n}\n")
         }
     end
+
+    def setMaxLevel(file)
+        exp = Table_EXP.new()
+        maxlevel = exp.guessMaxLevel
+        if maxlevel then
+            txt = File.read(file)
+            if nil==txt.sub!("local MAX_LEVEL=92\n", "local MAX_LEVEL=#{maxlevel}\n") then raise "max_level not found" end
+            File.open(file, 'w') { |file| file.write(txt) }
+        end
+    end
 end
 
 
@@ -222,3 +231,4 @@ db = FullDB.new
 db.load
 db.check
 db.export "../item_data/"
+db.setMaxLevel "../cp_unit.lua"
