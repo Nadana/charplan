@@ -416,7 +416,7 @@ LuaUnit = {
             -- over it.
             testClassList = {}
             for key, val in pairs(_G) do
-                if string.sub(key,1,4) == 'Test' and type(_G[key])=="table" then
+                if type(key)=='string' and string.sub(key,1,4) == 'Test' and type(_G[key])=="table" then
                     table.insert( testClassList, key )
                 end
             end
