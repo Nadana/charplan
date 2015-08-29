@@ -217,7 +217,7 @@ class FullDB
         maxlevel = exp.guessMaxLevel
         if maxlevel then
             txt = File.read(file)
-            if nil==txt.sub!("local MAX_LEVEL=92\n", "local MAX_LEVEL=#{maxlevel}\n") then raise "max_level not found" end
+            if nil==txt.sub!(/^local MAX_LEVEL=\d+\s*$/mo, "local MAX_LEVEL=#{maxlevel}\n") then raise "max_level not found" end
             File.open(file, 'w') { |file| file.write(txt) }
         end
     end
