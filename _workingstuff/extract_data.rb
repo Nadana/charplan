@@ -21,7 +21,7 @@ $log.level = Logger::WARN
 $log.formatter = proc { |severity, datetime, progname, msg|  "#{severity}: #{msg}\n" }
 
 MAX_RARE = [0,1,2,3,4,5,8]
-MAX_LEVEL = 100
+MAX_LEVEL = 101
 EXCLUDE_UNNAMED = false
 INCLUDE_FOOD = false  # ATM only in buff-search-branch
 
