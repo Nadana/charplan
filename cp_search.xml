@@ -7,7 +7,7 @@
 			<Layer>
 			<FontString name="$parentName" inherits="GameFontLabel" justifyH="LEFT">
 				<Size>
-					<AbsDimension x="220" y="14"/>
+					<AbsDimension x="216" y="14"/>
 				</Size>
 				<Anchors>
 					<Anchor point="TOPLEFT"><Offset><AbsDimension x="40" y="0"/></Offset></Anchor>
@@ -30,7 +30,7 @@
 				</FontString>
 			<FontString name="$parentLevel" inherits="GameFontLabel" justifyH="CENTER">
 				<Size>
-					<AbsDimension x="20" y="14"/>
+					<AbsDimension x="24" y="14"/>
 				</Size>
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="$parentName" relativePoint="TOPRIGHT">
@@ -396,7 +396,7 @@
 									</Anchors>
 								</Texture>
 							</Layer>
-						</Layers>						
+						</Layers>
 					</Button>
                     <Button name="CPSearchHead4" inherits="CPSearchHeaderButtonTemplate" id="4">
 						<Size><AbsDimension x="50" y="20"></AbsDimension></Size>
