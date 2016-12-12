@@ -874,7 +874,7 @@ function DB.GetTPCosts(spell_id,level)
     level = level or 0
 
     local rate = (DB.skills[spell_id] and DB.skills[spell_id][S_TP_RATE]) or 1
-    return DB.tpcosts[level+rate]
+    return DB.tpcosts[math.min(level+rate,#DB.tpcosts)]
 end
 
 function DB.GetTPTotalCosts(spell_id,level)
@@ -882,7 +882,8 @@ function DB.GetTPTotalCosts(spell_id,level)
     local rate = (DB.skills[spell_id] and DB.skills[spell_id][S_TP_RATE]) or 1
     local sum =0
     for l =0,level-1 do
-        sum = sum+DB.tpcosts[l+rate]
+        sum = sum+DB.tpcosts[math.min(l+rate,#DB.tpcosts)]
+    return
     end
     return sum
 end
